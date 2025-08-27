@@ -1,4 +1,4 @@
-// src/main/components/Main/AuthorCard.tsx - SIMPLIFIED
+// src/main/components/Main/AuthorCard.tsx - FIX AVATAR ID ERROR
 import Image from 'next/image';
 import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/main/lib/directus/index';
@@ -28,7 +28,7 @@ export default function AuthorCard({ author, linkToProfile = true, lang }: Autho
         ">
           {author.avatar ? (
             <Image
-              src={`${DIRECTUS_URL}/assets/${author.avatar.id}?width=400&height=400&quality=80&format=webp`}
+              src={`${DIRECTUS_URL}/assets/${author.avatar}?width=400&height=400&quality=80&format=webp`}
               alt={author.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
