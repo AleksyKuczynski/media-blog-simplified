@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { ImageAttributes, ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
 import { calculateImageFrameDimensionsClient } from '@/main/lib/image-utils/calculateImageFrameDimensions';
+import { Caption, createInitialCaptionBehavior } from './Captions';
 
 interface ImageFrameProps {
   imageAttributes: ImageAttributes;
@@ -81,11 +82,7 @@ export const ImageFrame = memo(function ImageFrame({
   );
 
   const imageStyles = twMerge(
-    "w-full h-full transition-transform duration-300 ease-in-out hover:scale-105",
-    // Apply display mode classes
-    dimensions.imageDisplayMode === 'center-horizontal' && "object-cover object-center",
-    dimensions.imageDisplayMode === 'center-vertical' && "object-cover object-center", 
-    dimensions.imageDisplayMode === 'square' && "object-cover"
+    "w-full h-full object-cover"
   );
 
   const containerStyle: React.CSSProperties = {
@@ -94,6 +91,9 @@ export const ImageFrame = memo(function ImageFrame({
     aspectRatio: dimensions.ratio,
     maxWidth: dimensions.width || maxWidth || '100%',
   };
+
+  const hasCaption = Boolean(processedCaption || caption);
+  const captionBehavior = createInitialCaptionBehavior(hasCaption);
 
   return (
     <figure className="w-full">
@@ -113,22 +113,19 @@ export const ImageFrame = memo(function ImageFrame({
           placeholder="blur"
           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
         />
+        
+        {hasCaption && (
+          <Caption
+            content={processedCaption || caption || ''}
+            behavior={captionBehavior}
+            visible={true}
+            onModeChange={() => {}} // No-op for single images
+            navigationLayout="horizontal"
+            isActive={true}
+            imageHeight={dimensions.height}
+          />
+        )}
       </div>
-      
-      {(processedCaption || caption) && (
-        <figcaption className={twMerge(
-          "mt-4 text-sm text-on-sf-var leading-relaxed px-2",
-          "theme-default:text-center",
-          "theme-rounded:bg-sf-cont theme-rounded:p-4 theme-rounded:rounded-lg theme-rounded:mt-2",
-          "theme-sharp:border-l-2 theme-sharp:border-pr-cont theme-sharp:pl-4"
-        )}>
-          {processedCaption ? (
-            <div dangerouslySetInnerHTML={{ __html: processedCaption }} />
-          ) : (
-            caption
-          )}
-        </figcaption>
-      )}
     </figure>
   );
 });

@@ -1,7 +1,7 @@
 // src/main/lib/markdown/processContent.ts
 
 import { parseBlockquotes } from './parseBlockquotes';
-import { parseImageFrames } from './parseImageFrames'; // ← CHANGED: Import new image frame parser
+import { parseImageFrames } from './parseImageFrames';
 import { generateToc } from './generateToc';
 import { ProcessedContent, ContentChunk } from './markdownTypes';
 import { extractImagesAndCaptions } from './extractImagesAndCaptions';
