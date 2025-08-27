@@ -1,17 +1,19 @@
 // src/main/lib/markdown/markdownTypes.ts
 
-import { CarouselDimensions, ImageSetAnalysis } from "@/main/components/Article/Carousel/carouselTypes";
+import { ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
 
 export interface ContentChunk {
-  type: 'markdown' | 'blockquote' | 'carousel' | 'figure' | 'image';
+  type: 'markdown' | 'blockquote' | 'figure' | 'image' | 'image-frame' | 'image-group';
   content?: string;
   blockquoteType?: '1' | '2' | '3' | '4';
   blockquoteProps?: BlockquoteProps;
   caption?: string;
-  images?: CarouselItem[];
+  processedCaption?: string;
+  // Single image frame properties
   imageAttributes?: ImageAttributes;
-  imageSetAnalysis?: ImageSetAnalysis;
-  dimensions?: CarouselDimensions;
+  dimensions?: ImageFrameDimensions;
+  // Image group properties (for future enhancement)
+  images?: ImageFrameItem[];
 }
 
 export interface TocItem {
@@ -33,13 +35,23 @@ export interface ImageAttributes {
   filename?: string;
 }
 
+// Simplified image frame item for individual images
+export interface ImageFrameItem {
+  imageAttributes: ImageAttributes;
+  caption?: string;
+  processedCaption?: string;
+}
+
+// Legacy carousel item interface - kept for migration compatibility
+// TODO: Remove once migration is complete
 export interface CarouselItem {
   type: 'image' | 'figure';
   imageAttributes: ImageAttributes;
   caption?: string;
-  processedCaption: string; // HTML processed caption (empty string = no caption)
+  processedCaption: string;
 }
 
+// Blockquote interfaces (unchanged)
 export interface BlockquoteBase {
   type: '1' | '2' | '3' | '4';
   content: string;

@@ -1,7 +1,7 @@
 // src/main/lib/markdown/processContent.ts
 
 import { parseBlockquotes } from './parseBlockquotes';
-import { parseCarousels } from './parseCarousels';
+import { parseImageFrames } from './parseImageFrames'; // ← CHANGED: Import new image frame parser
 import { generateToc } from './generateToc';
 import { ProcessedContent, ContentChunk } from './markdownTypes';
 import { extractImagesAndCaptions } from './extractImagesAndCaptions';
@@ -13,18 +13,22 @@ export async function processContent(content: string): Promise<ProcessedContent>
   const addHeadingIds = createAddHeadingIds();
 
   try {
-    // Wszystkie operacje są asynchroniczne
+    // All operations are asynchronous
     const blockquoteChunks = await parseBlockquotes(content);
     let processedChunks: ContentChunk[] = [];
 
     for (const chunk of blockquoteChunks) {
       if (chunk.type === 'markdown' && chunk.content) {
-        // Czekamy na zakończenie extractImagesAndCaptions
+        // Extract images and captions first
         const { chunks } = await extractImagesAndCaptions(chunk.content);
-        // Carousels też musi być async
-        const carouselChunks = await parseCarousels(chunks);
-        const balloonTipChunks = processBalloonTips(carouselChunks);
         
+        // ← CHANGED: Use parseImageFrames instead of parseCarousels
+        const imageFrameChunks = await parseImageFrames(chunks);
+        
+        // Process balloon tips
+        const balloonTipChunks = processBalloonTips(imageFrameChunks);
+        
+        // Convert markdown chunks to HTML
         const htmlChunks = await Promise.all(balloonTipChunks.map(async (c) => {
           if (c.type === 'markdown' && c.content) {
             const htmlContent = convertMarkdownToHtmlSync(c.content);
@@ -40,6 +44,7 @@ export async function processContent(content: string): Promise<ProcessedContent>
       }
     }
 
+    // Generate table of contents
     const toc = generateToc(processedChunks
       .filter(chunk => chunk.type === 'markdown' && chunk.content)
       .map(chunk => chunk.content!)

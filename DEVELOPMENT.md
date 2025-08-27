@@ -1,157 +1,169 @@
-# Development Journal
+# Development Journal - Simplified Media Blog Fork
 
 ## Project Status Overview
-**Last Updated:** [7/15/2025]  
-**Version:** Pre-Production (95% Complete)  
-**Priority:** Styling optimization & final polish
+**Last Updated:** August 27, 2025  
+**Version:** Fork - Simplification in Progress  
+**Repository:** `media-blog-simplified` (separate instance)  
+**Priority:** Surgical removal approach with progressive simplification
 
-### Core Architecture ✅ COMPLETE
-- [x] TypeScript + Next.js foundation
-- [x] Tailwind with geometric theme system (3 design variants)
-- [x] Component-level styling management (no shared style stores)
-- [x] Dark/light theme via browser settings
-- [x] Multilanguage context system
-- [x] Production-ready fetching & search
-- [x] Custom markdown processing with blockquotes & image carousels
-- [x] Navigation system
+## Simplification Strategy - Revised Order
 
-### Current Sprint: Styling & Polish
-- [ ] **Article cards design restore** - Restore theme-sensitive design of all types of article cards
-- [ ] **Color scheme selectiion** - Create 3 mode-sensitive color schemes
-- [ ] **Prop drilling reduction** - Identify critical paths
-- [ ] **Markdown Tailwind styling optimization** - Performance review needed
-- [ ] **Heading styling completion** - Cross-theme consistency
-- [ ] **Mobile menu styling** - Responsive breakpoints & animations
+### ✅ **Phase 0: Repository Setup** - COMPLETE
+- [x] GitHub fork created with separate Vercel deployment
+- [x] Environment variables configured
+- [x] Baseline functionality verified
+- [x] Working with existing Directus multi-language test content (using Russian only)
 
-### Planned Sprints
-- [ ] **Prop drilling reduction** - Identify critical paths
-- [ ] **Sceleton creation** - App-wide implementation
-- [ ] **Authentication** - Create an authentication wrap (protected scope)
-- [ ] **Personal user page creation** - Should manage content in protected scope
+### 🔄 **Phase 1: Carousel → ImageFrame Transformation** - CURRENT
+**Goal**: Remove carousel complexity, preserve frame sizing mathematics
+
+**Components to Transform:**
+- **Remove**: CarouselTrack, CarouselNavigation, carousel state management, sliding animations
+- **Extract & Preserve**: Mathematical frame sizing calculations from `calculateCarouselDimensions.ts`
+- **Create**: New `ImageFrame` component using preserved math
+- **Create**: Separate `ImageCaption` component for reusable captions
+
+**Key Mathematics to Preserve:**
+- Viewport-responsive ratio calculations
+- Breakpoint-specific dimensional constraints  
+- Dynamic height/width optimization
+- Image display mode determination (`center-horizontal`, `center-vertical`, `square`)
+- Median ratio calculation from image sets
+
+### ⏳ **Phase 2: Multi-language Removal** - NEXT
+- [ ] Remove language detection middleware
+- [ ] Flatten route structure from `/[lang]/` to root
+- [ ] Replace dictionary system with static Russian strings
+- [ ] Simplify Directus queries to Russian-only content
+
+### ⏳ **Phase 3: Theme System Simplification** 
+- [ ] Keep only "rounded" geometric theme
+- [ ] Maintain light/dark color modes
+- [ ] Remove theme selection UI and logic
+- [ ] Simplify CSS variables to single geometric set
+
+### ⏳ **Phase 4: Footer Simplification**
+- [ ] Remove interactive forms, social links, surprise sections
+- [ ] Remove FAQ and help center references (no resources available)
+- [ ] Keep only: basic SEO info, essential navigation, structured data
+- [ ] Implement single-column mobile layout
+
+### ⏳ **Phase 5: Final Styling Optimization**
+- [ ] Maintain Tailwind with component-level management
+- [ ] Move shared styles to appropriate parent components
+- [ ] Remove unused theme variant classes
+
+### 🚀 **Phase 6: Framework Migration** - POSTPONED
+- [ ] Upgrade React to latest version
+- [ ] Upgrade Next.js to latest version
+- [ ] Update dependencies
+- ⚠️ **Decision**: Postponed until after simplification to isolate risks
 
 ---
 
-## Technical Decisions Log
+## Technical Architecture - Simplified Approach
 
-### Architecture Principles
-**Styling Philosophy:** Component-level management only
-- ✅ Each component owns its styling
-- ✅ Wrapper components manage group styling  
+### **Styling Philosophy** (Unchanged)
+- ✅ Component-level styling management only
+- ✅ Wrapper components handle group styling  
 - ❌ No shared component style storage
 - ✅ globals.scss limited to: colors, fonts, geometric constants
 
-**Theme System Impact:**
-- Same HTML → 3 radically different designs via geometric themes
-- Border-radius, font-height calculations centralized in CSS variables
-- Theme switching affects entire visual hierarchy
+### **Selected Design System**
+- **Theme**: "Rounded" (smartphone-style) theme only
+- **Colors**: Light/dark mode via browser settings
+- **Typography**: Maintain existing font hierarchy
+- **Layout**: Preserve responsive breakpoints
 
-### Key Technical Choices
-| Decision                      | Rationale                                 | Status        
-|-------------------------------|-------------------------------------------|----------------
-| Removed Headless UI           | Conflict with custom theme system         | ✅ Complete   |
-| Component-level styling       | Eliminates duplication, clear ownership   | ✅ Active     |
-| CSS variables for geometry    | Enable dramatic theme switching           | ✅ Complete   |
-
-## Current Issues & Blockers
-
-### 🔥 High Priority
-1. **Markdown styling performance** - Large articles may have render bottlenecks
-2. **Mobile menu UX** - Needs final responsive polish
-3. **Heading hierarchy** - Cross-theme typography consistency
-
-### ⚠️ Medium Priority  
-1. **Prop drilling hotspots** - Theme context passing could be optimized
-2. **Bundle size** - Review if custom markdown processing affects build size
-
-### 📝 Low Priority
-1. Final documentation review
-2. Production deployment checklist
+### **Preserved Mathematical Systems**
+- **Frame Sizing**: Viewport-responsive image frame calculations
+- **Aspect Ratio Logic**: Content-adaptive ratio determination
+- **Breakpoint Constraints**: Mobile/tablet/desktop optimization
+- **Display Mode Selection**: Smart image positioning logic
 
 ---
 
-## Testing Notes
+## Current Phase 1 Progress
 
-### Last Test Session: [Date]
-**Multilanguage:** ✅ All app-wide contexts tested  
-**Search UX:** ✅ Fully functional, debugged  
-**Theme switching:** ✅ All 3 geometric variants working  
-**Mobile responsive:** ⚠️ Menu styling pending
-
-### Test Scenarios to Validate
-- [ ] Large markdown articles (performance)
-- [ ] Theme switching during navigation
-- [ ] Language context persistence
-- [ ] Mobile menu across all themes
-- [ ] Search functionality in all languages
-
----
-
-## Performance Monitoring
-
-### Build Metrics
-- **Bundle Size:** [Track here]
-- **Build Time:** [Track here]  
-- **Lighthouse Score:** [Track here]
-
-### Known Performance Considerations
-- Custom markdown processing overhead
-- Three theme CSS generation
-- Image carousel lazy loading
-
----
-
-## Next Session Planning
-
-### Immediate Tasks (Next 1-2 sessions)
-1. **Audit markdown styling** - Identify performance bottlenecks
-2. **Complete mobile menu** - Focus on animation consistency across themes  
-3. **Heading typography** - Ensure hierarchy works in all 3 geometric themes
-
-### Week Goals
-- Complete all styling tasks
-- Reduce prop drilling in identified hotspots
-- Final cross-browser testing
-
-### Production Readiness Checklist
-- [ ] All styling optimization complete
-- [ ] Performance benchmarks passed
-- [ ] Cross-theme testing complete
-- [ ] Mobile responsiveness verified
-- [ ] SEO metadata finalized
-- [ ] Production build tested
-
----
-
-## Architecture Notes
-
-### Prop Drilling Hotspots
-*Document areas where context passing could be optimized*
-- Theme context in deeply nested components
-- Language context in article components
-
-### Component Hierarchy Critical Paths
-*Track components that manage significant styling groups*
-- Main layout wrapper → theme application
-- Article container → markdown styling coordination
-- Navigation → mobile/desktop state management
-
----
-
-## Quick Reference
-
-### Key Commands
-```bash
-pnpm dev          # Development server
-pnpm build        # Production build  
+### **Carousel Analysis - Components to Remove:**
+```
+/Carousel/
+├── ImageCarousel.tsx        → DELETE (main carousel component)
+├── CarouselTrack.tsx       → DELETE (sliding track)  
+├── CarouselNavigation.tsx  → DELETE (prev/next controls)
+├── Carousel.module.scss    → DELETE (complex animations)
+├── hooks/
+│   ├── useCarousel.ts      → DELETE (state management)
+│   └── useViewportChange.ts → EXTRACT (viewport logic)
+└── utils/
+    ├── calculateCarouselDimensions.ts → PRESERVE (core math)
+    ├── breakpointConstraints.ts       → PRESERVE (sizing rules)
+    └── carouselUtils.ts              → EXTRACT (utilities)
 ```
 
-### Important File Locations
-- Theme system: `globals.scss` (constants only)
-- Component styles: Individual component files
-- Markdown processing: `[location from project]`
-- Language contexts: `[location from project]`
+### **Mathematics to Extract & Apply:**
+1. **`calculateCarouselDimensions()`**: Main responsive calculation function
+2. **`calculateOptimalRatio()`**: Smart ratio determination based on content + viewport
+3. **`calculateMaxHeightForBreakpoint()`**: Viewport-constrained height calculation
+4. **Breakpoint constraint system**: Mobile/tablet/desktop sizing rules
+5. **Image display mode logic**: Automatic positioning (`center-horizontal`/`center-vertical`/`square`)
 
-### Environment Notes
-- Development: `http://localhost:3000`
-- Production: [URL when deployed]
-- Theme switching: Browser settings detection
+### **New Components to Create:**
+- `ImageFrame.tsx`: Single image with preserved frame sizing math
+- `ImageCaption.tsx`: Extracted caption functionality for reusability
+- `ImageFrameGroup.tsx`: Multiple images in simple grid (if needed)
+
+---
+
+## Implementation Notes
+
+### **Phase 1 Technical Approach:**
+1. **Extract Core Math**: Move calculation functions to `@/lib/image-utils/`
+2. **Simplify Interfaces**: Remove carousel-specific types, keep sizing types
+3. **Create ImageFrame**: Apply calculations to simple `next/image` component
+4. **Test Frame Sizing**: Verify responsive behavior matches carousel quality
+5. **Update Markdown Processing**: Replace carousel calls with ImageFrame
+
+### **Security Considerations:**
+- ✅ Preserved TypeScript typing throughout extraction
+- ✅ Maintained input validation in mathematical functions  
+- ✅ No additional security vectors introduced
+
+### **Performance Expected Improvements:**
+- **Bundle Size**: ~15-20% reduction from carousel removal
+- **Runtime**: Eliminate carousel state management overhead
+- **Hydration**: Simpler client-side JavaScript footprint
+- **First Paint**: Faster initial render without carousel complexity
+
+---
+
+## Next Steps - Phase 1
+
+1. **Extract Mathematics** (Current): Move calculation utilities to shared location
+2. **Create ImageFrame Component**: Implement with preserved sizing logic  
+3. **Update Markdown Processing**: Replace carousel references
+4. **Test Responsive Behavior**: Verify frame sizing across breakpoints
+5. **Clean Up**: Remove carousel files and dependencies
+
+**Estimated Completion**: 1-2 development sessions
+
+---
+
+## Environment & Tools
+
+### **Development Setup:**
+```bash
+pnpm dev          # Development server
+pnpm build        # Production build test
+```
+
+### **Key Locations:**
+- **Current Carousel**: `/src/main/components/Article/Carousel/`
+- **Mathematics**: `/src/main/components/Article/Carousel/utils/`
+- **Markdown Processing**: `[location for markdown carousel integration]`
+- **New Image Utils**: `/src/main/lib/image-utils/` (to be created)
+
+### **Deployment:**
+- **Development**: `http://localhost:3000`
+- **Staging**: Separate Vercel instance on `simplification` branch
+- **Directus**: Using existing instance with Russian content focus
