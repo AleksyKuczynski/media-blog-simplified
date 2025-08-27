@@ -1,16 +1,14 @@
-// src/app/[lang]/layout.tsx
+// src/app/layout.tsx - Fixed version
 
 import '@/app/globals.scss';
 import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
 import { ThemeProvider, ColorProvider, getColorMode, getColorScheme, getTheme } from '@/main/components/ThemeSwitcher';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 export default async function RootLayout({
   children,
-  params: { lang },
 }: {
   children: React.ReactNode
-  params: { lang: Lang }
+  // ✅ REMOVED: params: { lang: Lang } - no longer expected
 }) {
   const initialTheme = await getTheme();
   const initialColorMode = await getColorMode();
@@ -18,7 +16,7 @@ export default async function RootLayout({
   
   return (
     <html 
-      lang={lang} 
+      lang="ru" // ✅ HARDCODED: Russian instead of dynamic lang
       data-theme={initialTheme} 
       data-color-mode={initialColorMode} 
       className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable} ${fontCustom.variable}`}
