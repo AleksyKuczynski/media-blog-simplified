@@ -1,4 +1,4 @@
-// src/main/components/ArticleCards/StandardCard.tsx - SIMPLIFIED
+// src/main/components/ArticleCards/StandardCard.tsx - FIXED IMAGE SIZING
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRightIcon } from '../Interface/Icons';
@@ -38,14 +38,14 @@ export function StandardCard({
   );
 
   const contentStyles = twMerge(
-    'flex flex-col p-6', // Direct rounded theme padding
+    'flex flex-col p-6',
     layout === 'regular' && 'grow space-y-2 col-span-2 mb-1',
     layout === 'promoted' && 'sm:max-lg:col-span-2',
     layout === 'latest' && 'col-span-2'
   );
 
   const titleStyles = twMerge(
-    'text-lg lg:text-xl max-sm:font-sans max-sm:font-semibold font-display transition-colors duration-600 mb-2', // Direct rounded theme typography
+    'text-lg lg:text-xl max-sm:font-sans max-sm:font-semibold font-display transition-colors duration-600 mb-2',
     layout === 'regular' && 'line-clamp-3',
     layout === 'promoted' && 'text-2xl lg:max-xl:text-3xl',
     layout === 'latest' && 'line-clamp-3 text-lg 2xl:text-xl'
@@ -65,22 +65,26 @@ export function StandardCard({
     layout === 'latest' && ''
   );
 
-  const readMoreStyles = twMerge(
-    'text-xs lg:text-sm font-medium transition-colors duration-200 flex justify-end items-end',
-    'text-pr-cont hover:text-pr-fix' // Direct rounded theme colors
-  );
+  const readMoreStyles = 'text-xs lg:text-sm font-medium transition-colors duration-200 flex justify-end items-end text-pr-cont hover:text-pr-fix';
 
   return (
     <Link href={articleLink} className={containerStyles}>
       <article className={contentWrapperStyles}>
-        <div className={imageWrapperStyles}>
-          <Image
-            {...imageProps}
-            alt={translation.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
+        {/* Image Section - FIXED: Proper Next.js Image implementation */}
+        {imageProps && (
+          <div className={imageWrapperStyles}>
+            <Image
+              src={imageProps.src}
+              alt={imageProps.alt}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="w-full h-full object-cover"
+              priority={layout === 'promoted'}
+            />
+          </div>
+        )}
         
+        {/* Content Section */}
         <div className={contentStyles}>
           <h3 className={titleStyles}>
             {translation.title}
@@ -97,7 +101,7 @@ export function StandardCard({
           )}
           
           <div className={readMoreStyles}>
-            <span>{dict.readMore}</span>
+            <span>{dict.common.readMore}</span>
             <ChevronRightIcon className="ml-1 w-3 h-3" />
           </div>
         </div>

@@ -1,11 +1,15 @@
-// src/main/components/ArticleCards/interfaces.ts - CLEANED UP
+// src/main/components/ArticleCards/interfaces.ts - IMPROVED IMAGE SUPPORT
 import { Lang } from "@/main/lib/dictionaries/dictionariesTypes";
 import { ArticleCardType } from "@/main/lib/directus";
 
-interface ImageProps {
+// Enhanced ImageProps with proper Next.js Image support
+export interface ImageProps {
   src: string;
   alt: string;
   aspectRatio: number;
+  // Optional explicit dimensions - calculated from aspectRatio if not provided
+  width?: number;
+  height?: number;
 }
 
 interface BaseArticleCardProps {
@@ -14,17 +18,12 @@ interface BaseArticleCardProps {
   dict: { common: { readMore: string } };
 }
 
-// ❌ REMOVED: Complex theme-dependent styling objects
-// We now use inline classes directly in components
-
 export interface ArticleCardProps {
   slug: string;
   lang: Lang;
   authorSlug?: string;
   rubricSlug?: string;
   layout?: ArticleCardType['layout'];
-  // ❌ REMOVED: cardStyles?: CardStyles;
-  // ❌ REMOVED: theme?: Theme;
 }
 
 export interface ArticleCardVariantProps extends BaseArticleCardProps {
@@ -32,7 +31,6 @@ export interface ArticleCardVariantProps extends BaseArticleCardProps {
   imageProps: ImageProps | null;
   layout: ArticleCardType['layout'];
   lang: string;
-  // ❌ REMOVED: cardStyles?: CardStyles;
 }
 
 export interface NewsCardProps extends BaseArticleCardProps {
@@ -46,4 +44,19 @@ export interface StandardCardProps extends BaseArticleCardProps {
   imageProps: ImageProps | null;
   layout: 'regular' | 'latest' | 'promoted';
   lang: string;
+}
+
+// Utility function to calculate image dimensions
+export function getImageDimensions(imageProps: ImageProps, baseWidth: number = 600): {
+  width: number;
+  height: number;
+} {
+  if (imageProps.width && imageProps.height) {
+    return { width: imageProps.width, height: imageProps.height };
+  }
+  
+  const width = baseWidth;
+  const height = Math.round(width / imageProps.aspectRatio);
+  
+  return { width, height };
 }
