@@ -1,31 +1,32 @@
-// src/app/(main)/authors/page.tsx
+// src/app/ru/authors/page.tsx
 
 import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus/index';
 import AuthorCard from '@/main/components/Main/AuthorCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { Metadata } from 'next';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ params: { lang } }: { params: { lang: Lang } }): Promise<Metadata> {
-  const dict = await getDictionary(lang);
+export async function generateMetadata(): Promise<Metadata> {
+  // ✅ REMOVED: params parameter - use hardcoded Russian
+  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
   return {
-    title: dict.sections.authors.pageTitle,
-    description: dict.sections.authors.pageDescription,
+    title: dict.sections.authors.ourAuthors,
+    description: dict.sections.authors.ourAuthors,
   };
 }
 
-export default async function AuthorsPage({ params: { lang } }: { params: { lang: Lang } }) {
-  const dict = await getDictionary(lang);
-  const authors = await fetchAllAuthors(lang);
-  const rubricNames = await fetchRubricBasics(lang);
+export default async function AuthorsPage() {
+  // ✅ REMOVED: params parameter - use hardcoded Russian
+  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+  const authors = await fetchAllAuthors('ru'); // ✅ HARDCODED: Russian language
+  const rubricNames = await fetchRubricBasics('ru'); // ✅ HARDCODED: Russian language
 
   const breadcrumbItems = [
-    { label: dict.sections.authors.ourAuthors, href: `/${lang}/authors` },
+    { label: dict.sections.authors.ourAuthors, href: '/ru/authors' }, // ✅ HARDCODED: Static Russian URL
   ];
 
   return (
@@ -33,7 +34,7 @@ export default async function AuthorsPage({ params: { lang } }: { params: { lang
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricNames} 
-        lang={lang}
+        lang="ru" // ✅ HARDCODED: Russian language
         translations={{
           home: dict.navigation.home,
           allRubrics: dict.sections.rubrics.allRubrics,
@@ -49,7 +50,7 @@ export default async function AuthorsPage({ params: { lang } }: { params: { lang
             <p className="text-center text-txcolor-secondary">{dict.sections.authors.noAuthorsFound}</p>
           ) : (
             authors.map((author) => (
-              <AuthorCard key={author.slug} author={author} lang={lang} />
+              <AuthorCard key={author.slug} author={author} lang="ru" />
             ))
           )}
         </CardGrid>

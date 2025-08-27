@@ -1,8 +1,7 @@
-// src/app/[lang]/(main)/articles/page.tsx
+// src/app/ru/(with-filter)/articles/page.tsx
 
 import { Suspense } from 'react';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { fetchHeroSlugs, fetchArticleSlugs } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import ArticleList from '@/main/components/Main/ArticleList';
@@ -12,11 +11,11 @@ import Section from '@/main/components/Main/Section';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ArticlesPage({ params: { lang }, searchParams }: { 
-  params: { lang: Lang }, 
-  searchParams: { page?: string, sort?: string, category?: string, search?: string } 
+export default async function ArticlesPage({ searchParams }: { 
+  searchParams: { page?: string, sort?: string, category?: string, search?: string }
+  // ✅ REMOVED: params: { lang: Lang } - no longer expected in static routes
 }) {
-  const dict = await getDictionary(lang);
+  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';
   const currentCategory = searchParams.category || '';
@@ -28,11 +27,9 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
   let allSlugs: ArticleSlugInfo[] = [];
   let hasMore = false;
 
-  
-
   if (isDefaultView) {
     try {
-      heroSlugs = await fetchHeroSlugs(lang);
+      heroSlugs = await fetchHeroSlugs('ru'); // ✅ HARDCODED: Russian language
     } catch (error) {
       console.error('Error fetching hero articles:', error);
     }
@@ -62,7 +59,7 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
             {heroSlugs.length > 0 ? (
               <HeroArticles 
                 heroSlugs={heroSlugs} 
-                lang={lang} 
+                lang="ru" // ✅ HARDCODED: Russian language
               />
             ) : (
               <div>{dict.sections.articles.noFeaturedArticles}</div>
@@ -76,20 +73,18 @@ export default async function ArticlesPage({ params: { lang }, searchParams }: {
         title={isDefaultView ? dict.sections.articles.latestArticles : dict.sections.articles.allArticles}
         ariaLabel={isDefaultView ? dict.sections.articles.latestArticles : dict.sections.articles.allArticles}
       >
-        <Suspense fallback={<div>{dict.common.loading}</div>}>
-          <ArticleList 
-            slugInfos={allSlugs}
-            lang={lang}
-          />
-          {hasMore && (
-            <div className="mt-8 flex justify-center">
-              <LoadMoreButton 
-                currentPage={currentPage}
-                loadMoreText={dict.common.loadMore}
-              />
-            </div>
-          )}
-        </Suspense>
+        <ArticleList 
+          slugInfos={allSlugs} 
+          lang="ru" // ✅ HARDCODED: Russian language
+        />
+        {hasMore && (
+          <div className="mt-8 flex justify-center">
+            <LoadMoreButton
+              currentPage={currentPage}
+              loadMoreText={dict.sections.articles.loadMore}
+            />
+          </div>
+        )}
       </Section>
     </>
   );

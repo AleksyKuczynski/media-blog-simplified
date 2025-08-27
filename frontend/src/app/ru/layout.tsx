@@ -1,7 +1,7 @@
-// src/app/[lang]/(main)/layout.tsx
+// src/app/ru/layout.tsx
 import { getDictionary } from '@/main/lib/dictionaries';
 import Navigation from '@/main/components/Navigation/Navigation'
-import { Lang, Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
 import { Metadata } from 'next';
 import React from 'react';
 import Footer from '@/main/components/Footer/Footer';
@@ -13,18 +13,17 @@ export const metadata: Metadata = {
 
 export default async function MainLayout({
   children,
-  params: { lang },
 }: {
   children: React.ReactNode
-  params: { lang: Lang }
+  // ✅ REMOVED: params: { lang: Lang } - no longer expected in static routes
 }) {
-  const dict: Dictionary = await getDictionary(lang);
+  const dict: Dictionary = await getDictionary('ru'); // ✅ HARDCODED: Russian language
 
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 bg-sf-cont" role="banner">
         <Navigation 
-          lang={lang} 
+          lang="ru" // ✅ HARDCODED: Russian language
           translations={{
             navigation: dict.navigation,
             search: dict.search,
@@ -37,7 +36,7 @@ export default async function MainLayout({
         {React.cloneElement(children as React.ReactElement, { searchTranslations: dict.search, sortingTranslations: dict.sorting })}      
       </main>
       <Footer
-        lang={lang} 
+        lang="ru" // ✅ HARDCODED: Russian language
         translations={dict}
       />
     </>

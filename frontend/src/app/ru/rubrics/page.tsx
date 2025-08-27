@@ -1,28 +1,26 @@
-// src/app/[lang]/(main)/rubrics/page.tsx
+// src/app/ru/rubrics/page.tsx
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 import RubricCard from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { Rubric } from '@/main/lib/directus/directusInterfaces';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 
-interface AllRubricsPageProps {
-  params: {
-    lang: Lang;
-  };
-}
+// ✅ REMOVED: AllRubricsPageProps interface - no longer need lang parameter
 
-export default async function AllRubricsPage({ params: { lang } }: AllRubricsPageProps) {
-  const rubrics = await fetchAllRubrics(lang);
-  const dict = await getDictionary(lang);
+export default async function AllRubricsPage() {
+  // ✅ REMOVED: params parameter - use hardcoded Russian
+  const rubrics = await fetchAllRubrics('ru'); // ✅ HARDCODED: Russian language
+  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+  
   const breadcrumbItems = [
-    { label: dict.sections.rubrics.allRubrics, href: `/${lang}/rubrics` },
+    { label: dict.sections.rubrics.allRubrics, href: '/ru/rubrics' }, // ✅ HARDCODED: Static Russian URL
   ];
+  
   const rubricBasics = rubrics.map(r => ({
     slug: r.slug,
-    name: r.translations.find(t => t.languages_code === lang)?.name || r.slug
+    name: r.translations.find(t => t.languages_code === 'ru')?.name || r.slug // ✅ HARDCODED: Russian language
   }));
 
   return (
@@ -30,7 +28,7 @@ export default async function AllRubricsPage({ params: { lang } }: AllRubricsPag
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricBasics}
-        lang={lang}
+        lang="ru" // ✅ HARDCODED: Russian language
         translations={{
           home: dict.navigation.home,
           allRubrics: dict.sections.rubrics.allRubrics,
@@ -46,7 +44,7 @@ export default async function AllRubricsPage({ params: { lang } }: AllRubricsPag
             <RubricCard 
               key={rubric.slug} 
               rubric={rubric}
-              lang={lang} 
+              lang="ru" // ✅ HARDCODED: Russian language
             />
           ))}
         </CardGrid>

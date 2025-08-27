@@ -1,18 +1,16 @@
-// src/app/[lang]/(main)/(with-filter)/layout.tsx
+// src/app/ru/(with-filter)/layout.tsx
 import FilterGroup from '@/main/components/Navigation/FilterGroup';
 import { fetchAllCategories } from '@/main/lib/directus';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 export default async function WithFilterLayout({
   children,
-  params: { lang },
 }: {
   children: React.ReactNode;
-  params: { lang: Lang };
+  // ✅ REMOVED: params: { lang: Lang } - no longer expected in static routes
 }) {
-  const dict = await getDictionary(lang);
-  const categories = await fetchAllCategories(lang);
+  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+  const categories = await fetchAllCategories('ru'); // ✅ HARDCODED: Russian language
 
   return (
     <>
@@ -21,7 +19,7 @@ export default async function WithFilterLayout({
         sortingTranslations={dict.sorting}
         categoryTranslations={dict.categories}
         resetText={dict.filter.reset}
-        lang={lang}
+        lang="ru" // ✅ HARDCODED: Russian language
       />
       {children}
     </>
