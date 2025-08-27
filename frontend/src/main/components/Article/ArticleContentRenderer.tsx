@@ -3,8 +3,7 @@
 import React from 'react';
 import { ContentChunk } from '@/main/lib/markdown/markdownTypes';
 import ImageFrame from './ImageFrame';
-import ImageCarousel from './Carousel/ImageCarousel'; // ← TO BE REMOVED after migration
-import { Blockquote } from './Blockquote';
+import { CustomBlockquote } from './Blockquote/CustomBlockquote';
 
 interface ArticleContentRendererProps {
   chunks: ContentChunk[];
@@ -27,13 +26,13 @@ export default function ArticleContentRenderer({
           />
         );
 
-      case 'blockquote':
-        return (
-          <Blockquote
-            key={index}
-            blockquoteProps={chunk.blockquoteProps}
-          />
-        );
+    case 'blockquote':
+        return chunk.blockquoteProps ? (
+        // Blockquotes also need to escape prose styling for proper theme control
+        <div key={index} className="not-prose">
+            <CustomBlockquote {...chunk.blockquoteProps} />
+        </div>
+        ) : null;
 
       case 'image-frame':
         // ← NEW: Render individual image frames
@@ -62,19 +61,6 @@ export default function ArticleContentRenderer({
             ))}
           </div>
         );
-
-      case 'carousel':
-        // ← LEGACY: Keep for backward compatibility during migration
-        // TODO: Remove once all content is migrated to image-frame
-        console.warn('Legacy carousel detected - should be migrated to image-frame');
-        return chunk.images && chunk.imageSetAnalysis && chunk.dimensions ? (
-          <ImageCarousel
-            key={index}
-            images={chunk.images}
-            dimensions={chunk.dimensions}
-            initialAnalysis={chunk.imageSetAnalysis}
-          />
-        ) : null;
 
       default:
         console.warn('Unknown chunk type:', chunk.type);

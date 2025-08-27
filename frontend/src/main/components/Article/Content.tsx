@@ -1,6 +1,6 @@
 // SIMPLEST FIX: Content.tsx - Remove prose classes since components manage their own styling
 import React from 'react';
-import { CustomRenderer } from './CustomRenderer';
+import ArticleContentRenderer from './ArticleContentRenderer';
 import { ContentChunk, TocItem } from '@/main/lib/markdown/markdownTypes';
 
 interface ContentProps {
@@ -30,7 +30,7 @@ export function Content({ chunks, toc, title, author, datePublished }: ContentPr
           {JSON.stringify(structuredData)}
         </script>
       )}
-      <CustomRenderer chunks={chunks} />
+      <ArticleContentRenderer chunks={chunks} />
     </article>
   );
 }
