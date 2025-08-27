@@ -1,8 +1,7 @@
-// src/main/components/Navigation/NavLinks.tsx
+// src/main/components/Navigation/NavLinks.tsx - SIMPLIFIED
 import Link from 'next/link';
 import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 import NavLinksClient from './NavLinksClient';
-import { cn } from '@/main/lib/utils/utils';
 
 interface NavLinksProps {
   lang: Lang;
@@ -31,20 +30,21 @@ export default function NavLinks({
   return (
     <>
       {NAVIGATION_LINKS.map((link) => (
-        <li key={link.href}>
+        <li key={link.href} className="list-none">
           <Link 
-            href={`/ru${link.href}`} // ✅ HARDCODED: Static Russian URL instead of /${lang}${link.href}
-            className={cn(
-              linkStyles,
-              !disableClientDecorations && 'nav-link'
-            )}
+            href={`/ru${link.href}`}
+            className={`${linkStyles} ${!disableClientDecorations ? 'nav-link' : ''}`.trim()}
             data-href={link.href}
           >
             {translations[link.translationKey]}
           </Link>
         </li>
       ))}
-      <NavLinksClient lang={lang} translations={translations} />
+      
+      {/* Only include client-side active state logic if not disabled */}
+      {!disableClientDecorations && (
+        <NavLinksClient lang={lang} translations={translations} />
+      )}
     </>
   );
 }

@@ -1,9 +1,8 @@
-// src/main/components/Navigation/NavLinksClient.tsx
+// src/main/components/Navigation/NavLinksClient.tsx - SIMPLIFIED
 'use client';
 
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { useTheme } from '@/main/components/ThemeSwitcher/ThemeContext';
 import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 
 interface NavLinksClientProps {
@@ -11,67 +10,39 @@ interface NavLinksClientProps {
   translations: NavigationTranslations;
 }
 
-// Define classes that indicate state
-const stateClasses = {
-  text: ['text-on-sf-var', 'text-pr-cont'],
-  background: ['bg-sf'],
-  font: ['font-bold'],
-  border: ['border-transparent', 'border-pr-cont', 'border-b-2'],
-  hover: ['hover:text-on-sf'],
-  transition: ['transition-colors', 'duration-200'],
-  rounded: ['rounded-full']
-};
-
-// All classes that should be removed when changing state
-const cleanupClasses = Object.values(stateClasses).flat();
-
-const themeStyles = {
-  default: {
-    normal: 'text-on-sf-var hover:text-on-sf transition-colors duration-200',
-    active: 'text-pr-cont bg-sf font-bold'
-  },
-  rounded: {
-    normal: 'text-on-sf-var hover:text-on-sf transition-colors duration-200',
-    active: 'text-pr-cont bg-sf font-bold rounded-full'
-  },
-  sharp: {
-    normal: 'text-on-sf-var hover:text-on-sf border-b-2 border-transparent transition-colors duration-200',
-    active: 'text-pr-cont bg-sf font-bold border-b-2 border-pr-cont'
-  },
-} as const;
-
 export default function NavLinksClient({ lang }: NavLinksClientProps) {
-  const { currentTheme } = useTheme();
   const pathname = usePathname();
 
   useEffect(() => {
-    const cleanClasses = (className: string) => {
-      return className
-        .split(' ')
-        .filter(cls => !cleanupClasses.includes(cls))
-        .join(' ');
-    };
-
-    const getLinkStyle = (href: string) => {
-      const isActive = pathname.startsWith(`/${lang}${href}`);
-      return isActive ? themeStyles[currentTheme].active : themeStyles[currentTheme].normal;
-    };
-
+    // Simple active state detection with direct rounded theme classes
     const links = document.querySelectorAll('.nav-link');
+    
     links.forEach((link) => {
       const href = link.getAttribute('data-href');
       if (!href) return;
 
-      // Clean existing theme classes
-      const baseClasses = cleanClasses(link.className);
+      const linkElement = link as HTMLElement;
       
-      // Add new theme classes
-      const newThemeClasses = getLinkStyle(href);
+      // Check if current page matches this link
+      const isActive = pathname.startsWith(`/ru${href}`);
       
-      // Combine and set
-      link.className = `${baseClasses} ${newThemeClasses}`.trim();
+      if (isActive) {
+        // Active state: rounded theme styling
+        linkElement.className = linkElement.className.replace(
+          /text-gray-700|text-gray-300|hover:text-blue-600|dark:hover:text-blue-400/g, ''
+        ).trim();
+        linkElement.className += ' text-pr-cont bg-sf-hi font-bold rounded-full';
+      } else {
+        // Normal state: reset to base styling  
+        linkElement.className = linkElement.className.replace(
+          /text-pr-cont|bg-sf-hi|font-bold/g, ''
+        ).trim();
+        if (!linkElement.className.includes('text-gray-700')) {
+          linkElement.className += ' text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400';
+        }
+      }
     });
-  }, [pathname, currentTheme, lang]);
+  }, [pathname, lang]);
 
   return null;
 }

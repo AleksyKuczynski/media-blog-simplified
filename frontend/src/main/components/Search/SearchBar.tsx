@@ -1,10 +1,8 @@
-// src/main/components/Search/SearchBar.tsx
+// src/main/components/Search/SearchBar.tsx - CLEANED UP
 import React from 'react';
 import { SearchTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { SearchIcon, NavButton, CloseIcon } from '../Interface';
-import { useTheme } from '../ThemeSwitcher';
-import { cn } from '@/main/lib/utils/utils';
 import SearchInput from './SearchInput';
 import SearchDropdown from './SearchDropdown';
 import { useSearchLogic } from './useSearchLogic';
@@ -16,46 +14,12 @@ interface SearchBarProps {
   onSearchComplete?: () => void;
 }
 
-const containerStyles = {
-  wrapper: {
-    base: `
-      relative flex gap-2 items-center
-      bg-sf-hi
-      group
-    `,
-    theme: {
-      default: `
-        rounded-lg shadow-md
-        hover:shadow-lg
-        focus-within:outline-none
-        focus-within:ring-2
-        focus-within:ring-pr-fix
-        focus-within:ring-offset-0
-      `,
-      rounded: `
-        rounded-lg shadow-md
-        hover:shadow-lg
-        focus-within:outline-none
-        focus-within:ring-2
-        focus-within:ring-pr-fix
-        focus-within:ring-offset-0
-      `,
-      sharp: `
-        border-2 border-pr-fix
-        hover:bg-bg-hst
-      `
-    },
-    transition: `transition-[background-color,box-shadow] duration-200`
-  }
-};
-
 export default function SearchBar({
   searchTranslations,
   lang,
   className = '',
   onSearchComplete
 }: SearchBarProps) {
-  const { currentTheme } = useTheme();
   const {
     state,
     handlers,
@@ -72,16 +36,23 @@ export default function SearchBar({
       ref={refs.containerRef}
       className={`relative ${className}`}
     >
-      <div className={cn(
-        containerStyles.wrapper.base,
-        containerStyles.wrapper.theme[currentTheme],
-        containerStyles.wrapper.transition
-      )}>
+      <div className="
+        relative flex gap-2 items-center
+        bg-sf-hi rounded-lg shadow-md
+        hover:shadow-lg
+        focus-within:outline-none
+        focus-within:ring-2
+        focus-within:ring-pr-fix
+        focus-within:ring-offset-0
+        transition-[background-color,box-shadow] duration-200
+        group
+      ">
         <NavButton
           context="desktop"
           onClick={handlers.handleSearchButton}
           icon={utils.iconType === 'search' ? <SearchIcon /> : <CloseIcon />}
           aria-label={searchTranslations.submit}
+          className="p-2 rounded-full hover:bg-bgcolor-accent/10 transition-colors duration-200"
         />
         <SearchInput
           state={state}
@@ -90,6 +61,7 @@ export default function SearchBar({
           onKeyDown={handlers.handleKeyDown}
           onFocus={handlers.handleFocus}
           inputRef={refs.inputRef}
+          className="flex-1 rounded-lg"
         />
       </div>
 
@@ -97,6 +69,7 @@ export default function SearchBar({
         state={state}
         translations={searchTranslations}
         onItemSelect={handlers.handleSelect}
+        className="rounded-lg shadow-lg"
       />
     </div>
   );
