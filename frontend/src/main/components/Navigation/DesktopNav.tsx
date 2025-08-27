@@ -1,4 +1,4 @@
-// src/main/components/Navigation/DesktopNav.tsx - FINAL CLEAN VERSION
+// src/main/components/Navigation/DesktopNav.tsx - SIMPLIFIED
 'use client';
 
 import React from 'react';
@@ -29,21 +29,26 @@ export default function DesktopNavigation({
           <Logo lang={lang} variant="desktop" />
         </div>
         
-        {/* Right: Search and Optional Color Switcher */}
+        {/* Right: Search and Dark/Light Toggle */}
         <div className="flex items-center justify-end space-x-4">
           <ExpandableSearch 
             searchTranslations={translations.search} 
             lang={lang}
           />
           
-          {/* Optional: Simple Dark/Light Mode Toggle */}
+          {/* Simple Dark/Light Mode Toggle */}
           <button
-            className="p-2 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf transition-all duration-200"
+            className="p-3 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf transition-all duration-200"
             onClick={() => document.documentElement.classList.toggle('dark')}
             aria-label="Toggle dark mode"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" 
+              />
             </svg>
           </button>
         </div>

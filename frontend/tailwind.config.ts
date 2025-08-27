@@ -1,123 +1,50 @@
-import type { Config } from "tailwindcss";
-import type { PluginAPI } from 'tailwindcss/types/config'
+// tailwind.config.ts - SIMPLIFIED
+import type { Config } from 'tailwindcss';
+
+interface PluginAPI {
+  addVariant: (name: string, definition: string) => void;
+}
 
 const config: Config = {
+  darkMode: 'class', // Enable Tailwind dark mode with class strategy
   content: [
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/main/**/*.{js,ts,jsx,tsx,mdx}",
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
-      height: {
-        '[var(--carousel-max-height)]': 'var(--carousel-max-height)',
-        // Allow CSS variables in height classes
-        '[var(--carousel-height)]': 'var(--carousel-height)',
-        '[var(--image-height)]': 'var(--image-height)',
-        '[var(--caption-height)]': 'var(--caption-height)',
-      },
-      aspectRatio: {
-        '[var(--carousel-ratio)]': 'var(--carousel-ratio)',
-      },
-      zIndex: {
-        '40': '40',
-        '50': '50',
-        '60': '60',
-        '70': '70',        
-      },
-      borderRadius: {
-        'none': 'var(--border-radius-none)',
-        'sm': 'var(--border-radius-sm)',
-        DEFAULT: 'var(--border-radius-default)',
-        'md': 'var(--border-radius-md)',
-        'lg': 'var(--border-radius-lg)',
-        'xl': 'var(--border-radius-xl)',
-        '2xl': 'var(--border-radius-2xl)',
-        '3xl': 'var(--border-radius-3xl)',
-        'full': 'var(--border-radius-full)',
-      },
-      fontSize: {
-        base: 'var(--font-size-base)',
-      },
-      transitionDuration: {
-        DEFAULT: 'var(--transition-duration)',
-      },
-      keyframes: {
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-        fadeOut: {
-          '0%': { opacity: '1' },
-          '100%': { opacity: '0' },
-        },
-        expandWidth: {
-          '0%': { width: '3rem' },
-          '100%': { width: '16rem' },
-        },
-        collapseWidth: {
-          '0%': { width: '16rem' },
-          '100%': { width: '3rem' },
-        },
-      },
-      animation: {
-        fadeIn: 'fadeIn 300ms ease-in-out',
-        fadeOut: 'fadeOut 300ms ease-in-out',
-        expandWidth: 'expandWidth 300ms ease-in-out',
-        collapseWidth: 'collapseWidth 300ms ease-in-out',
-      },
-      lineClamp: {
-        3: '3',
-      },
-      
-      // Carousel caption specific utilities
+      // Rounded theme spacing constants
       spacing: {
         'caption-3line': 'var(--caption-three-line-height)',
       },
       
-      // Theme-aware shadows for sharp theme
-      boxShadow: {
-        'sharp': '0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.12)',
-      },
-      
-      // Custom backdrop blur values
-      backdropBlur: {
-        'xs': '2px',
+      // Rounded theme border radius (only these values)
+      borderRadius: {
+        'none': '0',
+        'sm': '0.25rem',
+        'DEFAULT': '0.5rem', 
+        'md': '0.75rem',
+        'lg': '1rem',
+        'xl': '1.5rem',
+        '2xl': '2rem',
+        '3xl': '3rem',
+        'full': '9999px',
       },
       
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      
       fontFamily: {
         sans: ['var(--font-sans)'],
         serif: ['var(--font-serif)'],
         display: ['var(--font-display)'],
         custom: ['var(--font-custom)'],
       },
+      
       colors: {
-        bgcolor: { //outdated, must not be used
-          DEFAULT: 'var(--color-background)',
-          accent: 'var(--color-background-accent)',
-          alt: 'var(--color-background-alt)',
-        },
-        txcolor: { //outdated, must not be used
-          DEFAULT: 'var(--color-text)',
-          secondary: 'var(--color-text-secondary)',
-          muted: 'var(--color-text-muted)',
-        },
-        prcolor: { //outdated, must not be used
-          DEFAULT: 'var(--color-primary)',
-          dark: 'var(--color-primary-dark)',
-          light: 'var(--color-primary-light)',
-        },
-        accolor: { //outdated, must not be used
-          DEFAULT: 'var(--color-accent)',
-          dark: 'var(--color-accent-dark)',
-          light: 'var(--color-accent-light)',
-        },
-        // Surface colors
+        // Surface colors (Material 3)
         sf: {
           DEFAULT: 'var(--color-surface)',
           cont: 'var(--color-surface-container)',
@@ -167,21 +94,14 @@ const config: Config = {
     },
   },
   plugins: [
+    // Keep only color scheme variants (remove theme variants)
     function({ addVariant }: PluginAPI) {
-      addVariant('theme-default', 'html[data-theme="default"] &')
-      addVariant('theme-rounded', 'html[data-theme="rounded"] &')
-      addVariant('theme-sharp', 'html[data-theme="sharp"] &')
       addVariant('scheme-default', 'html[data-color-scheme="default"] &')
       addVariant('scheme-1', 'html[data-color-scheme="scheme1"] &')
       addVariant('scheme-2', 'html[data-color-scheme="scheme2"] &')
     },
     require('@tailwindcss/typography'),
   ],
-  //safelist: [
-  //  {
-  //    pattern: /^(bg|(p|m)(x|y|t|b|r|l)|-mx|space|font|text|underline|rounded|leading|md|lg|xl|marker)-.+/, // Pattern dla wszystkich klas utility
-  //    variants: ['theme-default', 'theme-rounded', 'theme-sharp']
-  //  }
-  //],
 };
+
 export default config;

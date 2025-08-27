@@ -1,4 +1,4 @@
-// src/main/components/Navigation/MobileNav.tsx - CLEANED UP
+// src/main/components/Navigation/MobileNav.tsx - SIMPLIFIED  
 'use client'
 
 import { useState, useRef, useReducer, useCallback } from 'react'
@@ -119,7 +119,7 @@ export default function MobileNavigation({
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
                 strokeWidth={2} 
-                d="M6 18L18 6M6 6l12 12" // X close icon
+                d="M6 18L18 6M6 6l12 12" 
               />
             </svg>
           </NavButton>
@@ -156,6 +156,24 @@ export default function MobileNavigation({
               onSearchComplete={handleSearchComplete}
               className="w-full rounded-2xl"
             />
+          </div>
+
+          {/* Dark/Light Toggle */}
+          <div className="flex justify-center">
+            <button
+              className="p-4 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf transition-all duration-200"
+              onClick={() => document.documentElement.classList.toggle('dark')}
+              aria-label="Toggle dark mode"
+            >
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" 
+                />
+              </svg>
+            </button>
           </div>
 
         </div>

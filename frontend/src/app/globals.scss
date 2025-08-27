@@ -1,7 +1,6 @@
 // src/app/globals.scss - SIMPLIFIED FOR ROUNDED THEME ONLY
-
 @tailwind base;
-@tailwind components;
+@tailwind components; 
 @tailwind utilities;
 
 /* Ensure scrollbar is always visible */
@@ -23,11 +22,9 @@ html {
 
   // Caption typography constants (rounded theme optimized)
   --caption-font-size: 0.875rem;
-  --caption-line-height: 1.5rem; // Generous spacing for rounded theme
-  --caption-padding-y: 1rem; // py-4 equivalent for rounded theme
+  --caption-line-height: 1.5rem;
+  --caption-padding-y: 1rem;
   --caption-max-lines: 3;
-  
-  // Calculate total 3-line height
   --caption-three-line-height: calc(var(--caption-line-height) * var(--caption-max-lines) + var(--caption-padding-y) * 2);
 
   // Common variables
@@ -62,118 +59,78 @@ html {
 
   // Primary hierarchy
   --color-primary-container: #3b82f6;
-  --color-primary-fixed: #60a5fa;
-  --color-primary-fixed-dim: #2563eb;
-  --color-primary-container-inverted: #2563eb;
-  --color-primary-fixed-inverted: #1d4ed8;
-  --color-primary-fixed-dim-inverted: #3b82f6;
+  --color-primary-fixed: #1d4ed8;
+  --color-primary-fixed-dim: #1e40af;
+  --color-primary-container-inverted: #dbeafe;
+  --color-primary-fixed-inverted: #bfdbfe;
+  --color-primary-fixed-dim-inverted: #93c5fd;
 
   // Tertiary hierarchy
-  --color-tertiary-container: #8b5cf6;
-  --color-tertiary-fixed: #a78bfa;
-  --color-tertiary-fixed-dim: #7c3aed;
+  --color-tertiary-container: #8C66FF;
+  --color-tertiary-fixed: #AB8FFF;
+  --color-tertiary-fixed-dim: #6B37FF;
 
   // Text colors
-  --color-on-surface: #1a1a1a;
-  --color-on-surface-variant: #494949;
-  --color-on-primary-container: #FFFFFF;
-  --color-on-primary-container-variant: #E6E6E6;
-  --color-on-tertiary-container: #FFFFFF;
-  --color-on-tertiary-container-variant: #E6E6E6;
+  --color-on-surface: #0f172a;
+  --color-on-surface-variant: #475569;
+  --color-on-primary-container: #ffffff;
+  --color-on-primary-container-variant: #f1f5f9;
+  --color-on-tertiary-container: #ffffff;
+  --color-on-tertiary-container-variant: #f1f5f9;
 
   // Outlines
-  --color-outline: #7e9197;
-  --color-outline-variant: #a3bbc3;
+  --color-outline: #cbd5e1;
+  --color-outline-variant: #e2e8f0;
 }
 
 // Dark mode colors
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #2A2C2E;
-    --color-background-accent: #3D3F41;
-    --color-background-alt: #35383A;
-    
-    --color-text: #F7FAFC;
-    --color-text-secondary: #EDF2F7;
-    --color-text-muted: #E2E8F0;
-    
-    --color-primary: #B794F4;
-    --color-primary-dark: #9F7AEA;
-    --color-primary-light: #D6BCFA;
-    
-    --color-accent: #68D391;
-    --color-accent-dark: #48BB78;
-    --color-accent-light: #9AE6B4;
-
-    // Surface hierarchy
-    --color-surface: #1a1a1a;
-    --color-surface-container: #262626;
-    --color-surface-container-high: #333333;
-    --color-surface-container-highest: #404040;
-
-    // Primary hierarchy
-    --color-primary-container: #3399FF;
-    --color-primary-fixed: #66B3FF;
-    --color-primary-fixed-dim: #0066CC;
-    --color-primary-container-inverted: #0066CC;
-    --color-primary-fixed-inverted: #004C99;
-    --color-primary-fixed-dim-inverted: #3399FF;
-
-    // Tertiary hierarchy
-    --color-tertiary-container: #8C66FF;
-    --color-tertiary-fixed: #AB8FFF;
-    --color-tertiary-fixed-dim: #6B37FF;
-
-    // Text colors
-    --color-on-surface: #FFFFFF;
-    --color-on-surface-variant: #E6E6E6;
-    --color-on-primary-container: #1a1a1a;
-    --color-on-primary-container-variant: #333333;
-    --color-on-tertiary-container: #1a1a1a;
-    --color-on-tertiary-container-variant: #333333;
-
-    // Outlines
-    --color-outline: #8c8c8c;
-    --color-outline-variant: #595959;
-  }
-}
-
-// Color scheme 1 variant
-[data-color-scheme="scheme1"] {
-  --color-background: #111827;
-  --color-background-accent: #374151;
-  --color-background-alt: #1F2937;
+.dark {
+  --color-background: #0f172a;
+  --color-background-accent: #1e293b;
+  --color-background-alt: #334155;
   
-  --color-text: #F9FAFB;
-  --color-text-secondary: #E5E7EB;
-  --color-text-muted: #9CA3AF;
+  --color-text: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
   
-  --color-primary: #4ECDC4;
-  --color-primary-dark: #2EAFA5;
-  --color-primary-light: #7EEAE3;
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-primary-light: #818cf8;
   
-  --color-accent: #FF6B6B;
-  --color-accent-dark: #FF3E3E;
-  --color-accent-light: #FFA5A5;
-}
+  --color-accent: #10b981;
+  --color-accent-dark: #059669;
+  --color-accent-light: #34d399;
 
-// Color scheme 2 variant  
-[data-color-scheme="scheme2"] {
-  --color-background: #ecd1c2f6;
-  --color-background-accent: #fceee4;
-  --color-background-alt: #fbe5d9;
-  
-  --color-text: #2D3748;
-  --color-text-secondary: #16060A;
-  --color-text-muted: #753E3D;
-  
-  --color-primary: #420D1C;
-  --color-primary-dark: #420D1C;
-  --color-primary-light: #420D1C;
-  
-  --color-accent: #D3541C;
-  --color-accent-dark: #D3541C;
-  --color-accent-light: #D3541C;
+  // Surface hierarchy
+  --color-surface: #1e293b;
+  --color-surface-container: #334155;
+  --color-surface-container-high: #475569;
+  --color-surface-container-highest: #64748b;
+
+  // Primary hierarchy - inverted for dark mode
+  --color-primary-container: #1d4ed8;
+  --color-primary-fixed: #3b82f6;
+  --color-primary-fixed-dim: #6366f1;
+  --color-primary-container-inverted: #1e293b;
+  --color-primary-fixed-inverted: #334155;
+  --color-primary-fixed-dim-inverted: #475569;
+
+  // Tertiary hierarchy
+  --color-tertiary-container: #8C66FF;
+  --color-tertiary-fixed: #AB8FFF;
+  --color-tertiary-fixed-dim: #6B37FF;
+
+  // Text colors
+  --color-on-surface: #FFFFFF;
+  --color-on-surface-variant: #E6E6E6;
+  --color-on-primary-container: #1a1a1a;
+  --color-on-primary-container-variant: #333333;
+  --color-on-tertiary-container: #1a1a1a;
+  --color-on-tertiary-container-variant: #333333;
+
+  // Outlines
+  --color-outline: #8c8c8c;
+  --color-outline-variant: #595959;
 }
 
 // Utility classes for rounded theme
