@@ -1,5 +1,4 @@
-// /frontend/src/main/components/ArticleCards/ArticleCardVariant.tsx
-
+// src/main/components/ArticleCards/ArticleCardVariant.tsx - CLEANED UP
 import { ArticleCardVariantProps } from './interfaces';
 import { NewsCard } from './NewsCard';
 import { AdvertisingCard } from './AdvertisingCard';
@@ -14,7 +13,7 @@ export function ArticleCardVariant({
   lang,
   dict
 }: ArticleCardVariantProps) {
-  // Choose component based on layout
+  // Choose component based on layout - no more theme dependencies
   const getCardComponent = () => {
     const commonProps = {
       article,

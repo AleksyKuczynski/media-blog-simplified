@@ -1,8 +1,8 @@
-// src/main/lib/dictionaries.ts
+// src/main/lib/dictionaries.ts - FIXED
 import 'server-only'
 import { Dictionary, Lang } from './dictionaries/dictionariesTypes';
 
-// ✅ Static Russian dictionary - complete with all required keys
+// ✅ Static Russian dictionary - UPDATED to match new Dictionary interface
 const RUSSIAN_DICTIONARY: Dictionary = {
   navigation: {
     home: 'Главная',
@@ -27,7 +27,6 @@ const RUSSIAN_DICTIONARY: Dictionary = {
       faq: 'Часто задаваемые вопросы',
       helpCenter: 'Центр помощи'
     },
-    // ✅ ADDED: Simplified footer translations (Phase 4 compliance)
     credentials: {
       copyright: 'Все права защищены.',
       privacyPolicy: 'Политика конфиденциальности',
@@ -48,9 +47,9 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     in: 'в',
     minutes: 'мин',
     readingTime: 'время чтения',
-    loadMore: 'Загрузить еще', // ✅ MOVED: From sections.articles to common for reusability
-    editorial: 'Редакционная статья', // ✅ ADDED: Editorial text
-    tableOfContents: 'Содержание' // ✅ ADDED: Table of contents text
+    loadMore: 'Загрузить еще',
+    editorial: 'Редакционная статья',
+    tableOfContents: 'Содержание'
   },
 
   search: {
@@ -121,6 +120,16 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     categories: 'Категория',
     allCategories: 'Все категории',
     selectCategory: 'Выберите категорию'
+  },
+
+  // ❌ REMOVED: themes section - no longer needed for rounded-only theme
+  
+  // ✅ KEEP: colors for light/dark + color scheme switching
+  colors: {
+    name: 'Цветовая тема',
+    default: 'Нормальная',
+    scheme1: 'Холодная', 
+    scheme2: 'Теплая'
   }
 };
 

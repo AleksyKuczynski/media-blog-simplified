@@ -1,7 +1,5 @@
-// src/main/lib/dictionaries/dictionariesTypes.ts
-// Minimal backward compatibility types for gradual migration
-
-export type Lang = 'ru'; // ✅ Simplified to Russian only
+// src/main/lib/dictionaries/dictionariesTypes.ts - FIXED
+export type Lang = 'ru'; // Simplified to Russian only
 
 // Basic structure interfaces that components still expect
 export interface NavigationTranslations {
@@ -25,7 +23,6 @@ export interface SearchTranslations {
   minCharacters: string;
 }
 
-// ✅ UPDATED: Complete footer interface for Phase 4 simplification
 export interface FooterTranslations {
   about: {
     title: string;
@@ -61,9 +58,9 @@ export interface CommonTranslations {
   in: string;
   minutes: string;
   readingTime: string;
-  loadMore: string; // ✅ ADDED: Moved from sections for reusability
-  editorial: string; // ✅ ADDED: Missing editorial text
-  tableOfContents: string; // ✅ ADDED: Missing table of contents text
+  loadMore: string;
+  editorial: string;
+  tableOfContents: string;
 }
 
 export interface SortingTranslations {
@@ -82,13 +79,7 @@ export interface CategoryTranslations {
   selectCategory: string;
 }
 
-export interface ThemesTranslations {
-  name: string;
-  default: string;
-  rounded: string;
-  sharp: string;
-}
-
+// ✅ KEEP: Still used for color scheme switching (light/dark mode + color schemes)
 export interface ColorsTranslations {
   name: string;
   default: string;
@@ -96,7 +87,15 @@ export interface ColorsTranslations {
   scheme2: string;
 }
 
-// Section-specific interfaces that components expect
+// ❌ REMOVED: No longer needed - we only have rounded theme now
+// export interface ThemesTranslations {
+//   name: string;
+//   default: string;
+//   rounded: string;
+//   sharp: string;
+// }
+
+// Section-specific interfaces
 export interface HomeTranslations {
   welcomeTitle: string;
   welcomeDescription: string;
@@ -150,18 +149,18 @@ export interface SectionsTranslations {
   rubrics: RubricsTranslations;
 }
 
-// Main dictionary interface that components expect
+// ✅ FIXED: Main dictionary interface - REMOVED themes requirement
 export interface Dictionary {
   navigation: NavigationTranslations;
-  footer: FooterTranslations; // ✅ UPDATED: Complete footer interface
+  footer: FooterTranslations;
   common: CommonTranslations;
   search: SearchTranslations;
   sections: SectionsTranslations;
   sorting: SortingTranslations;
   filter: FilterTranslations;
   categories: CategoryTranslations;
-  themes: ThemesTranslations;
-  colors: ColorsTranslations;
+  // ❌ REMOVED: themes: ThemesTranslations; - no longer needed
+  colors: ColorsTranslations; // ✅ KEEP: for color scheme switching
 }
 
 // Default search translations (used by some components)

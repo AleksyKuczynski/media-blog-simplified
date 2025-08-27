@@ -1,53 +1,45 @@
-// src/main/components/Interface/Dropdown/DropdownContent.tsx
+// src/main/components/Interface/Dropdown/DropdownContent.tsx - CLEANED UP
 'use client';
 
 import React from 'react';
-import { useTheme } from '@/main/components/ThemeSwitcher';
 import { useDropdownContext } from './DropdownContext';
-import { cn } from '@/main/lib/utils/utils';
 import type { DropdownContentProps } from './types';
-
-const dropdownStyles = {
-  base: 'absolute z-70 shadow-lg bg-sf-hi transition-all duration-200 ease-in-out origin-top',
-  width: {
-    icon: 'w-40',
-    narrow: 'w-48',
-    wide: 'w-64',
-    auto: 'w-auto'
-  },
-  position: {
-    left: 'left-0',
-    center: 'left-1/2 -translate-x-1/2',
-    right: 'right-0'
-  },
-  theme: {
-    default: 'rounded-lg',
-    rounded: 'rounded-lg',
-    sharp: 'border border-ol-var'
-  },
-  state: {
-    open: 'opacity-100 scale-y-100 transform',
-    closed: 'opacity-0 scale-y-0 pointer-events-none'
-  }
-};
 
 export default function DropdownContent({
   children,
   width = 'auto',
   position = 'left'
 }: DropdownContentProps) {
-  const { currentTheme } = useTheme();
   const { isOpen } = useDropdownContext();
+
+  // Width classes for different dropdown sizes
+  const widthClasses = {
+    icon: 'w-40',
+    narrow: 'w-48',
+    wide: 'w-64',
+    auto: 'w-auto'
+  };
+
+  // Position classes
+  const positionClasses = {
+    left: 'left-0',
+    center: 'left-1/2 -translate-x-1/2',
+    right: 'right-0'
+  };
 
   return (
     <div 
-      className={cn(
-        dropdownStyles.base,
-        dropdownStyles.width[width],
-        dropdownStyles.position[position],
-        dropdownStyles.theme[currentTheme],
-        isOpen ? dropdownStyles.state.open : dropdownStyles.state.closed
-      )}
+      className={`
+        absolute z-[70] shadow-lg bg-sf-hi 
+        transition-all duration-200 ease-in-out origin-top
+        rounded-lg
+        ${widthClasses[width]}
+        ${positionClasses[position]}
+        ${isOpen 
+          ? 'opacity-100 scale-y-100 transform' 
+          : 'opacity-0 scale-y-0 pointer-events-none'
+        }
+      `.trim()}
       role="menu"
       aria-orientation="vertical"
       style={{ 

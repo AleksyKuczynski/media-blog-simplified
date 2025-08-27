@@ -1,7 +1,6 @@
-// /frontend/src/main/components/ArticleCards/interfaces.ts
+// src/main/components/ArticleCards/interfaces.ts - CLEANED UP
 import { Lang } from "@/main/lib/dictionaries/dictionariesTypes";
 import { ArticleCardType } from "@/main/lib/directus";
-import { Theme, CardThemeStyles } from "@/main/components/ThemeSwitcher/themeTypes";
 
 interface ImageProps {
   src: string;
@@ -15,29 +14,8 @@ interface BaseArticleCardProps {
   dict: { common: { readMore: string } };
 }
 
-export interface CardStyles {
-  common: CardThemeStyles;
-  themeSensitive: Record<Theme, Partial<CardThemeStyles>>;
-}
-
-export interface HeroStyles {
-  grid: {
-    common: {
-      outer: string;
-      inner: string;
-      promotedWrapper: string;
-    };
-    themeSensitive: Record<Theme, {
-      outer: string;
-      inner: string;
-      promotedWrapper: string;
-    }>;
-  };
-  cards: {
-    common: CardThemeStyles;
-    themeSensitive: Record<Theme, Partial<CardThemeStyles>>;
-  };
-}
+// ❌ REMOVED: Complex theme-dependent styling objects
+// We now use inline classes directly in components
 
 export interface ArticleCardProps {
   slug: string;
@@ -45,8 +23,8 @@ export interface ArticleCardProps {
   authorSlug?: string;
   rubricSlug?: string;
   layout?: ArticleCardType['layout'];
-  cardStyles?: CardStyles;
-  theme?: Theme;
+  // ❌ REMOVED: cardStyles?: CardStyles;
+  // ❌ REMOVED: theme?: Theme;
 }
 
 export interface ArticleCardVariantProps extends BaseArticleCardProps {
@@ -54,7 +32,7 @@ export interface ArticleCardVariantProps extends BaseArticleCardProps {
   imageProps: ImageProps | null;
   layout: ArticleCardType['layout'];
   lang: string;
-  cardStyles?: CardStyles;
+  // ❌ REMOVED: cardStyles?: CardStyles;
 }
 
 export interface NewsCardProps extends BaseArticleCardProps {

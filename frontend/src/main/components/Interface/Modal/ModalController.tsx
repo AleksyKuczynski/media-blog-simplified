@@ -1,11 +1,10 @@
-// src/main/components/Interface/Modal/ModalController.tsx
+// src/main/components/Interface/Modal/ModalController.tsx - CLEANED UP
 'use client';
 
 import { useRef, useReducer, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { modalReducer, initialState } from './modalReducer';
 import { useOutsideClick } from '@/main/lib/hooks';
-import { useTheme } from '../../ThemeSwitcher';
 import { ANIMATION_DURATION } from '../constants';
 import Modal from './Modal';
 
@@ -25,7 +24,6 @@ export default function ModalController({
   onClose
 }: ModalControllerProps) {
   const [state, dispatch] = useReducer(modalReducer, initialState);
-  const { currentTheme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleClose = useCallback(() => {
@@ -38,14 +36,14 @@ export default function ModalController({
     }
   }, [state.visibility, onClose]);
 
-  // Obsługa klawisza Escape bez useEffect
+  // Handle Escape key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') handleClose();
   }, [handleClose]);
 
   useOutsideClick(containerRef, null, state.visibility !== 'hidden', handleClose);
 
-  // Otwarcie modala bez useEffect
+  // Open modal logic
   if (state.visibility === 'hidden' && modalType) {
     dispatch({ 
       type: 'OPEN_MODAL', 
@@ -61,7 +59,7 @@ export default function ModalController({
   return createPortal(
     <Modal
       visibility={state.visibility}
-      theme={currentTheme}
+      theme="rounded" // Hardcoded rounded theme
       title={title}
       description={description}
       onClose={handleClose}

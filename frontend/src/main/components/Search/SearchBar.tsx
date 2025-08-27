@@ -61,7 +61,6 @@ export default function SearchBar({
           onKeyDown={handlers.handleKeyDown}
           onFocus={handlers.handleFocus}
           inputRef={refs.inputRef}
-          className="flex-1 rounded-lg"
         />
       </div>
 

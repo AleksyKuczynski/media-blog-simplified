@@ -1,4 +1,4 @@
-// src/main/components/ArticleCards/ArticleCard.tsx
+// src/main/components/ArticleCards/ArticleCard.tsx - CLEANED UP
 import { Suspense } from 'react';
 import { ArticleCardVariant } from './ArticleCardVariant';
 import { getArticleCardData } from '@/main/lib/actions';
@@ -6,21 +6,17 @@ import { generateArticleLink, generateArticleLinkAsync } from '@/main/lib/utils'
 import { getDictionary } from '@/main/lib/dictionaries';
 import { ArticleCardProps } from './interfaces';
 import { DIRECTUS_URL } from '@/main/lib/directus';
-import { getTheme } from '../ThemeSwitcher';
 import { IMAGE_RATIO } from '../mainConstants';
-
 
 export default async function ArticleCard({ 
   slug, 
   lang, 
   authorSlug, 
   rubricSlug, 
-  layout, 
-  cardStyles,
+  layout
 }: ArticleCardProps) {
   const article = await getArticleCardData(slug, lang);
   const dict = await getDictionary(lang);
-  const theme = await getTheme();
 
   if (!article || !article.translations[0]) {
     return null;
@@ -46,13 +42,12 @@ export default async function ArticleCard({
   } : null;
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div className="p-4 animate-pulse bg-sf-hi rounded-xl">Loading...</div>}>
       <ArticleCardVariant
         article={article}
         formattedDate={formattedDate}
         articleLink={articleLink}
         dict={{ common: dict.common }}
-        cardStyles={cardStyles}
         imageProps={imageProps}
         layout={cardLayout}
         lang={lang}

@@ -49,7 +49,6 @@ export default function ExpandableSearch({
           onKeyDown={handlers.handleKeyDown}
           onFocus={handlers.handleFocus}
           inputRef={refs.inputRef}
-          className="rounded-lg"
         />
         <NavButton
           context="desktop"
