@@ -78,13 +78,13 @@ export function StandardCard({
             {formattedDate}
           </time>
           
-          {translation.excerpt && (
+          {translation.description && (
             <p className={`
               text-sm lg:text-base line-clamp-3 mb-4 text-on-sf-var
               ${layout === 'regular' && 'max-sm:hidden'}
               ${layout === 'promoted' && 'xl:grow'}
             `}>
-              {translation.excerpt}
+              {translation.description}
             </p>
           )}
           

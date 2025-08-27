@@ -1,6 +1,5 @@
 // src/main/components/Article/elements/ListItem.tsx
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
 
 export const ListItem: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   

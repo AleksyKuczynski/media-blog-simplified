@@ -3,7 +3,6 @@
 
 import React, { useState, useEffect, memo } from 'react';
 import Image from 'next/image';
-import { twMerge } from 'tailwind-merge';
 import { ImageAttributes, ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
 import { calculateImageFrameDimensionsClient } from '@/main/lib/image-utils/calculateImageFrameDimensions';
 import { Caption, createInitialCaptionBehavior } from './Captions';
@@ -52,13 +51,10 @@ export const ImageFrame = memo(function ImageFrame({
     const estimatedHeight = 400;
     return (
       <div 
-        className={twMerge(
-          "relative mx-auto mb-8 bg-sf-cont animate-pulse",
-          "theme-default:rounded-lg",
-          "theme-rounded:rounded-2xl", 
-          "theme-sharp:border theme-sharp:border-ol",
-          className
-        )}
+        className={`
+          relative mx-auto mb-8 bg-sf-cont animate-pulse
+          rounded-2xl ${className || ''}
+        `}
         style={{ 
           height: estimatedHeight,
           maxWidth: maxWidth || '100%'
@@ -70,20 +66,6 @@ export const ImageFrame = memo(function ImageFrame({
       </div>
     );
   }
-
-  const frameStyles = twMerge(
-    // Base styles
-    "relative mx-auto mb-8 overflow-hidden bg-sf-cont",
-    // Theme variants
-    "theme-default:rounded-lg theme-default:shadow-sm",
-    "theme-rounded:rounded-2xl theme-rounded:shadow-lg",
-    "theme-sharp:border theme-sharp:border-ol theme-sharp:shadow-none",
-    className
-  );
-
-  const imageStyles = twMerge(
-    "w-full h-full object-cover"
-  );
 
   const containerStyle: React.CSSProperties = {
     height: dimensions.height,
@@ -98,7 +80,11 @@ export const ImageFrame = memo(function ImageFrame({
   return (
     <figure className="w-full">
       <div 
-        className={frameStyles}
+        className={`
+          relative mx-auto mb-8 overflow-hidden bg-sf-cont
+          rounded-2xl shadow-lg
+          ${className || ''}
+        `}
         style={containerStyle}
       >
         <Image
@@ -106,7 +92,7 @@ export const ImageFrame = memo(function ImageFrame({
           alt={imageAttributes.alt || 'Image'}
           width={imageAttributes.width || 1200}
           height={imageAttributes.height || 800}
-          className={imageStyles}
+          className="w-full h-full object-cover"
           sizes="(max-width: 768px) 95vw, (max-width: 1024px) 90vw, 85vw"
           priority={false}
           quality={90}

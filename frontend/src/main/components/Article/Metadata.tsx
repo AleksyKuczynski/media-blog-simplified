@@ -1,44 +1,46 @@
 // src/main/components/Article/Metadata.tsx
 import Link from 'next/link';
-import { Category } from '@/main/lib/directus/directusInterfaces';
-import { twMerge } from 'tailwind-merge';
+import { AuthorDetails } from '@/main/lib/directus/directusInterfaces';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 interface MetadataProps {
-  categories: Category[];
-  // ✅ REMOVED: lang parameter - no longer needed with hardcoded Russian URLs
+  publishedDate: string;
+  authors: AuthorDetails[];
+  lang: Lang;
+  editorialText: string;
 }
 
-export function Metadata({ categories }: MetadataProps) {
-  const containerStyles = twMerge(
-    // Base styles
-    'text-sm md:text-lg xl:text-xl mb-8 xl:mb-12 text-center space-x-4 md:space-x-8 xl:space-x-12',
-    // Theme variants
-    'theme-default:text-pr-cont',
-    'theme-rounded:text-on-sf-var',
-    'theme-sharp:text-on-sf-var'
-  );
-  
-  const linkStyles = twMerge(
-    // Base styles
-    'hover:text-pr-fix transition-colors duration-200',
-    // Theme variants
-    'theme-default:underline theme-default:underline-offset-4',
-    'theme-rounded:bg-sf-hi theme-rounded:px-3 theme-rounded:py-1 theme-rounded:rounded-lg',
-    'theme-sharp:px-2 theme-sharp:border theme-sharp:border-ol theme-sharp:hover:border-pr-fix'
-  );
-  
+export function Metadata({ publishedDate, authors, lang, editorialText }: MetadataProps) {
   return (
-    <div className={containerStyles}>
-      {categories.map((category) => (
-        <span key={category.slug}>
-          <Link 
-            href={`/ru/articles?category=${category.slug}`} // ✅ HARDCODED: Static Russian URL instead of /${lang}/articles
-            className={linkStyles}
-          >
-            {category.name}
-          </Link>
-        </span>
-      ))}
+    <div className="
+      font-medium text-sm xl:text-base text-on-sf-var 
+      mx-auto flex justify-between col-span-2 
+      w-full lg:max-w-[800px] lg:py-6 xl:py-8
+      bg-sf-cont md:max-lg:w-3/4 rounded-b-2xl lg:rounded-2xl 
+      lg:mt-8 p-6 shadow-sm
+    ">
+      <p>{publishedDate}</p>
+      <p>
+        {authors.length > 0 && authors[0].name !== '::EDITORIAL::' ? (
+          authors.map((author, index) => (
+            <span key={author.slug}>
+              {index > 0 && ", "}
+              <Link 
+                href={`/ru/authors/${author.slug}`} 
+                className="
+                  text-pr-cont hover:text-pr-fix 
+                  underline underline-offset-4 
+                  transition-colors duration-600
+                "
+              >
+                {author.name}
+              </Link>
+            </span>
+          ))
+        ) : (
+          <span>{editorialText}</span>
+        )}
+      </p>
     </div>
   );
 }

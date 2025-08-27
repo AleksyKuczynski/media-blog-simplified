@@ -6,23 +6,23 @@ import DesktopNavigation from './DesktopNav'
 import MobileNavigation from './MobileNav'
 import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations } from "@/main/lib/dictionaries/dictionariesTypes";
 
-// ✅ UPDATED: Removed ThemesTranslations from interface
+// ✅ REMOVED: ThemesTranslations from interface
 interface NavigationProps {
     lang: Lang
     translations: {
       navigation: NavigationTranslations
       search: SearchTranslations
-      // ✅ REMOVED: themes: ThemesTranslations - no longer needed for simplified theme system
-      colors: ColorsTranslations
+      colors: ColorsTranslations // Keep color schemes only
     }
-  }
+}
+
 export interface NavProps extends NavigationProps {
     isSearchPage: boolean;
-  }
+}
 
-  export default function Navigation({ lang, translations }: NavigationProps) {
+export default function Navigation({ lang, translations }: NavigationProps) {
     const pathname = usePathname()
-    const isSearchPage = pathname === `/ru/search` // ✅ HARDCODED: Static Russian URL instead of ${lang}
+    const isSearchPage = pathname === `/ru/search`
   
     return (
       <>
@@ -38,4 +38,4 @@ export interface NavProps extends NavigationProps {
         />
       </>
     );
-  }
+}
