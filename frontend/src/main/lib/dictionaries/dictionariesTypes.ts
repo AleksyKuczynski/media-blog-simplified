@@ -25,6 +25,7 @@ export interface SearchTranslations {
   minCharacters: string;
 }
 
+// ✅ UPDATED: Complete footer interface for Phase 4 simplification
 export interface FooterTranslations {
   about: {
     title: string;
@@ -40,6 +41,14 @@ export interface FooterTranslations {
     faq: string;
     helpCenter: string;
   };
+  credentials: {
+    copyright: string;
+    privacyPolicy: string;
+    termsOfService: string;
+  };
+  kuKraft: {
+    designedWithLove: string;
+  };
 }
 
 export interface CommonTranslations {
@@ -52,6 +61,7 @@ export interface CommonTranslations {
   in: string;
   minutes: string;
   readingTime: string;
+  loadMore: string; // ✅ ADDED: Moved from sections for reusability
 }
 
 export interface SortingTranslations {
@@ -141,7 +151,7 @@ export interface SectionsTranslations {
 // Main dictionary interface that components expect
 export interface Dictionary {
   navigation: NavigationTranslations;
-  footer: FooterTranslations;
+  footer: FooterTranslations; // ✅ UPDATED: Complete footer interface
   common: CommonTranslations;
   search: SearchTranslations;
   sections: SectionsTranslations;

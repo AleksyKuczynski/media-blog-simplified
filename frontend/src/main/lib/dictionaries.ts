@@ -2,7 +2,7 @@
 import 'server-only'
 import { Dictionary, Lang } from './dictionaries/dictionariesTypes';
 
-// ✅ Static Russian dictionary - no more dynamic imports or JSON files needed
+// ✅ Static Russian dictionary - complete with all required keys
 const RUSSIAN_DICTIONARY: Dictionary = {
   navigation: {
     home: 'Главная',
@@ -26,6 +26,15 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     contact: {
       faq: 'Часто задаваемые вопросы',
       helpCenter: 'Центр помощи'
+    },
+    // ✅ ADDED: Simplified footer translations (Phase 4 compliance)
+    credentials: {
+      copyright: 'Все права защищены.',
+      privacyPolicy: 'Политика конфиденциальности',
+      termsOfService: 'Условия использования'
+    },
+    kuKraft: {
+      designedWithLove: 'Создано с ❤️ в'
     }
   },
 
@@ -38,7 +47,8 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     by: 'Автор',
     in: 'в',
     minutes: 'мин',
-    readingTime: 'время чтения'
+    readingTime: 'время чтения',
+    loadMore: 'Загрузить еще' // ✅ MOVED: From sections.articles to common for reusability
   },
 
   search: {
