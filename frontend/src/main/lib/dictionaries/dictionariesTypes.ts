@@ -62,6 +62,8 @@ export interface CommonTranslations {
   minutes: string;
   readingTime: string;
   loadMore: string; // ✅ ADDED: Moved from sections for reusability
+  editorial: string; // ✅ ADDED: Missing editorial text
+  tableOfContents: string; // ✅ ADDED: Missing table of contents text
 }
 
 export interface SortingTranslations {

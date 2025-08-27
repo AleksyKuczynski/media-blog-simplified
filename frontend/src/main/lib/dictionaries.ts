@@ -48,7 +48,9 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     in: 'в',
     minutes: 'мин',
     readingTime: 'время чтения',
-    loadMore: 'Загрузить еще' // ✅ MOVED: From sections.articles to common for reusability
+    loadMore: 'Загрузить еще', // ✅ MOVED: From sections.articles to common for reusability
+    editorial: 'Редакционная статья', // ✅ ADDED: Editorial text
+    tableOfContents: 'Содержание' // ✅ ADDED: Table of contents text
   },
 
   search: {
