@@ -1,4 +1,4 @@
-// src/main/components/Main/RubricCard.tsx
+// src/main/components/Main/RubricCard.tsx - FIX EXPORT
 import Link from "next/link";
 
 interface RubricCardProps {
@@ -10,6 +10,7 @@ interface RubricCardProps {
   lang: string;
 }
 
+// ✅ FIX: Export as named export to match imports
 export function RubricCard({ rubric, lang }: RubricCardProps) {
   return (
     <Link href={`/ru/${rubric.slug}`} className="block group">
@@ -32,3 +33,6 @@ export function RubricCard({ rubric, lang }: RubricCardProps) {
     </Link>
   );
 }
+
+// ✅ ALSO: Export as default for backward compatibility
+export default RubricCard;

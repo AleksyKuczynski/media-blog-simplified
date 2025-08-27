@@ -1,26 +1,30 @@
-// src/app/ru/rubrics/page.tsx
+// src/app/ru/rubrics/page.tsx - FIX RUBRIC TRANSFORMATION
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
-import RubricCard from '@/main/components/Main/RubricCard';
+import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries';
 import { Rubric } from '@/main/lib/directus/directusInterfaces';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 
-// ✅ REMOVED: AllRubricsPageProps interface - no longer need lang parameter
-
 export default async function AllRubricsPage() {
-  // ✅ REMOVED: params parameter - use hardcoded Russian
-  const rubrics = await fetchAllRubrics('ru'); // ✅ HARDCODED: Russian language
-  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+  const rubrics = await fetchAllRubrics('ru');
+  const dict = await getDictionary('ru');
   
   const breadcrumbItems = [
-    { label: dict.sections.rubrics.allRubrics, href: '/ru/rubrics' }, // ✅ HARDCODED: Static Russian URL
+    { label: dict.sections.rubrics.allRubrics, href: '/ru/rubrics' },
   ];
   
   const rubricBasics = rubrics.map(r => ({
     slug: r.slug,
-    name: r.translations.find(t => t.languages_code === 'ru')?.name || r.slug // ✅ HARDCODED: Russian language
+    name: r.translations.find(t => t.languages_code === 'ru')?.name || r.slug
+  }));
+
+  // ✅ FIX: Transform Rubric objects to the format RubricCard expects
+  const transformedRubrics = rubrics.map((rubric: Rubric) => ({
+    slug: rubric.slug,
+    name: rubric.translations.find(t => t.languages_code === 'ru')?.name || rubric.slug,
+    articleCount: rubric.articleCount
   }));
 
   return (
@@ -28,7 +32,7 @@ export default async function AllRubricsPage() {
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricBasics}
-        lang="ru" // ✅ HARDCODED: Russian language
+        lang="ru"
         translations={{
           home: dict.navigation.home,
           allRubrics: dict.sections.rubrics.allRubrics,
@@ -40,11 +44,11 @@ export default async function AllRubricsPage() {
         ariaLabel={dict.sections.rubrics.allRubrics}
       >
         <CardGrid>
-          {rubrics.map((rubric: Rubric) => (
+          {transformedRubrics.map((rubric) => (
             <RubricCard 
               key={rubric.slug} 
               rubric={rubric}
-              lang="ru" // ✅ HARDCODED: Russian language
+              lang="ru"
             />
           ))}
         </CardGrid>

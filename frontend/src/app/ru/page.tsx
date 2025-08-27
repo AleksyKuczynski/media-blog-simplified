@@ -1,4 +1,4 @@
-// src/app/ru/page.tsx
+// src/app/ru/page.tsx - FIX RUBRIC CARD ERROR
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -9,12 +9,9 @@ import { RubricCard } from '@/main/components/Main/RubricCard';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 
-// ✅ REMOVED: HomeProps interface - no longer need lang parameter
-
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  // ✅ REMOVED: params parameter - use hardcoded Russian
   const dict = await getDictionary('ru');
   return {
     title: dict.sections.home.welcomeTitle,
@@ -23,18 +20,24 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  // ✅ REMOVED: params parameter - use hardcoded Russian
   const [dict, heroSlugs, rubrics] = await Promise.all([
-    getDictionary('ru'), // ✅ HARDCODED: Russian language
-    fetchHeroSlugs('ru').catch(error => { // ✅ HARDCODED: Russian language
+    getDictionary('ru'),
+    fetchHeroSlugs('ru').catch(error => {
       console.error('Error fetching hero articles:', error);
       return [];
     }),
-    fetchAllRubrics('ru').catch(error => { // ✅ HARDCODED: Russian language
+    fetchAllRubrics('ru').catch(error => {
       console.error('Error fetching rubrics:', error);
       return [];
     })
   ]);
+
+  // ✅ FIX: Transform Rubric objects to the format RubricCard expects
+  const transformedRubrics = rubrics.map((rubric: Rubric) => ({
+    slug: rubric.slug,
+    name: rubric.translations.find(t => t.languages_code === 'ru')?.name || rubric.slug,
+    articleCount: rubric.articleCount
+  }));
 
   return (
     <>
@@ -65,12 +68,12 @@ export default async function Home() {
         title={dict.sections.home.exploreRubrics}
       >
         <CardGrid>
-          {rubrics.length > 0 ? (
-            rubrics.map((rubric: Rubric) => (
+          {transformedRubrics.length > 0 ? (
+            transformedRubrics.map((rubric) => (
               <RubricCard
                 key={rubric.slug}
                 rubric={rubric}
-                lang="ru" // ✅ HARDCODED: Russian language
+                lang="ru"
               />
             ))
           ) : (
@@ -79,7 +82,7 @@ export default async function Home() {
         </CardGrid>
         <div className="mt-8 text-center">
           <Link
-            href="/ru/rubrics" // ✅ HARDCODED: Static Russian URL
+            href="/ru/rubrics"
             className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary-dark transition-colors"
           >
             {dict.sections.home.viewAllRubrics}

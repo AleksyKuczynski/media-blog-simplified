@@ -1,4 +1,4 @@
-// src/main/lib/actions/getArticlePageData.ts
+// src/main/lib/actions/getArticlePageData.ts - ADD SAFETY CHECKS
 'use server'
 
 import { getDictionary } from "../dictionaries";
@@ -18,7 +18,10 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
     return null;
   }
 
+  // ✅ SAFETY CHECK: Ensure we have author details
   const authorDetails: AuthorDetails[] = await fetchAuthorsForArticle(params.slug, params.lang);
+  const safeAuthors = authorDetails || []; // Fallback to empty array
+  
   const translation = article.translations.find(t => t.languages_code === params.lang) || article.translations[0];
   const rubricName = rubricDetails.translations.find(t => t.languages_code === params.lang)?.name || params.rubric;
 
@@ -26,15 +29,15 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
   if (searchParams.author) {
     const author = await fetchAuthorBySlug(searchParams.author, params.lang);
     breadcrumbItems = [
-      { label: dict.sections.authors.ourAuthors, href: '/ru/authors' }, // ✅ HARDCODED: Static Russian URL
-      { label: author?.name || searchParams.author, href: `/ru/authors/${searchParams.author}` }, // ✅ HARDCODED: Static Russian URL
-      { label: translation.title, href: `/ru/${params.rubric}/${params.slug}?context=author&author=${searchParams.author}` }, // ✅ HARDCODED: Static Russian URL
+      { label: dict.sections.authors.ourAuthors, href: '/ru/authors' },
+      { label: author?.name || searchParams.author, href: `/ru/authors/${searchParams.author}` },
+      { label: translation.title, href: `/ru/${params.rubric}/${params.slug}?context=author&author=${searchParams.author}` },
     ];
   } else {
     breadcrumbItems = [
-      { label: dict.sections.rubrics.allRubrics, href: '/ru/rubrics' }, // ✅ HARDCODED: Static Russian URL
-      { label: rubricName, href: `/ru/${params.rubric}` }, // ✅ HARDCODED: Static Russian URL
-      { label: translation.title, href: `/ru/${params.rubric}/${params.slug}` }, // ✅ HARDCODED: Static Russian URL
+      { label: dict.sections.rubrics.allRubrics, href: '/ru/rubrics' },
+      { label: rubricName, href: `/ru/${params.rubric}` },
+      { label: translation.title, href: `/ru/${params.rubric}/${params.slug}` },
     ];
   }
 
@@ -55,7 +58,7 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
   return {
     article: {
       ...article,
-      authors: authorDetails,
+      authors: safeAuthors, // ✅ SAFETY: Ensure authors is never undefined
     },
     translation,
     breadcrumbItems,

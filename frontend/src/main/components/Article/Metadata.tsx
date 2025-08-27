@@ -1,4 +1,4 @@
-// src/main/components/Article/Metadata.tsx
+// src/main/components/Article/Metadata.tsx - ADD SAFETY CHECK
 import Link from 'next/link';
 import { AuthorDetails } from '@/main/lib/directus/directusInterfaces';
 import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
@@ -11,6 +11,9 @@ interface MetadataProps {
 }
 
 export function Metadata({ publishedDate, authors, lang, editorialText }: MetadataProps) {
+  // ✅ SAFETY CHECK: Ensure authors is always an array
+  const safeAuthors = authors || [];
+  
   return (
     <div className="
       font-medium text-sm xl:text-base text-on-sf-var 
@@ -21,8 +24,8 @@ export function Metadata({ publishedDate, authors, lang, editorialText }: Metada
     ">
       <p>{publishedDate}</p>
       <p>
-        {authors.length > 0 && authors[0].name !== '::EDITORIAL::' ? (
-          authors.map((author, index) => (
+        {safeAuthors.length > 0 && safeAuthors[0].name !== '::EDITORIAL::' ? (
+          safeAuthors.map((author, index) => (
             <span key={author.slug}>
               {index > 0 && ", "}
               <Link 

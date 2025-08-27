@@ -1,21 +1,19 @@
-// src/app/ru/[rubric]/[slug]/page.tsx
+// src/app/ru/[rubric]/[slug]/page.tsx - FIX METADATA ERROR
 import { notFound } from 'next/navigation';
 import { getArticlePageData } from '@/main/lib/actions';
-import { Header, Metadata, Content, ScrollToTopButton, TableOfContents } from '@/main/components/Article';
+import { Header, Content, ScrollToTopButton, TableOfContents } from '@/main/components/Article';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { SeoBreadcrumbs } from '@/main/components/Main/SeoBreadcrumbs';
-import { twMerge } from 'tailwind-merge';
 
 export default async function ArticlePage({ 
   params,
   searchParams 
 }: { 
-  params: { rubric: string, slug: string }, // ✅ REMOVED: lang parameter - no longer expected in static routes
+  params: { rubric: string, slug: string },
   searchParams: { author?: string }
 }) {
-  // ✅ MODIFIED: Pass hardcoded 'ru' to getArticlePageData
   const data = await getArticlePageData(
-    { ...params, lang: 'ru' }, // ✅ HARDCODED: Add Russian language
+    { ...params, lang: 'ru' },
     searchParams
   );
 
@@ -34,44 +32,38 @@ export default async function ArticlePage({
   } = data;
 
   return (
-    <article className={twMerge(
-      // Base styles
-      'container mx-auto max-w-[1200px]',
-      // Theme variants
-      'theme-default:px-3',
-      'theme-rounded:px-4',
-      'theme-sharp:px-2'
-    )}>
+    <article className="container mx-auto max-w-[1200px] px-4">
       <ScrollToTopButton />
+      
       <SeoBreadcrumbs 
         articleSlug={params.slug}
         rubricSlug={params.rubric}
         title={translation.title}
-        // ✅ REMOVED: lang parameter - no longer needed with hardcoded Russian URLs
       />
+      
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricBasics}
-        lang="ru" // ✅ HARDCODED: Russian language
+        lang="ru"
         translations={{
           home: dict.navigation.home,
           allRubrics: dict.sections.rubrics.allRubrics,
           allAuthors: dict.sections.authors.ourAuthors,
         }}
       />
-      <Metadata 
-        categories={article.categories}
-        // ✅ REMOVED: lang parameter - component will use hardcoded Russian URLs
-      />
+      
+      {/* ✅ FIXED: Header component handles all metadata display including authors */}
       <Header 
         title={translation.title}
         publishedDate={formattedDate}
-        authors={article.authors}
-        lang="ru" // ✅ HARDCODED: Russian language
+        authors={article.authors || []} // ✅ FIX: Ensure authors is never undefined
+        lang="ru"
         editorialText={dict.common.editorial}
         imagePath={article.article_heading_img}
         lead={translation.lead}
       />
+
+      {/* ✅ REMOVED: Separate Metadata component call - Header handles this now */}
 
       {processedContent.toc.length > 1 && (
         <TableOfContents items={processedContent.toc} title={dict.common.tableOfContents} />
@@ -82,7 +74,7 @@ export default async function ArticlePage({
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricBasics}
-        lang="ru" // ✅ HARDCODED: Russian language
+        lang="ru"
         translations={{
           home: dict.navigation.home,
           allRubrics: dict.sections.rubrics.allRubrics,
