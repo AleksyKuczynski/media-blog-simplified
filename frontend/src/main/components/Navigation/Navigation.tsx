@@ -4,14 +4,15 @@
 import { usePathname } from 'next/navigation'
 import DesktopNavigation from './DesktopNav'
 import MobileNavigation from './MobileNav'
-import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations, ThemesTranslations } from "@/main/lib/dictionaries/dictionariesTypes";
+import { ColorsTranslations, Lang, NavigationTranslations, SearchTranslations } from "@/main/lib/dictionaries/dictionariesTypes";
 
+// ✅ UPDATED: Removed ThemesTranslations from interface
 interface NavigationProps {
     lang: Lang
     translations: {
       navigation: NavigationTranslations
       search: SearchTranslations
-      themes: ThemesTranslations
+      // ✅ REMOVED: themes: ThemesTranslations - no longer needed for simplified theme system
       colors: ColorsTranslations
     }
   }
@@ -21,7 +22,7 @@ export interface NavProps extends NavigationProps {
 
   export default function Navigation({ lang, translations }: NavigationProps) {
     const pathname = usePathname()
-    const isSearchPage = pathname === `/${lang}/search`
+    const isSearchPage = pathname === `/ru/search` // ✅ HARDCODED: Static Russian URL instead of ${lang}
   
     return (
       <>

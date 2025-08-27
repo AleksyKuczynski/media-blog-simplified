@@ -3,12 +3,11 @@
 
 import { useState, useRef, useReducer, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
-import { useTheme } from '../ThemeSwitcher/ThemeContext'
 import { NavProps } from './Navigation'
 import { NavButton } from '../Interface'
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
-import { LanguageSwitcher } from './LanguageSwitcher'
+// ✅ REMOVED: LanguageSwitcher import - no longer needed for Russian-only site
 import { ThemeSwitcher } from '../ThemeSwitcher'
 import { CONTROLS_ANIMATION_DURATION, MENU_ANIMATION_DURATION } from '../Interface/constants'
 import { menuAnimationReducer } from './menuAnimationReducer'
@@ -16,6 +15,7 @@ import SearchBar from '../Search/SearchBar'
 import { MobileNavOverlay } from './MobileNavOverlay'
 import { FloatingButton } from '../Interface/FloatingButton'
 
+// ✅ SIMPLIFIED: Only 'rounded' theme styles (will be hardcoded later)
 const linkStylesValues = {
   default: 'px-3 py-2 text-sm font-medium uppercase tracking-wider',
   rounded: 'px-4 py-2 rounded-full text-sm font-medium',
@@ -27,10 +27,9 @@ export default function MobileNavigation({
   translations,
 }: NavProps) {
   const [menuState, dispatch] = useReducer(menuAnimationReducer, 'CLOSED');
-  const [isMenuOpen, setIsMenuOpen] =  useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
-  const { currentTheme } = useTheme()
   const pathname = usePathname()
   const lastPathRef = useRef(pathname)
 
@@ -77,7 +76,7 @@ export default function MobileNavigation({
       handleOpen();
     } else {
       handleClose();
-      // Opóźniamy zmianę stanu isMenuOpen do zakończenia animacji
+      // Delay state change until animation completes
       setTimeout(() => {
         setIsMenuOpen(false);
       }, MENU_ANIMATION_DURATION + CONTROLS_ANIMATION_DURATION);
@@ -96,7 +95,7 @@ export default function MobileNavigation({
       z-60
       transition-all duration-300
     `;
-    // Dodajemy stan CLOSING do warunku translate-x-full
+    // Add CLOSING state to translate-x-full condition
     const position = (menuState === 'CLOSED' || menuState === 'CLOSING') 
       ? 'translate-x-full' 
       : 'translate-x-0';
@@ -125,11 +124,6 @@ export default function MobileNavigation({
         className={getMenuClassName()}
       >
         <div className={getControlsClassName()}>
-          <LanguageSwitcher currentLang={lang} />
-          <ThemeSwitcher 
-            themeTranslations={translations.themes} 
-            colorTranslations={translations.colors} 
-          />
           <NavButton
             ref={toggleRef}
             onClick={handleClose}
@@ -150,66 +144,56 @@ export default function MobileNavigation({
                 strokeLinejoin="round" 
                 strokeWidth={2} 
                 d={isMenuOpen 
-                  ? "M6 18L18 6M6 6l12 12" 
-                  : "M4 6h16M4 12h16M4 18h16"
-                } 
+                  ? "M6 18L18 6M6 6l12 12" // Close icon (X)
+                  : "M4 6h16M4 12h16M4 18h16" // Hamburger menu
+                }
               />
             </svg>
           </NavButton>
         </div>
 
-        {/* Główna zawartość menu */}
-        <div 
-          className="flex-grow flex flex-col items-center p-4 pt-28 space-y-16"
-          onClick={handleNavClick}
-        >
-          <div className="w-full max-w-sm">
+        {/* Menu Content */}
+        <div id="mobile-menu" className="h-full flex flex-col justify-center px-8 py-16 space-y-8">
+          
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <Logo lang={lang} variant="mobile" />
+          </div>
+
+          {/* Navigation Links */}
+          <div onClick={handleNavClick}>
+            <ul className="space-y-6 text-center">
+              <li>
+                <NavLinks 
+                  lang={lang} 
+                  translations={translations.navigation} 
+                  disableClientDecorations={true}
+                />
+              </li>
+            </ul>
+          </div>
+
+          {/* Search */}
+          <div className="mt-8">
             <SearchBar 
-              searchTranslations={translations.search}
+              searchTranslations={translations.search} 
               lang={lang}
               onSearchComplete={handleSearchComplete}
+              className="w-full"
             />
           </div>
 
-          <Logo lang={lang} variant="mobile" />
-          
-          <ul className="flex flex-col space-y-4 sm:landscape:flex-row sm:landscape:space-y-0 sm:landscape:space-x-4 items-center">
-            <NavLinks 
-              lang={lang} 
-              translations={translations.navigation} 
-              linkStyles={linkStylesValues[currentTheme]}
-            />
-          </ul>
         </div>
       </div>
 
-      {/* Przycisk hamburger poza menu */}
-      {!isMenuOpen && (
-        <FloatingButton
-        ref={toggleRef}
-        position="top-right"
-        zIndex="menu"
+      {/* Floating Menu Button */}
+      <FloatingButton
         onClick={toggleMenu}
+        isOpen={isMenuOpen}
         aria-expanded={isMenuOpen}
         aria-controls="mobile-menu"
-        aria-label="Open menu"
-      >
-        <svg 
-          className="h-6 w-6" 
-          xmlns="http://www.w3.org/2000/svg" 
-          fill="none" 
-          viewBox="0 0 24 24" 
-          stroke="currentColor"
-        >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={2} 
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
-      </FloatingButton>
-      )}
+        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+      />
     </nav>
   );
 }

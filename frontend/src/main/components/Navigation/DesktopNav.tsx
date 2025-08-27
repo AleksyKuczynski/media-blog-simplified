@@ -2,13 +2,12 @@
 'use client';
 
 import React from 'react';
-import { LanguageSwitcher } from './LanguageSwitcher';
-import { ThemeSwitcher, useTheme } from '../ThemeSwitcher';
 import { NavProps } from './Navigation';
 import Logo from '../Logo';
 import NavLinks from './NavLinks';
 import ExpandableSearch from '../Search/ExpandableSearch';
 
+// ✅ SIMPLIFIED: Only 'rounded' theme styles (will be hardcoded later)
 const linkStylesValues = {
   default: 'px-3 py-2 font-medium tracking-wider',
   rounded: 'px-4 py-2 rounded-full font-medium',
@@ -20,7 +19,6 @@ export default function DesktopNavigation({
   translations,
 }: NavProps) {
 
-  const { currentTheme } = useTheme();
 
   return (
     <nav className="hidden xl:block fixed top-0 left-0 right-0 z-50 backdrop-blur-lg transition-all duration-300">
@@ -29,7 +27,6 @@ export default function DesktopNavigation({
           <NavLinks 
             lang={lang} 
             translations={translations.navigation} 
-            linkStyles={linkStylesValues[currentTheme]} 
           />
         </ul>
 
@@ -38,11 +35,6 @@ export default function DesktopNavigation({
         </div>
         <div className="flex items-center justify-end space-x-4 pr-8">
           <ExpandableSearch searchTranslations={translations.search} lang={lang}/>
-          <LanguageSwitcher currentLang={lang} />
-          <ThemeSwitcher 
-            themeTranslations={translations.themes} 
-            colorTranslations={translations.colors} 
-          />
         </div>
       </div>
     </nav>

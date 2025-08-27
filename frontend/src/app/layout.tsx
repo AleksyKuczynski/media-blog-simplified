@@ -1,33 +1,44 @@
-// src/app/layout.tsx - Fixed version
+// src/app/ru/layout.tsx
+import { getDictionary } from '@/main/lib/dictionaries';
+import Navigation from '@/main/components/Navigation/Navigation'
+import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Metadata } from 'next';
+import React from 'react';
+import Footer from '@/main/components/Footer/Footer';
 
-import '@/app/globals.scss';
-import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
-import { ThemeProvider, ColorProvider, getColorMode, getColorScheme, getTheme } from '@/main/components/ThemeSwitcher';
+export const metadata: Metadata = {
+  title: "My Blog",
+  description: "Discover the latest trends, stories, and insights",
+}
 
-export default async function RootLayout({
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode
-  // ✅ REMOVED: params: { lang: Lang } - no longer expected
+  // ✅ REMOVED: params: { lang: Lang } - no longer expected in static routes
 }) {
-  const initialTheme = await getTheme();
-  const initialColorMode = await getColorMode();
-  const initialColorScheme = await getColorScheme();
-  
+  const dict: Dictionary = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+
   return (
-    <html 
-      lang="ru" // ✅ HARDCODED: Russian instead of dynamic lang
-      data-theme={initialTheme} 
-      data-color-mode={initialColorMode} 
-      className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable} ${fontCustom.variable}`}
-    >
-      <ThemeProvider initialTheme={initialTheme} initialColorMode={initialColorMode}>
-        <ColorProvider initialColorScheme={initialColorScheme}>
-          <body data-color-scheme={initialColorScheme} className={`flex flex-col min-h-screen bg-sf text-on-sf theme-${initialTheme} transition-colors duration-300`}>
-            {children}
-          </body>
-        </ColorProvider>
-    </ThemeProvider>
-    </html>
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-sf-cont" role="banner">
+        <Navigation 
+          lang="ru" 
+          translations={{
+            navigation: dict.navigation,
+            search: dict.search,
+            // ✅ REMOVED: themes: dict.themes - no longer needed for simplified theme system
+            colors: dict.colors,
+          }}
+        />
+      </header>
+      <main className="flex-grow mt-16 md:mt-24 pt-4 md:pt-8" role="main">        
+        {React.cloneElement(children as React.ReactElement, { searchTranslations: dict.search, sortingTranslations: dict.sorting })}      
+      </main>
+      <Footer
+        lang="ru" // ✅ HARDCODED: Russian language
+        translations={dict}
+      />
+    </>
   );
 }
