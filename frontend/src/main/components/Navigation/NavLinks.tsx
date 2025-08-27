@@ -33,7 +33,7 @@ export default function NavLinks({
       {NAVIGATION_LINKS.map((link) => (
         <li key={link.href}>
           <Link 
-            href={`/${lang}${link.href}`} 
+            href={`/ru${link.href}`} // ✅ HARDCODED: Static Russian URL instead of /${lang}${link.href}
             className={cn(
               linkStyles,
               !disableClientDecorations && 'nav-link'

@@ -1,23 +1,22 @@
-// /frontend/src/app/[lang]/(main)/(with-filter)/category/[categorySlug]/page.tsx
+// src/app/ru/(with-filter)/category/[categorySlug]/page.tsx
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { fetchArticleSlugs, fetchAllCategories } from '@/main/lib/directus';
-import { ArticleSlugInfo, Category } from '@/main/lib/directus/directusInterfaces';
+import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 
 export default async function CategoryPage({ 
   params,
   searchParams 
 }: { 
-  params: { categorySlug: string, lang: Lang },
+  params: { categorySlug: string }, // ✅ REMOVED: lang parameter - no longer expected in static routes
   searchParams: { page?: string, sort?: string }
 }) {
-  const dict = await getDictionary(params.lang);
-  const categories = await fetchAllCategories(params.lang);
+  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+  const categories = await fetchAllCategories('ru'); // ✅ HARDCODED: Russian language
   const category = categories.find(cat => cat.slug === params.categorySlug);
   
   if (!category) {
@@ -51,7 +50,7 @@ export default async function CategoryPage({
           <>
             <ArticleList 
               slugInfos={allSlugs}
-              lang={params.lang}
+              lang="ru" // ✅ HARDCODED: Russian language
               categorySlug={params.categorySlug}
             />
             {hasMore && (

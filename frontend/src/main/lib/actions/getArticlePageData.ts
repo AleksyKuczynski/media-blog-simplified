@@ -26,15 +26,15 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
   if (searchParams.author) {
     const author = await fetchAuthorBySlug(searchParams.author, params.lang);
     breadcrumbItems = [
-      { label: dict.sections.authors.ourAuthors, href: `/${params.lang}/authors` },
-      { label: author?.name || searchParams.author, href: `/${params.lang}/authors/${searchParams.author}` },
-      { label: translation.title, href: `/${params.lang}/${params.rubric}/${params.slug}?context=author&author=${searchParams.author}` },
+      { label: dict.sections.authors.ourAuthors, href: '/ru/authors' }, // ✅ HARDCODED: Static Russian URL
+      { label: author?.name || searchParams.author, href: `/ru/authors/${searchParams.author}` }, // ✅ HARDCODED: Static Russian URL
+      { label: translation.title, href: `/ru/${params.rubric}/${params.slug}?context=author&author=${searchParams.author}` }, // ✅ HARDCODED: Static Russian URL
     ];
   } else {
     breadcrumbItems = [
-      { label: dict.sections.rubrics.allRubrics, href: `/${params.lang}/rubrics` },
-      { label: rubricName, href: `/${params.lang}/${params.rubric}` },
-      { label: translation.title, href: `/${params.lang}/${params.rubric}/${params.slug}` },
+      { label: dict.sections.rubrics.allRubrics, href: '/ru/rubrics' }, // ✅ HARDCODED: Static Russian URL
+      { label: rubricName, href: `/ru/${params.rubric}` }, // ✅ HARDCODED: Static Russian URL
+      { label: translation.title, href: `/ru/${params.rubric}/${params.slug}` }, // ✅ HARDCODED: Static Russian URL
     ];
   }
 

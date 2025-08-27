@@ -71,7 +71,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               : dict.search.noResults
             }
           </p>
-          <SortingControl translations={dict.sorting} />
+          <SortingControl 
+            translations={dict.sorting} 
+            currentSort={currentSort}
+            lang="ru" 
+          />
         </div>
       )}
 
@@ -91,7 +95,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               <div className="mt-8 flex justify-center">
                 <LoadMoreButton
                   currentPage={currentPage}
-                  loadMoreText={dict.sections.articles.loadMore}
+                  loadMoreText={dict.common.loadMore}
                 />
               </div>
             )}

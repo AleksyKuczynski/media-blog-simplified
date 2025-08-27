@@ -1,28 +1,27 @@
-// src/app/[lang]/(main)/authors/[slug]/page.tsx
+// src/app/ru/authors/[slug]/page.tsx
 
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { fetchAuthorBySlug, fetchRubricBasics, DIRECTUS_URL, fetchArticleSlugs, ArticleSlugInfo } from '@/main/lib/directus/index';
 import { getDictionary } from '@/main/lib/dictionaries';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import ArticleList from '@/main/components/Main/ArticleList';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
 
 export default async function AuthorPage({ params, searchParams }: { 
-  params: { slug: string, lang: Lang },
+  params: { slug: string }, // ✅ REMOVED: lang parameter - no longer expected in static routes
   searchParams: { page?: string, sort?: string }
 }) {
-  const dict = await getDictionary(params.lang);
-  const author = await fetchAuthorBySlug(params.slug, params.lang);
+  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+  const author = await fetchAuthorBySlug(params.slug, 'ru'); // ✅ HARDCODED: Russian language
   
   if (!author) {
     notFound();
   }
 
-  const rubricNames = await fetchRubricBasics(params.lang);
+  const rubricNames = await fetchRubricBasics('ru'); // ✅ HARDCODED: Russian language
   
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';
@@ -45,8 +44,8 @@ export default async function AuthorPage({ params, searchParams }: {
   }
 
   const breadcrumbItems = [
-    { label: dict.sections.authors.ourAuthors, href: `/${params.lang}/authors` },
-    { label: author.name, href: `/${params.lang}/authors/${params.slug}` },
+    { label: dict.sections.authors.ourAuthors, href: '/ru/authors' }, // ✅ HARDCODED: Static Russian URL
+    { label: author.name, href: `/ru/authors/${params.slug}` }, // ✅ HARDCODED: Static Russian URL
   ];
 
   return (
@@ -54,7 +53,7 @@ export default async function AuthorPage({ params, searchParams }: {
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricNames} 
-        lang={params.lang}
+        lang="ru" // ✅ HARDCODED: Russian language
         translations={{
           home: dict.navigation.home,
           allRubrics: dict.sections.rubrics.allRubrics,
@@ -90,12 +89,12 @@ export default async function AuthorPage({ params, searchParams }: {
             <>
               <ArticleList 
                 slugInfos={allSlugs}
-                lang={params.lang}
+                lang="ru" // ✅ HARDCODED: Russian language
                 authorSlug={params.slug}
               />
               {hasMore && (
                 <div className="mt-8 flex justify-center">
-                  <LoadMoreButton 
+                  <LoadMoreButton
                     currentPage={currentPage}
                     loadMoreText={dict.common.loadMore}
                   />
@@ -103,7 +102,9 @@ export default async function AuthorPage({ params, searchParams }: {
               )}
             </>
           ) : (
-            <p className="text-center text-txcolor-secondary">{dict.sections.author.noArticlesFound}</p>
+            <p className="text-center text-txcolor-secondary">
+              {dict.sections.author.noArticlesFound}
+            </p>
           )}
         </Suspense>
       </Section>

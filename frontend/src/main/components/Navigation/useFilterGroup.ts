@@ -14,7 +14,7 @@ interface UseFilterGroupProps {
 export function useFilterGroup({ 
   categories, 
   categoryTranslations,
-  lang 
+  lang // ✅ KEPT: But will be hardcoded to 'ru' when called
 }: UseFilterGroupProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -57,21 +57,21 @@ export function useFilterGroup({
     params.set('sort', currentSort); // Preserve current sort order
 
     if (item.value) {
-      router.push(`/${lang}/category/${item.value}?${params.toString()}`);
+      router.push(`/ru/category/${item.value}?${params.toString()}`); // ✅ HARDCODED: Static Russian URL
     } else {
-      router.push(`/${lang}/articles?${params.toString()}`);
+      router.push(`/ru/articles?${params.toString()}`); // ✅ HARDCODED: Static Russian URL
     }
-  }, [router, lang, searchParams]);
+  }, [router, searchParams]);
 
   const handleReset = useCallback(() => {
     if (isArticlesPath) {
       if (currentCategory || currentSort !== 'desc') {
-        router.push(`/${lang}/articles`);
+        router.push(`/ru/articles`); // ✅ HARDCODED: Static Russian URL
       }
     } else {
-      router.push(`/${lang}/articles`);
+      router.push(`/ru/articles`); // ✅ HARDCODED: Static Russian URL
     }
-  }, [router, isArticlesPath, currentCategory, currentSort, lang]);
+  }, [router, isArticlesPath, currentCategory, currentSort]);
 
   return {
     // States

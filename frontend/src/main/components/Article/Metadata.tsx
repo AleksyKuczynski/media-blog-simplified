@@ -1,15 +1,14 @@
 // src/main/components/Article/Metadata.tsx
 import Link from 'next/link';
 import { Category } from '@/main/lib/directus/directusInterfaces';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { twMerge } from 'tailwind-merge';
 
 interface MetadataProps {
   categories: Category[];
-  lang: Lang;
+  // ✅ REMOVED: lang parameter - no longer needed with hardcoded Russian URLs
 }
 
-export function Metadata({ categories, lang }: MetadataProps) {
+export function Metadata({ categories }: MetadataProps) {
   const containerStyles = twMerge(
     // Base styles
     'text-sm md:text-lg xl:text-xl mb-8 xl:mb-12 text-center space-x-4 md:space-x-8 xl:space-x-12',
@@ -33,7 +32,7 @@ export function Metadata({ categories, lang }: MetadataProps) {
       {categories.map((category) => (
         <span key={category.slug}>
           <Link 
-            href={`/${lang}/articles?category=${category.slug}`} 
+            href={`/ru/articles?category=${category.slug}`} // ✅ HARDCODED: Static Russian URL instead of /${lang}/articles
             className={linkStyles}
           >
             {category.name}
