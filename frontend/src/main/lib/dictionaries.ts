@@ -121,20 +121,6 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     categories: 'Категория',
     allCategories: 'Все категории',
     selectCategory: 'Выберите категорию'
-  },
-
-  themes: {
-    name: 'Стиль',
-    default: '«Компьютер»',
-    rounded: '«Смартфон»',
-    sharp: '«Газета»'
-  },
-
-  colors: {
-    name: 'Цветовая тема',
-    default: 'Нормальная',
-    scheme1: 'Холодная',
-    scheme2: 'Теплая'
   }
 };
 

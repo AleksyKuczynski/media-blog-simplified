@@ -8,7 +8,6 @@ import { NavButton } from '../Interface'
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
 // ✅ REMOVED: LanguageSwitcher import - no longer needed for Russian-only site
-import { ThemeSwitcher } from '../ThemeSwitcher'
 import { CONTROLS_ANIMATION_DURATION, MENU_ANIMATION_DURATION } from '../Interface/constants'
 import { menuAnimationReducer } from './menuAnimationReducer'
 import SearchBar from '../Search/SearchBar'

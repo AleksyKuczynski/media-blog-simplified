@@ -1,4 +1,4 @@
-// src/app/ru/layout.tsx
+// src/app/ru/layout.tsx - Ultra-simplified main layout
 import { getDictionary } from '@/main/lib/dictionaries';
 import Navigation from '@/main/components/Navigation/Navigation'
 import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
@@ -15,20 +15,20 @@ export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode
-  // ✅ REMOVED: params: { lang: Lang } - no longer expected in static routes
+  // ✅ REMOVED: No more params needed
 }) {
-  const dict: Dictionary = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+  const dict: Dictionary = await getDictionary('ru');
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-sf-cont" role="banner">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg" role="banner">
+        {/* ✅ SIMPLIFIED: Direct Tailwind classes instead of CSS variables */}
         <Navigation 
-          lang="ru" // ✅ HARDCODED: Russian language
+          lang="ru"
           translations={{
             navigation: dict.navigation,
             search: dict.search,
-            themes: dict.themes,
-            colors: dict.colors,
+            colors: dict.colors, // ✅ Keep only if you want color scheme switching
           }}
         />
       </header>
@@ -36,7 +36,7 @@ export default async function MainLayout({
         {React.cloneElement(children as React.ReactElement, { searchTranslations: dict.search, sortingTranslations: dict.sorting })}      
       </main>
       <Footer
-        lang="ru" // ✅ HARDCODED: Russian language
+        lang="ru"
         translations={dict}
       />
     </>

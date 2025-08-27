@@ -1,6 +1,5 @@
 // src/main/components/Interface/NavButton.tsx
 import React, { forwardRef } from 'react';
-import { useTheme } from '../ThemeSwitcher';
 
 interface NavButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   context: 'desktop' | 'mobile';
@@ -33,7 +32,6 @@ const hoverStyles = {
 
 export const NavButton = forwardRef<HTMLButtonElement, NavButtonProps>(
   ({ context, icon, className = '', noHover = false, isHamburger = false, children, onClick, ...props }, ref) => {
-    const { currentTheme } = useTheme();
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();

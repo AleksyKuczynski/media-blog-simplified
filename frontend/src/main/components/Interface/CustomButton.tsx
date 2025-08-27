@@ -1,10 +1,9 @@
-// src/main/components/Interface/CustomButton.tsx
+// src/main/components/Interface/CustomButton.tsx - Ultra-simplified
 'use client';
 
 import React from 'react';
-import { useTheme } from '../ThemeSwitcher/ThemeContext';
-import { Theme } from '../ThemeSwitcher/themeTypes';
 import { cn } from '@/main/lib/utils/utils';
+// ✅ REMOVED: All theme imports - using direct Tailwind classes
 
 type ButtonColor = 'accent' | 'primary';
 
@@ -16,52 +15,42 @@ interface CustomButtonProps {
   type?: 'button' | 'submit' | 'reset';
 }
 
-const commonClasses: Record<Theme, string> = {
-  default: 'px-4 py-2 rounded transition-all duration-200 border-2',
-  rounded: 'px-5 py-3 rounded-xl transition-all duration-200 border-2',
-  sharp: 'px-6 py-4 transition-all duration-200 border-2 uppercase',
-};
-
-const buttonClasses: Record<ButtonColor, {
-  filled: string;
-  outlined: string;
-}> = {
-  accent: {
-    filled: 'bg-tr-cont hover:bg-tr-fix focus:bg-tr-dim text-on-tr border-transparent',
-    outlined: 'bg-transparent hover:bg-tr-cont/10 border-tr-cont text-tr-cont'
-  },
-  primary: {
-    filled: 'bg-pr-cont hover:bg-pr-fix focus:bg-pr-dim text-on-pr border-transparent',
-    outlined: 'bg-transparent hover:bg-pr-cont/10 border-pr-cont text-pr-cont'
-  }
-};
-
-const defaultClasses = {
-  filled: 'bg-on-sf-var border-transparent text-on-pr',
-  outlined: 'bg-transparent border-ol text-current hover:bg-ol/10'
-};
-
 export function CustomButton({ 
-  color, 
+  color = 'primary', 
   filled = true, 
   children, 
   onClick, 
   type = 'button',
 }: CustomButtonProps) {
-  const { currentTheme } = useTheme();
-
-  const classes = cn(
-    commonClasses[currentTheme],
-    color 
-      ? buttonClasses[color][filled ? 'filled' : 'outlined']
-      : defaultClasses[filled ? 'filled' : 'outlined'],
-    'text-lg',
-  );
+  // ✅ DIRECT TAILWIND: Much simpler and more readable
+  const getButtonClasses = () => {
+    const base = "px-5 py-3 rounded-xl font-medium transition-all duration-200 border-2";
+    
+    if (filled) {
+      switch (color) {
+        case 'accent':
+          return `${base} bg-emerald-500 hover:bg-emerald-600 text-white border-transparent dark:bg-emerald-600 dark:hover:bg-emerald-700`;
+        case 'primary':
+          return `${base} bg-blue-500 hover:bg-blue-600 text-white border-transparent dark:bg-blue-600 dark:hover:bg-blue-700`;
+        default:
+          return `${base} bg-gray-500 hover:bg-gray-600 text-white border-transparent dark:bg-gray-600 dark:hover:bg-gray-700`;
+      }
+    } else {
+      switch (color) {
+        case 'accent':
+          return `${base} bg-transparent hover:bg-emerald-50 border-emerald-500 text-emerald-600 dark:hover:bg-emerald-900/20 dark:text-emerald-400`;
+        case 'primary':
+          return `${base} bg-transparent hover:bg-blue-50 border-blue-500 text-blue-600 dark:hover:bg-blue-900/20 dark:text-blue-400`;
+        default:
+          return `${base} bg-transparent hover:bg-gray-50 border-gray-500 text-gray-600 dark:hover:bg-gray-900/20 dark:text-gray-400`;
+      }
+    }
+  };
 
   return (
     <button
       type={type}
-      className={classes}
+      className={getButtonClasses()}
       onClick={onClick}
     >
       {children}
