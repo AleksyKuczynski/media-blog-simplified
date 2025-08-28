@@ -1,4 +1,4 @@
-// src/main/components/Navigation/MobileNav.tsx - SIMPLIFIED  
+// src/main/components/Navigation/MobileNav.tsx - COMPLETE FIXED VERSION
 'use client'
 
 import { useState, useRef, useReducer, useCallback } from 'react'
@@ -105,7 +105,7 @@ export default function MobileNavigation({
             context="mobile"
             aria-expanded={isMenuOpen}
             aria-controls="mobile-menu"
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-label="Close menu"
             className="p-3 rounded-full bg-sf-hi hover:bg-sf-hst transition-colors duration-200"
           >
             <svg 
@@ -179,16 +179,32 @@ export default function MobileNavigation({
         </div>
       </div>
 
-      {/* Floating Menu Button */}
+      {/* FIXED: Complete Floating Menu Button with Hamburger Icon */}
       <FloatingButton
-        onClick={toggleMenu}
-        aria-expanded={isMenuOpen}
-        aria-controls="mobile-menu"
-        aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-        className="p-4 rounded-full bg-pr-cont text-on-pr-cont shadow-lg hover:shadow-xl transition-all duration-200"
-        position="bottom-right"
-        zIndex="menu"
-      />
+  onClick={toggleMenu}
+  aria-expanded={isMenuOpen}
+  aria-controls="mobile-menu" 
+  aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+  className="!p-4 !bg-pr-cont !text-on-pr !shadow-lg hover:!shadow-xl" // Use ! to force override
+  position="bottom-right"
+  zIndex="menu"
+>
+  {/* Hamburger Icon */}
+  <svg 
+    className="w-6 h-6" 
+    xmlns="http://www.w3.org/2000/svg" 
+    fill="none" 
+    viewBox="0 0 24 24" 
+    stroke="currentColor"
+  >
+    <path 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      strokeWidth={2} 
+      d="M4 6h16M4 12h16M4 18h16" 
+    />
+  </svg>
+</FloatingButton>
     </nav>
   );
 }

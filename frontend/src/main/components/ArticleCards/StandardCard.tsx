@@ -1,4 +1,4 @@
-// src/main/components/ArticleCards/StandardCard.tsx - SIMPLIFIED
+// src/main/components/ArticleCards/StandardCard.tsx - FIXED IMAGE LAYOUT ISSUE
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRightIcon } from '../Interface/Icons';
@@ -32,13 +32,13 @@ export function StandardCard({
         ${layout === 'latest' && 'lg:h-full sm:max-md:grid xl:grid grid-cols-3'}
       `}>
         
-        {/* Image Section */}
+        {/* Image Section - FIXED: Added lg breakpoint sizing for vertical layouts */}
         {imageProps && (
           <div className={`
             relative overflow-hidden rounded-xl
             ${layout === 'regular' && 'w-full aspect-[12/10] sm:max-lg:aspect-[11/12] xl:aspect-[11/12]'}
             ${layout === 'promoted' && 'aspect-video'}
-            ${layout === 'latest' && 'xl:h-full xl:aspect-[11/12]'}
+            ${layout === 'latest' && 'lg:aspect-[11/12] xl:h-full xl:aspect-[11/12]'}
           `}>
             <Image
               src={imageProps.src}
