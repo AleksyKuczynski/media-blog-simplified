@@ -1,4 +1,4 @@
-// src/app/ru/rubrics/page.tsx - FIX RUBRIC TRANSFORMATION
+// src/app/ru/rubrics/page.tsx - FIX DYNAMIC SERVER USAGE
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
@@ -6,6 +6,9 @@ import { getDictionary } from '@/main/lib/dictionaries';
 import { Rubric } from '@/main/lib/directus/directusInterfaces';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
+
+// ✅ FIX: Add dynamic export to prevent static generation
+export const dynamic = 'force-dynamic';
 
 export default async function AllRubricsPage() {
   const rubrics = await fetchAllRubrics('ru');

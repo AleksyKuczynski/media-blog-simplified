@@ -1,4 +1,4 @@
-// src/app/ru/(with-filter)/articles/page.tsx
+// src/app/ru/(with-filter)/articles/page.tsx - ADD SUSPENSE
 
 import { Suspense } from 'react';
 import { getDictionary } from '@/main/lib/dictionaries';
@@ -13,9 +13,8 @@ export const dynamic = 'force-dynamic';
 
 export default async function ArticlesPage({ searchParams }: { 
   searchParams: { page?: string, sort?: string, category?: string, search?: string }
-  // ✅ REMOVED: params: { lang: Lang } - no longer expected in static routes
 }) {
-  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+  const dict = await getDictionary('ru');
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';
   const currentCategory = searchParams.category || '';
@@ -29,7 +28,7 @@ export default async function ArticlesPage({ searchParams }: {
 
   if (isDefaultView) {
     try {
-      heroSlugs = await fetchHeroSlugs('ru'); // ✅ HARDCODED: Russian language
+      heroSlugs = await fetchHeroSlugs('ru');
     } catch (error) {
       console.error('Error fetching hero articles:', error);
     }
@@ -59,7 +58,7 @@ export default async function ArticlesPage({ searchParams }: {
             {heroSlugs.length > 0 ? (
               <HeroArticles 
                 heroSlugs={heroSlugs} 
-                lang="ru" // ✅ HARDCODED: Russian language
+                lang="ru"
               />
             ) : (
               <div>{dict.sections.articles.noFeaturedArticles}</div>
@@ -73,16 +72,20 @@ export default async function ArticlesPage({ searchParams }: {
         title={isDefaultView ? dict.sections.articles.latestArticles : dict.sections.articles.allArticles}
         ariaLabel={isDefaultView ? dict.sections.articles.latestArticles : dict.sections.articles.allArticles}
       >
-        <ArticleList 
-          slugInfos={allSlugs} 
-          lang="ru" // ✅ HARDCODED: Russian language
-        />
+        <ArticleList slugInfos={allSlugs} lang="ru" />
         {hasMore && (
           <div className="mt-8 flex justify-center">
-            <LoadMoreButton
-              currentPage={currentPage}
-              loadMoreText={dict.sections.articles.loadMore}
-            />
+            {/* ✅ FIX: Wrap LoadMoreButton with Suspense */}
+            <Suspense fallback={
+              <div className="bg-gray-200 dark:bg-gray-700 rounded-lg px-6 py-3 animate-pulse">
+                Loading...
+              </div>
+            }>
+              <LoadMoreButton 
+                currentPage={currentPage}
+                loadMoreText={dict.common.loadMore}
+              />
+            </Suspense>
           </div>
         )}
       </Section>

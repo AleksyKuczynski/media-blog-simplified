@@ -29,16 +29,16 @@ export function StandardCard({
         flex flex-col bg-sf-cont rounded-3xl overflow-hidden
         ${layout === 'regular' && 'lg:h-full sm:max-lg:grid xl:grid grid-cols-3'}
         ${layout === 'promoted' && 'h-full sm:max-xl:grid grid-cols-3 lg:grid-cols-2'}
-        ${layout === 'latest' && 'lg:h-full sm:max-md:grid xl:grid grid-cols-3'}
+        ${layout === 'latest' && 'lg:h-full sm:grid xl:grid grid-cols-3'}
       `}>
         
-        {/* Image Section - FIXED: Added lg breakpoint sizing for vertical layouts */}
+        {/* Image Section - FIXED: Complete aspect ratio coverage for all breakpoints */}
         {imageProps && (
           <div className={`
             relative overflow-hidden rounded-xl
             ${layout === 'regular' && 'w-full aspect-[12/10] sm:max-lg:aspect-[11/12] xl:aspect-[11/12]'}
             ${layout === 'promoted' && 'aspect-video'}
-            ${layout === 'latest' && 'lg:aspect-[11/12] xl:h-full xl:aspect-[11/12]'}
+            ${layout === 'latest' && 'w-full aspect-[12/10] sm:aspect-[11/12] lg:aspect-[12/10] xl:aspect-[11/12]'}
           `}>
             <Image
               src={imageProps.src}
