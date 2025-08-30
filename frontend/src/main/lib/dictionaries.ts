@@ -65,14 +65,32 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     minCharacters: 'Введите минимум 3 символа'
   },
 
+  seo: {
+    siteName: 'EventForMe',
+    titles: {
+      homePrefix: 'EventForMe - Медиа о событиях и культуре',
+      homeSuffix: 'Главная',
+    },
+    descriptions: {
+      home: 'EventForMe - ведущий медиа-проект о культурных событиях, музыке, идеях и тайнах. Читайте актуальные статьи и интервью с экспертами.',
+    },
+    keywords: {
+      general: 'события, культура, музыка, идеи, тайны, медиа, статьи, интервью, блог',
+    }
+  },
+
   sections: {
     home: {
+      // Keep your existing entries and add these:
       welcomeTitle: 'Добро пожаловать',
-      welcomeDescription: 'Медиа-проект о событиях и культуре',
-      featuredContent: 'Рекомендуемое',
-      latestUpdates: 'Последние обновления',
+      welcomeDescription: 'EventForMe — медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
+      featuredContent: 'Рекомендуемые материалы', 
+      latestUpdates:  'Новые публикации',
       exploreRubrics: 'Изучить рубрики',
-      viewAllRubrics: 'Просмотреть все рубрики'
+      viewAllRubrics: 'Просмотреть все рубрики',
+      // SEO-optimized descriptions for better semantic content
+      featuredDescription: 'Самые актуальные и интересные материалы нашей редакции',
+      rubricsDescription: 'Изучите наши тематические рубрики и найдите интересующие вас темы',
     },
     articles: {
       allArticles: 'Все статьи',
@@ -102,6 +120,7 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     rubrics: {
       allRubrics: 'Все рубрики',
       featuredRubric: 'Рубрика в фокусе',
+      articlesInRubric: 'статей в рубрике', // For "5 статей в рубрике"
       rubricList: 'Список рубрик'
     }
   },
@@ -120,17 +139,8 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     categories: 'Категория',
     allCategories: 'Все категории',
     selectCategory: 'Выберите категорию'
-  },
-
-  // ❌ REMOVED: themes section - no longer needed for rounded-only theme
-  
-  // ✅ KEEP: colors for light/dark + color scheme switching
-  colors: {
-    name: 'Цветовая тема',
-    default: 'Нормальная',
-    scheme1: 'Холодная', 
-    scheme2: 'Теплая'
   }
+
 };
 
 // ✅ SIMPLIFIED: Always return Russian dictionary, ignore lang parameter

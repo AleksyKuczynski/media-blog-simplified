@@ -1,4 +1,4 @@
-// src/app/ru/rubrics/page.tsx - FIX DYNAMIC SERVER USAGE
+// src/app/ru/rubrics/page.tsx - FIXED WITH H1
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
@@ -7,7 +7,6 @@ import { Rubric } from '@/main/lib/directus/directusInterfaces';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 
-// ✅ FIX: Add dynamic export to prevent static generation
 export const dynamic = 'force-dynamic';
 
 export default async function AllRubricsPage() {
@@ -23,7 +22,6 @@ export default async function AllRubricsPage() {
     name: r.translations.find(t => t.languages_code === 'ru')?.name || r.slug
   }));
 
-  // ✅ FIX: Transform Rubric objects to the format RubricCard expects
   const transformedRubrics = rubrics.map((rubric: Rubric) => ({
     slug: rubric.slug,
     name: rubric.translations.find(t => t.languages_code === 'ru')?.name || rubric.slug,
@@ -42,10 +40,13 @@ export default async function AllRubricsPage() {
           allAuthors: dict.sections.authors.ourAuthors,
         }}
       />
-      <Section 
-        title={dict.sections.rubrics.allRubrics}
-        ariaLabel={dict.sections.rubrics.allRubrics}
-      >
+      
+      {/* ✅ FIXED: Added proper H1 tag for SEO */}
+      <Section>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+          {dict.sections.rubrics.allRubrics}
+        </h1>
+        
         <CardGrid>
           {transformedRubrics.map((rubric) => (
             <RubricCard 

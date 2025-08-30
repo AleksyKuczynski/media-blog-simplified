@@ -103,6 +103,8 @@ export interface HomeTranslations {
   latestUpdates: string;
   exploreRubrics: string;
   viewAllRubrics: string;
+  featuredDescription: string;
+  rubricsDescription: string;
 }
 
 export interface ArticlesTranslations {
@@ -137,6 +139,7 @@ export interface CategoriesTranslations {
 export interface RubricsTranslations {
   allRubrics: string;
   featuredRubric: string;
+  articlesInRubric: string;
   rubricList: string;
 }
 
@@ -149,6 +152,20 @@ export interface SectionsTranslations {
   rubrics: RubricsTranslations;
 }
 
+export interface SEOTranslations {
+  siteName: string;
+  titles: {
+    homePrefix: string;
+    homeSuffix: string;
+  };
+  descriptions: {
+    home: string;
+  };
+  keywords: {
+    general: string;
+  };
+}
+
 // ✅ FIXED: Main dictionary interface - REMOVED themes requirement
 export interface Dictionary {
   navigation: NavigationTranslations;
@@ -159,8 +176,7 @@ export interface Dictionary {
   sorting: SortingTranslations;
   filter: FilterTranslations;
   categories: CategoryTranslations;
-  // ❌ REMOVED: themes: ThemesTranslations; - no longer needed
-  colors: ColorsTranslations; // ✅ KEEP: for color scheme switching
+  seo: SEOTranslations;
 }
 
 // Default search translations (used by some components)

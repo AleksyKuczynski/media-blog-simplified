@@ -1,59 +1,69 @@
-// src/app/ru/authors/page.tsx
-
-import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus/index';
+// src/app/ru/authors/page.tsx - FIXED WITH H1
+import { Suspense } from 'react';
+import { getDictionary } from '@/main/lib/dictionaries';
+import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus';
 import AuthorCard from '@/main/components/Main/AuthorCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
-import { getDictionary } from '@/main/lib/dictionaries';
-import { Metadata } from 'next';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata(): Promise<Metadata> {
-  // ✅ REMOVED: params parameter - use hardcoded Russian
-  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
-  return {
-    title: dict.sections.authors.ourAuthors,
-    description: dict.sections.authors.ourAuthors,
-  };
-}
-
-export default async function AuthorsPage() {
-  // ✅ REMOVED: params parameter - use hardcoded Russian
-  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
-  const authors = await fetchAllAuthors('ru'); // ✅ HARDCODED: Russian language
-  const rubricNames = await fetchRubricBasics('ru'); // ✅ HARDCODED: Russian language
+export default async function AllAuthorsPage({
+  searchParams
+}: {
+  searchParams: { page?: string }
+}) {
+  const dict = await getDictionary('ru');
+  const rubricBasics = await fetchRubricBasics('ru');
+  const currentPage = Number(searchParams.page) || 1;
+  
+  const authors = await fetchAllAuthors('ru');
 
   const breadcrumbItems = [
-    { label: dict.sections.authors.ourAuthors, href: '/ru/authors' }, // ✅ HARDCODED: Static Russian URL
+    { label: dict.sections.authors.ourAuthors, href: '/ru/authors' },
   ];
 
   return (
     <>
       <Breadcrumbs 
         items={breadcrumbItems} 
-        rubrics={rubricNames} 
-        lang="ru" // ✅ HARDCODED: Russian language
+        rubrics={rubricBasics}
+        lang="ru"
         translations={{
           home: dict.navigation.home,
           allRubrics: dict.sections.rubrics.allRubrics,
           allAuthors: dict.sections.authors.ourAuthors,
         }}
       />
-      <Section 
-        title={dict.sections.authors.ourAuthors}
-        ariaLabel={dict.sections.authors.ourAuthors}
-      >
-        <CardGrid>
-          {authors.length === 0 ? (
-            <p className="text-center text-txcolor-secondary">{dict.sections.authors.noAuthorsFound}</p>
+      
+      {/* ✅ FIXED: Added proper H1 tag for SEO */}
+      <Section>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+          {dict.sections.authors.ourAuthors}
+        </h1>
+        
+        <Suspense fallback={
+          <div className="text-center py-8">
+            <div className="text-lg">{dict.common.loading}</div>
+          </div>
+        }>
+          {authors.length > 0 ? (
+            <CardGrid>
+              {authors.map((author) => (
+                <AuthorCard 
+                  key={author.slug}
+                  author={author}
+                  lang="ru"
+                />
+              ))}
+            </CardGrid>
           ) : (
-            authors.map((author) => (
-              <AuthorCard key={author.slug} author={author} lang="ru" />
-            ))
+            <p className="text-center text-gray-600 dark:text-gray-400">
+              {dict.sections.authors.noAuthorsFound}
+            </p>
           )}
-        </CardGrid>
+        </Suspense>
       </Section>
     </>
   );
