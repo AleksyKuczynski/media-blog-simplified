@@ -1,4 +1,4 @@
-// src/app/ru/page.tsx - SEO-Enhanced Home Page
+// src/app/ru/page.tsx - SEO-Enhanced Home Page (Fixed Architecture)
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -10,54 +10,13 @@ import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 import { HomePageSchema } from '@/main/components/SEO/HomePageSchema';
 import { EnhancedHomePageMetadata } from '@/main/components/SEO/EnhancedHomePageMetadata';
+import { generateHomePageMetadata, prepareHomePageSchemaData } from '@/main/lib/metadata/homePageMetadata';
 
 export const dynamic = 'force-dynamic';
 
+// ✅ FIXED: Separated metadata generation from presentation
 export async function generateMetadata(): Promise<Metadata> {
-  const dict = await getDictionary('ru');
-  
-  // Enhanced metadata using comprehensive SEO dictionary entries
-  return {
-    title: dict.seo.titles.homePrefix,
-    description: dict.seo.descriptions.home,
-    keywords: dict.seo.keywords.general,
-    
-    // Open Graph optimization for social sharing
-    openGraph: {
-      title: dict.seo.titles.homePrefix,
-      description: dict.seo.descriptions.home,
-      url: 'https://event4me.eu/ru',
-      siteName: dict.seo.siteName,
-      locale: 'ru_RU',
-      type: 'website',
-      images: [
-        {
-          url: 'https://event4me.eu/og-home.jpg',
-          width: 1200,
-          height: 630,
-          alt: dict.sections.home.welcomeTitle,
-        },
-      ],
-    },
-    
-    // Twitter Card optimization
-    twitter: {
-      card: 'summary_large_image',
-      title: dict.seo.titles.homePrefix,
-      description: dict.seo.descriptions.home,
-      images: ['https://event4me.eu/og-home.jpg'],
-    },
-
-    // Additional SEO enhancements
-    alternates: {
-      canonical: 'https://event4me.eu/ru',
-    },
-    
-    // Yandex-specific optimizations
-    other: {
-      'yandex-verification': process.env.YANDEX_VERIFICATION || '',
-    },
-  };
+  return generateHomePageMetadata();
 }
 
 export default async function Home() {
@@ -80,19 +39,8 @@ export default async function Home() {
     articleCount: rubric.articleCount
   }));
 
-  // Prepare data for schema
-  const schemaData = {
-    site: {
-      name: dict.seo.siteName,
-      url: 'https://event4me.eu',
-      description: dict.seo.descriptions.home,
-    },
-    articles: {
-      featured: [], // Will be populated by HeroArticles data if needed
-      latest: [],
-    },
-    rubrics: rubrics,
-  };
+  // ✅ FIXED: Use utility function for schema data preparation
+  const schemaData = await prepareHomePageSchemaData(heroSlugs, rubrics);
 
   return (
     <>
@@ -133,21 +81,18 @@ export default async function Home() {
           </nav>
         </Section>
 
-        {/* Featured Articles Section - Enhanced semantic structure */}
+        {/* Featured Articles Section - ✅ FIXED: Section handles heading internally */}
         <Section 
           id="featured-articles"
           as="section"
           ariaLabel={dict.sections.articles.featuredArticles}
+          title={dict.sections.articles.featuredArticles}
           role="region"
         >
-          <header className="mb-8">
-            <h2 className="text-3xl sm:text-4xl font-bold text-center text-primary mb-4">
-              {dict.sections.articles.featuredArticles}
-            </h2>
-            <p className="text-center text-txcolor-secondary max-w-2xl mx-auto">
-              {dict.sections.home.featuredDescription}
-            </p>
-          </header>
+          {/* ✅ FIXED: Removed duplicate heading - Section component handles it */}
+          <p className="text-center text-txcolor-secondary max-w-2xl mx-auto mb-8">
+            {dict.sections.home.featuredDescription}
+          </p>
           
           <Suspense fallback={
             <div className="text-center p-8" role="status" aria-label={dict.common.loading}>
@@ -165,7 +110,7 @@ export default async function Home() {
           </Suspense>
         </Section>
 
-        {/* Rubrics Section - Enhanced with comprehensive semantic markup */}
+        {/* Rubrics Section - ✅ FIXED: Section handles heading internally */}
         <Section 
           id="rubrics-section"
           isOdd={true}
@@ -174,14 +119,10 @@ export default async function Home() {
           title={dict.sections.home.exploreRubrics}
           role="region"
         >
-          <header className="mb-8">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 pl-1 text-sf-hst">
-              {dict.sections.home.exploreRubrics}
-            </h2>
-            <p className="text-center text-txcolor-secondary max-w-2xl mx-auto">
-              {dict.sections.home.rubricsDescription}
-            </p>
-          </header>
+          {/* ✅ FIXED: Removed duplicate heading - Section component handles it */}
+          <p className="text-center text-txcolor-secondary max-w-2xl mx-auto mb-8">
+            {dict.sections.home.rubricsDescription}
+          </p>
           
           <div itemScope itemType="https://schema.org/ItemList">
             <CardGrid>
@@ -209,6 +150,7 @@ export default async function Home() {
             </CardGrid>
           </div>
           
+          {/* ✅ CLARIFIED: Section footer - this is semantically correct */}
           <footer className="mt-8 text-center">
             <Link
               href="/ru/rubrics"

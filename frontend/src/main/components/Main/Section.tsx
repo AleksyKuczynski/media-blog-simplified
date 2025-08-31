@@ -49,20 +49,20 @@ export default function Section({
 
   return (
     <Component {...sectionProps}>
-      {/* Optional section title for better semantic structure */}
-      {title && (
-        <header className="container mx-auto mb-8">
-          <h2 className="
-            text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 pl-1
-            text-sf-hst
-          ">
-            {title}
-          </h2>
-        </header>
-      )}
-      
-      {/* Main content area */}
       <div className="container mx-auto">
+        {/* Section title handled internally - no duplication */}
+        {title && (
+          <header className="mb-8">
+            <h2 className="
+              text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 pl-1
+              text-sf-hst
+            ">
+              {title}
+            </h2>
+          </header>
+        )}
+        
+        {/* Main content area */}
         {children}
       </div>
     </Component>

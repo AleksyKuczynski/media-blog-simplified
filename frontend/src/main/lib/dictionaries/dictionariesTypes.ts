@@ -1,7 +1,7 @@
-// src/main/lib/dictionaries/dictionariesTypes.ts - FIXED
+// src/main/lib/dictionaries/dictionariesTypes.ts - Fixed to match enhanced dictionary
 export type Lang = 'ru'; // Simplified to Russian only
 
-// Basic structure interfaces that components still expect
+// Basic structure interfaces
 export interface NavigationTranslations {
   home: string;
   rubrics: string;
@@ -48,6 +48,7 @@ export interface FooterTranslations {
   };
 }
 
+// Enhanced common translations with Russian pluralization
 export interface CommonTranslations {
   loading: string;
   readMore: string;
@@ -61,6 +62,12 @@ export interface CommonTranslations {
   loadMore: string;
   editorial: string;
   tableOfContents: string;
+  // Added: Russian pluralization support
+  articles: {
+    one: string;   // 1 статья
+    few: string;   // 2-4 статьи  
+    many: string;  // 5+ статей
+  };
 }
 
 export interface SortingTranslations {
@@ -70,32 +77,22 @@ export interface SortingTranslations {
 }
 
 export interface FilterTranslations {
-  reset: string;
+  all: string;
+  category: string;
+  author: string;
+  date: string;
 }
 
 export interface CategoryTranslations {
-  categories: string;
-  allCategories: string;
-  selectCategory: string;
+  all: string;
+  music: string;
+  events: string;
+  culture: string;
+  ideas: string;
+  mystic: string;
 }
 
-// ✅ KEEP: Still used for color scheme switching (light/dark mode + color schemes)
-export interface ColorsTranslations {
-  name: string;
-  default: string;
-  scheme1: string;
-  scheme2: string;
-}
-
-// ❌ REMOVED: No longer needed - we only have rounded theme now
-// export interface ThemesTranslations {
-//   name: string;
-//   default: string;
-//   rounded: string;
-//   sharp: string;
-// }
-
-// Section-specific interfaces
+// Enhanced section-specific interfaces
 export interface HomeTranslations {
   welcomeTitle: string;
   welcomeDescription: string;
@@ -103,8 +100,11 @@ export interface HomeTranslations {
   latestUpdates: string;
   exploreRubrics: string;
   viewAllRubrics: string;
+  // Enhanced: SEO-optimized descriptions
   featuredDescription: string;
   rubricsDescription: string;
+  viewAllRubricsDescription: string;
+  quickNavigation: string;
 }
 
 export interface ArticlesTranslations {
@@ -141,6 +141,8 @@ export interface RubricsTranslations {
   featuredRubric: string;
   articlesInRubric: string;
   rubricList: string;
+  // Enhanced: Missing translations
+  noRubricsAvailable: string;
 }
 
 export interface SectionsTranslations {
@@ -152,6 +154,7 @@ export interface SectionsTranslations {
   rubrics: RubricsTranslations;
 }
 
+// Enhanced SEO translations interface
 export interface SEOTranslations {
   siteName: string;
   titles: {
@@ -166,7 +169,7 @@ export interface SEOTranslations {
   };
 }
 
-// ✅ FIXED: Main dictionary interface - REMOVED themes requirement
+// Main dictionary interface - now matches enhanced dictionary
 export interface Dictionary {
   navigation: NavigationTranslations;
   footer: FooterTranslations;
@@ -178,17 +181,3 @@ export interface Dictionary {
   categories: CategoryTranslations;
   seo: SEOTranslations;
 }
-
-// Default search translations (used by some components)
-export const DEFAULT_SEARCH_TRANSLATIONS: SearchTranslations = {
-  placeholder: "Поиск статей...",
-  searching: "Поиск...",
-  noResults: "Результатов не найдено",
-  results: "Результаты поиска",
-  resultsFor: 'Результаты для "{query}"',
-  pageTitle: "Поиск",
-  pageDescription: "Поиск статей",
-  relatedTo: "связанные с",
-  submit: "Поиск",
-  minCharacters: "Введите минимум 3 символа"
-};
