@@ -1,4 +1,4 @@
-// src/main/components/Navigation/NavLinks.tsx - SEO-Enhanced Navigation Links
+// src/main/components/Navigation/NavLinks.tsx - Simplified with Unified Styling
 import Link from 'next/link';
 import { Lang, NavigationTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 import NavLinksClient from './NavLinksClient';
@@ -6,9 +6,8 @@ import NavLinksClient from './NavLinksClient';
 interface NavLinksProps {
   lang: Lang;
   translations: NavigationTranslations;
-  linkStyles: string;
-  disableClientDecorations?: boolean;
   role?: string;
+  className?: string; // Optional additional classes for container
 }
 
 type NavigationLink = {
@@ -42,23 +41,22 @@ const NAVIGATION_LINKS: NavigationLink[] = [
 export default function NavLinks({ 
   lang, 
   translations, 
-  linkStyles,
-  disableClientDecorations = false,
-  role = 'menuitem'
+  role = 'menuitem',
+  className = ''
 }: NavLinksProps) {
   return (
     <>
       {NAVIGATION_LINKS.map((link, index) => (
         <li 
           key={link.href} 
-          className="list-none"
+          className={`list-none ${className}`}
           role={role}
           itemScope
           itemType="https://schema.org/SiteNavigationElement"
         >
           <Link 
             href={`/ru${link.href}`}
-            className={`${linkStyles} ${!disableClientDecorations ? 'nav-link' : ''}`.trim()}
+            className="nav-link" // ✅ Only the essential class - NavLinksClient handles all styling
             data-href={link.href}
             aria-label={link.description}
             title={link.description}
@@ -83,10 +81,8 @@ export default function NavLinks({
         </li>
       ))}
       
-      {/* Only include client-side active state logic if not disabled */}
-      {!disableClientDecorations && (
-        <NavLinksClient lang={lang} translations={translations} />
-      )}
+      {/* ✅ Always include NavLinksClient - it's now the single source of truth */}
+      <NavLinksClient lang={lang} translations={translations} />
     </>
   );
 }

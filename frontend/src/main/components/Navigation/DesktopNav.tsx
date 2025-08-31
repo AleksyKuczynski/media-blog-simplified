@@ -1,4 +1,4 @@
-// src/main/components/Navigation/DesktopNav.tsx - SEO-Enhanced Desktop Navigation
+// src/main/components/Navigation/DesktopNav.tsx - Uses Unified NavLinksClient Styling
 'use client';
 
 import React from 'react';
@@ -16,7 +16,7 @@ export default function DesktopNavigation({
     <nav 
       id="main-navigation"
       className="hidden xl:block bg-sf-cont/80 backdrop-blur-lg border-b border-ol-var/20 transition-all duration-300"
-      aria-label="Главная навигация"
+      aria-label={translations.navigation.mainNavigation}
       role="navigation"
       itemScope
       itemType="https://schema.org/SiteNavigationElement"
@@ -34,10 +34,10 @@ export default function DesktopNavigation({
             role="menubar"
             aria-label="Главное меню"
           >
+            {/* ✅ SIMPLIFIED: No inline styles - NavLinksClient handles everything */}
             <NavLinks 
               lang={lang} 
               translations={translations.navigation} 
-              linkStyles="px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
               role="menuitem"
             />
           </ul>
@@ -110,7 +110,7 @@ export default function DesktopNavigation({
       {/* Current page context for screen readers */}
       {currentPageTitle && (
         <div className="sr-only" aria-live="polite">
-          Текущая страница: {currentPageTitle}
+          {translations.navigation.currentPage}: {currentPageTitle}
         </div>
       )}
     </nav>
