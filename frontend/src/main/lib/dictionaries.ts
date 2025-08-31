@@ -1,8 +1,8 @@
-// src/main/lib/dictionaries.ts - FIXED
+// src/main/lib/dictionaries.ts - Enhanced with comprehensive SEO entries
 import 'server-only'
 import { Dictionary, Lang } from './dictionaries/dictionariesTypes';
 
-// ✅ Static Russian dictionary - UPDATED to match new Dictionary interface
+// Enhanced Russian dictionary with comprehensive SEO optimization
 const RUSSIAN_DICTIONARY: Dictionary = {
   navigation: {
     home: 'Главная',
@@ -15,7 +15,7 @@ const RUSSIAN_DICTIONARY: Dictionary = {
   footer: {
     about: {
       title: 'О проекте',
-      description: 'Медиа-проект о событиях и культуре'
+      description: 'EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира'
     },
     quickLinks: {
       title: 'Быстрые ссылки'
@@ -49,7 +49,13 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     readingTime: 'время чтения',
     loadMore: 'Загрузить еще',
     editorial: 'Редакционная статья',
-    tableOfContents: 'Содержание'
+    tableOfContents: 'Содержание',
+    // Russian pluralization for articles
+    articles: {
+      one: 'статья',
+      few: 'статьи', 
+      many: 'статей'
+    }
   },
 
   search: {
@@ -59,69 +65,78 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     results: 'Результаты поиска',
     resultsFor: 'Результаты для "{query}"',
     pageTitle: 'Поиск',
-    pageDescription: 'Поиск статей',
+    pageDescription: 'Поиск статей по всем разделам блога EventForMe',
     relatedTo: 'связанные с',
     submit: 'Поиск',
     minCharacters: 'Введите минимум 3 символа'
   },
 
+  // Enhanced SEO section optimized for Google and Yandex
   seo: {
     siteName: 'EventForMe',
     titles: {
-      homePrefix: 'EventForMe - Медиа о событиях и культуре',
+      homePrefix: 'EventForMe — Медиа о культурных событиях, музыке и идеях',
       homeSuffix: 'Главная',
     },
     descriptions: {
-      home: 'EventForMe - ведущий медиа-проект о культурных событиях, музыке, идеях и тайнах. Читайте актуальные статьи и интервью с экспертами.',
+      home: 'EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира. Читайте актуальные статьи и интервью с экспертами в области культуры.',
     },
     keywords: {
-      general: 'события, культура, музыка, идеи, тайны, медиа, статьи, интервью, блог',
+      general: 'события, культура, музыка, идеи, тайны, медиа, статьи, интервью, блог, развлечения, искусство, культурные мероприятия',
     }
   },
 
   sections: {
     home: {
-      // Keep your existing entries and add these:
-      welcomeTitle: 'Добро пожаловать',
-      welcomeDescription: 'EventForMe — медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
+      welcomeTitle: 'EventForMe',
+      welcomeDescription: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
       featuredContent: 'Рекомендуемые материалы', 
-      latestUpdates:  'Новые публикации',
+      latestUpdates: 'Новые публикации',
       exploreRubrics: 'Изучить рубрики',
       viewAllRubrics: 'Просмотреть все рубрики',
-      // SEO-optimized descriptions for better semantic content
-      featuredDescription: 'Самые актуальные и интересные материалы нашей редакции',
-      rubricsDescription: 'Изучите наши тематические рубрики и найдите интересующие вас темы',
+      
+      // Enhanced SEO-optimized descriptions
+      featuredDescription: 'Самые актуальные и интересные материалы нашей редакции — читайте лучшие статьи о культуре, музыке и современных трендах',
+      rubricsDescription: 'Изучите наши тематические рубрики и найдите интересующие вас темы — от музыки до тайн современного мира',
+      viewAllRubricsDescription: 'Перейти к полному списку всех доступных рубрик на сайте',
+      quickNavigation: 'Быстрая навигация по странице',
     },
+    
     articles: {
       allArticles: 'Все статьи',
       featuredArticles: 'Рекомендуемые статьи',
       latestArticles: 'Последние статьи',
       noArticlesFound: 'Статьи не найдены.',
-      noFeaturedArticles: 'Нет рекомендуемых статей.',
+      noFeaturedArticles: 'В данный момент нет рекомендуемых статей.',
       moreArticlesToLoad: 'Есть еще статьи для загрузки...',
       loadMore: 'Загрузить еще'
     },
+    
     authors: {
       allAuthors: 'Все авторы',
       ourAuthors: 'Наши авторы',
       noAuthorsFound: 'Авторы не найдены.',
       moreAuthorsToLoad: 'Есть еще авторы для загрузки...'
     },
+    
     author: {
       noArticlesFound: 'Статьи этого автора не найдены.',
       articlesByAuthor: 'Статьи автора {author}',
       authorProfile: 'Профиль автора',
       articlesWrittenBy: 'Статьи, написанные автором {author}'
     },
+    
     categories: {
       allCategories: 'Все категории',
       noArticlesFound: 'Статьи этой категории не найдены.'
     },
+    
     rubrics: {
       allRubrics: 'Все рубрики',
-      featuredRubric: 'Рубрика в фокусе',
-      articlesInRubric: 'статей в рубрике', // For "5 статей в рубрике"
-      rubricList: 'Список рубрик'
+      featuredRubric: 'Рекомендуемая рубрика',
+      articlesInRubric: 'статей в рубрике',
+      rubricList: 'Список рубрик',
+      noRubricsAvailable: 'В данный момент рубрики недоступны.',
     }
   },
 
@@ -132,18 +147,37 @@ const RUSSIAN_DICTIONARY: Dictionary = {
   },
 
   filter: {
-    reset: 'Сброс'
+    all: 'Все',
+    category: 'Категория',
+    author: 'Автор',
+    date: 'Дата'
   },
 
   categories: {
-    categories: 'Категория',
-    allCategories: 'Все категории',
-    selectCategory: 'Выберите категорию'
+    all: 'Все категории',
+    music: 'Музыка',
+    events: 'События',
+    culture: 'Культура',
+    ideas: 'Идеи',
+    mystic: 'Тайны'
   }
-
 };
 
-// ✅ SIMPLIFIED: Always return Russian dictionary, ignore lang parameter
-export const getDictionary = async (locale: Lang): Promise<Dictionary> => {
+// Single source of truth - export the dictionary getter
+export async function getDictionary(locale: Lang): Promise<Dictionary> {
+  // Always return Russian dictionary since we're Russian-focused
   return RUSSIAN_DICTIONARY;
-};
+}
+
+// Helper function to get Russian pluralization for article count
+export function getRussianArticleCount(count: number): string {
+  const dict = RUSSIAN_DICTIONARY.common.articles;
+  
+  if (count % 10 === 1 && count % 100 !== 11) {
+    return `${count} ${dict.one}`;
+  } else if (count % 10 >= 2 && count % 10 <= 4 && (count % 100 < 10 || count % 100 >= 20)) {
+    return `${count} ${dict.few}`;
+  } else {
+    return `${count} ${dict.many}`;
+  }
+}
