@@ -1,4 +1,4 @@
-// src/main/components/Navigation/NavigationSchema.tsx - Navigation Structured Data
+// src/main/components/Navigation/NavigationSchema.tsx - Fixed with Dictionary Integration
 import { Lang, NavigationTranslations } from "@/main/lib/dictionaries/dictionariesTypes";
 
 interface NavigationSchemaProps {
@@ -11,36 +11,48 @@ export function NavigationSchema({ lang, translations }: NavigationSchemaProps) 
     "@context": "https://schema.org",
     "@type": "SiteNavigationElement",
     "@id": "https://event4me.eu/#navigation",
-    "name": "Main Navigation",
+    "name": translations.mainNavigation, // ✅ FIXED: From dictionary
     "inLanguage": "ru",
+    "audience": {
+      "@type": "Audience",
+      "geographicArea": ["Russia", "Belarus", "Kazakhstan", "Ukraine"]
+    },
     "hasPart": [
       {
         "@type": "WebPageElement",
         "@id": "https://event4me.eu/ru/#homepage-link",
         "name": translations.home,
         "url": "https://event4me.eu/ru",
-        "description": "Главная страница EventForMe"
+        "description": translations.logoMainPageLabel, // ✅ FIXED: From dictionary instead of hardcoded
+        "position": 1,
+        "inLanguage": "ru"
       },
       {
         "@type": "WebPageElement", 
         "@id": "https://event4me.eu/ru/articles/#articles-link",
         "name": translations.articles,
         "url": "https://event4me.eu/ru/articles",
-        "description": "Все статьи и публикации"
+        "description": translations.articlesDescription, // ✅ FIXED: From dictionary
+        "position": 2,
+        "inLanguage": "ru"
       },
       {
         "@type": "WebPageElement",
         "@id": "https://event4me.eu/ru/rubrics/#rubrics-link", 
         "name": translations.rubrics,
         "url": "https://event4me.eu/ru/rubrics",
-        "description": "Тематические рубрики и разделы"
+        "description": translations.rubricsDescription, // ✅ FIXED: From dictionary
+        "position": 3,
+        "inLanguage": "ru"
       },
       {
         "@type": "WebPageElement",
         "@id": "https://event4me.eu/ru/authors/#authors-link",
         "name": translations.authors, 
         "url": "https://event4me.eu/ru/authors",
-        "description": "Наши авторы и эксперты"
+        "description": translations.authorsDescription, // ✅ FIXED: From dictionary
+        "position": 4,
+        "inLanguage": "ru"
       }
     ]
   };

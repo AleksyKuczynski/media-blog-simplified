@@ -1,11 +1,14 @@
-// src/main/components/SEO/SEOManager.tsx
+// src/main/components/SEO/SEOManager.tsx - Fixed TypeScript Issues
 import { Metadata } from 'next';
 import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
-import { generateRussianSEOMetadata, RussianSEOStructuredData } from './RussianSEOMetadata';
+import { generateRussianSEOMetadata } from './RussianSEOMetadata';
+
+// ✅ FIXED: Proper type definition for page types
+type PageType = 'home' | 'article' | 'rubric' | 'author' | 'search';
 
 interface SEOManagerProps {
   dict: Dictionary;
-  pageType: 'home' | 'article' | 'rubric' | 'author' | 'search';
+  pageType: PageType;
   pageData?: {
     title?: string;
     description?: string;
@@ -26,6 +29,16 @@ interface SEOManagerProps {
   };
 }
 
+// ✅ FIXED: Proper interface for SEO templates
+interface SEOTemplate {
+  title: string;
+  description: string;
+  keywords: string;
+}
+
+// ✅ FIXED: Proper type for templates object
+type SEOTemplates = Record<PageType, SEOTemplate>;
+
 export function generateSEOMetadata({ dict, pageType, pageData = {} }: SEOManagerProps): Metadata {
   const seoTemplate = getSEOTemplate(dict, pageType);
   
@@ -44,8 +57,9 @@ export function generateSEOMetadata({ dict, pageType, pageData = {} }: SEOManage
   });
 }
 
-function getSEOTemplate(dict: Dictionary, pageType: string) {
-  const templates = {
+// ✅ FIXED: Proper type guard and fallback handling
+function getSEOTemplate(dict: Dictionary, pageType: PageType): SEOTemplate {
+  const templates: SEOTemplates = {
     home: {
       title: dict.seo.titles.homePrefix,
       description: dict.seo.descriptions.home,
@@ -73,5 +87,25 @@ function getSEOTemplate(dict: Dictionary, pageType: string) {
     }
   };
   
+  // ✅ FIXED: Type-safe access with proper fallback
   return templates[pageType] || templates.home;
+}
+
+// ✅ NEW: Type guard helper function (optional, for additional safety)
+export function isValidPageType(pageType: string): pageType is PageType {
+  return ['home', 'article', 'rubric', 'author', 'search'].includes(pageType);
+}
+
+// ✅ NEW: Safe wrapper function for external usage (optional)
+export function generateSEOMetadataSafe({ 
+  dict, 
+  pageType, 
+  pageData = {} 
+}: {
+  dict: Dictionary;
+  pageType: string;
+  pageData?: SEOManagerProps['pageData'];
+}): Metadata {
+  const safePageType: PageType = isValidPageType(pageType) ? pageType : 'home';
+  return generateSEOMetadata({ dict, pageType: safePageType, pageData });
 }

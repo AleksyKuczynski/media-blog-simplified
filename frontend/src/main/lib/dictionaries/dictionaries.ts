@@ -10,7 +10,6 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     authors: 'Авторы',
     search: 'Поиск',
     articles: 'Статьи',
-    // ✅ EXISTING: Already present in dictionaries
     logoAlt: 'EventForMe - медиа о культурных событиях',
     primarySections: 'Основные разделы сайта',
     currentPage: 'Текущая страница',
@@ -26,16 +25,15 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     keyboardNavigationLabel: 'Быстрая навигация для клавиатуры',
     clearSearch: 'Очистить поиск',
     focusSearch: 'Фокус на поиске',
-    // ✅ NEW: Added missing SEO descriptions for navigation links
     articlesDescription: 'Просмотреть все статьи и публикации на сайте EventForMe',
     rubricsDescription: 'Изучить тематические рубрики и разделы контента',
     authorsDescription: 'Познакомиться с нашими авторами и экспертами',
-    // ✅ NEW: Added missing desktop navigation labels
     primarySectionsLabel: 'Основные разделы сайта',
     mainMenuLabel: 'Главное меню',
     searchAndSettingsLabel: 'Поиск и настройки',
     siteSearchLabel: 'Поиск по сайту',
-    logoMainPageLabel: 'EventForMe - главная страница'
+    logoMainPageLabel: 'EventForMe - главная страница',
+    homepageDescription: 'Главная страница EventForMe с последними новостями о культурных событиях, музыке и современных идеях'
   },
   
   search: {

@@ -1,4 +1,4 @@
-// src/main/components/SEO/StructuredDataManager.tsx
+// src/main/components/SEO/StructuredDataManager.tsx - Fixed TypeScript Issues
 import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
 
 interface StructuredDataManagerProps {
@@ -7,8 +7,66 @@ interface StructuredDataManagerProps {
   data?: any;
 }
 
+// ✅ FIXED: Proper type definitions for schema objects
+type BaseSchema = {
+  "@context": "https://schema.org";
+  [key: string]: any;
+};
+
+type OrganizationSchema = BaseSchema & {
+  "@type": "Organization";
+  "@id": string;
+  name: string;
+  description: string;
+  url: string;
+  logo: string;
+  contactPoint: {
+    "@type": "ContactPoint";
+    email: string;
+    contactType: string;
+    availableLanguage: string[];
+  };
+  sameAs: string[];
+  areaServed: string[];
+  knowsLanguage: string[];
+};
+
+type WebsiteSchema = BaseSchema & {
+  "@type": "WebSite";
+  "@id": string;
+  url: string;
+  name: string;
+  description: string;
+  inLanguage: string;
+  publisher: { "@id": string };
+  potentialAction: {
+    "@type": "SearchAction";
+    target: {
+      "@type": "EntryPoint";
+      urlTemplate: string;
+    };
+    "query-input": string;
+  };
+};
+
+type ArticleSchema = BaseSchema & {
+  "@type": "Article";
+  headline: string;
+  description: string;
+  author: {
+    "@type": "Person";
+    name: string;
+  };
+  publisher: { "@id": string };
+  datePublished: string;
+  dateModified: string;
+  image: string;
+  inLanguage: string;
+  mainEntityOfPage: string;
+};
+
 export function StructuredDataManager({ dict, pageType, data }: StructuredDataManagerProps) {
-  const generateOrganizationSchema = () => ({
+  const generateOrganizationSchema = (): OrganizationSchema => ({
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": "https://event4me.eu/#organization",
@@ -27,7 +85,7 @@ export function StructuredDataManager({ dict, pageType, data }: StructuredDataMa
     "knowsLanguage": ["ru"]
   });
 
-  const generateWebsiteSchema = () => ({
+  const generateWebsiteSchema = (): WebsiteSchema => ({
     "@context": "https://schema.org",
     "@type": "WebSite",
     "@id": "https://event4me.eu/#website",
@@ -46,7 +104,7 @@ export function StructuredDataManager({ dict, pageType, data }: StructuredDataMa
     }
   });
 
-  const generateArticleSchema = (articleData: any) => ({
+  const generateArticleSchema = (articleData: any): ArticleSchema => ({
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": articleData.title,
@@ -63,7 +121,8 @@ export function StructuredDataManager({ dict, pageType, data }: StructuredDataMa
     "mainEntityOfPage": articleData.url
   });
 
-  const schemas = [
+  // ✅ FIXED: Use union type for schemas array
+  const schemas: (OrganizationSchema | WebsiteSchema | ArticleSchema)[] = [
     generateOrganizationSchema(),
     generateWebsiteSchema()
   ];

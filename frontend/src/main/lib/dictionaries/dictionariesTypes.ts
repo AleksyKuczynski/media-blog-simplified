@@ -8,7 +8,6 @@ export interface NavigationTranslations {
   authors: string;
   search: string;
   articles: string;
-  // ✅ EXISTING: Already defined in dictionary
   logoAlt: string;
   primarySections: string;
   currentPage: string;
@@ -24,16 +23,15 @@ export interface NavigationTranslations {
   keyboardNavigationLabel: string;
   clearSearch: string;
   focusSearch: string;
-  // ✅ NEW: Added missing SEO descriptions for navigation links
   articlesDescription: string;
   rubricsDescription: string;
   authorsDescription: string;
-  // ✅ NEW: Added missing desktop navigation labels  
   primarySectionsLabel: string;
   mainMenuLabel: string;
   searchAndSettingsLabel: string;
   siteSearchLabel: string;
   logoMainPageLabel: string;
+  homepageDescription: string;
 }
 
 export interface SearchTranslations {
@@ -107,7 +105,7 @@ export interface FilterTranslations {
   category: string;
   author: string;
   date: string;
-  reset: string; // ✅ NEW: Added missing reset translation
+  reset: string;
 }
 
 export interface CategoryTranslations {
@@ -117,7 +115,7 @@ export interface CategoryTranslations {
   culture: string;
   ideas: string;
   mystic: string;
-  allCategories: string; // ✅ NEW: Added missing allCategories
+  allCategories: string;
 }
 
 // Enhanced section-specific interfaces
