@@ -172,13 +172,42 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     siteName: 'EventForMe',
     titles: {
       homePrefix: 'EventForMe',
-      homeSuffix: 'Медиа о культурных событиях'
+      homeSuffix: 'Медиа о культурных событиях',
+      // ✅ NEW: Template-based titles for consistency
+      articleTemplate: '{title} - EventForMe',
+      rubricTemplate: 'Рубрика {rubric} - EventForMe', 
+      authorTemplate: 'Автор {author} - EventForMe',
+      searchTemplate: 'Поиск - EventForMe'
     },
     descriptions: {
-      home: 'EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира'
+      home: 'EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
+      // ✅ NEW: Template-based descriptions
+      articleTemplate: 'Читать статью "{title}" на EventForMe - медиа о культуре, музыке и современных идеях',
+      rubricTemplate: 'Все статьи в рубрике {rubric} на EventForMe - медиа о культурных событиях',
+      authorTemplate: 'Статьи автора {author} на EventForMe - читать все публикации', 
+      searchTemplate: 'Поиск статей по культурным событиям, музыке и современным идеям на EventForMe'
     },
     keywords: {
-      general: 'культурные события, музыка, современные идеи, мистика, культура'
+      general: 'культурные события, музыка, современные идеи, мистика, культура',
+      // ✅ NEW: Specialized keywords by category
+      articles: 'статьи о культуре, музыкальные обзоры, культурная журналистика, EventForMe',
+      rubrics: 'рубрики о культуре, тематические разделы, культурные категории',
+      authors: 'авторы о культуре, культурные эксперты, музыкальные журналисты',
+      music: 'музыка, музыкальные события, концерты, фестивали, музыкальные обзоры',
+      culture: 'культура, культурные события, искусство, театр, выставки',
+      events: 'события, мероприятия, фестивали, концерты, культурная афиша',
+      mystic: 'мистика, эзотерика, тайны, необычные явления, мистические события'
+    },
+    // ✅ NEW: Structured data configuration
+    structuredData: {
+      organizationName: 'EventForMe',
+      organizationDescription: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
+      contactEmail: 'info@event4me.eu',
+      socialProfiles: [
+        'https://t.me/eventforme',
+        'https://vk.com/eventforme'
+      ],
+      geographicAreas: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine', 'EU']
     }
   }
 };

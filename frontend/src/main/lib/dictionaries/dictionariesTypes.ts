@@ -187,12 +187,38 @@ export interface SEOTranslations {
   titles: {
     homePrefix: string;
     homeSuffix: string;
+    // New template-based titles
+    articleTemplate: string;
+    rubricTemplate: string;
+    authorTemplate: string;
+    searchTemplate: string;
   };
   descriptions: {
     home: string;
+    // New template-based descriptions
+    articleTemplate: string;
+    rubricTemplate: string;
+    authorTemplate: string;
+    searchTemplate: string;
   };
   keywords: {
     general: string;
+    // New specialized keywords
+    articles: string;
+    rubrics: string;
+    authors: string;
+    music: string;
+    culture: string;
+    events: string;
+    mystic: string;
+  };
+  // New structured data templates
+  structuredData: {
+    organizationName: string;
+    organizationDescription: string;
+    contactEmail: string;
+    socialProfiles: string[];
+    geographicAreas: string[];
   };
 }
 
