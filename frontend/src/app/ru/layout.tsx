@@ -1,4 +1,4 @@
-// src/app/ru/layout.tsx - Ultra-simplified main layout
+// src/app/ru/layout.tsx - Enhanced Layout with SEO Navigation Integration (Fixed)
 import { getDictionary } from '@/main/lib/dictionaries';
 import Navigation from '@/main/components/Navigation/Navigation'
 import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
@@ -7,38 +7,53 @@ import React from 'react';
 import Footer from '@/main/components/Footer/Footer';
 
 export const metadata: Metadata = {
-  title: "My Blog",
-  description: "Discover the latest trends, stories, and insights",
+  title: "EventForMe — Медиа о культурных событиях",
+  description: "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
 }
 
 export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode
-  // ✅ REMOVED: No more params needed
 }) {
   const dict: Dictionary = await getDictionary('ru');
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg" role="banner">
-        {/* ✅ SIMPLIFIED: Direct Tailwind classes instead of CSS variables */}
-        <Navigation 
-          lang="ru"
-          translations={{
-            navigation: dict.navigation,
-            search: dict.search,
-            colors: dict.colors, // ✅ Keep only if you want color scheme switching
-          }}
-        />
-      </header>
-      <main className="flex-grow mt-16 md:mt-24 pt-4 md:pt-8" role="main">        
-        {React.cloneElement(children as React.ReactElement, { searchTranslations: dict.search, sortingTranslations: dict.sorting })}      
-      </main>
-      <Footer
+      {/* Enhanced Navigation with SEO improvements - Fixed positioning */}
+      <Navigation 
         lang="ru"
-        translations={dict}
+        translations={{
+          navigation: dict.navigation,
+          search: dict.search,
+        }}
       />
+      
+      {/* Main content area with proper semantic structure */}
+      <main 
+        id="main-content" 
+        className="flex-grow pt-16 xl:pt-24 min-h-screen" 
+        role="main"
+        tabIndex={-1}
+        aria-label="Основное содержимое страницы"
+      >        
+        {React.cloneElement(children as React.ReactElement, { 
+          searchTranslations: dict.search, 
+          sortingTranslations: dict.sorting 
+        })}      
+      </main>
+      
+      {/* Footer with proper semantic structure and ID for skip links */}
+      <footer 
+        id="site-footer"
+        role="contentinfo" 
+        aria-label="Информация о сайте и дополнительные ссылки"
+      >
+        <Footer
+          lang="ru"
+          translations={dict}
+        />
+      </footer>
     </>
   );
 }

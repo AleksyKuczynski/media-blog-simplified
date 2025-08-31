@@ -1,4 +1,4 @@
-// src/main/components/Navigation/MobileNav.tsx - COMPLETE FIXED VERSION
+// src/main/components/Navigation/MobileNav.tsx - SEO-Enhanced Mobile Navigation (Fixed)
 'use client'
 
 import { useState, useRef, useReducer, useCallback } from 'react'
@@ -11,11 +11,11 @@ import { CONTROLS_ANIMATION_DURATION, MENU_ANIMATION_DURATION } from '../Interfa
 import { menuAnimationReducer } from './menuAnimationReducer'
 import SearchBar from '../Search/SearchBar'
 import { MobileNavOverlay } from './MobileNavOverlay'
-import { FloatingButton } from '../Interface/FloatingButton'
 
 export default function MobileNavigation({
   lang,
   translations,
+  currentPageTitle,
 }: NavProps) {
   const [menuState, dispatch] = useReducer(menuAnimationReducer, 'CLOSED');
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -24,7 +24,7 @@ export default function MobileNavigation({
   const pathname = usePathname()
   const lastPathRef = useRef(pathname)
 
-  // Check if actual navigation occurred
+  // Auto-close on navigation
   if (pathname !== lastPathRef.current) {
     lastPathRef.current = pathname
     isMenuOpen && setIsMenuOpen(false)
@@ -76,11 +76,71 @@ export default function MobileNavigation({
   }, [handleClose]);
   
   return (
-    <nav className="xl:hidden">
+    <>
+      {/* Top Navigation Bar for Mobile/Tablet */}
+      <nav 
+        className="xl:hidden bg-sf-cont/80 backdrop-blur-lg border-b border-ol-var/20 transition-all duration-300"
+        aria-label={translations.navigation.mainNavigation}
+        itemScope
+        itemType="https://schema.org/SiteNavigationElement"
+      >
+        <div className="flex items-center justify-between h-16 px-4">
+          {/* Left: Logo */}
+          <div className="flex items-center">
+            <Logo 
+              lang={lang} 
+              variant="mobile"
+              role="img"
+              aria-label={translations.navigation.logoAlt}
+            />
+          </div>
+          
+          {/* Right: Menu Toggle Button - KEPT IN TOP AREA */}
+          <button
+            onClick={toggleMenu}
+            aria-expanded={isMenuOpen}
+            aria-controls="mobile-menu-content" 
+            aria-label={isMenuOpen ? translations.navigation.closeMenu : translations.navigation.openMenu}
+            className="p-3 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            title={isMenuOpen ? translations.navigation.closeMenu : translations.navigation.openMenu}
+            type="button"
+          >
+            <div className="w-6 h-6 flex items-center justify-center">
+              {isMenuOpen ? (
+                <svg 
+                  className="w-5 h-5" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg 
+                  className="w-5 h-5" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </div>
+            
+            <span className="sr-only">
+              {isMenuOpen ? translations.navigation.closeMenu : translations.navigation.openMenu}
+            </span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && <MobileNavOverlay onClose={handleClose} />}
       
-      {/* Mobile Menu Panel */}
-      <div 
+      {/* Mobile Menu Panel with Enhanced Semantic Structure */}
+      <aside 
         ref={menuRef}
         className={`
           fixed top-0 right-0 h-full 
@@ -89,23 +149,35 @@ export default function MobileNavigation({
           rounded-l-3xl shadow-2xl
           transition-all duration-300
           ${(menuState === 'CLOSED' || menuState === 'CLOSING') 
-            ? 'translate-x-full' 
-            : 'translate-x-0'}
+            ? 'translate-x-full opacity-0' 
+            : 'translate-x-0 opacity-100'}
         `}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mobile-menu-title"
+        aria-describedby="mobile-menu-desc"
+        tabIndex={-1}
       >
-        {/* Close Button */}
-        <div className={`
+        {/* Enhanced Menu Header */}
+        <header className={`
           fixed top-4 right-4 flex items-center space-x-4 
           transition-all duration-200 z-50
           ${menuState === 'FULLY_OPENED' ? 'opacity-100' : 'opacity-0'}
         `}>
+          <h2 id="mobile-menu-title" className="sr-only">
+            {translations.navigation.menuTitle}
+          </h2>
+          <p id="mobile-menu-desc" className="sr-only">
+            {translations.navigation.menuDescription}
+          </p>
+          
           <NavButton
             ref={toggleRef}
             onClick={handleClose}
             context="mobile"
             aria-expanded={isMenuOpen}
-            aria-controls="mobile-menu"
-            aria-label="Close menu"
+            aria-controls="mobile-menu-content"
+            aria-label={translations.navigation.closeMenu}
             className="p-3 rounded-full bg-sf-hi hover:bg-sf-hst transition-colors duration-200"
           >
             <svg 
@@ -114,6 +186,7 @@ export default function MobileNavigation({
               fill="none" 
               viewBox="0 0 24 24" 
               stroke="currentColor"
+              aria-hidden="true"
             >
               <path 
                 strokeLinecap="round" 
@@ -123,88 +196,86 @@ export default function MobileNavigation({
               />
             </svg>
           </NavButton>
-        </div>
+        </header>
 
-        {/* Menu Content */}
-        <div 
-          id="mobile-menu" 
+        {/* Main Menu Content */}
+        <main 
+          id="mobile-menu-content"
           className="h-full flex flex-col justify-center px-8 py-16 space-y-8"
+          role="main"
         >
           
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <Logo lang={lang} variant="mobile" />
-          </div>
-
-          {/* Navigation Links */}
-          <div onClick={handleNavClick}>
-            <ul className="space-y-6 text-center">
-              <NavLinks 
-                lang={lang} 
-                translations={translations.navigation} 
-                linkStyles="px-4 py-2 rounded-full text-lg font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200"
-                disableClientDecorations={true}
-              />
-            </ul>
-          </div>
-
-          {/* Search */}
-          <div className="mt-8">
-            <SearchBar 
-              searchTranslations={translations.search} 
-              lang={lang}
-              onSearchComplete={handleSearchComplete}
-              className="w-full rounded-2xl"
+          {/* Brand/Logo Section */}
+          <section 
+            className="flex justify-center mb-8"
+            aria-label={translations.navigation.logoAlt}
+          >
+            <Logo 
+              lang={lang} 
+              variant="mobile"
+              role="img"
+              aria-label={translations.navigation.logoAlt}
             />
-          </div>
+          </section>
 
-          {/* Dark/Light Toggle */}
-          <div className="flex justify-center">
-            <button
-              className="p-4 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf transition-all duration-200"
-              onClick={() => document.documentElement.classList.toggle('dark')}
-              aria-label="Toggle dark mode"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" 
+          {/* Primary Navigation Section - Enhanced for Small Laptops */}
+          <section 
+            aria-labelledby="mobile-nav-heading"
+            onClick={handleNavClick}
+          >
+            <h3 id="mobile-nav-heading" className="sr-only">
+              {translations.navigation.primarySections}
+            </h3>
+            
+            <nav role="navigation" aria-label={translations.navigation.mainNavigation}>
+              <ul 
+                className="space-y-6 text-center"
+                role="menubar"
+                aria-orientation="vertical"
+              >
+                <NavLinks 
+                  lang={lang} 
+                  translations={translations.navigation} 
+                  // Enhanced styles with hover/focus for small laptops
+                  linkStyles="block px-6 py-3 rounded-2xl text-lg font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi focus:bg-sf-hi focus:text-on-sf transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  disableClientDecorations={true}
+                  role="menuitem"
                 />
-              </svg>
-            </button>
-          </div>
+              </ul>
+            </nav>
+          </section>
 
+          {/* Search Section */}
+          <section 
+            className="mt-8"
+            aria-labelledby="mobile-search-heading"
+          >
+            <h3 id="mobile-search-heading" className="sr-only">
+              {translations.search.pageDescription}
+            </h3>
+            
+            <div role="search" aria-label={translations.search.pageDescription}>
+              <SearchBar 
+                searchTranslations={translations.search} 
+                lang={lang}
+                onSearchComplete={handleSearchComplete}
+                className="w-full rounded-2xl"
+                aria-label={translations.search.placeholder}
+              />
+            </div>
+          </section>
+
+          {/* Removed Settings Section - No More Theme Toggle */}
+
+        </main>
+      </aside>
+      
+      {/* Current page context for mobile */}
+      {currentPageTitle && (
+        <div className="sr-only" aria-live="polite">
+          {translations.navigation.currentPage}: {currentPageTitle}
         </div>
-      </div>
-
-      {/* FIXED: Complete Floating Menu Button with Hamburger Icon */}
-      <FloatingButton
-  onClick={toggleMenu}
-  aria-expanded={isMenuOpen}
-  aria-controls="mobile-menu" 
-  aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-  className="!p-4 !bg-pr-cont !text-on-pr !shadow-lg hover:!shadow-xl" // Use ! to force override
-  position="bottom-right"
-  zIndex="menu"
->
-  {/* Hamburger Icon */}
-  <svg 
-    className="w-6 h-6" 
-    xmlns="http://www.w3.org/2000/svg" 
-    fill="none" 
-    viewBox="0 0 24 24" 
-    stroke="currentColor"
-  >
-    <path 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      strokeWidth={2} 
-      d="M4 6h16M4 12h16M4 18h16" 
-    />
-  </svg>
-</FloatingButton>
-    </nav>
+      )}
+    </>
   );
 }

@@ -1,10 +1,13 @@
-// /frontend/src/main/components/Logo.tsx
-import Link from 'next/link'
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes'
+// src/main/components/Logo.tsx - SEO-Enhanced Logo (Non-Destructive)
+import Link from 'next/link';
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 interface LogoProps {
-  lang: Lang
-  variant: 'desktop' | 'mobile' | 'footer'
+  lang: Lang;
+  variant: 'desktop' | 'mobile' | 'footer';
+  className?: string;
+  role?: string;
+  'aria-label'?: string;
 }
 
 const variantStyles = {
@@ -19,10 +22,39 @@ const containerStyles = {
   footer: 'flex items-center justify-center'
 }
 
-export default function Logo({ lang, variant }: LogoProps) {
+export default function Logo({ 
+  lang, 
+  variant, 
+  className = '',
+  role = 'img',
+  'aria-label': ariaLabel
+}: LogoProps) {
+  // Enhanced container classes without borders on focus/active
+  const linkClasses = `
+    ${containerStyles[variant]}
+    focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 
+    rounded-lg transition-all duration-200 no-underline
+    ${className}
+  `;
+
   return (
-    <Link href={`/${lang}`} aria-label="Home" className={containerStyles[variant]} >
-      <div className={`relative ${variantStyles[variant]}`}>
+    <Link 
+      href={`/${lang}`} 
+      aria-label={ariaLabel || "EventForMe - Home"}
+      title="EventForMe - Главная страница"
+      className={linkClasses}
+      itemScope
+      itemType="https://schema.org/Organization"
+    >
+      {/* Keep existing logo structure intact, just add schema.org metadata */}
+      <div 
+        className={`relative ${variantStyles[variant]}`}
+        role={role}
+        itemProp="logo"
+        itemScope
+        itemType="https://schema.org/ImageObject"
+      >
+        {/* Keep the existing SVG exactly as it is */}
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
           viewBox="0 0 599 279" 
@@ -34,7 +66,7 @@ export default function Logo({ lang, variant }: LogoProps) {
               d="M50 237c0,1 -1,1 -2,1l-34 0c0,0 -1,0 -1,1l0 16c0,4 1,7 3,9 2,2 5,3 8,3 3,0 5,-1 7,-3 2,-2 3,-4 4,-7 0,-1 1,-1 2,-1l11 1c1,0 1,0 1,0 0,0 0,1 0,1 -1,6 -3,12 -7,15 -4,4 -10,5 -17,5 -8,0 -14,-2 -18,-6 -5,-4 -7,-10 -7,-17l0 -50c0,-7 2,-13 7,-17 5,-4 11,-7 18,-7 8,0 14,2 18,7 4,4 7,10 7,17l0 31zm-25 -43c-3,0 -6,1 -8,3 -2,2 -3,5 -3,9l0 19c0,0 0,1 1,1l20 0c0,0 1,0 1,-1l0 -19c0,-4 -1,-7 -3,-9 -2,-2 -5,-3 -8,-3zm59 84c-1,0 -1,0 -2,-1l-18 -92 0 -1c0,-1 0,-1 1,-1l13 0c1,0 2,0 2,1l11 70c0,0 0,0 0,0 0,0 0,0 0,0l11 -70c0,-1 1,-1 2,-1l13 0c1,0 1,0 1,0 0,0 0,1 0,1l-18 92c0,1 -1,1 -2,1l-13 0zm97 -41c0,1 -1,1 -1,1l-34 0c0,0 -1,0 -1,1l0 16c0,4 1,7 3,9 2,2 5,3 8,3 3,0 5,-1 7,-3 2,-2 3,-4 4,-7 0,-1 1,-1 2,-1l11 1c1,0 1,0 1,0 0,0 0,1 0,1 -1,6 -3,12 -7,15 -4,4 -10,5 -17,5 -8,0 -14,-2 -18,-6 -5,-4 -7,-10 -7,-17l0 -50c0,-7 2,-13 7,-17 5,-4 11,-7 18,-7 8,0 14,2 18,7 4,4 7,10 7,17l0 31zm-25 -43c-3,0 -6,1 -8,3 -2,2 -3,5 -3,9l0 19c0,0 0,1 1,1l20 0c0,0 1,0 1,-1l0 -19c0,-4 -1,-7 -3,-9 -2,-2 -5,-3 -8,-3zm76 -12c6,0 11,2 14,6 3,4 5,10 5,18l0 70c0,1 -1,1 -1,1l-11 0c-1,0 -1,0 -1,-1l0 -69c0,-4 -1,-7 -3,-10 -2,-2 -4,-3 -7,-3 -3,0 -6,1 -8,3 -2,2 -3,5 -3,9 0,1 0,1 0,1l0 69c0,1 -1,1 -2,1l-11 0c-1,0 -1,0 -1,-1l0 -92c0,-1 1,-2 1,-2l11 0c1,0 2,1 2,2l0 4c0,0 0,0 0,0 0,0 0,0 1,0 4,-4 9,-7 15,-7zm66 10c0,1 -1,1 -1,1l-10 0c0,0 -1,0 -1,1l0 61c0,4 1,7 2,8 1,2 4,2 7,2l1 0c1,0 2,1 2,2l0 10c0,1 -1,1 -2,1l-5 0c-6,0 -11,-1 -14,-4 -3,-2 -5,-7 -5,-14 0,-43 0,-72 0,-96 0,-1 1,-1 2,-1l11 0c1,0 1,1 1,1l0 18c0,0 0,1 1,1l10 0c1,0 1,1 1,2l0 7z"
             />
             <path 
-              className={`${variant === 'footer' ? 'fill-current' : 'fill-pr-cont group-hover:fill-pr-fix transition-colors'}`}
+              className={`${variant === 'footer' ? 'fill-current' : 'fill-tr-cont group-hover:fill-tr-fix transition-colors'}`}
               d="M509 182c6,0 11,2 14,7 3,4 5,11 5,19l0 69c0,1 -1,2 -2,2l-11 0c-1,0 -1,-1 -1,-2l0 -68c0,-4 -1,-8 -3,-10 -2,-2 -4,-4 -7,-4 -3,0 -6,1 -8,4 -2,2 -3,6 -3,10l0 69c0,1 -1,2 -2,2l-11 0c-1,0 -2,-1 -2,-2l0 -68c0,-4 -1,-8 -3,-10 -2,-2 -4,-4 -7,-4 -3,0 -6,1 -8,4 -2,2 -3,6 -3,10l0 69c0,1 -1,2 -1,2l-11 0c-1,0 -2,-1 -2,-2l0 -92c0,-1 1,-1 2,-1l11 0c1,0 1,0 1,1l0 4c0,0 0,0 0,0 0,0 0,0 1,0 2,-2 4,-4 7,-5 3,-1 5,-2 8,-2 8,0 13,3 16,10 0,0 0,0 0,0 0,0 0,0 0,-1 2,-3 5,-6 8,-7 3,-1 6,-2 10,-2zm90 55c0,1 -1,1 -1,1l-34 0c0,0 -1,0 -1,1l0 16c0,4 1,7 3,9 2,2 5,3 8,3 3,0 5,-1 7,-3 2,-2 3,-4 4,-7 0,-1 1,-1 2,-1l11 1c1,0 1,0 1,0 0,0 0,1 0,1 -1,6 -3,12 -7,15 -4,4 -10,5 -17,5 -8,0 -14,-2 -18,-6 -5,-4 -7,-10 -7,-17l0 -50c0,-7 2,-13 7,-17 5,-4 11,-7 18,-7 8,0 14,2 18,7 4,4 7,10 7,17l0 31zm-25 -43c-3,0 -6,1 -8,3 -2,2 -3,5 -3,9l0 19c0,0 0,1 1,1l20 0c0,0 1,0 1,-1l0 -19c0,-4 -1,-7 -3,-9 -2,-2 -5,-3 -8,-3z"
             />
             <path 
@@ -43,7 +75,26 @@ export default function Logo({ lang, variant }: LogoProps) {
             />
           </g>
         </svg>
+        
+        {/* Schema.org metadata - invisible but SEO-helpful */}
+        <meta itemProp="url" content="https://event4me.eu" />
+        <meta itemProp="name" content="EventForMe" />
+        {variant !== 'mobile' && (
+          <>
+            <meta itemProp="sameAs" content="https://event4me.eu/ru" />
+            <meta itemProp="alternateName" content="Event4Me" />
+            <meta itemProp="description" content="Медиа-проект о культурных событиях, музыке и современных идеях" />
+            <meta itemProp="foundingDate" content="2024" />
+            <meta itemProp="areaServed" content="Russia" />
+            <meta itemProp="knowsAbout" content="События, Культура, Музыка, Идеи" />
+          </>
+        )}
       </div>
+      
+      {/* Hidden text for screen readers only */}
+      <span className="sr-only">
+        EventForMe — медиа-проект о культурных событиях. Перейти на главную страницу.
+      </span>
     </Link>
-  )
+  );
 }

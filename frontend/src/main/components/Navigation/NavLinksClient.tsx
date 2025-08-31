@@ -1,4 +1,4 @@
-// src/main/components/Navigation/NavLinksClient.tsx - SIMPLIFIED
+// src/main/components/Navigation/NavLinksClient.tsx - Enhanced SEO-Friendly Client Logic (No Theme Toggle)
 'use client';
 
 import { useEffect } from 'react';
@@ -14,35 +14,90 @@ export default function NavLinksClient({ lang }: NavLinksClientProps) {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Simple active state detection with direct rounded theme classes
+    // Enhanced active state detection with SEO-friendly approach
     const links = document.querySelectorAll('.nav-link');
     
     links.forEach((link) => {
       const href = link.getAttribute('data-href');
-      if (!href) return;
+      const navSection = link.getAttribute('data-nav-section');
+      if (!href || !navSection) return;
 
       const linkElement = link as HTMLElement;
+      const spanElement = linkElement.querySelector('span[itemProp="name"]') as HTMLElement;
       
-      // Check if current page matches this link
+      // Enhanced active state detection
       const isActive = pathname.startsWith(`/ru${href}`);
+      const isExactMatch = pathname === `/ru${href}` || (href === '/' && pathname === '/ru');
       
-      if (isActive) {
-        // Active state: rounded theme styling
-        linkElement.className = linkElement.className.replace(
-          /text-gray-700|text-gray-300|hover:text-blue-600|dark:hover:text-blue-400/g, ''
-        ).trim();
-        linkElement.className += ' text-pr-cont bg-sf-hi font-bold rounded-full';
+      if (isActive || isExactMatch) {
+        // Active state: Enhanced styling with accessibility
+        linkElement.classList.add('bg-sf-hi', 'text-pr-cont', 'font-bold');
+        linkElement.classList.remove('text-on-sf-var', 'hover:text-on-sf');
+        
+        // Update ARIA attributes for accessibility and SEO
+        linkElement.setAttribute('aria-current', 'page');
+        linkElement.setAttribute('data-active', 'true');
+        
+        // Add structured data indicator
+        if (spanElement) {
+          spanElement.setAttribute('data-current-page', 'true');
+        }
+        
       } else {
-        // Normal state: reset to base styling  
-        linkElement.className = linkElement.className.replace(
-          /text-pr-cont|bg-sf-hi|font-bold/g, ''
-        ).trim();
-        if (!linkElement.className.includes('text-gray-700')) {
-          linkElement.className += ' text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400';
+        // Normal state: Clean styling
+        linkElement.classList.remove('bg-sf-hi', 'text-pr-cont', 'font-bold');
+        linkElement.classList.add('text-on-sf-var', 'hover:text-on-sf');
+        
+        // Remove active ARIA attributes
+        linkElement.removeAttribute('aria-current');
+        linkElement.setAttribute('data-active', 'false');
+        
+        // Remove structured data indicator
+        if (spanElement) {
+          spanElement.removeAttribute('data-current-page');
         }
       }
     });
+    
   }, [pathname, lang]);
+
+  // Update page title in document for SEO
+  useEffect(() => {
+    // This helps with navigation context for screen readers and SEO
+    const updatePageContext = () => {
+      const currentSection = pathname.split('/')[2]; // Extract section from /ru/section/...
+      let sectionName = '';
+      
+      switch (currentSection) {
+        case 'articles':
+          sectionName = 'Статьи';
+          break;
+        case 'rubrics':
+          sectionName = 'Рубрики';
+          break;
+        case 'authors':
+          sectionName = 'Авторы';
+          break;
+        case 'search':
+          sectionName = 'Поиск';
+          break;
+        default:
+          sectionName = 'Главная';
+      }
+      
+      // Update meta description for current navigation context
+      let metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription && sectionName !== 'Главная') {
+        const baseDescription = metaDescription.getAttribute('content') || '';
+        if (!baseDescription.includes(sectionName)) {
+          // Add section context to meta description for better SEO
+          metaDescription.setAttribute('content', `${baseDescription} - ${sectionName}`);
+        }
+      }
+    };
+    
+    updatePageContext();
+  }, [pathname]);
 
   return null;
 }
