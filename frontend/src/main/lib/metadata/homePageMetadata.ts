@@ -1,6 +1,6 @@
 // src/main/lib/metadata/homePageMetadata.ts - Separated code from presentation
 import { Metadata } from 'next';
-import { getDictionary } from '@/main/lib/dictionaries';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 
 /**
  * Generates comprehensive metadata for the home page

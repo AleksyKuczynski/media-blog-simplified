@@ -2,7 +2,7 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getDictionary } from '@/main/lib/dictionaries';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import { RubricCard } from '@/main/components/Main/RubricCard';

@@ -1,5 +1,5 @@
 // src/app/ru/layout.tsx - Enhanced Layout with SEO Navigation Integration (Fixed)
-import { getDictionary } from '@/main/lib/dictionaries';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 import Navigation from '@/main/components/Navigation/Navigation'
 import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
 import { Metadata } from 'next';

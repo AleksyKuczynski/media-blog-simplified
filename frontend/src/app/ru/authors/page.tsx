@@ -1,6 +1,6 @@
 // src/app/ru/authors/page.tsx - FIXED WITH H1
 import { Suspense } from 'react';
-import { getDictionary } from '@/main/lib/dictionaries';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus';
 import AuthorCard from '@/main/components/Main/AuthorCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';

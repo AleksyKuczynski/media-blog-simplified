@@ -1,7 +1,7 @@
 // src/main/components/Main/RubricCard.tsx - Enhanced with proper Russian text
 import Link from "next/link";
 import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
-import { getRussianArticleCount } from '@/main/lib/dictionaries';
+import { getRussianArticleCount } from '@/main/lib/dictionaries/dictionaries';
 
 interface RubricCardProps {
   rubric: {

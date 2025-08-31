@@ -1,7 +1,7 @@
 // src/main/lib/actions/getArticlePageData.ts - ADD SAFETY CHECKS
 'use server'
 
-import { getDictionary } from "../dictionaries";
+import { getDictionary } from "../dictionaries/dictionaries";
 import { Lang } from "../dictionaries/dictionariesTypes";
 import { AuthorDetails, fetchAllRubrics, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails } from "../directus";
 import { processContent } from "../markdown/processContent";

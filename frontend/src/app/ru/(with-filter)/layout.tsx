@@ -1,7 +1,7 @@
 // src/app/ru/(with-filter)/layout.tsx
 import FilterGroup from '@/main/components/Navigation/FilterGroup';
 import { fetchAllCategories } from '@/main/lib/directus';
-import { getDictionary } from '@/main/lib/dictionaries';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 
 export default async function WithFilterLayout({
   children,

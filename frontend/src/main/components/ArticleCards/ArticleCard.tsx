@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import { ArticleCardVariant } from './ArticleCardVariant';
 import { getArticleCardData } from '@/main/lib/actions';
 import { generateArticleLink, generateArticleLinkAsync } from '@/main/lib/utils';
-import { getDictionary } from '@/main/lib/dictionaries';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 import { ArticleCardProps } from './interfaces';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 import { IMAGE_RATIO } from '../mainConstants';

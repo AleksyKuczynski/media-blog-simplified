@@ -1,5 +1,5 @@
 // src/main/components/SEO/EnhancedHomePageMetadata.tsx
-import { getDictionary } from '@/main/lib/dictionaries';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 
 interface EnhancedHomePageMetadataProps {
   additionalKeywords?: string;

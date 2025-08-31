@@ -1,7 +1,7 @@
 // src/app/ru/(with-filter)/articles/page.tsx - ADD SUSPENSE
 
 import { Suspense } from 'react';
-import { getDictionary } from '@/main/lib/dictionaries';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 import { fetchHeroSlugs, fetchArticleSlugs } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import ArticleList from '@/main/components/Main/ArticleList';

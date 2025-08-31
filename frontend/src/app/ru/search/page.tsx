@@ -4,7 +4,7 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import { fetchArticleSlugs } from '@/main/lib/directus/index';
 import { Metadata } from 'next';
-import { getDictionary } from '@/main/lib/dictionaries';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import Section from '@/main/components/Main/Section';
 import SortingControl from '@/main/components/Navigation/SortingControl';
