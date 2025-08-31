@@ -1,13 +1,30 @@
-// src/main/lib/dictionaries/dictionariesTypes.ts - Fixed to match enhanced dictionary
+// src/main/lib/dictionaries/dictionariesTypes.ts - Updated with Missing Navigation Keys
 export type Lang = 'ru'; // Simplified to Russian only
 
-// Basic structure interfaces
+// Enhanced navigation interface with missing keys
 export interface NavigationTranslations {
   home: string;
   rubrics: string;
   authors: string;
   search: string;
   articles: string;
+  // ✅ NEW: Missing navigation keys added
+  logoAlt: string;
+  primarySections: string;
+  currentPage: string;
+  mainNavigation: string;
+  menuTitle: string;
+  menuDescription: string;
+  openMenu: string;
+  closeMenu: string;
+  // ✅ NEW: Skip links translations
+  skipToContent: string;
+  skipToNavigation: string;
+  skipToSearch: string;
+  skipToFooter: string;
+  keyboardNavigationLabel: string;
+  clearSearch: string;
+  focusSearch: string;
 }
 
 export interface SearchTranslations {
@@ -62,7 +79,7 @@ export interface CommonTranslations {
   loadMore: string;
   editorial: string;
   tableOfContents: string;
-  // Added: Russian pluralization support
+  // Russian pluralization support
   articles: {
     one: string;   // 1 статья
     few: string;   // 2-4 статьи  
@@ -141,7 +158,6 @@ export interface RubricsTranslations {
   featuredRubric: string;
   articlesInRubric: string;
   rubricList: string;
-  // Enhanced: Missing translations
   noRubricsAvailable: string;
 }
 
@@ -169,7 +185,7 @@ export interface SEOTranslations {
   };
 }
 
-// Main dictionary interface - now matches enhanced dictionary
+// Main dictionary interface - matches enhanced dictionary
 export interface Dictionary {
   navigation: NavigationTranslations;
   footer: FooterTranslations;
