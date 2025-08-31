@@ -1,4 +1,4 @@
-// src/main/components/Navigation/MobileNav.tsx - Uses Unified NavLinksClient Styling
+// src/main/components/Navigation/MobileNav.tsx - Fixed Slide-out Panel Design
 'use client'
 
 import { NavProps } from './Navigation'
@@ -21,7 +21,6 @@ export default function MobileNavigation({
     toggleMenu,
     handleClose,
     handleSearchComplete,
-    handleMenuClick
   } = useMobileNavigation()
   
   return (
@@ -57,11 +56,25 @@ export default function MobileNavigation({
           >
             <div className="w-6 h-6 flex items-center justify-center">
               {isMenuOpen ? (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                // Close icon (X)
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                // Menu icon (hamburger)
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
               )}
@@ -70,42 +83,33 @@ export default function MobileNavigation({
         </div>
       </nav>
 
-      {/* Fixed Overlay */}
-      {isMenuOpen && <MobileNavOverlay onClose={handleClose} />}
-      
-      {/* Mobile Menu Panel */}
-      <aside 
+      {/* Mobile Menu Overlay - Backdrop */}
+      {isMenuOpen && (
+        <MobileNavOverlay 
+          onClose={handleClose}
+        />
+      )}
+
+      {/* Mobile Menu Panel - Slide-out from right */}
+      <aside
         ref={menuRef}
-        onClick={handleMenuClick}
+        id="mobile-menu-content"
         className={`
           fixed top-0 right-0 h-full 
           bg-sf-cont/95 backdrop-blur-xl 
           max-w-[430px] w-full z-[70]
           rounded-l-3xl shadow-2xl border-l border-ol-var/20
           transition-all duration-300 ease-out
-          ${(menuState === 'CLOSED' || menuState === 'CLOSING') 
-            ? 'translate-x-full opacity-0' 
-            : 'translate-x-0 opacity-100'}
+          xl:hidden
+          ${isMenuOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}
         `}
         role="dialog"
         aria-modal="true"
         aria-labelledby="mobile-menu-title"
-        aria-describedby="mobile-menu-desc"
-        tabIndex={-1}
+        aria-describedby="mobile-menu-description"
       >
-        {/* Menu Header */}
-        <header className={`
-          absolute top-4 right-4 flex items-center space-x-4 
-          transition-all duration-200 z-10
-          ${menuState === 'FULLY_OPENED' ? 'opacity-100' : 'opacity-0 pointer-events-none'}
-        `}>
-          <h2 id="mobile-menu-title" className="sr-only">
-            {translations.navigation.menuTitle}
-          </h2>
-          <p id="mobile-menu-desc" className="sr-only">
-            {translations.navigation.menuDescription}
-          </p>
-          
+        {/* Menu Header with Close Button */}
+        <header className="absolute top-4 right-4 z-10">
           <button
             onClick={handleClose}
             aria-label={translations.navigation.closeMenu}
@@ -122,29 +126,36 @@ export default function MobileNavigation({
           </button>
         </header>
 
-        {/* Main Menu Content */}
+        {/* Hidden titles for accessibility */}
+        <h2 id="mobile-menu-title" className="sr-only">
+          {translations.navigation.menuTitle}
+        </h2>
+        <p id="mobile-menu-description" className="sr-only">
+          {translations.navigation.menuDescription}
+        </p>
+
+        {/* Main Menu Content - No onClick handler to prevent click bubbling */}
         <main 
-          id="mobile-menu-content"
-          className={`
-            h-full flex flex-col justify-center px-8 py-16 space-y-8
-            transition-all duration-300 ease-out
-            ${menuState === 'FULLY_OPENED' ? 'opacity-100 transform-none' : 'opacity-0 translate-y-4'}
-          `}
+          className="h-full flex flex-col justify-center px-8 py-16 space-y-8"
           role="main"
         >
           
-          {/* Logo Section */}
+          {/* Logo Section - No border styling */}
           <section className="flex justify-center mb-8">
             <Logo 
               lang={lang} 
               variant="mobile"
               role="img"
               aria-label={translations.navigation.logoAlt}
-              className="transition-transform duration-300 hover:scale-105"
+              className="
+                transition-transform duration-300 hover:scale-105
+                focus:outline-none focus:ring-0 focus:ring-offset-0
+                no-underline border-0
+              "
             />
           </section>
 
-          {/* Navigation Section - Now uses unified desktop styling */}
+          {/* Navigation Section with mobile styling */}
           <section aria-labelledby="mobile-nav-heading">
             <h3 id="mobile-nav-heading" className="sr-only">
               {translations.navigation.primarySections}
@@ -152,11 +163,16 @@ export default function MobileNavigation({
             
             <nav role="navigation" aria-label={translations.navigation.mainNavigation}>
               <ul 
-                className="space-y-3 text-center"
+                className="
+                  flex flex-col items-center space-y-4 text-center
+                  [&_.nav-link]:!px-6 [&_.nav-link]:!py-3 
+                  [&_.nav-link]:!min-w-[120px] [&_.nav-link]:!text-center
+                  [&_.nav-link]:!block [&_.nav-link]:!w-full
+                  [&_li]:!block [&_li]:!w-full
+                "
                 role="menubar"
                 aria-orientation="vertical"
               >
-                {/* ✅ UNIFIED: Uses desktop styling with slight mobile spacing adjustments */}
                 <NavLinks 
                   lang={lang} 
                   translations={translations.navigation} 
@@ -167,7 +183,7 @@ export default function MobileNavigation({
           </section>
 
           {/* Search Section */}
-          <section className="mt-8" aria-labelledby="mobile-search-heading">
+          <section className="mt-8 w-full max-w-md mx-auto" aria-labelledby="mobile-search-heading">
             <h3 id="mobile-search-heading" className="sr-only">
               {translations.search.pageDescription}
             </h3>

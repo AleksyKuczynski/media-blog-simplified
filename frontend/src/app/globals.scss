@@ -9,24 +9,6 @@ html {
 }
 
 :root {
-  // Rounded theme geometric constants only
-  --border-radius-none: 0;
-  --border-radius-sm: 0.25rem;
-  --border-radius-default: 0.5rem;
-  --border-radius-md: 0.75rem;
-  --border-radius-lg: 1rem;
-  --border-radius-xl: 1.5rem;
-  --border-radius-2xl: 2rem;
-  --border-radius-3xl: 3rem;
-  --border-radius-full: 9999px;
-
-  // Caption typography constants (rounded theme optimized)
-  --caption-font-size: 0.875rem;
-  --caption-line-height: 1.5rem;
-  --caption-padding-y: 1rem;
-  --caption-max-lines: 3;
-  --caption-three-line-height: calc(var(--caption-line-height) * var(--caption-max-lines) + var(--caption-padding-y) * 2);
-
   // Common variables
   --transition-duration: 200ms;
   --scrollbar-width: 0px;
@@ -131,17 +113,4 @@ html {
   // Outlines
   --color-outline: #8c8c8c;
   --color-outline-variant: #595959;
-}
-
-// Utility classes for rounded theme
-.rounded-theme-card {
-  @apply rounded-3xl shadow-md hover:shadow-lg transition-shadow duration-200;
-}
-
-.rounded-theme-button {
-  @apply rounded-full px-4 py-2 transition-all duration-200;
-}
-
-.rounded-theme-input {
-  @apply rounded-2xl border border-ol-var focus:ring-2 focus:ring-pr-cont;
 }

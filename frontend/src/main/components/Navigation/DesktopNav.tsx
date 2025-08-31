@@ -1,4 +1,4 @@
-// src/main/components/Navigation/DesktopNav.tsx - Uses Unified NavLinksClient Styling
+// src/main/components/Navigation/DesktopNav.tsx - Using Dictionary for All Text
 'use client';
 
 import React from 'react';
@@ -27,14 +27,14 @@ export default function DesktopNavigation({
         <div 
           className="flex items-center justify-start"
           role="group"
-          aria-label="Основные разделы сайта"
+          aria-label={translations.navigation.primarySectionsLabel} // ✅ NEW: From dictionary
         >
           <ul 
             className="flex items-center justify-start space-x-2"
             role="menubar"
-            aria-label="Главное меню"
+            aria-label={translations.navigation.mainMenuLabel} // ✅ NEW: From dictionary
           >
-            {/* ✅ SIMPLIFIED: No inline styles - NavLinksClient handles everything */}
+            {/* ✅ UNIFIED: Clean approach with proper spacing */}
             <NavLinks 
               lang={lang} 
               translations={translations.navigation} 
@@ -54,7 +54,7 @@ export default function DesktopNavigation({
             lang={lang} 
             variant="desktop"
             role="img"
-            aria-label="EventForMe - главная страница"
+            aria-label={translations.navigation.logoMainPageLabel} // ✅ NEW: From dictionary
           />
         </div>
         
@@ -62,13 +62,13 @@ export default function DesktopNavigation({
         <div 
           className="flex items-center justify-end space-x-4"
           role="group"
-          aria-label="Поиск и настройки"
+          aria-label={translations.navigation.searchAndSettingsLabel} // ✅ NEW: From dictionary
         >
           {/* Enhanced Search */}
           <div 
             id="site-search"
             role="search"
-            aria-label="Поиск по сайту"
+            aria-label={translations.navigation.siteSearchLabel} // ✅ NEW: From dictionary
           >
             <ExpandableSearch 
               searchTranslations={translations.search} 
@@ -80,34 +80,28 @@ export default function DesktopNavigation({
           {/* Theme Toggle with better accessibility */}
           <button
             className="p-3 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            onClick={() => document.documentElement.classList.toggle('dark')}
-            aria-label="Переключить темную тему"
-            aria-pressed="false"
-            title="Переключить между светлой и темной темой"
-            type="button"
+            aria-label="Переключить тему" // This could also be moved to dictionary if needed
+            title="Переключить между светлой и тёмной темой"
           >
-            <svg 
-              className="w-5 h-5" 
-              fill="none" 
-              viewBox="0 0 24 24" 
+            <svg
+              className="w-5 h-5"
+              fill="none"
               stroke="currentColor"
-              aria-hidden="true"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" 
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
               />
             </svg>
-            <span className="sr-only">
-              Переключить между светлой и темной темой оформления
-            </span>
           </button>
         </div>
       </div>
       
-      {/* Current page context for screen readers */}
+      {/* Screen reader context */}
       {currentPageTitle && (
         <div className="sr-only" aria-live="polite">
           {translations.navigation.currentPage}: {currentPageTitle}

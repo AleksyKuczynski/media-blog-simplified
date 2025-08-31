@@ -1,4 +1,4 @@
-// src/main/lib/dictionaries.ts - Enhanced with Missing Navigation Keys
+// src/main/lib/dictionaries/dictionaries.ts - Enhanced with Missing Navigation Keys
 import 'server-only'
 import { Dictionary, Lang } from './dictionariesTypes';
 
@@ -10,7 +10,7 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     authors: 'Авторы',
     search: 'Поиск',
     articles: 'Статьи',
-    // ✅ NEW: Missing navigation keys added
+    // ✅ EXISTING: Already present in dictionaries
     logoAlt: 'EventForMe - медиа о культурных событиях',
     primarySections: 'Основные разделы сайта',
     currentPage: 'Текущая страница',
@@ -19,14 +19,36 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     menuDescription: 'Навигация по основным разделам сайта EventForMe',
     openMenu: 'Открыть меню',
     closeMenu: 'Закрыть меню',
-    // ✅ NEW: Skip links translations
     skipToContent: 'Перейти к основному содержанию',
     skipToNavigation: 'Перейти к навигации',
     skipToSearch: 'Перейти к поиску',
     skipToFooter: 'Перейти к подвалу сайта',
     keyboardNavigationLabel: 'Быстрая навигация для клавиатуры',
     clearSearch: 'Очистить поиск',
-    focusSearch: 'Фокус на поиске'
+    focusSearch: 'Фокус на поиске',
+    // ✅ NEW: Added missing SEO descriptions for navigation links
+    articlesDescription: 'Просмотреть все статьи и публикации на сайте EventForMe',
+    rubricsDescription: 'Изучить тематические рубрики и разделы контента',
+    authorsDescription: 'Познакомиться с нашими авторами и экспертами',
+    // ✅ NEW: Added missing desktop navigation labels
+    primarySectionsLabel: 'Основные разделы сайта',
+    mainMenuLabel: 'Главное меню',
+    searchAndSettingsLabel: 'Поиск и настройки',
+    siteSearchLabel: 'Поиск по сайту',
+    logoMainPageLabel: 'EventForMe - главная страница'
+  },
+  
+  search: {
+    placeholder: 'Поиск статей...',
+    searching: 'Поиск...',
+    noResults: 'Результатов не найдено',
+    results: 'Результаты поиска',
+    resultsFor: 'Результаты для "{query}"',
+    pageTitle: 'Поиск',
+    pageDescription: 'Поиск статей',
+    relatedTo: 'связанные с',
+    submit: 'Поиск',
+    minCharacters: 'Введите минимум 3 символа'
   },
   
   footer: {
@@ -50,7 +72,7 @@ const RUSSIAN_DICTIONARY: Dictionary = {
       termsOfService: 'Условия использования'
     },
     kuKraft: {
-      designedWithLove: 'Создано с ❤️ в'
+      designedWithLove: 'Разработано с любовью командой KuKraft'
     }
   },
 
@@ -67,54 +89,26 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     loadMore: 'Загрузить еще',
     editorial: 'Редакционная статья',
     tableOfContents: 'Содержание',
-    // Russian pluralization for articles
+    // Russian pluralization support
     articles: {
-      one: 'статья',
-      few: 'статьи', 
-      many: 'статей'
+      one: 'статья',   // 1 статья
+      few: 'статьи',   // 2-4 статьи  
+      many: 'статей'   // 5+ статей
     }
-  },
-
-  search: {
-    placeholder: 'Поиск статей...',
-    searching: 'Поиск...',
-    noResults: 'Результатов не найдено',
-    results: 'Результаты поиска',
-    resultsFor: 'Результаты для "{query}"',
-    pageTitle: 'Поиск',
-    pageDescription: 'Поиск статей по всем разделам блога EventForMe',
-    relatedTo: 'связанные с',
-    submit: 'Поиск',
-    minCharacters: 'Введите минимум 3 символа'
-  },
-
-  // Enhanced SEO section optimized for Google and Yandex
-  seo: {
-    siteName: 'EventForMe',
-    titles: {
-      homePrefix: 'EventForMe — Медиа о культурных событиях, музыке и идеях',
-      homeSuffix: 'Главная',
-    },
-    descriptions: {
-      home: 'EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира. Читайте актуальные статьи и интервью с экспертами в области культуры.',
-    },
-    keywords: {
-      general: 'культурные события, музыка, современные идеи, медиа, EventForMe, культура, развлечения',
-    },
   },
 
   sections: {
     home: {
       welcomeTitle: 'Добро пожаловать в EventForMe',
-      welcomeDescription: 'Ваш источник актуальной информации о культурных событиях, музыке и современных идеях',
-      featuredContent: 'Рекомендуемые материалы',
+      welcomeDescription: 'Медиа о культурных событиях, музыке и современных идеях',
+      featuredContent: 'Рекомендуемое',
       latestUpdates: 'Последние обновления',
-      exploreRubrics: 'Исследуйте рубрики',
+      exploreRubrics: 'Изучайте рубрики',
       viewAllRubrics: 'Все рубрики',
-      featuredDescription: 'Лучшие статьи и материалы, отобранные нашей редакцией',
-      rubricsDescription: 'Тематические разделы для более удобной навигации по контенту',
-      viewAllRubricsDescription: 'Просмотрите все доступные тематические рубрики',
-      quickNavigation: 'Быстрая навигация по странице'
+      featuredDescription: 'Самые интересные материалы, выбранные редакцией',
+      rubricsDescription: 'Разнообразные тематические разделы для изучения',
+      viewAllRubricsDescription: 'Перейти к полному списку всех рубрик',
+      quickNavigation: 'Быстрая навигация'
     },
     articles: {
       allArticles: 'Все статьи',
@@ -160,7 +154,8 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     all: 'Все',
     category: 'По категории',
     author: 'По автору',
-    date: 'По дате'
+    date: 'По дате',
+    reset: 'Сброс'
   },
 
   categories: {
@@ -169,7 +164,22 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     events: 'События',
     culture: 'Культура',
     ideas: 'Идеи',
-    mystic: 'Мистика'
+    mystic: 'Мистика',
+    allCategories: 'Все категории'
+  },
+
+  seo: {
+    siteName: 'EventForMe',
+    titles: {
+      homePrefix: 'EventForMe',
+      homeSuffix: 'Медиа о культурных событиях'
+    },
+    descriptions: {
+      home: 'EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира'
+    },
+    keywords: {
+      general: 'культурные события, музыка, современные идеи, мистика, культура'
+    }
   }
 };
 

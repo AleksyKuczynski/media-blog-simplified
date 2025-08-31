@@ -1,14 +1,14 @@
 // src/main/lib/dictionaries/dictionariesTypes.ts - Updated with Missing Navigation Keys
 export type Lang = 'ru'; // Simplified to Russian only
 
-// Enhanced navigation interface with missing keys
+// Enhanced navigation interface with missing keys and SEO descriptions
 export interface NavigationTranslations {
   home: string;
   rubrics: string;
   authors: string;
   search: string;
   articles: string;
-  // ✅ NEW: Missing navigation keys added
+  // ✅ EXISTING: Already defined in dictionary
   logoAlt: string;
   primarySections: string;
   currentPage: string;
@@ -17,7 +17,6 @@ export interface NavigationTranslations {
   menuDescription: string;
   openMenu: string;
   closeMenu: string;
-  // ✅ NEW: Skip links translations
   skipToContent: string;
   skipToNavigation: string;
   skipToSearch: string;
@@ -25,6 +24,16 @@ export interface NavigationTranslations {
   keyboardNavigationLabel: string;
   clearSearch: string;
   focusSearch: string;
+  // ✅ NEW: Added missing SEO descriptions for navigation links
+  articlesDescription: string;
+  rubricsDescription: string;
+  authorsDescription: string;
+  // ✅ NEW: Added missing desktop navigation labels  
+  primarySectionsLabel: string;
+  mainMenuLabel: string;
+  searchAndSettingsLabel: string;
+  siteSearchLabel: string;
+  logoMainPageLabel: string;
 }
 
 export interface SearchTranslations {
@@ -98,6 +107,7 @@ export interface FilterTranslations {
   category: string;
   author: string;
   date: string;
+  reset: string; // ✅ NEW: Added missing reset translation
 }
 
 export interface CategoryTranslations {
@@ -107,6 +117,7 @@ export interface CategoryTranslations {
   culture: string;
   ideas: string;
   mystic: string;
+  allCategories: string; // ✅ NEW: Added missing allCategories
 }
 
 // Enhanced section-specific interfaces
