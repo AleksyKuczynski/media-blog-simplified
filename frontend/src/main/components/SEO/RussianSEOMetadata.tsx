@@ -80,7 +80,7 @@ export function generateRussianSEOMetadata({
 
     // Enhanced Open Graph for Russian social networks
     openGraph: {
-      type: articleData ? 'article' : 'website',
+      type: safeArticleData ? 'article' : 'website',
       locale: 'ru_RU',
       alternateLocale: ['en_US'],
       url: fullUrl,
