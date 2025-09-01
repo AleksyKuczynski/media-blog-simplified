@@ -11,7 +11,7 @@
       "internalLinks": 24,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 1677,
+      "wordCount": 1732,
       "issues": []
     },
     {
@@ -25,7 +25,7 @@
       "internalLinks": 22,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 1645,
+      "wordCount": 1700,
       "issues": [
         "Missing H1 tag"
       ]
@@ -41,7 +41,7 @@
       "internalLinks": 16,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 363,
+      "wordCount": 418,
       "issues": [
         "Missing H1 tag"
       ]
@@ -57,7 +57,7 @@
       "internalLinks": 20,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 545,
+      "wordCount": 600,
       "issues": []
     },
     {
@@ -71,298 +71,337 @@
       "internalLinks": 21,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 1394,
+      "wordCount": 1449,
       "issues": []
     },
     {
       "url": "http://localhost:3000/ru/ideas/gdie-otdokhnut-v-2023-ghodu-s-rossiiskim-zaghranpasportom-i-biez-vizy-marshrut-piervyi-miedovyi-miesiats-v-stambulie",
       "filename": "_ru_ideas_gdie-otdokhnut-v-2023-ghodu-s-rossiiskim-zaghranpasportom-i-biez-vizy-marshrut-piervyi-miedovyi-miesiats-v-stambulie.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Где отдохнуть в 2023 году с российским загранпаспортом и без визы. Маршрут первый: медовый месяц в Стамбуле",
+      "metaDescription": "Свадебное путешествие лучше продумать заранее, чтобы накануне торжества не бегать в мыле по визовым центрам и не переживать, что в нужном отеле нет ни одного свободного номера. Первое и главное, что необходимо решить, — это в какую страну вы отправитесь, и чем вы в ней планируете заняться. Этой статьей EventForMe открывает серию материалов о выборе подходящего места для вашего медового месяца. Для тех, кто не хочет заниматься оформлением бумаг, страховок и прочей бюрократической волокитой, наш автор, Ева Доброва, сделала обзор интересных, по нашему мнению, стран и городов, куда можно поехать, имея на руках только паспорт РФ или загранпаспорт.",
       "h1Count": 1,
       "h2Count": 2,
       "images": 13,
       "internalLinks": 23,
       "externalLinks": 2,
       "hasStructuredData": true,
-      "wordCount": 2181,
-      "issues": []
+      "wordCount": 3306,
+      "issues": [
+        "Title too long (>60 chars)",
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/music/20-best-songs-from-movies-and-tv-shows-for-your-wedding",
       "filename": "_ru_music_20-best-songs-from-movies-and-tv-shows-for-your-wedding.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "20 лучших песен из кинофильмов и сериалов на вашей свадьбе",
+      "metaDescription": "Свадьба — это особое событие, и каждая деталь в этот день имеет значение. От цветовой палитры флористического оформления до парфюма невесты — все создает уникальную атмосферу праздника. Представьте: самый счастливый день в вашей жизни, вокруг вас родные и друзья, и все наполнено ожиданием счастья. И вот, звучит мелодия из вашего любимого фильма. Согласитесь, что музыка из кино может добавить особенный шарм вашему торжеству, сделать его по-настоящему трогательным и индивидуальным. Музыкальный редактор Михаил Маленкин подготовил для вас наш топ-20 кинохитов.",
       "h1Count": 1,
       "h2Count": 4,
       "images": 11,
       "internalLinks": 23,
       "externalLinks": 10,
       "hasStructuredData": true,
-      "wordCount": 3218,
-      "issues": []
+      "wordCount": 4109,
+      "issues": [
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/ideas/krambambulya-dusheparka-or-glogg-choosing-the-perfect-mulled-wine-for-a-winter-wedding",
       "filename": "_ru_ideas_krambambulya-dusheparka-or-glogg-choosing-the-perfect-mulled-wine-for-a-winter-wedding.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Крамбамбу́ля, душепарка или глёг? Какой вид глинтвейна выбрать для свадьбы зимой",
+      "metaDescription": "Глинтвейн — это не просто горячее вино с пряностями. Это настоящий зимний эликсир жизни, который возвращает душу в тело. Его история уходит в глубину веков, когда люди научились делать ароматные напитки из меда, трав и специй. В разных странах его называют по-разному: в Германии он — Glühwein, в Польше — grzane wino, в Чехии — svařené víno, во Франции — vin chaud. В сущности, общий смысл остается неизменным — теплое вино. На Руси были похожие безалкогольные напитки (это понятно, с доступностью вина были некоторые проблемы) — сбитень и душепарка. Белорусский алкогольный аналог именуется крамбамбу́лей.\nГлинтвейн — это прекрасный выбор для зимней свадьбы, особенно если вы задумали ее в русском стиле и с развлечениями на свежем воздухе (например, катания на тройках). Мы подготовили для вас несколько интересных рецептов глинтвейна, включая безалкогольные. А также коротко расскажем о тех пряностях, которые придают этому напитку особый, уютный характер — то, что скандинавы называют словом «хюгге» (дат. hygge). ",
       "h1Count": 1,
       "h2Count": 6,
       "images": 1,
       "internalLinks": 24,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 3251,
-      "issues": []
+      "wordCount": 4817,
+      "issues": [
+        "Title too long (>60 chars)",
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/ideas/indieks-uvlazhnieniia-analitika-lietniegho-kosmietichieskogho-portfielia-kak-zashchitit-kozhu-i-volosy-ot-solntsa",
       "filename": "_ru_ideas_indieks-uvlazhnieniia-analitika-lietniegho-kosmietichieskogho-portfielia-kak-zashchitit-kozhu-i-volosy-ot-solntsa.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Индекс увлажнения: аналитика летнего косметического портфеля. Как защитить кожу и волосы от солнца",
+      "metaDescription": "Начиная с весны индекс желания преобразиться растет быстрее, чем котировки на фондовом рынке, особенно когда термометр начинает зашкаливать. К лету эти показатели достигают пиковых значений: инвестиции в фитнес-абонементы взлетают, а спрос на «тот самый» пляжный лук, подчеркивающий все сильные активы, бьет рекорды.\n\nПри этом уход за кожей и волосами остается в тени, словно инсайдерская информация. А ведь именно здоровая кожа – эта та база, на фундаменте которой создается трендовый свадебный образ NO-MAKEUP MAKEUP с дополнением в виде максимально простой прически.\n\nЧтобы вывести формулу идеальной летней beauty-стратегии, способной не только удержать ваши текущие позиции, но и обеспечить рост всех показателей красоты и здоровья к концу сезона, аналитики портала EventForMe провели масштабное исследование рутинного бьюти-ухода в летний период. Наш ключевой эксперт – Ольга Санрайз, визажист-эстетист и стилист по прическам с высоким рейтингом доверия – предоставила эксклюзивные инсайды для наших читателей.",
       "h1Count": 1,
       "h2Count": 6,
       "images": 9,
       "internalLinks": 23,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 2564,
-      "issues": []
+      "wordCount": 3995,
+      "issues": [
+        "Title too long (>60 chars)",
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/ideas",
       "filename": "_ru_ideas.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "идеи",
+      "metaDescription": "Все статьи в рубрике идеи на EventForMe",
       "h1Count": 1,
       "h2Count": 1,
       "images": 2,
       "internalLinks": 20,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 871,
+      "wordCount": 1022,
       "issues": []
     },
     {
       "url": "http://localhost:3000/ru/music",
       "filename": "_ru_music.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Музыка",
+      "metaDescription": "Все статьи в рубрике Музыка на EventForMe",
       "h1Count": 1,
       "h2Count": 1,
       "images": 1,
       "internalLinks": 19,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 644,
+      "wordCount": 795,
       "issues": []
     },
     {
       "url": "http://localhost:3000/ru/mystic",
       "filename": "_ru_mystic.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Тайны",
+      "metaDescription": "Все статьи в рубрике Тайны на EventForMe",
       "h1Count": 1,
       "h2Count": 1,
       "images": 2,
       "internalLinks": 20,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 838,
+      "wordCount": 989,
       "issues": []
     },
     {
       "url": "http://localhost:3000/ru/privacy-policy",
       "filename": "_ru_privacy-policy.html",
       "title": "404: This page could not be found.",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "metaDescription": "The requested rubric could not be found.",
       "h1Count": 1,
       "h2Count": 1,
       "images": 0,
       "internalLinks": 0,
       "externalLinks": 0,
       "hasStructuredData": false,
-      "wordCount": 401,
+      "wordCount": 404,
       "issues": []
     },
     {
       "url": "http://localhost:3000/ru/terms",
       "filename": "_ru_terms.html",
       "title": "404: This page could not be found.",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "metaDescription": "The requested rubric could not be found.",
       "h1Count": 1,
       "h2Count": 1,
       "images": 0,
       "internalLinks": 0,
       "externalLinks": 0,
       "hasStructuredData": false,
-      "wordCount": 401,
+      "wordCount": 404,
       "issues": []
     },
     {
       "url": "http://localhost:3000/ru/mystic/the-cards-speak-truth-tarot-reading-for-zodiac-signs-in-august-2024",
       "filename": "_ru_mystic_the-cards-speak-truth-tarot-reading-for-zodiac-signs-in-august-2024.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Карты правду говорят: расклад таро для знаков зодиака на август 2024",
+      "metaDescription": "Ах, как же интересно, что приготовил для нас август 2024 года. Среди предсказателей бытует мнение, что август сам по себе — это переломный месяц, который всегда несет в этот мир важные перемены. Уже только поэтому следует отнестись внимательно к советам таро на грядущий месяц и стараться их придерживаться. Мы попросили нашего таролога Светлану Цыганок сделать расклад и рассказать нам , что ждет мужчин и женщин каждого знака Зодиака в следующем месяце. И вот что ответили карты.",
       "h1Count": 1,
       "h2Count": 14,
       "images": 1,
       "internalLinks": 23,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 4751,
-      "issues": []
+      "wordCount": 5624,
+      "issues": [
+        "Title too long (>60 chars)",
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/mystic/august-2024-lunar-calendar-beauty-treatments-sports-activities-and-haircut-guide",
       "filename": "_ru_mystic_august-2024-lunar-calendar-beauty-treatments-sports-activities-and-haircut-guide.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Лунный календарь на август 2024 года: косметические процедуры, занятия спортом и календарь стрижек",
+      "metaDescription": "«Вот и лето прошло»... Как бы не так! Впереди у нас с вами еще целый месяц, и если предыдущие два пролетели почти незамеченными из-за жары, то август, судя по всему, будет комфортным в плане погоды. Так что наступает приятный период летних встреч с друзьями, пикников за городом, спортивных игр на свежем воздухе и долгожданного отпуска. А мы, как всегда, подготовили для вас советы от нашего эксперта по звездам Леды Головановой. Итак, чем порадует нас Луна в этом августе?",
       "h1Count": 1,
       "h2Count": 4,
       "images": 1,
       "internalLinks": 22,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 2788,
-      "issues": []
+      "wordCount": 3694,
+      "issues": [
+        "Title too long (>60 chars)",
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/authors/evgenia-dobrova",
       "filename": "_ru_authors_evgenia-dobrova.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Евгения Доброва",
+      "metaDescription": "Вольный писатель, заядлый читатель и неисправимый путешественник. Авантюрист по работе с недооцененными активами, вечно в поисках того, что другие упустили из виду. Профессиональный переводчик с одного из европейских языков (какого именно - пусть останется маленькой тайной) и непрофессиональный говорун еще на нескольких, коверкая их с энтузиазмом и улыбкой. Родилась давным-давно в СССР, когда деревья были большими, а мороженое вкуснее. Ностальгия? Возможно, но лишь самую малость.\nОбещала своему жениху, который пока не научился говорить по-русски (но уже освоил несколько крепких выражений), исполнить его заветное желание и провести свадебное путешествие в плацкарте поезда Москва - Владивосток. Потому что кто сказал, что медовый месяц должен быть банальным? Шесть дней, пять ночей, тысячи километров, бесконечные чайные церемонии под стук колес и романтика общего вагона. Кто знает, может, именно там, между Уралом и Байкалом, мы наконец-то выучим по-настоящему важные слова на языках друг друга. Или просто научимся понимать без слов, что, возможно, еще важнее.",
       "h1Count": 1,
       "h2Count": 2,
       "images": 2,
       "internalLinks": 19,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 993,
-      "issues": []
+      "wordCount": 2139,
+      "issues": [
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/authors/mikhail-malienkin",
       "filename": "_ru_authors_mikhail-malienkin.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Михаил Маленкин",
+      "metaDescription": "Статьи автора Михаил Маленкин на EventForMe",
       "h1Count": 1,
       "h2Count": 2,
       "images": 2,
       "internalLinks": 20,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 869,
+      "wordCount": 1021,
       "issues": []
     },
     {
       "url": "http://localhost:3000/ru/authors/svetlana-tsyganok",
       "filename": "_ru_authors_svetlana-tsyganok.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Светлана Цыганок",
+      "metaDescription": "Я Светлана, редактор раздела мистики. Живу и работаю в Москве и Геленджике. Образование получила в Институте Истории Культуры в Москве. За годы практики накопила обширный опыт в различных областях: культурология, Таро, бытовая магия и ясновидение. В нашем разделе мы исследуем связи между прошлым, настоящим и будущим через призму мистических практик. Изучаем символизм повседневности и способы раскрытия внутреннего потенциала. Наша задача - дать читателям инструменты для самопознания и развития интуиции. Мы следуем принципу \"Весь Мир открыт, когда смотришь Правдой\". Приглашаем вас погрузиться в изучение мистических аспектов жизни на страницах нашей рубрики.",
       "h1Count": 1,
       "h2Count": 2,
       "images": 3,
       "internalLinks": 20,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 1086,
-      "issues": []
+      "wordCount": 1826,
+      "issues": [
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/authors/tatyana-medvedeva",
       "filename": "_ru_authors_tatyana-medvedeva.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Татьяна Медведева",
+      "metaDescription": "Привет! Я Татьяна, 32 года, и я обожаю свою работу. Профессиональный маркетолог и контент-стратег, уже 7 лет в свадебной индустрии. Окончила факультет маркетинга РЭУ им. Плеханова, недавно получила MBA по \"Цифровому маркетингу\" в Moscow Business School.\nСвою карьеру начала в крупном свадебном агентстве. Там поняла, что мир свадеб — это не просто белые платья, а море бизнес-возможностей. Мое увлечение анализом данных сделало меня экспертом по свадебному маркетингу в России.\nВ свободное время увлекаюсь фотографией, йогой и путешествиями. Мечтаю организовать свадьбу на коралловом рифе!\nМоя миссия — не просто информировать, а менять индустрию к лучшему. Продвигаю идеи осознанного потребления в свадебной моде. Ведь свадьба — это не только красота, но и ответственность за будущее.\nУверена, что вместе мы сделаем свадебную индустрию не только красивее, но и экологичнее. Готова приложить все усилия, с энтузиазмом встречая каждую новую идею!",
       "h1Count": 1,
       "h2Count": 2,
       "images": 0,
       "internalLinks": 18,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 752,
-      "issues": []
+      "wordCount": 1786,
+      "issues": [
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/ideas/gdie-otdokhnut-v-2023-ghodu-s-rossiiskim-zaghranpasportom-i-biez-vizy-marshrut-piervyi-miedovyi-miesiats-v-stambulie?context=author&author=evgenia-dobrova",
       "filename": "_ru_ideas_gdie-otdokhnut-v-2023-ghodu-s-rossiiskim-zaghranpasportom-i-biez-vizy-marshrut-piervyi-miedovyi-miesiats-v-stambuliecontextauthorauthorevgenia-dobrova.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Где отдохнуть в 2023 году с российским загранпаспортом и без визы. Маршрут первый: медовый месяц в Стамбуле",
+      "metaDescription": "Свадебное путешествие лучше продумать заранее, чтобы накануне торжества не бегать в мыле по визовым центрам и не переживать, что в нужном отеле нет ни одного свободного номера. Первое и главное, что необходимо решить, — это в какую страну вы отправитесь, и чем вы в ней планируете заняться. Этой статьей EventForMe открывает серию материалов о выборе подходящего места для вашего медового месяца. Для тех, кто не хочет заниматься оформлением бумаг, страховок и прочей бюрократической волокитой, наш автор, Ева Доброва, сделала обзор интересных, по нашему мнению, стран и городов, куда можно поехать, имея на руках только паспорт РФ или загранпаспорт.",
       "h1Count": 1,
       "h2Count": 2,
       "images": 13,
       "internalLinks": 23,
       "externalLinks": 2,
       "hasStructuredData": true,
-      "wordCount": 2185,
-      "issues": []
+      "wordCount": 3314,
+      "issues": [
+        "Title too long (>60 chars)",
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/music/20-best-songs-from-movies-and-tv-shows-for-your-wedding?context=author&author=mikhail-malienkin",
       "filename": "_ru_music_20-best-songs-from-movies-and-tv-shows-for-your-weddingcontextauthorauthormikhail-malienkin.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "20 лучших песен из кинофильмов и сериалов на вашей свадьбе",
+      "metaDescription": "Свадьба — это особое событие, и каждая деталь в этот день имеет значение. От цветовой палитры флористического оформления до парфюма невесты — все создает уникальную атмосферу праздника. Представьте: самый счастливый день в вашей жизни, вокруг вас родные и друзья, и все наполнено ожиданием счастья. И вот, звучит мелодия из вашего любимого фильма. Согласитесь, что музыка из кино может добавить особенный шарм вашему торжеству, сделать его по-настоящему трогательным и индивидуальным. Музыкальный редактор Михаил Маленкин подготовил для вас наш топ-20 кинохитов.",
       "h1Count": 1,
       "h2Count": 4,
       "images": 11,
       "internalLinks": 23,
       "externalLinks": 10,
       "hasStructuredData": true,
-      "wordCount": 3222,
-      "issues": []
+      "wordCount": 4117,
+      "issues": [
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/ideas/krambambulya-dusheparka-or-glogg-choosing-the-perfect-mulled-wine-for-a-winter-wedding?context=author&author=mikhail-malienkin",
       "filename": "_ru_ideas_krambambulya-dusheparka-or-glogg-choosing-the-perfect-mulled-wine-for-a-winter-weddingcontextauthorauthormikhail-malienkin.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Крамбамбу́ля, душепарка или глёг? Какой вид глинтвейна выбрать для свадьбы зимой",
+      "metaDescription": "Глинтвейн — это не просто горячее вино с пряностями. Это настоящий зимний эликсир жизни, который возвращает душу в тело. Его история уходит в глубину веков, когда люди научились делать ароматные напитки из меда, трав и специй. В разных странах его называют по-разному: в Германии он — Glühwein, в Польше — grzane wino, в Чехии — svařené víno, во Франции — vin chaud. В сущности, общий смысл остается неизменным — теплое вино. На Руси были похожие безалкогольные напитки (это понятно, с доступностью вина были некоторые проблемы) — сбитень и душепарка. Белорусский алкогольный аналог именуется крамбамбу́лей.\nГлинтвейн — это прекрасный выбор для зимней свадьбы, особенно если вы задумали ее в русском стиле и с развлечениями на свежем воздухе (например, катания на тройках). Мы подготовили для вас несколько интересных рецептов глинтвейна, включая безалкогольные. А также коротко расскажем о тех пряностях, которые придают этому напитку особый, уютный характер — то, что скандинавы называют словом «хюгге» (дат. hygge). ",
       "h1Count": 1,
       "h2Count": 6,
       "images": 1,
       "internalLinks": 24,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 3255,
-      "issues": []
+      "wordCount": 4825,
+      "issues": [
+        "Title too long (>60 chars)",
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/ideas/krambambulya-dusheparka-or-glogg-choosing-the-perfect-mulled-wine-for-a-winter-wedding?context=author&author=svetlana-tsyganok",
       "filename": "_ru_ideas_krambambulya-dusheparka-or-glogg-choosing-the-perfect-mulled-wine-for-a-winter-weddingcontextauthorauthorsvetlana-tsyganok.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Крамбамбу́ля, душепарка или глёг? Какой вид глинтвейна выбрать для свадьбы зимой",
+      "metaDescription": "Глинтвейн — это не просто горячее вино с пряностями. Это настоящий зимний эликсир жизни, который возвращает душу в тело. Его история уходит в глубину веков, когда люди научились делать ароматные напитки из меда, трав и специй. В разных странах его называют по-разному: в Германии он — Glühwein, в Польше — grzane wino, в Чехии — svařené víno, во Франции — vin chaud. В сущности, общий смысл остается неизменным — теплое вино. На Руси были похожие безалкогольные напитки (это понятно, с доступностью вина были некоторые проблемы) — сбитень и душепарка. Белорусский алкогольный аналог именуется крамбамбу́лей.\nГлинтвейн — это прекрасный выбор для зимней свадьбы, особенно если вы задумали ее в русском стиле и с развлечениями на свежем воздухе (например, катания на тройках). Мы подготовили для вас несколько интересных рецептов глинтвейна, включая безалкогольные. А также коротко расскажем о тех пряностях, которые придают этому напитку особый, уютный характер — то, что скандинавы называют словом «хюгге» (дат. hygge). ",
       "h1Count": 1,
       "h2Count": 6,
       "images": 1,
       "internalLinks": 24,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 3255,
-      "issues": []
+      "wordCount": 4825,
+      "issues": [
+        "Title too long (>60 chars)",
+        "Meta description too long (>160 chars)"
+      ]
     },
     {
       "url": "http://localhost:3000/ru/ideas/indieks-uvlazhnieniia-analitika-lietniegho-kosmietichieskogho-portfielia-kak-zashchitit-kozhu-i-volosy-ot-solntsa?context=author&author=svetlana-tsyganok",
       "filename": "_ru_ideas_indieks-uvlazhnieniia-analitika-lietniegho-kosmietichieskogho-portfielia-kak-zashchitit-kozhu-i-volosy-ot-solntsacontextauthorauthorsvetlana-tsyganok.html",
-      "title": "EventForMe — Медиа о культурных событиях",
-      "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+      "title": "Индекс увлажнения: аналитика летнего косметического портфеля. Как защитить кожу и волосы от солнца",
+      "metaDescription": "Начиная с весны индекс желания преобразиться растет быстрее, чем котировки на фондовом рынке, особенно когда термометр начинает зашкаливать. К лету эти показатели достигают пиковых значений: инвестиции в фитнес-абонементы взлетают, а спрос на «тот самый» пляжный лук, подчеркивающий все сильные активы, бьет рекорды.\n\nПри этом уход за кожей и волосами остается в тени, словно инсайдерская информация. А ведь именно здоровая кожа – эта та база, на фундаменте которой создается трендовый свадебный образ NO-MAKEUP MAKEUP с дополнением в виде максимально простой прически.\n\nЧтобы вывести формулу идеальной летней beauty-стратегии, способной не только удержать ваши текущие позиции, но и обеспечить рост всех показателей красоты и здоровья к концу сезона, аналитики портала EventForMe провели масштабное исследование рутинного бьюти-ухода в летний период. Наш ключевой эксперт – Ольга Санрайз, визажист-эстетист и стилист по прическам с высоким рейтингом доверия – предоставила эксклюзивные инсайды для наших читателей.",
       "h1Count": 1,
       "h2Count": 6,
       "images": 9,
       "internalLinks": 23,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 2568,
-      "issues": []
+      "wordCount": 4003,
+      "issues": [
+        "Title too long (>60 chars)",
+        "Meta description too long (>160 chars)"
+      ]
     }
   ],
   "issues": [],
   "summary": {
     "totalPages": 25,
-    "totalIssues": 2,
-    "averageWordCount": 1829,
+    "totalIssues": 25,
+    "averageWordCount": 2517,
     "pagesWithStructuredData": 23,
     "commonIssues": {
-      "Missing H1 tag": 2
+      "Missing H1 tag": 2,
+      "Title too long (>60 chars)": 9,
+      "Meta description too long (>160 chars)": 14
     }
   }
 }
