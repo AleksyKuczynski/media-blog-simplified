@@ -1,5 +1,6 @@
 // src/app/ru/authors/[slug]/page.tsx
 
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -9,6 +10,36 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
+import { generateSEOMetadata } from '@/main/components/SEO/SEOManager';
+import { StructuredDataManager } from '@/main/components/SEO/StructuredDataManager';
+
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: { slug: string } 
+}): Promise<Metadata> {
+  const dict = await getDictionary('ru');
+  const author = await fetchAuthorBySlug(params.slug, 'ru');
+  
+  if (!author) {
+    return {
+      title: 'Author Not Found',
+      description: 'The requested author could not be found.'
+    };
+  }
+
+  // ✅ USE your SEOManager component!
+  return generateSEOMetadata({
+    dict,
+    pageType: 'author',
+    pageData: {
+      title: author.name,
+      description: author.bio || `Статьи автора ${author.name} на EventForMe`,
+      path: `/authors/${params.slug}`,
+      keywords: `${author.name}, ${dict.seo.keywords.authors}`
+    }
+  });
+}
 
 export default async function AuthorPage({ params, searchParams }: { 
   params: { slug: string }, // ✅ REMOVED: lang parameter - no longer expected in static routes
@@ -50,6 +81,17 @@ export default async function AuthorPage({ params, searchParams }: {
 
   return (
     <>
+      <StructuredDataManager 
+        dict={dict}
+        pageType="author"
+        data={{
+          name: author.name,
+          bio: author.bio,
+          avatar: author.avatar ? `https://event4me.eu/assets/${author.avatar}` : null,
+          url: `https://event4me.eu/ru/authors/${params.slug}`,
+          articleCount: allSlugs.length
+        }}
+      />
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricNames} 

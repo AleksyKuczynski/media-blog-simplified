@@ -1,5 +1,6 @@
 // src/app/ru/[rubric]/page.tsx
 
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
@@ -7,8 +8,40 @@ import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ArticleSlugInfo } from '@/main/lib/directus/index';
 import Section from '@/main/components/Main/Section';
+import { generateSEOMetadata } from '@/main/components/SEO/SEOManager';
+import { StructuredDataManager } from '@/main/components/SEO/StructuredDataManager';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: { rubric: string } 
+}): Promise<Metadata> {
+  const dict = await getDictionary('ru');
+  const rubricDetails = await fetchRubricDetails(params.rubric, 'ru');
+  
+  if (!rubricDetails) {
+    return {
+      title: 'Rubric Not Found',
+      description: 'The requested rubric could not be found.'
+    };
+  }
+
+  const rubricName = rubricDetails.translations.find(t => t.languages_code === 'ru')?.name || params.rubric;
+
+  // ✅ USE your SEOManager component!
+  return generateSEOMetadata({
+    dict,
+    pageType: 'rubric',
+    pageData: {
+      title: rubricName,
+      description: `Все статьи в рубрике ${rubricName} на EventForMe`,
+      path: `/${params.rubric}`,
+      keywords: `${rubricName}, ${dict.seo.keywords.rubrics}`
+    }
+  });
+}
 
 export default async function RubricPage({ 
   params,
@@ -55,6 +88,16 @@ export default async function RubricPage({
 
     return (
       <>
+        <StructuredDataManager 
+          dict={dict}
+          pageType="rubric"
+          data={{
+            name: rubricName,
+            description: `Статьи в рубрике ${rubricName}`,
+            url: `https://event4me.eu/ru/${params.rubric}`,
+            articleCount: allSlugs.length
+          }}
+        />
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={rubricBasics}

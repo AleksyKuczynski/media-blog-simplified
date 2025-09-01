@@ -117,6 +117,7 @@ export interface FullArticle {
   status: string;
   layout: 'regular' | 'promoted' | 'latest' | 'advertising' | 'news';
   published_at: string;
+  updated_at: string;
   external_link: string | null;
   article_heading_img: string;
   rubric_slug: string;
