@@ -6,13 +6,11 @@ import { getArticlePageData } from '@/main/lib/actions';
 import { Header, Content, ScrollToTopButton, TableOfContents } from '@/main/components/Article';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import { SeoBreadcrumbs } from '@/main/components/Main/SeoBreadcrumbs';
-
-// ✅ NEW: Import your SEO components
+import { getSafeArticleDates } from '@/main/lib/utils/seoDateUtils';
 import { generateSEOMetadata } from '@/main/components/SEO/SEOManager';
 import { StructuredDataManager } from '@/main/components/SEO/StructuredDataManager';
 import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 
-// ✅ NEW: Add the missing generateMetadata function
 export async function generateMetadata({ 
   params 
 }: { 
@@ -33,7 +31,12 @@ export async function generateMetadata({
 
   const { article, translation } = data;
 
-  // ✅ USE your SEOManager component!
+  // ✅ SAFE: Handle dates properly
+  const safeDates = getSafeArticleDates(
+    article.published_at, 
+    article.updated_at
+  );
+
   return generateSEOMetadata({
     dict,
     pageType: 'article',
@@ -45,11 +48,11 @@ export async function generateMetadata({
         `https://event4me.eu/assets/${article.article_heading_img}` : 
         undefined,
       articleData: {
-        publishedTime: article.published_at,
-        modifiedTime: article.updated_at,
+        publishedTime: safeDates.publishedTime, // ✅ Always valid ISO string
+        modifiedTime: safeDates.modifiedTime,   // ✅ Always valid ISO string
         author: article.authors?.[0]?.name || 'EventForMe Editorial',
         section: params.rubric,
-        tags: [params.rubric] // You can enhance this with actual tags
+        tags: [params.rubric]
       }
     }
   });
@@ -81,13 +84,17 @@ export default async function ArticlePage({
     processedContent
   } = data;
 
-  // ✅ NEW: Prepare data for StructuredDataManager
+  const safeDates = getSafeArticleDates(
+    article.published_at, 
+    article.updated_at
+  );
+
   const structuredData = {
     title: translation.title,
     description: translation.lead || translation.description,
     author: article.authors?.[0]?.name || 'EventForMe Editorial',
-    publishedTime: article.published_at,
-    modifiedTime: article.updated_at,
+    publishedTime: safeDates.publishedTime,
+    modifiedTime: safeDates.modifiedTime,
     imageUrl: article.article_heading_img ? 
       `https://event4me.eu/assets/${article.article_heading_img}` : 
       'https://event4me.eu/og-article.jpg',
@@ -96,7 +103,6 @@ export default async function ArticlePage({
 
   return (
     <>
-      {/* ✅ NEW: Add StructuredDataManager component */}
       <StructuredDataManager 
         dict={dict}
         pageType="article"

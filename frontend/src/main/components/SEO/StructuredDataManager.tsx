@@ -65,6 +65,21 @@ type ArticleSchema = BaseSchema & {
   mainEntityOfPage: string;
 };
 
+function validateAndFormatDate(
+  dateString: string | null | undefined, 
+  fallbackDate: string
+): string {
+  if (!dateString) return fallbackDate;
+  
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    console.warn(`Invalid date provided: ${dateString}, using fallback`);
+    return fallbackDate;
+  }
+  
+  return date.toISOString();
+}
+
 export function StructuredDataManager({ dict, pageType, data }: StructuredDataManagerProps) {
   const generateOrganizationSchema = (): OrganizationSchema => ({
     "@context": "https://schema.org",
@@ -104,24 +119,36 @@ export function StructuredDataManager({ dict, pageType, data }: StructuredDataMa
     }
   });
 
-  const generateArticleSchema = (articleData: any): ArticleSchema => ({
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": articleData.title,
-    "description": articleData.description,
-    "author": {
-      "@type": "Person",
-      "name": articleData.author
-    },
-    "publisher": { "@id": "https://event4me.eu/#organization" },
-    "datePublished": articleData.publishedTime,
-    "dateModified": articleData.modifiedTime,
-    "image": articleData.imageUrl,
-    "inLanguage": "ru",
-    "mainEntityOfPage": articleData.url
-  });
+  const generateArticleSchema = (articleData: any): ArticleSchema => {
+    // ✅ SAFE: Validate dates before using them
+    const publishedTime = validateAndFormatDate(
+      articleData.publishedTime, 
+      new Date().toISOString()
+    );
+    
+    const modifiedTime = validateAndFormatDate(
+      articleData.modifiedTime, 
+      publishedTime // Use publishedTime as fallback
+    );
 
-  // ✅ FIXED: Use union type for schemas array
+    return {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": articleData.title,
+      "description": articleData.description,
+      "author": {
+        "@type": "Person",
+        "name": articleData.author
+      },
+      "publisher": { "@id": "https://event4me.eu/#organization" },
+      "datePublished": publishedTime,    // ✅ Always valid
+      "dateModified": modifiedTime,      // ✅ Always valid with fallback
+      "image": articleData.imageUrl,
+      "inLanguage": "ru",
+      "mainEntityOfPage": articleData.url
+    };
+  };
+
   const schemas: (OrganizationSchema | WebsiteSchema | ArticleSchema)[] = [
     generateOrganizationSchema(),
     generateWebsiteSchema()
