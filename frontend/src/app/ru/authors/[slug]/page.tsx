@@ -89,7 +89,7 @@ export default async function AuthorPage({ params, searchParams }: {
           bio: author.bio,
           avatar: author.avatar ? `https://event4me.eu/assets/${author.avatar}` : null,
           url: `https://event4me.eu/ru/authors/${params.slug}`,
-          articleCount: allSlugs.length
+          articleCount: allSlugs.length,
         }}
       />
       <Breadcrumbs 

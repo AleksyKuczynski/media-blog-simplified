@@ -18,6 +18,22 @@ interface RussianSEOMetadataProps {
   };
 }
 
+// Safe date validation function (same as in StructuredDataManager)
+function validateAndFormatDate(
+  dateString: string | null | undefined, 
+  fallbackDate: string
+): string {
+  if (!dateString) return fallbackDate;
+  
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    console.warn(`Invalid date provided: ${dateString}, using fallback`);
+    return fallbackDate;
+  }
+  
+  return date.toISOString();
+}
+
 // Enhanced metadata generation optimized for Russian market
 export function generateRussianSEOMetadata({
   dict,
@@ -34,6 +50,18 @@ export function generateRussianSEOMetadata({
   const finalTitle = title || dict.seo.titles.homePrefix;
   const finalDescription = description || dict.seo.descriptions.home;
   const finalKeywords = keywords || dict.seo.keywords.general;
+
+  const safeArticleData = articleData ? {
+    ...articleData,
+    publishedTime: validateAndFormatDate(
+      articleData.publishedTime, 
+      new Date().toISOString()
+    ),
+    modifiedTime: validateAndFormatDate(
+      articleData.modifiedTime, 
+      articleData.publishedTime || new Date().toISOString()
+    )
+  } : undefined;
 
   return {
     // Basic metadata optimized for Russian search engines
@@ -67,13 +95,13 @@ export function generateRussianSEOMetadata({
           alt: finalTitle,
         }
       ],
-      // Article-specific OG data
-      ...(articleData && {
-        publishedTime: articleData.publishedTime,
-        modifiedTime: articleData.modifiedTime,
-        authors: articleData.author ? [articleData.author] : undefined,
-        section: articleData.section,
-        tags: articleData.tags
+      // Article-specific OG data with validated dates
+      ...(safeArticleData && {
+        publishedTime: safeArticleData.publishedTime,
+        modifiedTime: safeArticleData.modifiedTime,
+        authors: safeArticleData.author ? [safeArticleData.author] : undefined,
+        section: safeArticleData.section,
+        tags: safeArticleData.tags
       })
     },
 
@@ -186,7 +214,18 @@ export function RussianSEOStructuredData({
   articleData 
 }: Pick<RussianSEOMetadataProps, 'dict' | 'path' | 'articleData'>) {
   const siteUrl = 'https://event4me.eu';
-  const fullUrl = `${siteUrl}/ru${path}`;
+
+  const safeArticleData = articleData ? {
+    ...articleData,
+    publishedTime: validateAndFormatDate(
+      articleData.publishedTime, 
+      new Date().toISOString()
+    ),
+    modifiedTime: validateAndFormatDate(
+      articleData.modifiedTime, 
+      articleData.publishedTime || new Date().toISOString()
+    )
+  } : undefined;
 
   // Organization schema for Russian market
   const organizationSchema = {
