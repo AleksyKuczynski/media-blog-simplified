@@ -126,9 +126,10 @@ export interface HomeTranslations {
   latestUpdates: string;
   exploreRubrics: string;
   viewAllRubrics: string;
-  // Enhanced: SEO-optimized descriptions
+  featuredRubrics: string;
   featuredDescription: string;
   rubricsDescription: string;
+  rubricsSectionDescription: string;
   viewAllRubricsDescription: string;
   quickNavigation: string;
 }
@@ -168,6 +169,12 @@ export interface RubricsTranslations {
   articlesInRubric: string;
   rubricList: string;
   noRubricsAvailable: string;
+  iconAltText: string;
+  noIcon: string;
+  rubricIcon: string;
+  checkBackLater: string;
+  readMoreAbout: string;
+  exploreRubric: string;
 }
 
 export interface SectionsTranslations {
@@ -177,6 +184,14 @@ export interface SectionsTranslations {
   author: AuthorTranslations;
   categories: CategoriesTranslations;
   rubrics: RubricsTranslations;
+}
+
+export interface Accessibility {
+  iconDescription: string;
+  decorativeIcon: string;
+  rubricVisualIndicator: string;
+  rubricDescription: string;
+  expandDescription: string;
 }
 
 // Enhanced SEO translations interface
@@ -230,5 +245,6 @@ export interface Dictionary {
   sorting: SortingTranslations;
   filter: FilterTranslations;
   categories: CategoryTranslations;
+  accessibility: Accessibility;
   seo: SEOTranslations;
 }

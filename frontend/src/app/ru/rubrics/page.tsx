@@ -1,4 +1,4 @@
-// src/app/ru/rubrics/page.tsx - FIXED WITH H1
+// src/app/ru/rubrics/page.tsx - Updated with proper dict handling
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
@@ -22,11 +22,18 @@ export default async function AllRubricsPage() {
     name: r.translations.find(t => t.languages_code === 'ru')?.name || r.slug
   }));
 
-  const transformedRubrics = rubrics.map((rubric: Rubric) => ({
-    slug: rubric.slug,
-    name: rubric.translations.find(t => t.languages_code === 'ru')?.name || rubric.slug,
-    articleCount: rubric.articleCount
-  }));
+  // ✅ ENHANCED: Transform rubrics with icon data and description
+  const transformedRubrics = rubrics.map((rubric: Rubric) => {
+    const translation = rubric.translations.find(t => t.languages_code === 'ru');
+    return {
+      slug: rubric.slug,
+      name: translation?.name || rubric.slug,
+      description: translation?.description || '', // ✅ NEW: Include description
+      articleCount: rubric.articleCount,
+      nav_icon: rubric.nav_icon,  // ✅ NEW: Include nav_icon
+      iconMetadata: rubric.iconMetadata  // ✅ NEW: Include icon metadata
+    };
+  });
 
   return (
     <>
@@ -41,7 +48,6 @@ export default async function AllRubricsPage() {
         }}
       />
       
-      {/* ✅ FIXED: Added proper H1 tag for SEO */}
       <Section>
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
           {dict.sections.rubrics.allRubrics}
@@ -53,6 +59,7 @@ export default async function AllRubricsPage() {
               key={rubric.slug} 
               rubric={rubric}
               lang="ru"
+              dict={dict}
             />
           ))}
         </CardGrid>

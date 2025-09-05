@@ -1,4 +1,4 @@
-// src/app/ru/page.tsx - SEO-Enhanced Home Page (Fixed Architecture)
+// src/app/ru/page.tsx - Complete Enhanced Home Page with RubricCard Descriptions
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
@@ -32,12 +32,18 @@ export default async function Home() {
     })
   ]);
 
-  // Transform Rubric objects to the format RubricCard expects
-  const transformedRubrics = rubrics.map((rubric: Rubric) => ({
-    slug: rubric.slug,
-    name: rubric.translations.find(t => t.languages_code === 'ru')?.name || rubric.slug,
-    articleCount: rubric.articleCount
-  }));
+  // ✅ ENHANCED: Transform Rubric objects with complete data for RubricCard
+  const transformedRubrics = rubrics.map((rubric: Rubric) => {
+    const translation = rubric.translations.find(t => t.languages_code === 'ru');
+    return {
+      slug: rubric.slug,
+      name: translation?.name || rubric.slug,
+      description: translation?.description || '', // ✅ NEW: Include description
+      articleCount: rubric.articleCount,
+      nav_icon: rubric.nav_icon,
+      iconMetadata: rubric.iconMetadata
+    };
+  });
 
   // ✅ FIXED: Use utility function for schema data preparation
   const schemaData = await prepareHomePageSchemaData(heroSlugs, rubrics);
@@ -71,61 +77,48 @@ export default async function Home() {
               {dict.sections.home.welcomeDescription}
             </p>
           </div>
-          
-          {/* Semantic navigation hint */}
-          <nav aria-label={dict.sections.home.quickNavigation} className="sr-only">
-            <ul>
-              <li><a href="#featured-articles">{dict.sections.articles.featuredArticles}</a></li>
-              <li><a href="#rubrics-section">{dict.sections.home.exploreRubrics}</a></li>
-            </ul>
-          </nav>
-        </Section>
 
-        {/* Featured Articles Section - ✅ FIXED: Section handles heading internally */}
-        <Section 
-          id="featured-articles"
-          as="section"
-          ariaLabel={dict.sections.articles.featuredArticles}
-          title={dict.sections.articles.featuredArticles}
-          role="region"
-        >
-          {/* ✅ FIXED: Removed duplicate heading - Section component handles it */}
-          <p className="text-center text-txcolor-secondary max-w-2xl mx-auto mb-8">
-            {dict.sections.home.featuredDescription}
-          </p>
-          
-          <Suspense fallback={
-            <div className="text-center p-8" role="status" aria-label={dict.common.loading}>
-              <span className="sr-only">{dict.common.loading}</span>
-              {dict.common.loading}
-            </div>
-          }>
-            {heroSlugs.length > 0 ? (
-              <HeroArticles heroSlugs={heroSlugs} lang="ru" />
-            ) : (
-              <div className="text-center text-txcolor-secondary p-8">
-                {dict.sections.articles.noFeaturedArticles}
+          {/* Hero Articles Section */}
+          <div className="mt-12">
+            <Suspense fallback={
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-64 bg-sf-cont animate-pulse rounded-lg" />
+                ))}
               </div>
-            )}
-          </Suspense>
+            }>
+              {heroSlugs.length > 0 ? (
+                <HeroArticles heroSlugs={heroSlugs} lang="ru" />
+              ) : (
+                <div className="text-center text-txcolor-secondary p-8">
+                  {dict.sections.articles.noFeaturedArticles}
+                </div>
+              )}
+            </Suspense>
+          </div>
         </Section>
 
-        {/* Rubrics Section - ✅ FIXED: Section handles heading internally */}
+        {/* ✅ ENHANCED: Rubrics Section with Descriptions and Icons */}
         <Section 
-          id="rubrics-section"
-          isOdd={true}
+          isOdd={false}
           as="section"
-          ariaLabel={dict.sections.home.exploreRubrics}
-          title={dict.sections.home.exploreRubrics}
-          role="region"
+          ariaLabel={dict.sections.home.featuredRubrics}
+          className="py-16"
         >
-          {/* ✅ FIXED: Removed duplicate heading - Section component handles it */}
-          <p className="text-center text-txcolor-secondary max-w-2xl mx-auto mb-8">
-            {dict.sections.home.rubricsDescription}
-          </p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-on-sf mb-6">
+              {dict.sections.home.featuredRubrics}
+            </h2>
+            <p className="text-on-sf-var text-lg lg:text-xl max-w-3xl mx-auto leading-relaxed">
+              {dict.sections.home.rubricsSectionDescription}
+            </p>
+          </div>
           
           <div itemScope itemType="https://schema.org/ItemList">
-            <CardGrid>
+            <meta itemProp="numberOfItems" content={transformedRubrics.length.toString()} />
+            
+            {/* ✅ ENHANCED: Grid with improved spacing for description content */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
               {transformedRubrics.length > 0 ? (
                 transformedRubrics.map((rubric, index) => (
                   <div 
@@ -133,31 +126,49 @@ export default async function Home() {
                     itemScope 
                     itemType="https://schema.org/Thing"
                     itemProp="itemListElement"
+                    className="h-full" // Ensure consistent card heights
                   >
                     <RubricCard
                       rubric={rubric}
                       lang="ru"
-                      dict={dict} // Pass dictionary for proper Russian text
+                      dict={dict}
                     />
                     <meta itemProp="position" content={`${index + 1}`} />
                   </div>
                 ))
               ) : (
-                <div className="text-center text-txcolor-secondary p-8 col-span-full">
-                  {dict.sections.rubrics.noRubricsAvailable}
+                <div className="text-center text-on-sf-var p-8 col-span-full">
+                  <p className="text-lg mb-4">{dict.sections.rubrics.noRubricsAvailable}</p>
+                  <p className="text-sm">{dict.sections.rubrics.checkBackLater}</p>
                 </div>
               )}
-            </CardGrid>
+            </div>
           </div>
           
-          {/* ✅ CLARIFIED: Section footer - this is semantically correct */}
-          <footer className="mt-8 text-center">
+          {/* ✅ ENHANCED: Section footer with better spacing */}
+          <footer className="mt-12 text-center">
             <Link
               href="/ru/rubrics"
-              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-primary-dark transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              className="
+                inline-flex items-center justify-center 
+                px-8 py-4 text-base font-semibold rounded-lg
+                text-white bg-pr-cont hover:bg-pr-cont/90 
+                transition-all duration-300 transform hover:scale-105
+                focus:ring-4 focus:ring-pr-cont/25 focus:outline-none
+                shadow-lg hover:shadow-xl
+              "
               aria-describedby="view-all-rubrics-desc"
             >
               {dict.sections.home.viewAllRubrics}
+              <svg 
+                className="ml-2 w-4 h-4" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </Link>
             <p id="view-all-rubrics-desc" className="sr-only">
               {dict.sections.home.viewAllRubricsDescription}

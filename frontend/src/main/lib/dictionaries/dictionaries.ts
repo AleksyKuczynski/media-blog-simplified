@@ -104,8 +104,10 @@ const RUSSIAN_DICTIONARY: Dictionary = {
       exploreRubrics: 'Изучайте рубрики',
       viewAllRubrics: 'Все рубрики',
       featuredDescription: 'Самые интересные материалы, выбранные редакцией',
-      rubricsDescription: 'Разнообразные тематические разделы для изучения',
-      viewAllRubricsDescription: 'Перейти к полному списку всех рубрик',
+      featuredRubrics: "Наши рубрики",
+      rubricsDescription: "Изучите разнообразные темы и найдите статьи, которые вас интересуют",
+      rubricsSectionDescription: "Изучите разнообразные темы и найдите статьи, которые вас интересуют",
+      viewAllRubricsDescription: "Просмотреть полный список всех доступных рубрик на сайте",
       quickNavigation: 'Быстрая навигация'
     },
     articles: {
@@ -138,7 +140,13 @@ const RUSSIAN_DICTIONARY: Dictionary = {
       featuredRubric: 'Избранная рубрика',
       articlesInRubric: 'статей в рубрике',
       rubricList: 'Список рубрик',
-      noRubricsAvailable: 'Рубрики недоступны'
+      noRubricsAvailable: 'Рубрики недоступны',
+      iconAltText: "Иконка рубрики",
+      noIcon: "Без иконки",
+      rubricIcon: "Иконка рубрики {{name}}",
+      checkBackLater: "Пожалуйста, зайдите позже",
+      readMoreAbout: "Читать больше о",
+      exploreRubric: "Изучить рубрику",
     }
   },
 
@@ -164,6 +172,16 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     ideas: 'Идеи',
     mystic: 'Мистика',
     allCategories: 'Все категории'
+  },
+
+  accessibility: {
+    // ... existing accessibility entries ...
+    iconDescription: "Иконка для рубрики {{rubricName}}",
+    decorativeIcon: "Декоративная иконка",
+    rubricVisualIndicator: "Визуальный индикатор рубрики",
+    rubricDescription: "Описание рубрики {{rubricName}}",
+    expandDescription: "Развернуть описание",
+    // ... existing entries ...
   },
 
   seo: {
@@ -229,4 +247,24 @@ export function getRussianArticleCount(count: number): string {
   } else {
     return `${count} ${dict.common.articles.many}`;
   }
+}
+
+// Helper function for generating icon alt text
+export function getRubricIconAlt(rubricName: string): string {
+  return `Иконка рубрики ${rubricName}`;
+}
+
+// Helper function for icon accessibility description
+export function getRubricIconDescription(rubricName: string): string {
+  return `Визуальный индикатор для рубрики "${rubricName}"`;
+}
+
+// ✅ NEW: Helper function for description truncation
+export function truncateDescription(description: string, maxLength: number = 120): string {
+  if (description.length <= maxLength) return description;
+  
+  const truncated = description.substring(0, maxLength);
+  const lastSpace = truncated.lastIndexOf(' ');
+  
+  return lastSpace > 0 ? truncated.substring(0, lastSpace) + '...' : truncated + '...';
 }

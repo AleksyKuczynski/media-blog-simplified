@@ -1,11 +1,10 @@
 // src/main/lib/directus/fetchRubricDetails.ts
 
-import { DIRECTUS_URL, Rubric } from './index';
+import { DIRECTUS_URL, Rubric, fetchAssetMetadata } from './index';
 import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubric | null> {
   try {
-    // Enhanced fields including ALL SEO data (no separate function needed)
     const fields = [
       'slug',
       'nav_icon',
@@ -13,50 +12,67 @@ export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubr
       'translations.name',
       'translations.description',
       'translations.meta_title',
-      'translations.meta_description', 
-      'translations.focus_keyword',
+      'translations.meta_description',
       'translations.og_title',
       'translations.og_description',
-      'translations.yandex_description'
+      'translations.yandex_description',
+      'translations.focus_keyword'
     ].join(',');
 
-    const filter = {
-      slug: { _eq: slug },
-    };
+    const filter = encodeURIComponent(JSON.stringify({ slug: { _eq: slug } }));
+    const deepFilter = encodeURIComponent(JSON.stringify({
+      translations: {
+        _filter: {
+          languages_code: { _eq: lang }
+        }
+      }
+    }));
 
-    const rubricUrl = `${DIRECTUS_URL}/items/rubrics?fields=${fields}&filter=${JSON.stringify(filter)}`;
-    const rubricResponse = await fetch(rubricUrl, { cache: 'no-store' });
-
-    if (!rubricResponse.ok) {
-      throw new Error(`Failed to fetch rubric details. Status: ${rubricResponse.status}`);
+    const url = `${DIRECTUS_URL}/items/rubrics?fields=${fields}&filter=${filter}&deep=${deepFilter}`;
+    
+    const response = await fetch(url, { cache: 'no-store' });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch rubric details. Status: ${response.status}`);
     }
 
-    const rubricData = await rubricResponse.json();
-
-    if (!rubricData.data || rubricData.data.length === 0) {
+    const data = await response.json();
+    
+    if (!data.data || data.data.length === 0) {
       return null;
     }
 
-    const rubric = rubricData.data[0];
+    const rubric = data.data[0];
 
-    // Fetch article count
-    const countUrl = `${DIRECTUS_URL}/items/articles?aggregate[count]=*&filter[rubric_slug][_eq]=${slug}`;
-    const countResponse = await fetch(countUrl, { cache: 'no-store' });
-
-    if (!countResponse.ok) {
-      throw new Error(`Failed to fetch article count. Status: ${countResponse.status}`);
+    // Fetch icon metadata if nav_icon exists
+    let iconMetadata = null;
+    if (rubric.nav_icon) {
+      iconMetadata = await fetchAssetMetadata(rubric.nav_icon);
     }
 
-    const countData = await countResponse.json();
-    const articleCount = countData.data[0]?.count ?? 0;
+    // Count articles for this rubric
+    const articleCountResponse = await fetch(
+      `${DIRECTUS_URL}/items/articles?aggregate[count]=*&filter[rubric_slug][_eq]=${slug}&filter[status][_eq]=published`,
+      { cache: 'no-store' }
+    );
+    
+    let articleCount = 0;
+    if (articleCountResponse.ok) {
+      const countData = await articleCountResponse.json();
+      articleCount = countData.data?.[0]?.count || 0;
+    }
 
-    return {
+    const rubricDetails: Rubric = {
       slug: rubric.slug,
-      translations: rubric.translations,
-      articleCount: articleCount,
+      nav_icon: rubric.nav_icon || undefined,
+      iconMetadata,
+      translations: rubric.translations || [],
+      articleCount
     };
+
+    return rubricDetails;
   } catch (error) {
-    console.error('Error fetching rubric details:', error);
+    console.error(`Error fetching rubric details for ${slug}:`, error);
     return null;
   }
 }
