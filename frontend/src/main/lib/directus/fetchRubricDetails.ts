@@ -5,10 +5,19 @@ import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubric | null> {
   try {
-    // Fetch rubric details
+    // Enhanced fields including ALL SEO data (no separate function needed)
     const fields = [
       'slug',
-      'translations.*',
+      'nav_icon',
+      'translations.languages_code',
+      'translations.name',
+      'translations.description',
+      'translations.meta_title',
+      'translations.meta_description', 
+      'translations.focus_keyword',
+      'translations.og_title',
+      'translations.og_description',
+      'translations.yandex_description'
     ].join(',');
 
     const filter = {
@@ -41,12 +50,10 @@ export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubr
     const countData = await countResponse.json();
     const articleCount = countData.data[0]?.count ?? 0;
 
-    // Combine the results
     return {
       slug: rubric.slug,
       translations: rubric.translations,
       articleCount: articleCount,
-      // Note: We're not fetching articles here, so we'll omit the 'articles' and 'hasMore' properties
     };
   } catch (error) {
     console.error('Error fetching rubric details:', error);

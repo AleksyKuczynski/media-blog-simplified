@@ -4,9 +4,16 @@ import { DIRECTUS_URL } from './directusConstants';
 import { RubricBasic } from './directusInterfaces';
 import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
-export async function fetchRubricBasics(lang: Lang): Promise<RubricBasic[]> {
+export async function fetchRubricBasics(lang: Lang, includeSEO: boolean = false): Promise<RubricBasic[]> {
   try {
-    const fields = 'slug,translations.name';
+    // Base fields for backward compatibility
+    let fields = 'slug,translations.name';
+    
+    // Add SEO fields when requested
+    if (includeSEO) {
+      fields += ',translations.description,translations.meta_title,translations.meta_description,translations.focus_keyword';
+    }
+
     const filter = JSON.stringify({
       translations: {
         languages_code: {
@@ -14,8 +21,8 @@ export async function fetchRubricBasics(lang: Lang): Promise<RubricBasic[]> {
         }
       }
     });
+    
     const url = `${DIRECTUS_URL}/items/rubrics?fields=${fields}&filter=${encodeURIComponent(filter)}`;
-
     const response = await fetch(url, { cache: 'no-store' });
 
     if (!response.ok) {

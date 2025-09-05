@@ -19,14 +19,21 @@ export interface AuthorDetails extends Author {
 export interface RubricTranslation {
   languages_code: string;
   name: string;
+  description: string;
+  meta_title?: string;
+  meta_description?: string;
+  og_title?: string;
+  og_description?: string;
+  yandex_description?: string;
+  focus_keyword?: string;
 }
 
 export interface Rubric {
   slug: string;
+  nav_icon?: string;
   translations: RubricTranslation[];
   articleCount: number;
-  articles?: ArticleCardType[];
-  hasMore?: boolean;
+  iconMetadata?: Asset | null;
 }
 
 export interface RubricBasic {
