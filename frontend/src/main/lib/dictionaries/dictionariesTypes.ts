@@ -175,6 +175,12 @@ export interface RubricsTranslations {
   checkBackLater: string;
   readMoreAbout: string;
   exploreRubric: string;
+  rubricsCatalog: string;
+  browseAllRubrics: string;
+  categoriesDescription: string;
+  totalRubrics: string;
+  rubricCard: string;
+  viewRubricDetails: string;
 }
 
 export interface SectionsTranslations {
@@ -200,7 +206,7 @@ export interface SEOTranslations {
   titles: {
     homePrefix: string;
     homeSuffix: string;
-    // New template-based titles
+    rubricsListTitle: string;
     articleTemplate: string;
     rubricTemplate: string;
     authorTemplate: string;
@@ -208,7 +214,7 @@ export interface SEOTranslations {
   };
   descriptions: {
     home: string;
-    // New template-based descriptions
+    rubricsList: string;
     articleTemplate: string;
     rubricTemplate: string;
     authorTemplate: string;
@@ -216,7 +222,7 @@ export interface SEOTranslations {
   };
   keywords: {
     general: string;
-    // New specialized keywords
+    rubricsList: string;
     articles: string;
     rubrics: string;
     authors: string;
@@ -232,6 +238,7 @@ export interface SEOTranslations {
     contactEmail: string;
     socialProfiles: string[];
     geographicAreas: string[];
+    rubricsCollection: {};
   };
 }
 

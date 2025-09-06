@@ -1,83 +1,138 @@
-// src/main/components/SEO/StructuredDataManager.tsx - Fixed TypeScript Issues
 import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
 
-interface StructuredDataManagerProps {
-  dict: Dictionary;
-  pageType: 'home' | 'article' | 'rubric' | 'author';
-  data?: any;
+// Enhanced interfaces
+interface CollectionPageSchema {
+  "@context": "https://schema.org";
+  "@type": "CollectionPage";
+  "@id": string;
+  "name": string;
+  "description": string;
+  "url": string;
+  "inLanguage": string;
+  "isPartOf": { "@id": string };
+  "mainEntity": {
+    "@type": "ItemList";
+    "numberOfItems": number;
+    "itemListElement": Array<{
+      "@type": "ListItem";
+      "position": number;
+      "item": {
+        "@type": "Thing";
+        "@id": string;
+        "name": string;
+        "description": string;
+        "url": string;
+        "image"?: string;
+      };
+    }>;
+  };
+  "breadcrumb": {
+    "@type": "BreadcrumbList";
+    "itemListElement": Array<{
+      "@type": "ListItem";
+      "position": number;
+      "name": string;
+      "item": string;
+    }>;
+  };
 }
 
-// ✅ FIXED: Proper type definitions for schema objects
-type BaseSchema = {
+// Extended interfaces for existing schemas
+interface OrganizationSchema {
   "@context": "https://schema.org";
-  [key: string]: any;
-};
-
-type OrganizationSchema = BaseSchema & {
   "@type": "Organization";
   "@id": string;
-  name: string;
-  description: string;
-  url: string;
-  logo: string;
-  contactPoint: {
+  "name": string;
+  "description": string;
+  "url": string;
+  "logo": string;
+  "contactPoint": {
     "@type": "ContactPoint";
-    email: string;
-    contactType: string;
-    availableLanguage: string[];
+    "email": string;
+    "contactType": string;
+    "availableLanguage": string[];
   };
-  sameAs: string[];
-  areaServed: string[];
-  knowsLanguage: string[];
-};
+  "sameAs": string[];
+  "areaServed": string[];
+  "knowsLanguage": string[];
+}
 
-type WebsiteSchema = BaseSchema & {
+interface WebsiteSchema {
+  "@context": "https://schema.org";
   "@type": "WebSite";
   "@id": string;
-  url: string;
-  name: string;
-  description: string;
-  inLanguage: string;
-  publisher: { "@id": string };
-  potentialAction: {
+  "url": string;
+  "name": string;
+  "description": string;
+  "inLanguage": string;
+  "publisher": { "@id": string };
+  "potentialAction": {
     "@type": "SearchAction";
-    target: {
+    "target": {
       "@type": "EntryPoint";
-      urlTemplate: string;
+      "urlTemplate": string;
     };
     "query-input": string;
   };
-};
+}
 
-type ArticleSchema = BaseSchema & {
+interface ArticleSchema {
+  "@context": "https://schema.org";
   "@type": "Article";
-  headline: string;
-  description: string;
-  author: {
+  "headline": string;
+  "description": string;
+  "author": {
     "@type": "Person";
-    name: string;
+    "name": string;
   };
-  publisher: { "@id": string };
-  datePublished: string;
-  dateModified: string;
-  image: string;
-  inLanguage: string;
-  mainEntityOfPage: string;
-};
+  "publisher": { "@id": string };
+  "datePublished": string;
+  "dateModified": string;
+  "image": string;
+  "inLanguage": string;
+  "mainEntityOfPage": string;
+}
 
-function validateAndFormatDate(
-  dateString: string | null | undefined, 
-  fallbackDate: string
-): string {
-  if (!dateString) return fallbackDate;
+// Enhanced props interface
+interface StructuredDataManagerProps {
+  dict: Dictionary;
+  pageType: 'home' | 'article' | 'rubric' | 'author' | 'search' | 'rubrics-collection';
+  data?: {
+    // For articles
+    title?: string;
+    description?: string;
+    author?: string;
+    publishedTime?: string;
+    modifiedTime?: string;
+    imageUrl?: string;
+    url?: string;
+    // For rubrics
+    name?: string;
+    articleCount?: number;
+    // For collections
+    rubrics?: Array<{
+      slug: string;
+      name: string;
+      description: string;
+      articleCount: number;
+      nav_icon?: string;
+    }>;
+    totalItems?: number;
+  };
+}
+
+function validateAndFormatDate(dateString: string | undefined, fallback: string): string {
+  if (!dateString) return fallback;
   
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) {
-    console.warn(`Invalid date provided: ${dateString}, using fallback`);
-    return fallbackDate;
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return fallback;
+    }
+    return date.toISOString();
+  } catch {
+    return fallback;
   }
-  
-  return date.toISOString();
 }
 
 export function StructuredDataManager({ dict, pageType, data }: StructuredDataManagerProps) {
@@ -119,8 +174,59 @@ export function StructuredDataManager({ dict, pageType, data }: StructuredDataMa
     }
   });
 
+  // ✅ NEW: Collection page schema for rubrics listing
+  const generateCollectionPageSchema = (): CollectionPageSchema => {
+    const rubrics = data?.rubrics || [];
+    const totalItems = data?.totalItems || rubrics.length;
+
+    return {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": "https://event4me.eu/ru/rubrics#collection",
+      "name": dict.seo.structuredData.rubricsCollection.name,
+      "description": dict.seo.structuredData.rubricsCollection.description,
+      "url": "https://event4me.eu/ru/rubrics",
+      "inLanguage": "ru",
+      "isPartOf": { "@id": "https://event4me.eu/#website" },
+      "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": totalItems,
+        "itemListElement": rubrics.map((rubric, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "Thing",
+            "@id": `https://event4me.eu/ru/${rubric.slug}#rubric`,
+            "name": rubric.name,
+            "description": rubric.description || `Статьи в рубрике ${rubric.name}`,
+            "url": `https://event4me.eu/ru/${rubric.slug}`,
+            ...(rubric.nav_icon && {
+              "image": `https://event4me.eu/assets/${rubric.nav_icon}`
+            })
+          }
+        }))
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Главная",
+            "item": "https://event4me.eu/ru"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": dict.sections.rubrics.allRubrics,
+            "item": "https://event4me.eu/ru/rubrics"
+          }
+        ]
+      }
+    };
+  };
+
   const generateArticleSchema = (articleData: any): ArticleSchema => {
-    // ✅ SAFE: Validate dates before using them
     const publishedTime = validateAndFormatDate(
       articleData.publishedTime, 
       new Date().toISOString()
@@ -128,7 +234,7 @@ export function StructuredDataManager({ dict, pageType, data }: StructuredDataMa
     
     const modifiedTime = validateAndFormatDate(
       articleData.modifiedTime, 
-      publishedTime // Use publishedTime as fallback
+      publishedTime
     );
 
     return {
@@ -141,21 +247,27 @@ export function StructuredDataManager({ dict, pageType, data }: StructuredDataMa
         "name": articleData.author
       },
       "publisher": { "@id": "https://event4me.eu/#organization" },
-      "datePublished": publishedTime,    // ✅ Always valid
-      "dateModified": modifiedTime,      // ✅ Always valid with fallback
+      "datePublished": publishedTime,
+      "dateModified": modifiedTime,
       "image": articleData.imageUrl,
       "inLanguage": "ru",
       "mainEntityOfPage": articleData.url
     };
   };
 
-  const schemas: (OrganizationSchema | WebsiteSchema | ArticleSchema)[] = [
+  // Generate appropriate schemas based on page type
+  const schemas: (OrganizationSchema | WebsiteSchema | ArticleSchema | CollectionPageSchema)[] = [
     generateOrganizationSchema(),
     generateWebsiteSchema()
   ];
 
+  // Add page-specific schemas
   if (pageType === 'article' && data) {
     schemas.push(generateArticleSchema(data));
+  }
+
+  if (pageType === 'rubrics-collection') {
+    schemas.push(generateCollectionPageSchema());
   }
 
   return (
@@ -165,7 +277,7 @@ export function StructuredDataManager({ dict, pageType, data }: StructuredDataMa
           key={index}
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(schema)
+            __html: JSON.stringify(schema, null, 0)
           }}
         />
       ))}

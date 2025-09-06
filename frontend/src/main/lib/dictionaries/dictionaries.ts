@@ -147,6 +147,12 @@ const RUSSIAN_DICTIONARY: Dictionary = {
       checkBackLater: "Пожалуйста, зайдите позже",
       readMoreAbout: "Читать больше о",
       exploreRubric: "Изучить рубрику",
+      rubricsCatalog: 'Каталог рубрик',
+      browseAllRubrics: 'Просмотреть все рубрики',
+      categoriesDescription: 'Откройте для себя разнообразные тематические разделы нашего медиа-проекта',
+      totalRubrics: 'Всего рубрик',
+      rubricCard: 'Карточка рубрики',
+      viewRubricDetails: 'Посмотреть детали рубрики'
     }
   },
 
@@ -189,7 +195,7 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     titles: {
       homePrefix: 'EventForMe',
       homeSuffix: 'Медиа о культурных событиях',
-      // ✅ NEW: Template-based titles for consistency
+      rubricsListTitle: 'Все рубрики - EventForMe',
       articleTemplate: '{title} - EventForMe',
       rubricTemplate: 'Рубрика {rubric} - EventForMe', 
       authorTemplate: 'Автор {author} - EventForMe',
@@ -197,7 +203,7 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     },
     descriptions: {
       home: 'EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
-      // ✅ NEW: Template-based descriptions
+      rubricsList: 'Полный каталог тематических рубрик EventForMe: музыка, культурные события, современные идеи, мистика и многое другое',
       articleTemplate: 'Читать статью "{title}" на EventForMe - медиа о культуре, музыке и современных идеях',
       rubricTemplate: 'Все статьи в рубрике {rubric} на EventForMe - медиа о культурных событиях',
       authorTemplate: 'Статьи автора {author} на EventForMe - читать все публикации', 
@@ -205,7 +211,7 @@ const RUSSIAN_DICTIONARY: Dictionary = {
     },
     keywords: {
       general: 'культурные события, музыка, современные идеи, мистика, культура',
-      // ✅ NEW: Specialized keywords by category
+      rubricsList: 'каталог рубрик, тематические разделы, культурные категории, музыкальные рубрики, EventForMe',
       articles: 'статьи о культуре, музыкальные обзоры, культурная журналистика, EventForMe',
       rubrics: 'рубрики о культуре, тематические разделы, культурные категории',
       authors: 'авторы о культуре, культурные эксперты, музыкальные журналисты',
@@ -223,7 +229,13 @@ const RUSSIAN_DICTIONARY: Dictionary = {
         'https://t.me/eventforme',
         'https://vk.com/eventforme'
       ],
-      geographicAreas: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine', 'EU']
+      geographicAreas: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine', 'EU'],
+      rubricsCollection: {
+        name: 'Рубрики EventForMe',
+        description: 'Полный каталог тематических рубрик медиа-проекта EventForMe о культурных событиях',
+        numberOfItems: 'Количество рубрик',
+        itemListElement: 'Элемент каталога рубрик'
+      }
     }
   }
 };
