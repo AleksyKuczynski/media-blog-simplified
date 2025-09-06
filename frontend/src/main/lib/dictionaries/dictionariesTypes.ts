@@ -238,7 +238,12 @@ export interface SEOTranslations {
     contactEmail: string;
     socialProfiles: string[];
     geographicAreas: string[];
-    rubricsCollection: {};
+    rubricsCollection: {
+      name: string;
+      description: string;
+      numberOfItems: string;
+      itemListElement: string;
+    };
   };
 }
 
