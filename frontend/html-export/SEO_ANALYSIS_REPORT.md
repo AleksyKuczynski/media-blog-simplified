@@ -1,13 +1,13 @@
 # SEO Analysis Report
 
-**Generated:** 2025-09-01T10:09:38.438Z
+**Generated:** 2025-09-06T04:56:17.733Z
 **Site:** http://localhost:3000
 
 ## Summary Statistics
 
 - **Total Pages Analyzed:** 25
 - **Total SEO Issues:** 25
-- **Average Word Count:** 2517
+- **Average Word Count:** 2532
 - **Pages with Structured Data:** 23/25
 
 ## Common Issues
@@ -21,9 +21,9 @@
 ### EventForMe
 - **URL:** http://localhost:3000/ru
 - **File:** _ru.html
-- **Word Count:** 1732
+- **Word Count:** 1898
 - **H1 Count:** 1
-- **Images:** 4
+- **Images:** 7
 - **Structured Data:** ✅
 
 ### EventForMe — Медиа о культурных событиях
@@ -47,9 +47,9 @@
 ### EventForMe — Медиа о культурных событиях
 - **URL:** http://localhost:3000/ru/rubrics
 - **File:** _ru_rubrics.html
-- **Word Count:** 600
+- **Word Count:** 762
 - **H1 Count:** 1
-- **Images:** 0
+- **Images:** 3
 - **Structured Data:** ✅
 
 ### EventForMe — Медиа о культурных событиях
@@ -63,7 +63,7 @@
 ### Где отдохнуть в 2023 году с российским загранпаспортом и без визы. Маршрут первый: медовый месяц в Стамбуле
 - **URL:** http://localhost:3000/ru/ideas/gdie-otdokhnut-v-2023-ghodu-s-rossiiskim-zaghranpasportom-i-biez-vizy-marshrut-piervyi-miedovyi-miesiats-v-stambulie
 - **File:** _ru_ideas_gdie-otdokhnut-v-2023-ghodu-s-rossiiskim-zaghranpasportom-i-biez-vizy-marshrut-piervyi-miedovyi-miesiats-v-stambulie.html
-- **Word Count:** 3306
+- **Word Count:** 3314
 - **H1 Count:** 1
 - **Images:** 13
 - **Structured Data:** ✅
@@ -81,7 +81,7 @@
 ### Крамбамбу́ля, душепарка или глёг? Какой вид глинтвейна выбрать для свадьбы зимой
 - **URL:** http://localhost:3000/ru/ideas/krambambulya-dusheparka-or-glogg-choosing-the-perfect-mulled-wine-for-a-winter-wedding
 - **File:** _ru_ideas_krambambulya-dusheparka-or-glogg-choosing-the-perfect-mulled-wine-for-a-winter-wedding.html
-- **Word Count:** 4817
+- **Word Count:** 4825
 - **H1 Count:** 1
 - **Images:** 1
 - **Structured Data:** ✅
@@ -90,16 +90,16 @@
 ### Индекс увлажнения: аналитика летнего косметического портфеля. Как защитить кожу и волосы от солнца
 - **URL:** http://localhost:3000/ru/ideas/indieks-uvlazhnieniia-analitika-lietniegho-kosmietichieskogho-portfielia-kak-zashchitit-kozhu-i-volosy-ot-solntsa
 - **File:** _ru_ideas_indieks-uvlazhnieniia-analitika-lietniegho-kosmietichieskogho-portfielia-kak-zashchitit-kozhu-i-volosy-ot-solntsa.html
-- **Word Count:** 3995
+- **Word Count:** 4003
 - **H1 Count:** 1
 - **Images:** 9
 - **Structured Data:** ✅
 - **Issues:** Title too long (>60 chars), Meta description too long (>160 chars)
 
-### идеи
+### Идеи и вдохновения
 - **URL:** http://localhost:3000/ru/ideas
 - **File:** _ru_ideas.html
-- **Word Count:** 1022
+- **Word Count:** 1062
 - **H1 Count:** 1
 - **Images:** 2
 - **Structured Data:** ✅

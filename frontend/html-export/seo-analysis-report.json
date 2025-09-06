@@ -6,12 +6,12 @@
       "title": "EventForMe",
       "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
       "h1Count": 1,
-      "h2Count": 3,
-      "images": 4,
+      "h2Count": 2,
+      "images": 7,
       "internalLinks": 24,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 1732,
+      "wordCount": 1898,
       "issues": []
     },
     {
@@ -53,11 +53,11 @@
       "metaDescription": "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
       "h1Count": 1,
       "h2Count": 1,
-      "images": 0,
+      "images": 3,
       "internalLinks": 20,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 600,
+      "wordCount": 762,
       "issues": []
     },
     {
@@ -85,7 +85,7 @@
       "internalLinks": 23,
       "externalLinks": 2,
       "hasStructuredData": true,
-      "wordCount": 3306,
+      "wordCount": 3314,
       "issues": [
         "Title too long (>60 chars)",
         "Meta description too long (>160 chars)"
@@ -118,7 +118,7 @@
       "internalLinks": 24,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 4817,
+      "wordCount": 4825,
       "issues": [
         "Title too long (>60 chars)",
         "Meta description too long (>160 chars)"
@@ -135,7 +135,7 @@
       "internalLinks": 23,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 3995,
+      "wordCount": 4003,
       "issues": [
         "Title too long (>60 chars)",
         "Meta description too long (>160 chars)"
@@ -144,15 +144,15 @@
     {
       "url": "http://localhost:3000/ru/ideas",
       "filename": "_ru_ideas.html",
-      "title": "идеи",
-      "metaDescription": "Все статьи в рубрике идеи на EventForMe",
+      "title": "Идеи и вдохновения",
+      "metaDescription": "Все статьи в рубрике Идеи и вдохновения на EventForMe",
       "h1Count": 1,
       "h2Count": 1,
       "images": 2,
       "internalLinks": 20,
       "externalLinks": 1,
       "hasStructuredData": true,
-      "wordCount": 1022,
+      "wordCount": 1062,
       "issues": []
     },
     {
@@ -396,7 +396,7 @@
   "summary": {
     "totalPages": 25,
     "totalIssues": 25,
-    "averageWordCount": 2517,
+    "averageWordCount": 2532,
     "pagesWithStructuredData": 23,
     "commonIssues": {
       "Missing H1 tag": 2,

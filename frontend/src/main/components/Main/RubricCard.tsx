@@ -1,4 +1,4 @@
-// src/main/components/Main/RubricCard.tsx - Enhanced with nav_icon support
+// src/main/components/Main/RubricCard.tsx - Enhanced with description support
 import Link from "next/link";
 import Image from "next/image";
 import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
@@ -10,6 +10,7 @@ interface RubricCardProps {
   rubric: {
     slug: string;
     name: string;
+    description?: string;  // ✅ NEW: Add description field
     articleCount: number;
     nav_icon?: string;
     iconMetadata?: Asset | null;
@@ -38,12 +39,12 @@ export function RubricCard({ rubric, lang, dict }: RubricCardProps) {
           h-full bg-sf-cont rounded-2xl border border-ol-var 
           shadow-sm hover:shadow-lg transition-all duration-300
           p-6 hover:scale-105 focus-within:ring-2 focus-within:ring-primary
-          flex flex-col items-center text-center
+          flex flex-col items-center text-center min-h-[200px]
         "
         itemScope 
         itemType="https://schema.org/Article"
       >
-        {/* ✅ NEW: Icon Display Section */}
+        {/* Icon Display Section */}
         {iconUrl && rubric.iconMetadata && (
           <header className="mb-4">
             <div className="
@@ -61,14 +62,13 @@ export function RubricCard({ rubric, lang, dict }: RubricCardProps) {
                 "
                 priority={false}
                 loading="lazy"
-                // ✅ SEO: Structured data for icon
                 itemProp="image"
               />
             </div>
           </header>
         )}
 
-        {/* Enhanced heading with semantic markup */}
+        {/* Title Section */}
         <header className={iconUrl ? "" : "mb-4"}>
           <h3 
             className="
@@ -81,10 +81,33 @@ export function RubricCard({ rubric, lang, dict }: RubricCardProps) {
             {rubric.name}
           </h3>
         </header>
+
+        {/* ✅ NEW: Description Section */}
+        {rubric.description && (
+          <div className="flex-1 mb-4 max-w-full">
+            <p 
+              className="
+                text-sm text-on-sf-var leading-relaxed text-center
+                overflow-hidden
+              "
+              style={{
+                display: '-webkit-box',
+                WebkitLineClamp: 3,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+              itemProp="description"
+              title={rubric.description} // Full description on hover
+            >
+              {rubric.description}
+            </p>
+          </div>
+        )}
         
-        {/* Article count with proper Russian text and semantic meaning */}
+        {/* Article count with proper spacing */}
         <footer 
-          className="text-sm text-on-sf-var mt-auto"
+          className={`text-sm text-on-sf-var mt-auto ${rubric.description ? '' : 'mt-4'}`}
           aria-label={`В рубрике ${rubric.name} ${articleCountText}`}
         >
           <span itemProp="articleBody">
@@ -92,13 +115,16 @@ export function RubricCard({ rubric, lang, dict }: RubricCardProps) {
           </span>
         </footer>
         
-        {/* ✅ SEO: Enhanced Schema.org metadata */}
+        {/* ✅ ENHANCED: Schema.org metadata with description */}
         <meta itemProp="url" content={`https://event4me.eu/ru/${rubric.slug}`} />
         <meta itemProp="inLanguage" content="ru" />
         <meta itemProp="articleSection" content={rubric.name} />
         <meta itemProp="publisher" content="EventForMe" />
+        {rubric.description && (
+          <meta itemProp="description" content={rubric.description} />
+        )}
         
-        {/* ✅ SEO: Icon metadata for structured data */}
+        {/* Icon metadata for structured data */}
         {iconUrl && rubric.iconMetadata && (
           <>
             <meta itemProp="image" content={iconUrl} />
