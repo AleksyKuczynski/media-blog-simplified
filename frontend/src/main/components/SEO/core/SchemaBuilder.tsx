@@ -1,9 +1,10 @@
 // src/main/components/SEO/core/SchemaBuilder.tsx
-// Pure schema logic for JSON-LD structured data generation
+// Fixed schema logic for JSON-LD structured data generation
 
 import React from 'react';
 import { 
-  BaseSchemaData, 
+  BaseSchemaData,
+  ExtendedSchemaData,
   SchemaBuilderProps,
   NavigationElementSchema,
   WebsiteSchema,
@@ -12,13 +13,13 @@ import {
 } from './types';
 
 // ===================================================================
-// SCHEMA VALIDATION
+// SCHEMA VALIDATION - FIXED
 // ===================================================================
 
 /**
- * Validate schema data structure
+ * Validate schema data structure - more flexible validation
  */
-const validateSchema = (schema: BaseSchemaData): boolean => {
+const validateSchema = (schema: BaseSchemaData | ExtendedSchemaData): boolean => {
   if (!schema['@context'] || schema['@context'] !== 'https://schema.org') {
     console.warn('Schema: @context must be "https://schema.org"');
     return false;
@@ -29,13 +30,14 @@ const validateSchema = (schema: BaseSchemaData): boolean => {
     return false;
   }
   
-  if (!schema.name || typeof schema.name !== 'string') {
+  // Only validate required fields if they exist in the schema type
+  if ('name' in schema && (!schema.name || typeof schema.name !== 'string')) {
     console.warn('Schema: name is required and must be a string');
     return false;
   }
   
-  if (!schema.url || !isValidUrl(schema.url)) {
-    console.warn('Schema: url is required and must be a valid URL');
+  if ('url' in schema && schema.url && !isValidUrl(schema.url)) {
+    console.warn('Schema: url must be a valid URL if provided');
     return false;
   }
 
@@ -55,7 +57,7 @@ const isValidUrl = (url: string): boolean => {
 };
 
 // ===================================================================
-// SCHEMA BUILDER COMPONENT
+// SCHEMA BUILDER COMPONENT - FIXED
 // ===================================================================
 
 /**
@@ -93,7 +95,7 @@ export const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
 };
 
 // ===================================================================
-// SCHEMA FACTORY FUNCTIONS
+// SCHEMA FACTORY FUNCTIONS - FIXED
 // ===================================================================
 
 /**
@@ -121,7 +123,7 @@ export const createNavigationElementSchema = (
 });
 
 /**
- * Create website schema with search functionality
+ * Create website schema with search functionality - FIXED
  */
 export const createWebsiteSchema = (
   name: string,
@@ -129,6 +131,7 @@ export const createWebsiteSchema = (
   description?: string,
   searchUrl?: string
 ): WebsiteSchema => {
+  // Create schema with all properties upfront to avoid readonly issues
   const schema: WebsiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -137,18 +140,18 @@ export const createWebsiteSchema = (
     url,
     inLanguage: 'ru',
     description,
+    // Add potentialAction conditionally during creation
+    ...(searchUrl && {
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${searchUrl}?search={search_term_string}`,
+        },
+        'query-input': 'required name=search_term_string',
+      }
+    }),
   };
-
-  if (searchUrl) {
-    schema.potentialAction = {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${searchUrl}?search={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    };
-  }
 
   return schema;
 };
@@ -177,23 +180,25 @@ export const createOrganizationSchema = (
 });
 
 /**
- * Create breadcrumb schema
+ * Create breadcrumb schema - FIXED to use ExtendedSchemaData
  */
 export const createBreadcrumbSchema = (
   items: Array<{ name: string; url: string }>
 ): BreadcrumbSchema => ({
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
+  '@id': `${items[items.length - 1]?.url || '/'}#breadcrumb`,
   itemListElement: items.map((item, index) => ({
     '@type': 'ListItem',
     position: index + 1,
     name: item.name,
-    item: item.url,
+    item: item.url, // Simplified - just use URL string
   })),
+  numberOfItems: items.length,
 });
 
 /**
- * Create collection page schema
+ * Create collection page schema - FIXED
  */
 export const createCollectionPageSchema = (
   name: string,
@@ -202,7 +207,7 @@ export const createCollectionPageSchema = (
   itemCount: number,
   collectionType: string,
   items?: Array<{ name: string; url: string }>
-) => ({
+): ExtendedSchemaData => ({
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   '@id': `${url}#collection`,
@@ -237,39 +242,41 @@ export const createCollectionPageSchema = (
 });
 
 // ===================================================================
-// UTILITY FUNCTIONS
+// UTILITY FUNCTIONS - FIXED
 // ===================================================================
 
 /**
  * Combine multiple schemas into a single array
  */
-export const combineSchemas = (...schemas: (BaseSchemaData | BaseSchemaData[])[]): BaseSchemaData[] => {
+export const combineSchemas = (...schemas: (BaseSchemaData | ExtendedSchemaData | (BaseSchemaData | ExtendedSchemaData)[])[]): (BaseSchemaData | ExtendedSchemaData)[] => {
   return schemas.flat().filter(Boolean);
 };
 
 /**
  * Get schema script content as string (for server-side rendering)
  */
-export const getSchemaScript = (schema: BaseSchemaData): string => {
+export const getSchemaScript = (schema: BaseSchemaData | ExtendedSchemaData): string => {
   return JSON.stringify(schema, null, 0);
 };
 
 /**
- * Validate and sanitize schema data
+ * Validate and sanitize schema data - FIXED
  */
-export const sanitizeSchema = (schema: BaseSchemaData): BaseSchemaData => {
-  // Remove any potentially dangerous properties
-  const sanitized = { ...schema };
+export const sanitizeSchema = (schema: BaseSchemaData | ExtendedSchemaData): BaseSchemaData | ExtendedSchemaData => {
+  // Create a new object with validated properties
+  const sanitized: any = { ...schema };
   
   // Ensure required properties
   if (!sanitized['@context']) {
     sanitized['@context'] = 'https://schema.org';
   }
   
-  // Validate URLs
+  // Validate URLs - only remove if invalid and optional
   if (sanitized.url && !isValidUrl(sanitized.url)) {
     console.warn('Invalid URL in schema, removing:', sanitized.url);
-    delete sanitized.url;
+    // Create new object without url instead of using delete
+    const { url, ...rest } = sanitized;
+    return rest as BaseSchemaData | ExtendedSchemaData;
   }
   
   return sanitized;

@@ -1,10 +1,11 @@
 // src/main/components/SEO/schemas/NavigationSchema.tsx
-// Navigation structured data using new dictionary and core builders
+// Fixed navigation structured data using new dictionary and core builders
 
 import React from 'react';
 import { SchemaBuilder, createNavigationSchema, createWebsiteSchema } from '../core/SchemaBuilder';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { getCanonicalURL } from '@/main/lib/dictionary/helpers';
+import { ExtendedSchemaData } from '../core/types';
 
 // ===================================================================
 // NAVIGATION SCHEMA PROPS
@@ -16,7 +17,7 @@ export interface NavigationSchemaProps {
 }
 
 // ===================================================================
-// NAVIGATION SCHEMA COMPONENT
+// NAVIGATION SCHEMA COMPONENT - FIXED
 // ===================================================================
 
 /**
@@ -75,7 +76,7 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
 };
 
 // ===================================================================
-// SPECIFIC NAVIGATION SCHEMAS
+// SPECIFIC NAVIGATION SCHEMAS - FIXED
 // ===================================================================
 
 /**
@@ -85,14 +86,14 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
   const navDict = dictionary.navigation;
   const seoDict = dictionary.seo;
 
-  const mainNavigationSchema = {
-    '@context': 'https://schema.org' as const,
-    '@type': 'SiteNavigationElement' as const,
+  const mainNavigationSchema: ExtendedSchemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'SiteNavigationElement',
     '@id': `${getCanonicalURL('/')}#main-navigation`,
     name: navDict.seo.navigationTitle,
     description: navDict.seo.navigationDescription,
     url: getCanonicalURL('/'),
-    inLanguage: 'ru' as const,
+    inLanguage: 'ru',
     
     // Enhanced properties for main navigation
     audience: {
@@ -124,14 +125,14 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
 export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
   const navDict = dictionary.navigation;
 
-  const mobileNavigationSchema = {
-    '@context': 'https://schema.org' as const,
-    '@type': 'SiteNavigationElement' as const,
+  const mobileNavigationSchema: ExtendedSchemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'SiteNavigationElement',
     '@id': `${getCanonicalURL('/')}#mobile-navigation`,
     name: `${navDict.seo.navigationTitle} (мобильная версия)`,
     description: `${navDict.seo.navigationDescription} Адаптировано для мобильных устройств.`,
     url: getCanonicalURL('/'),
-    inLanguage: 'ru' as const,
+    inLanguage: 'ru',
     
     // Mobile-specific properties
     audience: {
@@ -150,24 +151,25 @@ export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
 };
 
 /**
- * Schema for search functionality
+ * Schema for search functionality - FIXED
  */
 export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
   const searchDict = dictionary.search;
   const seoDict = dictionary.seo;
 
-  const searchSchema = {
-    '@context': 'https://schema.org' as const,
-    '@type': 'WebSite' as const,
+  const searchSchema: ExtendedSchemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
     '@id': `${getCanonicalURL('/')}#search`,
     name: seoDict.site.siteName,
     url: getCanonicalURL('/'),
+    inLanguage: 'ru', // Added missing inLanguage
     
     potentialAction: {
-      '@type': 'SearchAction' as const,
+      '@type': 'SearchAction',
       name: searchDict.accessibility.searchLabel,
       target: {
-        '@type': 'EntryPoint' as const,
+        '@type': 'EntryPoint',
         urlTemplate: `${getCanonicalURL('/search')}?search={search_term_string}`,
         actionPlatform: [
           'https://schema.org/DesktopWebPlatform',
@@ -189,7 +191,7 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
 };
 
 /**
- * Schema for breadcrumb navigation
+ * Schema for breadcrumb navigation - FIXED
  */
 export interface BreadcrumbNavigationSchemaProps {
   dictionary: Dictionary;
@@ -202,13 +204,13 @@ export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProp
 }) => {
   if (breadcrumbs.length === 0) return null;
 
-  const breadcrumbSchema = {
-    '@context': 'https://schema.org' as const,
-    '@type': 'BreadcrumbList' as const,
+  const breadcrumbSchema: ExtendedSchemaData = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
     '@id': `${getCanonicalURL(breadcrumbs[breadcrumbs.length - 1]?.href || '/')}#breadcrumb`,
     
     itemListElement: breadcrumbs.map((crumb, index) => ({
-      '@type': 'ListItem' as const,
+      '@type': 'ListItem',
       position: index + 1,
       name: crumb.name,
       item: {
@@ -230,7 +232,7 @@ export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProp
 };
 
 // ===================================================================
-// UTILITY COMPONENTS
+// UTILITY COMPONENTS - FIXED
 // ===================================================================
 
 /**

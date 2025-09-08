@@ -19,12 +19,14 @@ export type {
   WebsiteSEOData,
   CollectionSEOData,
   BaseSchemaData,
+  ExtendedSchemaData,
   NavigationElementSchema,
   WebsiteSchema,
   OrganizationSchema,
   BreadcrumbSchema,
   MetadataResult,
   SEOContext,
+  CustomMetaTags,
 } from './core/types';
 
 // Core builders
@@ -153,9 +155,11 @@ export const LegacyNavigationSEOWrapper: React.FC<{
   // This component helps bridge old and new systems during migration
   // It accepts old translation format and converts to new dictionary structure
   
-  console.warn(
-    'LegacyNavigationSEOWrapper is deprecated. Please migrate to new dictionary system.'
-  );
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(
+      'LegacyNavigationSEOWrapper is deprecated. Please migrate to new dictionary system.'
+    );
+  }
   
   // For now, return null - implement conversion logic during migration
   return null;
@@ -205,7 +209,7 @@ export const SEODebugUtils = {
    */
   validateSchema: (schema: any) => {
     if (process.env.NODE_ENV === 'development') {
-      const required = ['@context', '@type', 'name', 'url'];
+      const required = ['@context', '@type'];
       const missing = required.filter(key => !schema[key]);
       
       if (missing.length > 0) {

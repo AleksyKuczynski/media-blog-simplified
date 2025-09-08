@@ -1,5 +1,5 @@
 // src/main/components/SEO/core/types.ts
-// Clean type definitions for SEO components
+// Fixed type definitions for SEO components
 
 import { Metadata } from 'next';
 
@@ -39,7 +39,7 @@ export interface CollectionSEOData extends BaseSEOData {
 export type SEOData = WebsiteSEOData | ArticleSEOData | CollectionSEOData;
 
 // ===================================================================
-// STRUCTURED DATA TYPES
+// STRUCTURED DATA TYPES - FIXED
 // ===================================================================
 
 export interface BaseSchemaData {
@@ -52,6 +52,17 @@ export interface BaseSchemaData {
   readonly inLanguage: string;
 }
 
+// Make BaseSchemaData more flexible for different schema types
+export interface ExtendedSchemaData extends Partial<BaseSchemaData> {
+  readonly '@context': 'https://schema.org';
+  readonly '@type': string;
+  readonly '@id'?: string;
+  readonly name?: string;
+  readonly url?: string;
+  readonly inLanguage?: string;
+  [key: string]: any; // Allow additional properties for specific schema types
+}
+
 export interface NavigationElementSchema extends BaseSchemaData {
   readonly '@type': 'SiteNavigationElement';
   readonly position: number;
@@ -61,18 +72,28 @@ export interface NavigationElementSchema extends BaseSchemaData {
   };
 }
 
+// Fixed WebsiteSchema - make potentialAction optional and mutable
 export interface WebsiteSchema extends BaseSchemaData {
   readonly '@type': 'WebSite';
-  readonly potentialAction?: SearchActionSchema;
+  potentialAction?: SearchActionSchema; // Remove readonly to allow assignment
 }
 
 export interface SearchActionSchema {
   readonly '@type': 'SearchAction';
+  readonly name?: string;
   readonly target: {
     readonly '@type': 'EntryPoint';
     readonly urlTemplate: string;
+    readonly actionPlatform?: readonly string[];
   };
-  readonly 'query-input': string;
+  readonly 'query-input': string | {
+    readonly '@type'?: 'PropertyValueSpecification';
+    readonly valueName?: string;
+    readonly description?: string;
+    readonly valueRequired?: boolean;
+    readonly valueMinLength?: number;
+    readonly valueMaxLength?: number;
+  };
 }
 
 export interface OrganizationSchema extends BaseSchemaData {
@@ -82,17 +103,24 @@ export interface OrganizationSchema extends BaseSchemaData {
   readonly areaServed?: readonly string[];
 }
 
-export interface BreadcrumbSchema {
-  readonly '@context': 'https://schema.org';
+// Fixed BreadcrumbSchema - extend from ExtendedSchemaData to avoid inLanguage requirement
+export interface BreadcrumbSchema extends ExtendedSchemaData {
   readonly '@type': 'BreadcrumbList';
   readonly itemListElement: readonly BreadcrumbItemSchema[];
+  readonly numberOfItems?: number;
 }
 
 export interface BreadcrumbItemSchema {
   readonly '@type': 'ListItem';
   readonly position: number;
   readonly name: string;
-  readonly item: string;
+  readonly item: string | {
+    readonly '@type': string;
+    readonly '@id': string;
+    readonly name: string;
+    readonly url: string;
+    readonly inLanguage?: string;
+  };
 }
 
 // ===================================================================
@@ -104,8 +132,9 @@ export interface MetadataBuilderProps {
   readonly additionalMeta?: Record<string, string>;
 }
 
+// Fixed SchemaBuilderProps to accept both BaseSchemaData and ExtendedSchemaData
 export interface SchemaBuilderProps {
-  readonly schema: BaseSchemaData | BaseSchemaData[];
+  readonly schema: BaseSchemaData | ExtendedSchemaData | (BaseSchemaData | ExtendedSchemaData)[];
   readonly priority?: 'high' | 'normal' | 'low';
 }
 
@@ -136,4 +165,9 @@ export interface SEOContext {
   readonly siteName: string;
   readonly locale: string;
   readonly region: string;
+}
+
+// Fixed CustomMetaTags type to avoid conflicts with Next.js Metadata
+export interface CustomMetaTags {
+  [key: string]: string | number | undefined;
 }

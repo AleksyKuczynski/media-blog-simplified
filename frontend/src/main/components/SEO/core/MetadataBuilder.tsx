@@ -1,12 +1,13 @@
 // src/main/components/SEO/core/MetadataBuilder.tsx
-// Pure metadata logic for Next.js Metadata generation
+// Fixed metadata logic for Next.js Metadata generation
 
 import { Metadata } from 'next';
 import { 
   SEOData, 
   MetadataBuilderProps, 
   MetadataResult,
-  SEOContext 
+  SEOContext,
+  CustomMetaTags
 } from './types';
 
 // ===================================================================
@@ -25,15 +26,40 @@ const DEFAULT_SEO_CONTEXT: SEOContext = {
 };
 
 /**
- * Build Next.js Metadata from SEO data
+ * Build Next.js Metadata from SEO data - FIXED
  */
 export const buildMetadata = (
   seoData: SEOData,
   context: Partial<SEOContext> = {},
-  additionalMeta: Record<string, string> = {}
+  additionalMeta: CustomMetaTags = {}
 ): MetadataResult => {
   const ctx = { ...DEFAULT_SEO_CONTEXT, ...context };
   
+  // Create base other metadata without conflicts
+  const baseOtherMeta: CustomMetaTags = {
+    // Language and region
+    'content-language': 'ru',
+    'geo.region': ctx.region,
+    'geo.placename': 'Russia',
+    
+    // SEO directives
+    'robots': 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
+    'googlebot': 'index, follow',
+    
+    // Yandex optimization
+    'yandex-verification': process.env.YANDEX_VERIFICATION || '',
+    
+    // Dublin Core metadata
+    'DC.title': seoData.title,
+    'DC.description': seoData.description,
+    'DC.language': 'ru',
+    'DC.creator': seoData.siteName,
+    'DC.publisher': seoData.siteName,
+    'DC.identifier': seoData.canonicalUrl,
+    'DC.coverage': 'Russia',
+    'DC.rights': 'Copyright EventForMe',
+  };
+
   const baseMetadata: Metadata = {
     title: seoData.title,
     description: seoData.description,
@@ -74,36 +100,14 @@ export const buildMetadata = (
       images: [seoData.imageUrl || ctx.defaultImageUrl],
     },
 
-    // Russian market specific meta tags
+    // Combined other metadata - FIXED to avoid conflicts
     other: {
-      // Language and region
-      'content-language': 'ru',
-      'geo.region': ctx.region,
-      'geo.placename': 'Russia',
-      
-      // SEO directives
-      'robots': 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
-      'googlebot': 'index, follow',
-      
-      // Yandex optimization
-      'yandex-verification': process.env.YANDEX_VERIFICATION || '',
-      
-      // Dublin Core metadata
-      'DC.title': seoData.title,
-      'DC.description': seoData.description,
-      'DC.language': 'ru',
-      'DC.creator': seoData.siteName,
-      'DC.publisher': seoData.siteName,
-      'DC.identifier': seoData.canonicalUrl,
-      'DC.coverage': 'Russia',
-      'DC.rights': 'Copyright EventForMe',
-      
-      // Additional custom meta
+      ...baseOtherMeta,
       ...additionalMeta,
     },
   };
 
-  // Article-specific metadata
+  // Article-specific metadata - FIXED
   if (seoData.type === 'article') {
     const articleData = seoData;
     
@@ -116,8 +120,8 @@ export const buildMetadata = (
       tags: articleData.tags as string[],
     };
 
-    baseMetadata.other = {
-      ...baseMetadata.other,
+    // Create article-specific meta without conflicts
+    const articleMeta: CustomMetaTags = {
       'article:author': articleData.author,
       'article:section': articleData.section,
       'article:published_time': articleData.publishedTime,
@@ -125,18 +129,27 @@ export const buildMetadata = (
       'article:tag': articleData.tags.join(', '),
       'DC.type': 'Text.Article',
     };
+
+    baseMetadata.other = {
+      ...baseMetadata.other,
+      ...articleMeta,
+    };
   }
 
-  // Collection-specific metadata
+  // Collection-specific metadata - FIXED
   if (seoData.type === 'collection') {
     const collectionData = seoData;
     
-    baseMetadata.other = {
-      ...baseMetadata.other,
+    const collectionMeta: CustomMetaTags = {
       'DC.type': 'Text.Collection',
       'collection:type': collectionData.collectionType,
       'collection:itemCount': collectionData.itemCount.toString(),
       'collection:language': 'ru',
+    };
+
+    baseMetadata.other = {
+      ...baseMetadata.other,
+      ...collectionMeta,
     };
   }
 
