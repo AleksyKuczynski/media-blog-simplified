@@ -1,0 +1,172 @@
+// src/main/lib/dictionary/dictionary.ts
+// New parallel dictionary - Russian content with semantic organization
+
+import { Dictionary } from './types';
+
+// ===================================================================
+// RUSSIAN DICTIONARY - Complete but DRY implementation
+// ===================================================================
+
+export const russianDictionary: Dictionary = {
+  // ===================================================================
+  // NAVIGATION - Central hub of site interaction
+  // ===================================================================
+  navigation: {
+    labels: {
+      home: 'Главная',
+      articles: 'Статьи', 
+      rubrics: 'Рубрики',
+      authors: 'Авторы',
+      search: 'Поиск',
+    },
+
+    descriptions: {
+      home: 'Главная страница EventForMe с последними новостями о культурных событиях, музыке и современных идеях',
+      articles: 'Просмотреть все статьи и публикации на сайте EventForMe о культурных событиях и современных идеях',
+      rubrics: 'Изучить тематические рубрики и разделы контента: музыка, культура, события, мистика',
+      authors: 'Познакомиться с нашими авторами и экспертами в области культуры и современных идей',
+      search: 'Поиск статей, авторов и рубрик на сайте EventForMe',
+    },
+
+    accessibility: {
+      logoAlt: 'EventForMe - медиа о культурных событиях',
+      logoMainPageLabel: 'EventForMe - перейти на главную страницу',
+      mainNavigation: 'Главная навигация сайта',
+      primarySectionsLabel: 'Основные разделы сайта',
+      mainMenuLabel: 'Главное меню',
+      searchAndSettingsLabel: 'Поиск и настройки',
+      siteSearchLabel: 'Поиск по сайту',
+      skipToContent: 'Перейти к основному содержанию',
+      skipToNavigation: 'Перейти к навигации',
+      skipToSearch: 'Перейти к поиску',
+      skipToFooter: 'Перейти к подвалу сайта',
+      openMenu: 'Открыть меню',
+      closeMenu: 'Закрыть меню',
+      menuTitle: 'Навигационное меню',
+      menuDescription: 'Навигация по основным разделам сайта EventForMe',
+      keyboardNavigationLabel: 'Быстрая навигация с клавиатуры',
+      currentPage: 'Текущая страница',
+      clearSearch: 'Очистить поисковый запрос',
+      focusSearch: 'Перейти к поисковой строке',
+    },
+
+    seo: {
+      navigationTitle: 'Навигация по разделам EventForMe',
+      navigationDescription: 'Основные разделы медиа-платформы EventForMe: статьи, рубрики, авторы, поиск',
+      websiteSearchTitle: 'Поиск по сайту EventForMe',
+      websiteSearchDescription: 'Поиск статей, авторов и контента на медиа-платформе EventForMe',
+      geographicAreas: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine'],
+      audience: 'Русскоязычная аудитория, интересующаяся культурными событиями и современными идеями',
+    },
+  },
+
+  // ===================================================================
+  // SEARCH - User discovery and content exploration
+  // ===================================================================
+  search: {
+    labels: {
+      placeholder: 'Поиск статей, авторов, рубрик...',
+      submit: 'Найти',
+      results: 'Результаты поиска',
+      noResults: 'Ничего не найдено',
+      searching: 'Поиск...',
+      minCharacters: 'Введите минимум 3 символа',
+    },
+
+    templates: {
+      resultsFor: 'Результаты поиска по запросу "{query}"',
+      pageTitle: 'Поиск - EventForMe',
+      pageDescription: 'Поиск статей, авторов и контента на EventForMe',
+      relatedTo: 'связанные с',
+    },
+
+    accessibility: {
+      searchLabel: 'Поиск по сайту',
+      searchDescription: 'Введите ключевые слова для поиска статей, авторов или рубрик',
+      searchInputLabel: 'Поле ввода поискового запроса',
+      searchButtonLabel: 'Выполнить поиск',
+      searchResultsLabel: 'Результаты поиска',
+      noResultsAnnouncement: 'По вашему запросу ничего не найдено. Попробуйте изменить поисковые слова.',
+      searchingAnnouncement: 'Выполняется поиск, пожалуйста подождите...',
+      clearSearchLabel: 'Очистить поисковый запрос',
+    },
+  },
+
+  // ===================================================================
+  // SEO - Search engine optimization for Russian market
+  // ===================================================================
+  seo: {
+    site: {
+      siteName: 'EventForMe',
+      siteDescription: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
+      contactEmail: 'contact@event4me.eu',
+      socialProfiles: [
+        'https://vk.com/event4me',
+        'https://t.me/event4me',
+        'https://instagram.com/event4me',
+        'https://youtube.com/@event4me',
+      ],
+    },
+
+    titles: {
+      homePrefix: 'EventForMe — Медиа о культурных событиях',
+      homeSuffix: '— музыка, идеи, тайны мира',
+      articleTemplate: '{title} — EventForMe',
+      rubricTemplate: '{rubric} — рубрика на EventForMe',
+      authorTemplate: '{author} — автор EventForMe',
+      searchTemplate: 'Поиск — EventForMe',
+      rubricsListTitle: 'Все рубрики — EventForMe',
+    },
+
+    descriptions: {
+      home: 'EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира. Актуальные статьи, экспертные мнения, культурная аналитика.',
+      articleTemplate: 'Читать статью "{title}" на EventForMe — медиа о культурных событиях, музыке и современных идеях',
+      rubricTemplate: 'Все статьи в рубрике "{rubric}" на EventForMe — актуальные материалы о культурных событиях и современных идеях',
+      authorTemplate: 'Статьи автора {author} на EventForMe — экспертные материалы о культуре, музыке и современных идеях',
+      searchTemplate: 'Поиск статей, авторов и рубрик на EventForMe — медиа о культурных событиях и современных идеях',
+      rubricsList: 'Полный каталог тематических рубрик EventForMe: музыка, культура, события, идеи, мистика',
+    },
+
+    keywords: {
+      general: 'культурные события, музыка, современные идеи, культура, EventForMe, медиа, аналитика, экспертные мнения',
+      articles: 'статьи о культуре, культурная аналитика, музыкальные обзоры, современные тренды',
+      rubrics: 'рубрики, тематические разделы, категории статей, культурные темы',
+      authors: 'авторы, эксперты, культурные критики, музыкальные журналисты',
+      rubricsList: 'каталог рубрик, тематические разделы, культурные категории, навигация по темам',
+      music: 'музыка, музыкальные события, концерты, артисты, альбомы, музыкальная индустрия',
+      culture: 'культура, культурные события, искусство, выставки, театр, кино, литература',
+      events: 'события, мероприятия, фестивали, концерты, выставки, культурная программа',
+      mystic: 'мистика, тайны, загадки, эзотерика, необъяснимые явления, мистические истории',
+    },
+
+    regional: {
+      language: 'ru',
+      region: 'RU',
+      geographicCoverage: 'Russia',
+      targetMarkets: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine'],
+    },
+  },
+} as const;
+
+// ===================================================================
+// DICTIONARY ACCESS FUNCTIONS
+// ===================================================================
+
+export const getDictionary = async (lang: 'ru'): Promise<Dictionary> => {
+  return russianDictionary;
+};
+
+export const getNavigationDictionary = async (lang: 'ru') => {
+  const dict = await getDictionary(lang);
+  return dict.navigation;
+};
+
+export const getSearchDictionary = async (lang: 'ru') => {
+  const dict = await getDictionary(lang);
+  return dict.search;
+};
+
+export const getSEODictionary = async (lang: 'ru') => {
+  const dict = await getDictionary(lang);
+  return dict.seo;
+};
