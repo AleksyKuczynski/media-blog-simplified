@@ -1,5 +1,5 @@
 // src/main/components/Navigation/MobileNav.tsx
-// Fixed to support both dictionaries and fix MenuAnimationState comparison
+// Fixed to use correct SearchBar props
 
 'use client'
 
@@ -11,13 +11,13 @@ import { useMobileNavigation } from './useMobileNavigation'
 
 // NEW: Import new dictionary types
 import { Dictionary } from '@/main/lib/dictionary/types'
-// OLD: Import old types for Search component compatibility
+// OLD: Import old types for compatibility
 import { Lang } from '@/main/lib/dictionaries/dictionariesTypes'
 
 interface MobileNavProps {
   dictionary: Dictionary // NEW: Use new dictionary structure
   lang: Lang // KEEP: Lang parameter for compatibility
-  translations: any // OLD: Compatibility translations for Search components
+  translations: any // OLD: Compatibility translations (deprecated, will be removed)
   isSearchPage: boolean
   currentPageTitle?: string
   currentPath?: string
@@ -26,7 +26,6 @@ interface MobileNavProps {
 export default function MobileNavigation({
   dictionary,
   lang, // KEEP: Lang parameter
-  translations, // OLD: For Search components
   currentPageTitle,
 }: MobileNavProps) {
   const {
@@ -44,16 +43,16 @@ export default function MobileNavigation({
       {/* Top Navigation Bar */}
       <nav 
         className="xl:hidden bg-sf-cont/80 backdrop-blur-lg border-b border-ol-var/20 transition-all duration-300 relative z-50"
-        aria-label={dictionary.navigation.accessibility.mainNavigation} // NEW: Updated access pattern
+        aria-label={dictionary.navigation.accessibility.mainNavigation}
         itemScope
         itemType="https://schema.org/SiteNavigationElement"
       >
         <div className="flex items-center justify-between h-16 px-4">
           <Logo 
-            lang={lang} // KEEP: Lang parameter
+            lang={lang}
             variant="mobile"
             role="img"
-            aria-label={dictionary.navigation.accessibility.logoAlt} // NEW: Updated access pattern
+            aria-label={dictionary.navigation.accessibility.logoAlt}
           />
           
           <button
@@ -63,8 +62,8 @@ export default function MobileNavigation({
             aria-controls="mobile-menu-content" 
             aria-label={
               isMenuOpen 
-                ? dictionary.navigation.accessibility.closeMenu // NEW: Updated access pattern
-                : dictionary.navigation.accessibility.openMenu  // NEW: Updated access pattern
+                ? dictionary.navigation.accessibility.closeMenu
+                : dictionary.navigation.accessibility.openMenu
             }
             className="
               p-3 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf 
@@ -116,15 +115,14 @@ export default function MobileNavigation({
           transform transition-transform duration-300 ease-in-out
           ${menuState === 'FULLY_OPENED' ? 'translate-x-0' : '-translate-x-full'}
         `}
-        // FIXED: Use 'FULLY_OPENED' instead of 'MENU_VISIBLE'
         aria-hidden={!isMenuOpen}
-        aria-label={dictionary.navigation.accessibility.menuDescription} // NEW: Updated access pattern
+        aria-label={dictionary.navigation.accessibility.menuDescription}
       >
         <div className="flex flex-col h-full">
           {/* Menu Header */}
           <div className="px-6 py-4 border-b border-ol-var/20">
             <h2 className="text-lg font-semibold text-on-sf">
-              {dictionary.navigation.accessibility.menuTitle} {/* NEW: Updated access pattern */}
+              {dictionary.navigation.accessibility.menuTitle}
             </h2>
           </div>
 
@@ -133,23 +131,22 @@ export default function MobileNavigation({
             <ul 
               className="space-y-4"
               role="menu"
-              aria-label={dictionary.navigation.accessibility.mainMenuLabel} // NEW: Updated access pattern
+              aria-label={dictionary.navigation.accessibility.mainMenuLabel}
             >
               <NavLinks 
-                dictionary={dictionary} // NEW: Pass new dictionary structure
-                lang={lang} // KEEP: Pass lang for compatibility
+                dictionary={dictionary}
+                lang={lang}
                 className="mobile-nav-links"
               />
             </ul>
           </div>
 
-          {/* Mobile Search */}
+          {/* Mobile Search - FIXED: Use new dictionary structure */}
           <div className="px-6 py-4 border-t border-ol-var/20">
             <SearchBar
-              searchTranslations={translations.search} // OLD: Use compatibility translations
-              lang={lang} // KEEP: Lang parameter for Search component
+              dictionary={dictionary} // NEW: Use new dictionary structure
+              lang={lang}
               onSearchComplete={handleSearchComplete}
-              placeholder={translations.search.placeholder} // OLD: Use compatibility format
             />
           </div>
         </div>
