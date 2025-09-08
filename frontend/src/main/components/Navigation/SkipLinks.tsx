@@ -1,30 +1,30 @@
-// src/main/components/Navigation/SkipLinks.tsx - Enhanced Skip Links with Dictionary Translations
+// src/main/components/Navigation/SkipLinks.tsx
+// Migrated to new dictionary structure with enhanced accessibility
+
 'use client'
 
-import { NavigationTranslations, SearchTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
+// NEW: Import new dictionary types
+import { Dictionary } from '@/main/lib/dictionary/types'
 
 interface SkipLinksProps {
-  translations: {
-    navigation: NavigationTranslations;
-    search: SearchTranslations;
-  };
+  dictionary: Dictionary // NEW: Use new dictionary structure
 }
 
-export default function SkipLinks({ translations }: SkipLinksProps) {
+export default function SkipLinks({ dictionary }: SkipLinksProps) {
   const skipLinkClasses = `
     sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 
     bg-primary text-on-primary px-6 py-3 rounded-lg font-medium
     focus:outline-none focus:ring-2 focus:ring-primary-variant focus:ring-offset-2
     transition-all duration-200 z-[100] shadow-lg
     hover:bg-primary-variant active:scale-95
-  `;
+  `
 
   return (
     <>
       {/* Primary skip links for keyboard navigation and SEO */}
       <div className="sr-only focus-within:not-sr-only">
         <nav 
-          aria-label={translations.navigation.keyboardNavigationLabel}
+          aria-label={dictionary.navigation.accessibility.keyboardNavigationLabel} // NEW: Updated access pattern
           className="fixed top-0 left-0 right-0 z-[100] p-4"
         >
           <ul className="flex flex-wrap gap-2" role="list">
@@ -34,7 +34,7 @@ export default function SkipLinks({ translations }: SkipLinksProps) {
                 className={skipLinkClasses}
                 tabIndex={0}
               >
-                {translations.navigation.skipToContent}
+                {dictionary.navigation.accessibility.skipToContent} {/* NEW: Updated access pattern */}
               </a>
             </li>
             <li>
@@ -43,7 +43,7 @@ export default function SkipLinks({ translations }: SkipLinksProps) {
                 className={skipLinkClasses}
                 tabIndex={0}
               >
-                {translations.navigation.skipToNavigation}
+                {dictionary.navigation.accessibility.skipToNavigation} {/* NEW: Updated access pattern */}
               </a>
             </li>
             <li>
@@ -52,7 +52,7 @@ export default function SkipLinks({ translations }: SkipLinksProps) {
                 className={skipLinkClasses}
                 tabIndex={0}
               >
-                {translations.navigation.skipToSearch}
+                {dictionary.navigation.accessibility.skipToSearch} {/* NEW: Updated access pattern */}
               </a>
             </li>
             <li>
@@ -61,32 +61,44 @@ export default function SkipLinks({ translations }: SkipLinksProps) {
                 className={skipLinkClasses}
                 tabIndex={0}
               >
-                {translations.navigation.skipToFooter}
+                {dictionary.navigation.accessibility.skipToFooter} {/* NEW: Updated access pattern */}
               </a>
             </li>
           </ul>
         </nav>
       </div>
 
-      {/* Structured data for navigation assistance */}
+      {/* Enhanced structured data for navigation assistance */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebPage",
+            "@id": "https://event4me.eu/ru#accessibility",
+            "name": dictionary.navigation.seo.navigationTitle, // NEW: Use new SEO data
+            "description": dictionary.navigation.seo.navigationDescription, // NEW: Use new SEO data
+            "inLanguage": "ru",
+            "audience": {
+              "@type": "Audience",
+              "name": dictionary.navigation.seo.audience, // NEW: Use new SEO data
+              "geographicArea": dictionary.navigation.seo.geographicAreas // NEW: Use new SEO data
+            },
             "accessibilityFeature": [
               "structuralNavigation",
-              "skipLinks",
+              "skipLinks", 
               "headingNavigation",
-              "keyboardNavigation"
+              "keyboardNavigation",
+              "enhancedSEO" // NEW: Indicate enhanced SEO features
             ],
             "accessibilityAPI": ["ARIA"],
             "accessibilityControl": ["fullKeyboardControl"],
-            "accessibilityHazard": "none"
+            "accessibilityHazard": "none",
+            // NEW: Enhanced accessibility metadata
+            "accessibilitySummary": "Полная поддержка клавиатурной навигации с быстрыми ссылками для перехода к основным разделам сайта"
           })
         }}
       />
     </>
-  );
+  )
 }

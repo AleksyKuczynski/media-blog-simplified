@@ -1,22 +1,38 @@
-// src/main/components/Navigation/DesktopNav.tsx - Using Dictionary for All Text
-'use client';
+// src/main/components/Navigation/DesktopNav.tsx
+// Fixed to support both dictionaries and maintain Search compatibility
 
-import React from 'react';
-import { NavProps } from './Navigation';
-import Logo from '../Logo';
-import NavLinks from './NavLinks';
-import ExpandableSearch from '../Search/ExpandableSearch';
+'use client'
+
+import React from 'react'
+import Logo from '../Logo'
+import NavLinks from './NavLinks'
+import ExpandableSearch from '../Search/ExpandableSearch'
+
+// NEW: Import new dictionary types
+import { Dictionary } from '@/main/lib/dictionary/types'
+// OLD: Import old types for Search component compatibility
+import { Lang } from '@/main/lib/dictionaries/dictionariesTypes'
+
+interface DesktopNavProps {
+  dictionary: Dictionary // NEW: Use new dictionary structure
+  lang: Lang // KEEP: Lang parameter for compatibility
+  translations: any // OLD: Compatibility translations for Search components
+  isSearchPage: boolean
+  currentPageTitle?: string
+  currentPath?: string
+}
 
 export default function DesktopNavigation({
-  lang,
-  translations,
+  dictionary,
+  lang, // KEEP: Lang parameter
+  translations, // OLD: For Search components
   currentPageTitle,
-}: NavProps) {
+}: DesktopNavProps) {
   return (
     <nav 
       id="main-navigation"
       className="hidden xl:block bg-sf-cont/80 backdrop-blur-lg border-b border-ol-var/20 transition-all duration-300"
-      aria-label={translations.navigation.mainNavigation}
+      aria-label={dictionary.navigation.accessibility.mainNavigation} // NEW: Updated access pattern
       role="navigation"
       itemScope
       itemType="https://schema.org/SiteNavigationElement"
@@ -27,86 +43,61 @@ export default function DesktopNavigation({
         <div 
           className="flex items-center justify-start"
           role="group"
-          aria-label={translations.navigation.primarySectionsLabel} // ✅ NEW: From dictionary
+          aria-label={dictionary.navigation.accessibility.primarySectionsLabel} // NEW: Updated access pattern
         >
           <ul 
             className="flex items-center justify-start space-x-2"
             role="menubar"
-            aria-label={translations.navigation.mainMenuLabel} // ✅ NEW: From dictionary
+            aria-label={dictionary.navigation.accessibility.mainMenuLabel} // NEW: Updated access pattern
           >
-            {/* ✅ UNIFIED: Clean approach with proper spacing */}
+            {/* Enhanced NavLinks with new dictionary structure */}
             <NavLinks 
-              lang={lang} 
-              translations={translations.navigation} 
-              role="menuitem"
+              dictionary={dictionary} // NEW: Pass new dictionary
+              lang={lang} // KEEP: Pass lang for compatibility
             />
           </ul>
         </div>
 
-        {/* Center: Logo/Brand */}
+        {/* Center: Logo/Brand with enhanced schema */}
         <div 
           className="flex items-center justify-center"
           itemProp="mainEntity"
           itemScope
           itemType="https://schema.org/Organization"
         >
+          {/* NEW: Enhanced schema metadata from new dictionary */}
+          <meta itemProp="name" content={dictionary.seo.site.siteName} />
+          <meta itemProp="description" content={dictionary.seo.site.siteDescription} />
+          <meta itemProp="url" content="https://event4me.eu" />
+          <meta itemProp="areaServed" content={dictionary.seo.regional.geographicCoverage} />
+          
           <Logo 
-            lang={lang} 
+            lang={lang} // KEEP: Lang parameter
             variant="desktop"
             role="img"
-            aria-label={translations.navigation.logoMainPageLabel} // ✅ NEW: From dictionary
+            aria-label={dictionary.navigation.accessibility.logoMainPageLabel} // NEW: Updated access pattern
           />
         </div>
         
-        {/* Right: Utility Navigation */}
+        {/* Right: Enhanced Search */}
         <div 
           className="flex items-center justify-end space-x-4"
           role="group"
-          aria-label={translations.navigation.searchAndSettingsLabel} // ✅ NEW: From dictionary
+          aria-label={dictionary.navigation.accessibility.searchAndSettingsLabel} // NEW: Updated access pattern
         >
-          {/* Enhanced Search */}
           <div 
             id="site-search"
             role="search"
-            aria-label={translations.navigation.siteSearchLabel} // ✅ NEW: From dictionary
+            aria-label={dictionary.navigation.accessibility.siteSearchLabel} // NEW: Updated access pattern
           >
             <ExpandableSearch 
-              searchTranslations={translations.search} 
-              lang={lang}
-              aria-label={translations.search.placeholder}
+              searchTranslations={translations.search} // OLD: Use compatibility translations
+              lang={lang} // KEEP: Lang parameter for Search component
+              aria-label={translations.search.placeholder} // OLD: Use compatibility format
             />
           </div>
-          
-          {/* Theme Toggle with better accessibility */}
-          <button
-            className="p-3 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            aria-label="Переключить тему" // This could also be moved to dictionary if needed
-            title="Переключить между светлой и тёмной темой"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              />
-            </svg>
-          </button>
         </div>
       </div>
-      
-      {/* Screen reader context */}
-      {currentPageTitle && (
-        <div className="sr-only" aria-live="polite">
-          {translations.navigation.currentPage}: {currentPageTitle}
-        </div>
-      )}
     </nav>
-  );
+  )
 }

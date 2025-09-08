@@ -1,10 +1,18 @@
-// src/app/ru/layout.tsx - Enhanced Layout with SEO Navigation Integration (Fixed)
-import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
+// src/app/ru/layout.tsx
+// Fixed to support both old and new dictionary systems during migration
+
+import React from 'react'
+import { Metadata } from 'next'
+import Footer from '@/main/components/Footer/Footer'
+
+// OLD: Import old dictionary system for non-migrated components
+import { getDictionary as getOldDictionary } from '@/main/lib/dictionaries/dictionaries'
+import { Dictionary as OldDictionary } from '@/main/lib/dictionaries/dictionariesTypes'
+
+// NEW: Import new dictionary system for migrated Navigation
+import { getDictionary as getNewDictionary } from '@/main/lib/dictionary/dictionary'
+import { Dictionary as NewDictionary } from '@/main/lib/dictionary/types'
 import Navigation from '@/main/components/Navigation/Navigation'
-import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
-import { Metadata } from 'next';
-import React from 'react';
-import Footer from '@/main/components/Footer/Footer';
 
 export const metadata: Metadata = {
   title: "EventForMe — Медиа о культурных событиях",
@@ -16,17 +24,20 @@ export default async function MainLayout({
 }: {
   children: React.ReactNode
 }) {
-  const dict: Dictionary = await getDictionary('ru');
+  // Get both dictionaries during migration period
+  const [oldDict, newDict] = await Promise.all([
+    getOldDictionary('ru'), // For non-migrated components
+    getNewDictionary('ru')  // For migrated Navigation
+  ])
 
   return (
     <>
-      {/* Enhanced Navigation with SEO improvements - Fixed positioning */}
+      {/* NEW: Enhanced Navigation with new dictionary system */}
       <Navigation 
-        lang="ru"
-        translations={{
-          navigation: dict.navigation,
-          search: dict.search,
-        }}
+        dictionary={newDict} // NEW: Use new dictionary system
+        lang="ru" // KEEP: Lang parameter for compatibility with fetching library
+        currentPath="" // Will be determined by usePathname in Navigation
+        breadcrumbs={[]} // Can be enhanced later for specific pages
       />
       
       {/* Main content area with proper semantic structure */}
@@ -37,9 +48,10 @@ export default async function MainLayout({
         tabIndex={-1}
         aria-label="Основное содержимое страницы"
       >        
+        {/* OLD: Keep existing pattern for non-migrated components */}
         {React.cloneElement(children as React.ReactElement, { 
-          searchTranslations: dict.search, 
-          sortingTranslations: dict.sorting 
+          searchTranslations: oldDict.search, // OLD: Search components need old dictionary
+          sortingTranslations: oldDict.sorting // OLD: Sorting components need old dictionary
         })}      
       </main>
       
@@ -50,10 +62,10 @@ export default async function MainLayout({
         aria-label="Информация о сайте и дополнительные ссылки"
       >
         <Footer
-          lang="ru"
-          translations={dict}
+          lang="ru" // KEEP: Lang parameter for compatibility
+          translations={oldDict} // OLD: Footer still uses old dictionary system
         />
       </footer>
     </>
-  );
+  )
 }
