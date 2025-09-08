@@ -1,4 +1,24 @@
+// src/main/components/SEO/schemas/SearchPageSchema.tsx 
+
+import React from 'react';
 import { SchemaBuilder } from "../core/SchemaBuilder";
+import { Dictionary } from "@/main/lib/dictionary/types"; // FIXED: Use new dictionary types
+import { ExtendedSchemaData } from "../core/types";
+
+interface SearchPageSchemaProps {
+  readonly dictionary: Dictionary;
+  readonly searchQuery?: string;
+  readonly resultsCount?: number;
+  readonly searchResults?: SearchResult[];
+}
+
+interface SearchResult {
+  readonly title: string;
+  readonly url: string;
+  readonly description: string;
+  readonly author?: string;
+  readonly datePublished?: string;
+}
 
 /**
  * SearchPageSchema - Structured data for search functionality and results
@@ -14,15 +34,15 @@ export const SearchPageSchema: React.FC<SearchPageSchemaProps> = ({
   const searchDict = dictionary.search;
   const seoDict = dictionary.seo;
 
-  // Main WebSite schema with SearchAction
-  const websiteSchema = {
+  // Main WebSite schema with SearchAction - FIXED: Use ExtendedSchemaData type
+  const websiteSchema: ExtendedSchemaData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': `${baseUrl}/#website`,
-    name: seoDict.site.siteName,
-    description: seoDict.site.siteDescription,
+    name: seoDict.site.siteName, // FIXED: Correct path
+    description: seoDict.site.siteDescription, // FIXED: Correct path  
     url: baseUrl,
-    inLanguage: seoDict.regional.language,
+    inLanguage: seoDict.regional.language, // FIXED: Correct path
     
     potentialAction: {
       '@type': 'SearchAction',
@@ -48,23 +68,23 @@ export const SearchPageSchema: React.FC<SearchPageSchemaProps> = ({
     publisher: {
       '@type': 'Organization',
       '@id': `${baseUrl}/#organization`,
-      name: seoDict.site.siteName,
-      description: seoDict.site.siteDescription,
+      name: seoDict.site.siteName, // FIXED: Correct path
+      description: seoDict.site.siteDescription, // FIXED: Correct path
       url: baseUrl,
-      email: seoDict.site.contactEmail,
-      sameAs: seoDict.site.socialProfiles,
+      email: seoDict.site.contactEmail, // FIXED: Correct path
+      sameAs: seoDict.site.socialProfiles, // FIXED: Correct path
     },
   };
 
   // Search Results Page schema (when search query exists)
-  const searchResultsSchema = searchQuery ? {
+  const searchResultsSchema: ExtendedSchemaData | null = searchQuery ? {
     '@context': 'https://schema.org',
     '@type': 'SearchResultsPage',
     '@id': `${baseUrl}/ru/search?search=${encodeURIComponent(searchQuery)}`,
     name: searchDict.templates.resultsFor.replace('{query}', searchQuery),
     description: searchDict.templates.pageDescription,
     url: `${baseUrl}/ru/search?search=${encodeURIComponent(searchQuery)}`,
-    inLanguage: seoDict.regional.language,
+    inLanguage: seoDict.regional.language, // FIXED: Correct path
     
     mainContentOfPage: {
       '@type': 'WebPageElement',
@@ -97,16 +117,18 @@ export const SearchPageSchema: React.FC<SearchPageSchemaProps> = ({
     },
   } : null;
 
-  // ItemList schema for search results
-  const itemListSchema = searchResults.length > 0 ? {
+  // ItemList schema for search results - FIXED: Proper parameter typing
+  const itemListSchema: ExtendedSchemaData | null = searchResults.length > 0 ? {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     '@id': `${baseUrl}/ru/search?search=${encodeURIComponent(searchQuery || '')}#results`,
     name: `Результаты поиска для "${searchQuery}"`,
     description: `${searchResults.length} найденных результатов`,
     numberOfItems: searchResults.length,
+    inLanguage: seoDict.regional.language, // FIXED: Correct path
     
-    itemListElement: searchResults.map((result, index) => ({
+    // FIXED: Proper parameter typing with explicit types
+    itemListElement: searchResults.map((result: SearchResult, index: number) => ({
       '@type': 'ListItem',
       position: index + 1,
       item: {
@@ -122,9 +144,9 @@ export const SearchPageSchema: React.FC<SearchPageSchemaProps> = ({
         datePublished: result.datePublished,
         publisher: {
           '@type': 'Organization',
-          name: seoDict.site.siteName,
+          name: seoDict.site.siteName, // FIXED: Correct path
         },
-        inLanguage: seoDict.regional.language,
+        inLanguage: seoDict.regional.language, // FIXED: Correct path
       },
     })),
   } : null;

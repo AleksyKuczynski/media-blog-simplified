@@ -10,11 +10,12 @@ import Section from '@/main/components/Main/Section';
 import { russianDictionary } from '@/main/lib/dictionary/dictionary';
 
 // NEW: Import new SEO components
-import { SearchPageSchema, generateSearchMetadata } from '@/main/components/SEO/search';
 
 // OLD: Keep compatibility with existing data fetching
 import { fetchArticleSlugs } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
+import { generateSearchMetadata } from '@/main/components/SEO/metadata/SearchMetadata';
+import { SearchPageSchema } from '@/main/components/SEO/schemas/SearchPageSchema';
 
 export const dynamic = 'force-dynamic';
 

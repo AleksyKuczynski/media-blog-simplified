@@ -1,5 +1,14 @@
-import { Dictionary } from "@/main/lib/dictionaries/dictionariesTypes";
+// src/main/components/SEO/metadata/SearchMetadata.tsx
+
+import { Dictionary } from "@/main/lib/dictionary/types"; // FIXED: Use new dictionary types
 import { Metadata } from "next";
+
+interface SearchMetadataProps {
+  readonly dictionary: Dictionary;
+  readonly searchQuery?: string;
+  readonly resultsCount?: number;
+  readonly currentPage?: number;
+}
 
 /**
  * SearchMetadata - Generates comprehensive metadata for search pages
@@ -12,9 +21,6 @@ export const SearchMetadata: React.FC<SearchMetadataProps> = ({
   currentPage = 1
 }) => {
   const metadata = generateSearchMetadata(dictionary, searchQuery, resultsCount, currentPage);
-  
-  // For React component, we would typically use this in a metadata context
-  // This is mainly used for the generateSearchMetadata function
   return null;
 };
 
@@ -112,7 +118,7 @@ export const generateSearchMetadata = (
       title,
       description,
       url: canonicalUrl,
-      siteName: seoDict.site.siteName,
+      siteName: seoDict.site.siteName, // FIXED: Correct path
       locale: 'ru_RU',
       type: 'website',
       images: [
@@ -140,9 +146,9 @@ export const generateSearchMetadata = (
       'google-site-verification': process.env.GOOGLE_VERIFICATION || '',
       
       // Language and region optimization
-      'content-language': seoDict.regional.language,
-      'geo.region': seoDict.regional.region,
-      'geo.placename': seoDict.regional.geographicCoverage,
+      'content-language': seoDict.regional.language, // FIXED: Correct path
+      'geo.region': seoDict.regional.region, // FIXED: Correct path
+      'geo.placename': seoDict.regional.geographicCoverage, // FIXED: Correct path
       
       // SEO directives for search pages
       'robots': searchQuery 
@@ -153,19 +159,19 @@ export const generateSearchMetadata = (
       // Dublin Core metadata for better semantic understanding
       'DC.title': title,
       'DC.description': description,
-      'DC.language': seoDict.regional.language,
-      'DC.creator': seoDict.site.siteName,
-      'DC.publisher': seoDict.site.siteName,
+      'DC.language': seoDict.regional.language, // FIXED: Correct path
+      'DC.creator': seoDict.site.siteName, // FIXED: Correct path
+      'DC.publisher': seoDict.site.siteName, // FIXED: Correct path
       'DC.type': 'Text.SearchPage',
       'DC.identifier': canonicalUrl,
-      'DC.coverage': seoDict.regional.geographicCoverage,
+      'DC.coverage': seoDict.regional.geographicCoverage, // FIXED: Correct path
       'DC.rights': 'Copyright EventForMe',
       
       // Search-specific metadata
       'search:query': searchQuery || '',
       'search:results_count': resultsCount?.toString() || '',
       'search:page': currentPage.toString(),
-      'search:language': seoDict.regional.language,
+      'search:language': seoDict.regional.language, // FIXED: Correct path
       
       // Pagination metadata for multi-page results
       ...(currentPage > 1 && {

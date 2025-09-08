@@ -9,13 +9,15 @@ interface SearchDropdownProps {
   translations: SearchTranslations;
   onItemSelect: (index: number) => void;
   className?: string;
+  ariaLabel?: string; 
 }
 
 export default function SearchDropdown({
   state,
   translations,
   onItemSelect,
-  className = ''
+  className = '',
+  ariaLabel
 }: SearchDropdownProps) {
 
   // Visibility classes - hardcoded rounded theme
@@ -90,6 +92,7 @@ export default function SearchDropdown({
       `.trim()}
       role="listbox"
       aria-hidden={state.dropdown.visibility === 'animating-out'}
+      aria-label={ariaLabel}
     >
       <div className="transition-opacity duration-150 opacity-100">
         {renderContent()}
