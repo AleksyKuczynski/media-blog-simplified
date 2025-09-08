@@ -1,5 +1,5 @@
 // src/main/components/SEO/metadata/NavigationMetadata.tsx
-// Navigation-specific metadata generation using new dictionary
+// Navigation-specific metadata generation using new dictionary - FINAL FIX
 
 import { Metadata } from 'next';
 import { 
@@ -88,12 +88,14 @@ export const generateNavigationMetadata = ({
     console.error('Invalid SEO data for navigation metadata');
   }
 
-  return buildMetadata(seoData, {}, {
-    // Navigation-specific meta tags
+  // FIXED: Use proper type for additionalMeta
+  const additionalMeta: Record<string, string | number | undefined> = {
     'navigation:enhanced': 'true',
     'navigation:path': currentPath,
     'navigation:type': pageType,
-  });
+  };
+
+  return buildMetadata(seoData, {}, additionalMeta);
 };
 
 /**
@@ -206,12 +208,12 @@ export const validateNavigationMetadata = (dictionary: Dictionary): boolean => {
 };
 
 /**
- * Get enhanced meta tags for navigation pages
+ * Get enhanced meta tags for navigation pages - FIXED
  */
 export const getNavigationMetaTags = (
   dictionary: Dictionary,
   route: string
-): Record<string, string> => {
+): Record<string, string | number | undefined> => {
   const navDict = dictionary.navigation;
   const seoDict = dictionary.seo;
 

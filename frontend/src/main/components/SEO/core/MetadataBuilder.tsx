@@ -1,13 +1,12 @@
 // src/main/components/SEO/core/MetadataBuilder.tsx
-// Fixed metadata logic for Next.js Metadata generation
+// Final fixed metadata logic for Next.js Metadata generation
 
 import { Metadata } from 'next';
 import { 
   SEOData, 
   MetadataBuilderProps, 
   MetadataResult,
-  SEOContext,
-  CustomMetaTags
+  SEOContext
 } from './types';
 
 // ===================================================================
@@ -26,17 +25,32 @@ const DEFAULT_SEO_CONTEXT: SEOContext = {
 };
 
 /**
- * Build Next.js Metadata from SEO data - FIXED
+ * Helper function to filter out undefined values and ensure Next.js compatibility
+ */
+const filterDefinedValues = (obj: Record<string, string | number | undefined>): Record<string, string | number | (string | number)[]> => {
+  const filtered: Record<string, string | number | (string | number)[]> = {};
+  
+  Object.entries(obj).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== '') {
+      filtered[key] = value as string | number;
+    }
+  });
+  
+  return filtered;
+};
+
+/**
+ * Build Next.js Metadata from SEO data - FINAL FIX
  */
 export const buildMetadata = (
   seoData: SEOData,
   context: Partial<SEOContext> = {},
-  additionalMeta: CustomMetaTags = {}
+  additionalMeta: Record<string, string | number | undefined> = {}
 ): MetadataResult => {
   const ctx = { ...DEFAULT_SEO_CONTEXT, ...context };
   
-  // Create base other metadata without conflicts
-  const baseOtherMeta: CustomMetaTags = {
+  // Create base other metadata - ensure all values are defined
+  const baseOtherMeta: Record<string, string | number | undefined> = {
     // Language and region
     'content-language': 'ru',
     'geo.region': ctx.region,
@@ -46,8 +60,10 @@ export const buildMetadata = (
     'robots': 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
     'googlebot': 'index, follow',
     
-    // Yandex optimization
-    'yandex-verification': process.env.YANDEX_VERIFICATION || '',
+    // Yandex optimization - only include if defined
+    ...(process.env.YANDEX_VERIFICATION && {
+      'yandex-verification': process.env.YANDEX_VERIFICATION
+    }),
     
     // Dublin Core metadata
     'DC.title': seoData.title,
@@ -100,11 +116,11 @@ export const buildMetadata = (
       images: [seoData.imageUrl || ctx.defaultImageUrl],
     },
 
-    // Combined other metadata - FIXED to avoid conflicts
-    other: {
+    // FIXED: Filter out undefined values before assigning to other
+    other: filterDefinedValues({
       ...baseOtherMeta,
       ...additionalMeta,
-    },
+    }),
   };
 
   // Article-specific metadata - FIXED
@@ -120,8 +136,8 @@ export const buildMetadata = (
       tags: articleData.tags as string[],
     };
 
-    // Create article-specific meta without conflicts
-    const articleMeta: CustomMetaTags = {
+    // Create article-specific meta - filter undefined values
+    const articleMeta: Record<string, string | number | undefined> = {
       'article:author': articleData.author,
       'article:section': articleData.section,
       'article:published_time': articleData.publishedTime,
@@ -130,27 +146,27 @@ export const buildMetadata = (
       'DC.type': 'Text.Article',
     };
 
-    baseMetadata.other = {
+    baseMetadata.other = filterDefinedValues({
       ...baseMetadata.other,
       ...articleMeta,
-    };
+    });
   }
 
   // Collection-specific metadata - FIXED
   if (seoData.type === 'collection') {
     const collectionData = seoData;
     
-    const collectionMeta: CustomMetaTags = {
+    const collectionMeta: Record<string, string | number | undefined> = {
       'DC.type': 'Text.Collection',
       'collection:type': collectionData.collectionType,
       'collection:itemCount': collectionData.itemCount.toString(),
       'collection:language': 'ru',
     };
 
-    baseMetadata.other = {
+    baseMetadata.other = filterDefinedValues({
       ...baseMetadata.other,
       ...collectionMeta,
-    };
+    });
   }
 
   return baseMetadata;

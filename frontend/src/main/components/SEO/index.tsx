@@ -26,7 +26,6 @@ export type {
   BreadcrumbSchema,
   MetadataResult,
   SEOContext,
-  CustomMetaTags,
 } from './core/types';
 
 // Core builders

@@ -1,5 +1,5 @@
 // src/main/components/SEO/core/types.ts
-// Fixed type definitions for SEO components
+// Final fixed type definitions for SEO components
 
 import { Metadata } from 'next';
 
@@ -124,12 +124,12 @@ export interface BreadcrumbItemSchema {
 }
 
 // ===================================================================
-// COMPONENT PROPS TYPES
+// COMPONENT PROPS TYPES - FIXED
 // ===================================================================
 
 export interface MetadataBuilderProps {
   readonly seoData: SEOData;
-  readonly additionalMeta?: Record<string, string>;
+  readonly additionalMeta?: Record<string, string | number | undefined>; // Allow undefined for filtering
 }
 
 // Fixed SchemaBuilderProps to accept both BaseSchemaData and ExtendedSchemaData
@@ -167,7 +167,5 @@ export interface SEOContext {
   readonly region: string;
 }
 
-// Fixed CustomMetaTags type to avoid conflicts with Next.js Metadata
-export interface CustomMetaTags {
-  [key: string]: string | number | undefined;
-}
+// Note: Removed CustomMetaTags interface - using Record<string, string | number | undefined> directly
+// with filtering in MetadataBuilder to ensure Next.js compatibility
