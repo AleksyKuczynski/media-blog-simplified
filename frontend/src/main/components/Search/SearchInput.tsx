@@ -1,4 +1,4 @@
-// src/main/components/Search/SearchInput.tsx
+// src/main/components/Search/SearchInput.tsx - Enhanced with new accessibility features
 import React from 'react';
 import { SearchUIState } from './types';
 import { cn } from '@/main/lib/utils/utils';
@@ -11,15 +11,24 @@ interface SearchInputProps {
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   inputRef: React.RefObject<HTMLInputElement>;
+  // NEW: Enhanced accessibility props
+  ariaLabel?: string;
+  ariaDescription?: string;
 }
 
+/**
+ * SearchInput - Enhanced search input with improved accessibility
+ * Now supports comprehensive ARIA labeling for better screen reader support
+ */
 export default function SearchInput({
   state,
   placeholder,
   onChange,
   onKeyDown,
   onFocus,
-  inputRef
+  inputRef,
+  ariaLabel,
+  ariaDescription
 }: SearchInputProps) {
   const styles = {
     container: {
@@ -42,16 +51,31 @@ export default function SearchInput({
         text-on-sf placeholder-on-sf-var
         bg-transparent
         focus:outline-none
+        focus:ring-0
+        border-0
       `
     }
   };
+
+  // Generate unique IDs for accessibility
+  const inputId = React.useId();
+  const descriptionId = `${inputId}-description`;
+  const resultsId = `${inputId}-results`;
 
   return (
     <div className={cn(
       styles.container.base,
       styles.container.visibility[state.input.visibility]
     )}>
+      {/* Hidden description for screen readers */}
+      {ariaDescription && (
+        <div id={descriptionId} className="sr-only">
+          {ariaDescription}
+        </div>
+      )}
+      
       <input
+        id={inputId}
         ref={inputRef}
         type="text"
         className={styles.input.base}
@@ -60,11 +84,31 @@ export default function SearchInput({
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
         onFocus={onFocus}
+        
+        // Enhanced ARIA attributes
         role="combobox"
+        aria-label={ariaLabel}
+        aria-describedby={ariaDescription ? descriptionId : undefined}
         aria-expanded={state.dropdown.visibility !== 'hidden'}
-        aria-controls="search-suggestions"
+        aria-controls={resultsId}
         aria-autocomplete="list"
+        aria-haspopup="listbox"
+        
+        // Additional accessibility features
+        autoComplete="off"
+        spellCheck="false"
+        
+        // Search-specific attributes
+        data-search-input="true"
+        data-search-state={state.searchStatus.type}
       />
+      
+      {/* Results container ID for ARIA reference */}
+      {state.dropdown.visibility !== 'hidden' && (
+        <div id={resultsId} className="sr-only">
+          Результаты поиска будут отображены ниже
+        </div>
+      )}
     </div>
   );
 }
