@@ -1,5 +1,5 @@
 // src/main/components/SEO/core/MetadataBuilder.tsx
-// Final fixed metadata logic for Next.js Metadata generation
+// Completely fixed metadata logic for Next.js Metadata generation
 
 import { Metadata } from 'next';
 import { 
@@ -26,13 +26,16 @@ const DEFAULT_SEO_CONTEXT: SEOContext = {
 
 /**
  * Helper function to filter out undefined values and ensure Next.js compatibility
+ * FIXED: Accept the same types as Next.js Metadata.other
  */
-const filterDefinedValues = (obj: Record<string, string | number | undefined>): Record<string, string | number | (string | number)[]> => {
+const filterDefinedValues = (
+  obj: Record<string, string | number | (string | number)[] | undefined>
+): Record<string, string | number | (string | number)[]> => {
   const filtered: Record<string, string | number | (string | number)[]> = {};
   
   Object.entries(obj).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== '') {
-      filtered[key] = value as string | number;
+      filtered[key] = value as string | number | (string | number)[];
     }
   });
   
@@ -40,7 +43,7 @@ const filterDefinedValues = (obj: Record<string, string | number | undefined>): 
 };
 
 /**
- * Build Next.js Metadata from SEO data - FINAL FIX
+ * Build Next.js Metadata from SEO data - COMPLETELY FIXED
  */
 export const buildMetadata = (
   seoData: SEOData,
@@ -49,8 +52,8 @@ export const buildMetadata = (
 ): MetadataResult => {
   const ctx = { ...DEFAULT_SEO_CONTEXT, ...context };
   
-  // Create base other metadata - ensure all values are defined
-  const baseOtherMeta: Record<string, string | number | undefined> = {
+  // Create base other metadata - FIXED: Use compatible types
+  const baseOtherMeta: Record<string, string | number | (string | number)[] | undefined> = {
     // Language and region
     'content-language': 'ru',
     'geo.region': ctx.region,
@@ -136,8 +139,8 @@ export const buildMetadata = (
       tags: articleData.tags as string[],
     };
 
-    // Create article-specific meta - filter undefined values
-    const articleMeta: Record<string, string | number | undefined> = {
+    // Create article-specific meta - FIXED: Use compatible types
+    const articleMeta: Record<string, string | number | (string | number)[] | undefined> = {
       'article:author': articleData.author,
       'article:section': articleData.section,
       'article:published_time': articleData.publishedTime,
@@ -146,6 +149,7 @@ export const buildMetadata = (
       'DC.type': 'Text.Article',
     };
 
+    // FIXED: Properly merge existing other metadata with new article metadata
     baseMetadata.other = filterDefinedValues({
       ...baseMetadata.other,
       ...articleMeta,
@@ -156,13 +160,14 @@ export const buildMetadata = (
   if (seoData.type === 'collection') {
     const collectionData = seoData;
     
-    const collectionMeta: Record<string, string | number | undefined> = {
+    const collectionMeta: Record<string, string | number | (string | number)[] | undefined> = {
       'DC.type': 'Text.Collection',
       'collection:type': collectionData.collectionType,
       'collection:itemCount': collectionData.itemCount.toString(),
       'collection:language': 'ru',
     };
 
+    // FIXED: Properly merge existing other metadata with new collection metadata
     baseMetadata.other = filterDefinedValues({
       ...baseMetadata.other,
       ...collectionMeta,
