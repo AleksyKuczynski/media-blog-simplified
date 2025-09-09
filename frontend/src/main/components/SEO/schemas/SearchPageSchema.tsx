@@ -2,48 +2,35 @@
 
 import React from 'react';
 import { SchemaBuilder } from "../core/SchemaBuilder";
-import { Dictionary } from "@/main/lib/dictionary/types"; // FIXED: Use new dictionary types
+import { Dictionary } from "@/main/lib/dictionary/types";
 import { ExtendedSchemaData } from "../core/types";
 
-interface SearchPageSchemaProps {
+interface StaticSearchPageSchemaProps {
   readonly dictionary: Dictionary;
-  readonly searchQuery?: string;
-  readonly resultsCount?: number;
-  readonly searchResults?: SearchResult[];
-}
-
-interface SearchResult {
-  readonly title: string;
-  readonly url: string;
-  readonly description: string;
-  readonly author?: string;
-  readonly datePublished?: string;
 }
 
 /**
- * SearchPageSchema - Structured data for search functionality and results
- * Implements WebSite schema with SearchAction for enhanced search visibility
+ * SearchPageSchema - SIMPLIFIED for static generation only
+ * Creates only generic WebSite schema with SearchAction - no dynamic results
  */
-export const SearchPageSchema: React.FC<SearchPageSchemaProps> = ({
-  dictionary,
-  searchQuery,
-  resultsCount,
-  searchResults = []
+export const SearchPageSchema: React.FC<StaticSearchPageSchemaProps> = ({
+  dictionary
 }) => {
   const baseUrl = 'https://event4me.eu';
   const searchDict = dictionary.search;
   const seoDict = dictionary.seo;
 
-  // Main WebSite schema with SearchAction - FIXED: Use ExtendedSchemaData type
+  // SIMPLIFIED: Only static WebSite schema with SearchAction
   const websiteSchema: ExtendedSchemaData = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': `${baseUrl}/#website`,
-    name: seoDict.site.siteName, // FIXED: Correct path
-    description: seoDict.site.siteDescription, // FIXED: Correct path  
+    name: seoDict.site.siteName,
+    description: seoDict.site.siteDescription,
     url: baseUrl,
-    inLanguage: seoDict.regional.language, // FIXED: Correct path
+    inLanguage: seoDict.regional.language,
     
+    // Static SearchAction for SEO
     potentialAction: {
       '@type': 'SearchAction',
       name: searchDict.accessibility.searchLabel,
@@ -65,101 +52,18 @@ export const SearchPageSchema: React.FC<SearchPageSchemaProps> = ({
       },
     },
 
+    // Static publisher info
     publisher: {
       '@type': 'Organization',
       '@id': `${baseUrl}/#organization`,
-      name: seoDict.site.siteName, // FIXED: Correct path
-      description: seoDict.site.siteDescription, // FIXED: Correct path
+      name: seoDict.site.siteName,
+      description: seoDict.site.siteDescription,
       url: baseUrl,
-      email: seoDict.site.contactEmail, // FIXED: Correct path
-      sameAs: seoDict.site.socialProfiles, // FIXED: Correct path
+      email: seoDict.site.contactEmail,
+      sameAs: seoDict.site.socialProfiles,
     },
   };
 
-  // Search Results Page schema (when search query exists)
-  const searchResultsSchema: ExtendedSchemaData | null = searchQuery ? {
-    '@context': 'https://schema.org',
-    '@type': 'SearchResultsPage',
-    '@id': `${baseUrl}/ru/search?search=${encodeURIComponent(searchQuery)}`,
-    name: searchDict.templates.resultsFor.replace('{query}', searchQuery),
-    description: searchDict.templates.pageDescription,
-    url: `${baseUrl}/ru/search?search=${encodeURIComponent(searchQuery)}`,
-    inLanguage: seoDict.regional.language, // FIXED: Correct path
-    
-    mainContentOfPage: {
-      '@type': 'WebPageElement',
-      name: searchDict.accessibility.searchResultsLabel,
-      description: `${resultsCount || 0} результатов для запроса "${searchQuery}"`,
-    },
-
-    breadcrumb: {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: dictionary.navigation.labels.home,
-          item: `${baseUrl}/ru`,
-        },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: dictionary.navigation.labels.search,
-          item: `${baseUrl}/ru/search`,
-        },
-        {
-          '@type': 'ListItem',
-          position: 3,
-          name: searchDict.templates.resultsFor.replace('{query}', searchQuery),
-          item: `${baseUrl}/ru/search?search=${encodeURIComponent(searchQuery)}`,
-        },
-      ],
-    },
-  } : null;
-
-  // ItemList schema for search results - FIXED: Proper parameter typing
-  const itemListSchema: ExtendedSchemaData | null = searchResults.length > 0 ? {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    '@id': `${baseUrl}/ru/search?search=${encodeURIComponent(searchQuery || '')}#results`,
-    name: `Результаты поиска для "${searchQuery}"`,
-    description: `${searchResults.length} найденных результатов`,
-    numberOfItems: searchResults.length,
-    inLanguage: seoDict.regional.language, // FIXED: Correct path
-    
-    // FIXED: Proper parameter typing with explicit types
-    itemListElement: searchResults.map((result: SearchResult, index: number) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Article',
-        '@id': result.url,
-        name: result.title,
-        description: result.description,
-        url: result.url,
-        author: result.author ? {
-          '@type': 'Person',
-          name: result.author,
-        } : undefined,
-        datePublished: result.datePublished,
-        publisher: {
-          '@type': 'Organization',
-          name: seoDict.site.siteName, // FIXED: Correct path
-        },
-        inLanguage: seoDict.regional.language, // FIXED: Correct path
-      },
-    })),
-  } : null;
-
-  return (
-    <>
-      <SchemaBuilder schema={websiteSchema} priority="high" />
-      {searchResultsSchema && (
-        <SchemaBuilder schema={searchResultsSchema} priority="normal" />
-      )}
-      {itemListSchema && (
-        <SchemaBuilder schema={itemListSchema} priority="normal" />
-      )}
-    </>
-  );
+  // SIMPLIFIED: Only return static schema
+  return <SchemaBuilder schema={websiteSchema} priority="high" />;
 };

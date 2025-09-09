@@ -1,21 +1,12 @@
 // src/app/ru/search/page.tsx - Updated with new SEO architecture
 import { Suspense } from 'react';
-import { Metadata } from 'next';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import SortingControl from '@/main/components/Navigation/SortingControl';
 import Section from '@/main/components/Main/Section';
-
-// NEW: Import new dictionary system
 import { russianDictionary } from '@/main/lib/dictionary/dictionary';
-
-// NEW: Import new SEO components
-
-// OLD: Keep compatibility with existing data fetching
 import { fetchArticleSlugs } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
-import { generateSearchMetadata } from '@/main/components/SEO/metadata/SearchMetadata';
-import { SearchPageSchema } from '@/main/components/SEO/schemas/SearchPageSchema';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,25 +16,6 @@ interface SearchPageProps {
     sort?: string; 
     page?: string;
   };
-}
-
-// NEW: Enhanced metadata generation using new SEO architecture
-export async function generateMetadata({ 
-  searchParams 
-}: SearchPageProps): Promise<Metadata> {
-  const searchQuery = searchParams.search || '';
-  const currentPage = Number(searchParams.page) || 1;
-  
-  // TODO: In production, fetch actual results count here for better SEO
-  // For now, we'll let the metadata function handle undefined resultsCount
-  const resultsCount = undefined; // This could be fetched from a quick count API
-  
-  return generateSearchMetadata(
-    russianDictionary, 
-    searchQuery, 
-    resultsCount, 
-    currentPage
-  );
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -73,15 +45,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     }
   }
 
-  // Transform ArticleSlugInfo to SearchResult format for schema
-  const searchResults = allSlugs.map(slug => ({
-    title: slug.title,
-    url: `https://event4me.eu/ru/articles/${slug.slug}`,
-    description: slug.excerpt || '',
-    datePublished: slug.date_created,
-    author: slug.author_name,
-  }));
-
   // Generate page title based on search state
   const generatePageTitle = (): string => {
     if (!searchQuery) {
@@ -92,14 +55,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   return (
     <>
-      {/* NEW: Enhanced structured data for search functionality */}
-      <SearchPageSchema
-        dictionary={dict}
-        searchQuery={searchQuery}
-        resultsCount={allSlugs.length}
-        searchResults={searchResults}
-      />
-
       <Section 
         title={generatePageTitle()}
         ariaLabel={dict.search.accessibility.searchResultsLabel}
