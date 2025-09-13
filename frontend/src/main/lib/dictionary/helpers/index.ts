@@ -3,7 +3,6 @@
 // Provides organized re-exports from modular helper files
 
 import { calculateRussianReadingTime, extractRussianWords, formatRussianDate, formatRussianReadingTime, generateRussianSlug, getLocalizedArticleCount, getRelativeTimeRussian, getRubricIconAlt, getRubricIconDescription, hasRussianText, pluralizeRussian, truncateDescription } from './localization';
-import { convertLegacySEO, createMigrationReport, getDictionarySection, logMigrationStep, mergeDictionaryFormats, validateMigration } from './migration';
 import { createSEOVariables, getPageTypeFromPath, getPageTypeKeywords, getProcessedSEODescription, getProcessedSEOTitle, validateRussianSEO, validateSEOMetadata } from './seo';
 import { cleanTemplateText, extractTemplateVariables, generateSEODescription, generateSEOTitle, processTemplate, smartTruncate, validateTemplateVariables } from './templates';
 import { analyzeSEOUrl, cleanPath, generateArticleUrl, generateAuthorUrl, generateCanonicalUrl, generateRubricUrl, generateSearchUrl, generateSharingUrls, getPathSegments, isHttpsUrl, isInternalUrl, isValidUrl, joinPaths } from './urls';
@@ -91,21 +90,6 @@ export {
   generateSharingUrls,
   analyzeSEOUrl,
 } from './urls';
-
-// ===================================================================
-// MIGRATION - Compatibility with old system
-// ===================================================================
-
-export {
-  getDictionarySection,
-  mergeDictionaryFormats,
-  convertLegacySEO,
-  validateMigration,
-  logMigrationStep,
-  createMigrationReport,
-} from './migration';
-
-export type { LegacyDictionary } from './migration';
 
 // ===================================================================
 // CONVENIENCE BUNDLES - Common combinations for easy use
@@ -198,19 +182,6 @@ export const URLHelpers = {
   getPathSegments,
 } as const;
 
-/**
- * Migration utilities bundle
- * All functions needed for migrating from old dictionary system
- */
-export const MigrationHelpers = {
-  getDictionarySection,
-  mergeDictionaryFormats,
-  convertLegacySEO,
-  validateMigration,
-  logMigrationStep,
-  createMigrationReport,
-} as const;
-
 // ===================================================================
 // TYPE RE-EXPORTS - For easy importing
 // ===================================================================
@@ -243,8 +214,7 @@ export default {
   localization: LocalizationHelpers,
   templates: TemplateHelpers,
   urls: URLHelpers,
-  migration: MigrationHelpers,
-  
+    
   // Direct access to validation (commonly used)
   validation: {
     validateSEOContent,
