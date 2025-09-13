@@ -1,8 +1,16 @@
-// src/main/components/ArticleCards/AdvertisingCard.tsx - CLEANED UP
+// src/main/components/ArticleCards/AdvertisingCard.tsx
+// MIGRATED: Uses new dictionary system
 import Link from 'next/link';
 import { AdvertisingCardProps } from './interfaces';
 
-export function AdvertisingCard({ article, articleLink, dict }: AdvertisingCardProps) {
+/**
+ * AdvertisingCard - MIGRATED to use dictionary.common instead of dict.common
+ */
+export function AdvertisingCard({ 
+  article, 
+  articleLink, 
+  dictionary // MIGRATED: Now uses full dictionary
+}: AdvertisingCardProps) {
   const translation = article.translations[0];
 
   return (
@@ -40,7 +48,7 @@ export function AdvertisingCard({ article, articleLink, dict }: AdvertisingCardP
               hover:bg-on-pr-cont/90
               transition-colors duration-200
             ">
-              {dict.common.readMore}
+              {dictionary.common.readMore} {/* MIGRATED: Use dictionary.common */}
             </span>
           </div>
         </div>

@@ -55,7 +55,7 @@ export default function FilterGroup({
             <NavButton
               context="desktop"
               className="flex items-center justify-between w-full sm:w-48 px-4 py-2 border-2 border-prcolor rounded-md"
-              aria-label={dictionary.categories.allCategories}
+              aria-label={dictionary.categories.allCategories} // FIXED: Use available property
             >
               <span className="truncate">
                 {currentCategory 

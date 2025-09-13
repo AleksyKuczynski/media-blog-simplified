@@ -1,5 +1,5 @@
 // src/app/ru/(with-filter)/layout.tsx
-// Updated to use migrated FilterGroup with new dictionary
+// MIGRATED: Updated to use new dictionary system completely
 import FilterGroup from '@/main/components/Navigation/FilterGroup';
 import { fetchAllCategories } from '@/main/lib/directus';
 import { getDictionary } from '@/main/lib/dictionary/dictionary'; // MIGRATED: Use new dictionary

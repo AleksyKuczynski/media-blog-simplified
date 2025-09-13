@@ -1,9 +1,14 @@
-// src/main/components/ArticleCards/ArticleCardVariant.tsx - CLEANED UP
+// src/main/components/ArticleCards/ArticleCardVariant.tsx
+// MIGRATED: Passes new dictionary structure to child components
 import { ArticleCardVariantProps } from './interfaces';
 import { NewsCard } from './NewsCard';
 import { AdvertisingCard } from './AdvertisingCard';
 import { StandardCard } from './StandardCard';
 
+/**
+ * ArticleCardVariant - MIGRATED to use new dictionary system
+ * Passes full dictionary to child components instead of dict.common
+ */
 export function ArticleCardVariant({
   article,
   articleLink,
@@ -11,14 +16,15 @@ export function ArticleCardVariant({
   imageProps,
   layout = 'regular',
   lang,
-  dict
+  dictionary // MIGRATED: Now uses full dictionary
 }: ArticleCardVariantProps) {
-  // Choose component based on layout - no more theme dependencies
+  // Choose component based on layout
   const getCardComponent = () => {
     const commonProps = {
       article,
       articleLink,
-      dict
+      dictionary, // MIGRATED: Pass full dictionary
+      lang
     };
 
     switch (layout) {
@@ -35,7 +41,6 @@ export function ArticleCardVariant({
           formattedDate={formattedDate}
           imageProps={imageProps}
           layout={layout}
-          lang={lang}
         />;
     }
   };

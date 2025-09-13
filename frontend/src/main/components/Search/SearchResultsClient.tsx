@@ -48,22 +48,23 @@ export default function SearchResultsClient({
           </p>
         </div>
 
-        {/* FIXED: SortingControl with correct props */}
+        {/* MIGRATED: SortingControl with full dictionary */}
         {allSlugs.length > 0 && (
           <SortingControl
-            dictionary={dictionary} // FIXED: Added required translations
-            currentSort={currentSort}        // ✅ Correct
-            lang={lang}                      // FIXED: Proper Lang type
+            dictionary={dictionary}         // MIGRATED: Full dictionary
+            currentSort={currentSort}       // ✅ Correct
+            lang={lang}                     // ✅ Proper Lang type
           />
         )}
       </div>
 
-      {/* FIXED: Results List with correct prop name */}
+      {/* MIGRATED: Results List with dictionary prop */}
       {allSlugs.length > 0 ? (
         <Suspense fallback={<div className="text-center py-8">{dictionary.search.labels.searching}</div>}>
           <ArticleList
-            slugInfos={allSlugs}  // FIXED: Changed from 'slugs' to 'slugInfos'
-            lang={lang}           // FIXED: Proper Lang type
+            slugInfos={allSlugs}  // ✅ Correct prop name
+            lang={lang}           // ✅ Proper Lang type
+            dictionary={dictionary} // MIGRATED: Pass dictionary to ArticleList
           />
         </Suspense>
       ) : (

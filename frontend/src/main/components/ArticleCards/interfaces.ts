@@ -1,49 +1,51 @@
-// src/main/components/ArticleCards/interfaces.ts - IMPROVED IMAGE SUPPORT
+// src/main/components/ArticleCards/interfaces.ts
+// MIGRATED: Clean interfaces using new dictionary system
 import { Dictionary, Lang } from "@/main/lib/dictionary/types";
 import { ArticleCardType } from "@/main/lib/directus";
 
 // Enhanced ImageProps with proper Next.js Image support
 export interface ImageProps {
-  src: string;
-  alt: string;
-  aspectRatio: number;
+  readonly src: string;
+  readonly alt: string;
+  readonly aspectRatio: number;
   // Optional explicit dimensions - calculated from aspectRatio if not provided
-  width?: number;
-  height?: number;
+  readonly width?: number;
+  readonly height?: number;
 }
 
+// MIGRATED: Base props now use full dictionary
 interface BaseArticleCardProps {
-  article: ArticleCardType;
-  articleLink: string;
-  dict: { common: Dictionary['common'] };
-    lang: Lang;
+  readonly article: ArticleCardType;
+  readonly articleLink: string;
+  readonly dictionary: Dictionary; // MIGRATED: Full dictionary instead of dict.common
+  readonly lang: Lang;
 }
 
 export interface ArticleCardProps {
-  slug: string;
-  lang: Lang;
-  authorSlug?: string;
-  rubricSlug?: string;
-  layout?: ArticleCardType['layout'];
-  dictionary: Dictionary;
+  readonly slug: string;
+  readonly lang: Lang;
+  readonly authorSlug?: string;
+  readonly rubricSlug?: string;
+  readonly layout?: ArticleCardType['layout'];
+  readonly dictionary: Dictionary; // MIGRATED: Now properly used
 }
 
 export interface ArticleCardVariantProps extends BaseArticleCardProps {
-  formattedDate: string;
-  imageProps: ImageProps | null;
-  layout: ArticleCardType['layout'];
+  readonly formattedDate: string;
+  readonly imageProps: ImageProps | null;
+  readonly layout: ArticleCardType['layout'];
 }
 
 export interface NewsCardProps extends BaseArticleCardProps {
-  formattedDate: string;
+  readonly formattedDate: string;
 }
 
 export interface AdvertisingCardProps extends BaseArticleCardProps {}
 
 export interface StandardCardProps extends BaseArticleCardProps {
-  formattedDate: string;
-  imageProps: ImageProps | null;
-  layout: 'regular' | 'latest' | 'promoted';
+  readonly formattedDate: string;
+  readonly imageProps: ImageProps | null;
+  readonly layout: 'regular' | 'latest' | 'promoted';
 }
 
 // Utility function to calculate image dimensions

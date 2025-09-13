@@ -1,8 +1,17 @@
-// src/main/components/ArticleCards/NewsCard.tsx - CLEANED UP
+// src/main/components/ArticleCards/NewsCard.tsx
+// MIGRATED: Uses new dictionary system
 import Link from 'next/link';
 import { NewsCardProps } from './interfaces';
 
-export function NewsCard({ article, formattedDate, articleLink, dict }: NewsCardProps) {
+/**
+ * NewsCard - MIGRATED to use dictionary.common instead of dict.common
+ */
+export function NewsCard({ 
+  article, 
+  formattedDate, 
+  articleLink, 
+  dictionary // MIGRATED: Now uses full dictionary
+}: NewsCardProps) {
   const translation = article.translations[0];
 
   return (
@@ -33,7 +42,7 @@ export function NewsCard({ article, formattedDate, articleLink, dict }: NewsCard
             text-pr-cont hover:text-pr-fix
             transition-colors duration-200
           ">
-            {dict.common.readMore}
+            {dictionary.common.readMore} {/* MIGRATED: Use dictionary.common */}
           </span>
         </div>
       </Link>

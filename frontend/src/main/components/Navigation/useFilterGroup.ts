@@ -1,20 +1,25 @@
 // src/main/components/Navigation/useFilterGroup.ts
+// MIGRATED: Uses new dictionary system and types
 import { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Category } from '@/main/lib/directus/directusInterfaces';
-import { Lang, CategoryTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang, CategoryTranslations } from '@/main/lib/dictionary/types'; // MIGRATED: New dictionary types
 import type { DropdownItemType } from '../Interface/Dropdown/types';
 
 interface UseFilterGroupProps {
-  categories: Category[];
-  categoryTranslations: CategoryTranslations;
-  lang: Lang;
+  readonly categories: Category[];
+  readonly categoryTranslations: CategoryTranslations; // MIGRATED: Uses new CategoryTranslations
+  readonly lang: Lang; // MIGRATED: Uses new Lang type
 }
 
+/**
+ * useFilterGroup - MIGRATED to new dictionary system
+ * Now uses CategoryTranslations from new dictionary structure
+ */
 export function useFilterGroup({ 
   categories, 
   categoryTranslations,
-  lang // ✅ KEPT: But will be hardcoded to 'ru' when called
+  lang
 }: UseFilterGroupProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -34,11 +39,11 @@ export function useFilterGroup({
     searchParams.get('sort') || 'desc'
   , [searchParams]);
 
-  // Prepare dropdown items
+  // MIGRATED: Prepare dropdown items using new dictionary structure
   const categoryItems = useMemo<DropdownItemType[]>(() => [
     { 
       id: 'all',
-      label: categoryTranslations.allCategories,
+      label: categoryTranslations.allCategories, // MIGRATED: Still works with new structure
       value: '',
       selected: currentCategory === ''
     },
@@ -50,26 +55,26 @@ export function useFilterGroup({
     }))
   ], [categories, categoryTranslations.allCategories, currentCategory]);
 
-  // Handlers
+  // Handlers - functionality unchanged
   const handleCategoryChange = useCallback((item: DropdownItemType) => {
     const currentSort = searchParams.get('sort') || 'desc';
     const params = new URLSearchParams();
     params.set('sort', currentSort); // Preserve current sort order
 
     if (item.value) {
-      router.push(`/ru/category/${item.value}?${params.toString()}`); // ✅ HARDCODED: Static Russian URL
+      router.push(`/ru/category/${item.value}?${params.toString()}`);
     } else {
-      router.push(`/ru/articles?${params.toString()}`); // ✅ HARDCODED: Static Russian URL
+      router.push(`/ru/articles?${params.toString()}`);
     }
   }, [router, searchParams]);
 
   const handleReset = useCallback(() => {
     if (isArticlesPath) {
       if (currentCategory || currentSort !== 'desc') {
-        router.push(`/ru/articles`); // ✅ HARDCODED: Static Russian URL
+        router.push(`/ru/articles`);
       }
     } else {
-      router.push(`/ru/articles`); // ✅ HARDCODED: Static Russian URL
+      router.push(`/ru/articles`);
     }
   }, [router, isArticlesPath, currentCategory, currentSort]);
 

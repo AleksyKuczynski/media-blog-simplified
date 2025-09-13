@@ -1,67 +1,75 @@
-// src/main/components/ArticleCards/StandardCard.tsx - FIXED IMAGE LAYOUT ISSUE
-import Image from 'next/image';
+// src/main/components/ArticleCards/StandardCard.tsx
+// MIGRATED: Uses new dictionary system
 import Link from 'next/link';
+import Image from 'next/image';
 import { ChevronRightIcon } from '../Interface/Icons';
-import { StandardCardProps } from './interfaces';
+import { StandardCardProps, getImageDimensions } from './interfaces';
 
-export function StandardCard({
-  article,
-  formattedDate,
-  articleLink,
-  dict,
-  imageProps,
-  layout = 'regular',
-  lang,
+/**
+ * StandardCard - MIGRATED to use dictionary.common instead of dict.common
+ * Supports regular, latest, and promoted layouts
+ */
+export function StandardCard({ 
+  article, 
+  formattedDate, 
+  articleLink, 
+  imageProps, 
+  layout, 
+  dictionary // MIGRATED: Now uses full dictionary
 }: StandardCardProps) {
   const translation = article.translations[0];
+  const imageDimensions = imageProps ? getImageDimensions(imageProps) : null;
 
   return (
     <Link 
       href={articleLink} 
       className={`
-        relative bg-sf-cont rounded-2xl border border-ol-var shadow-sm hover:shadow-lg 
-        transition-shadow duration-200
-        ${layout === 'promoted' && 'h-full sm:max-lg:pb-6'}
-        ${layout === 'latest' && 'px-2 sm:px-0'}
+        block group transition-transform duration-200 hover:scale-105
+        ${layout === 'promoted' && 'lg:max-xl:hover:scale-100'}
       `}
     >
       <article className={`
-        flex flex-col bg-sf-cont rounded-3xl overflow-hidden
-        ${layout === 'regular' && 'lg:h-full sm:max-lg:grid xl:grid grid-cols-3'}
-        ${layout === 'promoted' && 'h-full sm:max-xl:grid grid-cols-3 lg:grid-cols-2'}
-        ${layout === 'latest' && 'lg:h-full sm:grid xl:grid grid-cols-3'}
+        h-full bg-sf-cont rounded-2xl border border-ol-var 
+        shadow-sm hover:shadow-lg transition-all duration-300
+        overflow-hidden
+        ${layout === 'regular' && 'flex flex-col'}
+        ${layout === 'promoted' && 'lg:max-xl:flex lg:max-xl:flex-row lg:max-xl:items-center'}
+        ${layout === 'latest' && 'sm:max-lg:flex sm:max-lg:flex-row sm:max-lg:items-center xl:flex xl:flex-row xl:items-center'}
       `}>
         
-        {/* Image Section - FIXED: Complete aspect ratio coverage for all breakpoints */}
-        {imageProps && (
+        {/* Image Section */}
+        {imageProps && imageDimensions && (
           <div className={`
-            relative overflow-hidden rounded-xl
-            ${layout === 'regular' && 'w-full aspect-[12/10] sm:max-lg:aspect-[11/12] xl:aspect-[11/12]'}
-            ${layout === 'promoted' && 'aspect-video'}
-            ${layout === 'latest' && 'w-full aspect-[12/10] sm:aspect-[11/12] lg:aspect-[12/10] xl:aspect-[11/12]'}
+            relative overflow-hidden
+            ${layout === 'regular' && 'aspect-video'}
+            ${layout === 'promoted' && 'aspect-video lg:max-xl:w-1/2 lg:max-xl:aspect-[4/3]'}
+            ${layout === 'latest' && 'aspect-video sm:max-lg:w-1/3 sm:max-lg:aspect-square xl:w-1/3 xl:aspect-square'}
           `}>
             <Image
               src={imageProps.src}
               alt={imageProps.alt}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className="w-full h-full object-cover"
-              priority={layout === 'promoted'}
+              className="object-cover group-hover:scale-110 transition-transform duration-300"
+              sizes={`
+                ${layout === 'regular' && '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'}
+                ${layout === 'promoted' && '(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 50vw'}
+                ${layout === 'latest' && '(max-width: 640px) 100vw, (max-width: 1024px) 33vw, (max-width: 1280px) 100vw, 33vw'}
+              `}
             />
           </div>
         )}
         
         {/* Content Section */}
         <div className={`
-          flex flex-col p-6
-          ${layout === 'regular' && 'grow space-y-2 col-span-2 mb-1'}
-          ${layout === 'promoted' && 'sm:max-lg:col-span-2'}
-          ${layout === 'latest' && 'col-span-2'}
+          p-4 lg:p-6 flex flex-col
+          ${layout === 'regular' && 'flex-grow'}
+          ${layout === 'promoted' && 'lg:max-xl:w-1/2 lg:max-xl:justify-center'}
+          ${layout === 'latest' && 'flex-grow sm:max-lg:justify-center xl:justify-center'}
         `}>
           
           <h3 className={`
-            text-lg lg:text-xl max-sm:font-sans max-sm:font-semibold font-display 
-            transition-colors duration-600 mb-2 text-on-sf hover:text-pr-cont
+            font-bold mb-2 text-on-sf 
+            group-hover:text-pr-cont transition-colors duration-200
             ${layout === 'regular' && 'line-clamp-3'}
             ${layout === 'promoted' && 'text-2xl lg:max-xl:text-3xl'}
             ${layout === 'latest' && 'line-clamp-3 text-lg 2xl:text-xl'}
@@ -89,7 +97,7 @@ export function StandardCard({
           )}
           
           <div className="text-xs lg:text-sm font-medium transition-colors duration-200 flex justify-end items-end text-pr-cont hover:text-pr-fix">
-            <span>{dict.common.readMore}</span>
+            <span>{dictionary.common.readMore}</span> {/* MIGRATED: Use dictionary.common */}
             <ChevronRightIcon className="ml-1 w-3 h-3" />
           </div>
         </div>
