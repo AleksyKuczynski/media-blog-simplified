@@ -1,42 +1,29 @@
-// src/main/components/Search/ExpandableSearch.tsx - Updated with dictionary support
+// src/main/components/Search/ExpandableSearch.tsx
+// Clean implementation - No backward compatibility, dictionary required
+'use client'
+
 import React from 'react';
 import { SearchIcon, NavButton, CloseIcon } from '../Interface';
 import SearchInput from './SearchInput';
 import SearchDropdown from './SearchDropdown';
 import { useSearchLogic } from './useSearchLogic';
-
-// NEW: Import new dictionary types
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
-// OLD: Keep old types for backward compatibility
 
-// Updated interface to support both old and new dictionary structures
 interface ExpandableSearchProps {
-  dictionary?: Dictionary;
-  lang: Lang;
-  className?: string;
+  readonly dictionary: Dictionary; // REQUIRED - no backward compatibility
+  readonly lang: Lang;
+  readonly className?: string;
 }
 
+/**
+ * ExpandableSearch - Expandable search component with clean dictionary integration
+ * Removes all backward compatibility code for cleaner implementation
+ */
 export default function ExpandableSearch({
   dictionary,
   lang,
   className = ''
 }: ExpandableSearchProps) {
-  // Create compatibility translations from either source
-  const compatibilityTranslations = React.useMemo(() => {
-    return {
-      placeholder: dictionary.search.labels.placeholder,
-      submit: dictionary.search.labels.submit,
-      results: dictionary.search.labels.results,
-      noResults: dictionary.search.labels.noResults,
-      searching: dictionary.search.labels.searching,
-      minCharacters: dictionary.search.labels.minCharacters,
-      resultsFor: dictionary.search.templates.resultsFor,
-      pageTitle: dictionary.search.templates.pageTitle,
-      pageDescription: dictionary.search.templates.pageDescription,
-      relatedTo: dictionary.search.templates.relatedTo,
-    };
-  }, [dictionary]);
-
   const {
     state,
     handlers,
@@ -49,23 +36,12 @@ export default function ExpandableSearch({
 
   const isExpanded = state.input.visibility !== 'hidden';
 
-  // Get accessibility labels
-  const getAccessibilityLabels = () => {
-    return {
-      searchLabel: dictionary.search.accessibility.searchLabel,
-      searchButtonLabel: dictionary.search.accessibility.searchButtonLabel,
-      clearSearchLabel: dictionary.search.accessibility.clearSearchLabel,
-    };
-  };
-
-  const a11yLabels = getAccessibilityLabels();
-
   return (
     <div 
       ref={refs.containerRef}
       className={`relative ${className}`}
       role="search"
-      aria-label={a11yLabels.searchLabel}
+      aria-label={dictionary.search.accessibility.searchLabel}
     >
       <div className={`
         relative flex items-center gap-2
@@ -75,43 +51,49 @@ export default function ExpandableSearch({
           : ''
         }
       `.trim()}>
+        
         <SearchInput
           state={state}
-          placeholder={compatibilityTranslations.placeholder}
+          placeholder={dictionary.search.labels.placeholder}
           onChange={handlers.handleInputChange}
           onKeyDown={handlers.handleKeyDown}
           onFocus={handlers.handleFocus}
           inputRef={refs.inputRef}
-          ariaLabel={a11yLabels.searchButtonLabel}
+          ariaLabel={dictionary.search.accessibility.searchInputLabel}
+          ariaDescription={dictionary.search.accessibility.searchDescription}
         />
+        
         <NavButton
           context="desktop"
           onClick={handlers.handleSearchButton}
           icon={utils.iconType === 'search' ? <SearchIcon /> : <CloseIcon />}
           aria-label={
             utils.iconType === 'search' 
-              ? a11yLabels.searchButtonLabel
-              : a11yLabels.clearSearchLabel
+              ? dictionary.search.accessibility.searchButtonLabel
+              : dictionary.search.accessibility.clearSearchLabel
           }
-          aria-expanded={isExpanded}
-          className={`
-            p-2 rounded-full transition-colors duration-200
-            ${isExpanded 
-              ? 'hover:bg-bgcolor-accent-dark/50 text-on-sf' 
-              : 'hover:bg-bgcolor-accent/10 text-on-sf-var'
-            }
-          `.trim()}
+          className="p-2 rounded-full hover:bg-bgcolor-accent/10 transition-colors duration-200"
         />
       </div>
 
-      {isExpanded && (
-        <SearchDropdown
-          state={state}
-          translations={compatibilityTranslations}
-          onItemSelect={handlers.handleSelect}
-          className="rounded-lg shadow-lg"
-        />
-      )}
+      <SearchDropdown
+        state={state}
+        translations={{
+          placeholder: dictionary.search.labels.placeholder,
+          submit: dictionary.search.labels.submit,
+          results: dictionary.search.labels.results,
+          noResults: dictionary.search.labels.noResults,
+          searching: dictionary.search.labels.searching,
+          minCharacters: dictionary.search.labels.minCharacters,
+          resultsFor: dictionary.search.templates.resultsFor,
+          pageTitle: dictionary.search.templates.pageTitle,
+          pageDescription: dictionary.search.templates.pageDescription,
+          relatedTo: dictionary.search.templates.relatedTo,
+        }}
+        onItemSelect={handlers.handleSelect}
+        className="rounded-lg shadow-lg"
+        ariaLabel={dictionary.search.accessibility.searchResultsLabel}
+      />
     </div>
   );
 }

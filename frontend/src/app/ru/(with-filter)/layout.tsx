@@ -1,25 +1,24 @@
 // src/app/ru/(with-filter)/layout.tsx
+// Updated to use migrated FilterGroup with new dictionary
 import FilterGroup from '@/main/components/Navigation/FilterGroup';
 import { fetchAllCategories } from '@/main/lib/directus';
-import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
+import { getDictionary } from '@/main/lib/dictionary/dictionary'; // MIGRATED: Use new dictionary
 
 export default async function WithFilterLayout({
   children,
 }: {
   children: React.ReactNode;
-  // ✅ REMOVED: params: { lang: Lang } - no longer expected in static routes
 }) {
-  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
-  const categories = await fetchAllCategories('ru'); // ✅ HARDCODED: Russian language
+  const dictionary = await getDictionary('ru'); // MIGRATED: New dictionary system
+  const categories = await fetchAllCategories('ru');
 
   return (
     <>
+      {/* MIGRATED: FilterGroup with full dictionary */}
       <FilterGroup
         categories={categories}
-        sortingTranslations={dict.sorting}
-        categoryTranslations={dict.categories}
-        resetText={dict.filter.reset}
-        lang="ru" // ✅ HARDCODED: Russian language
+        dictionary={dictionary}  // MIGRATED: Pass full dictionary
+        lang="ru"
       />
       {children}
     </>

@@ -1,25 +1,26 @@
 // src/main/components/Search/SearchResultsClient.tsx
+// Fixed prop interfaces to match component expectations
 'use client'
 
 import React, { Suspense } from 'react';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import SortingControl from '@/main/components/Navigation/SortingControl';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 
 interface SearchResultsClientProps {
-  dictionary: Dictionary;
-  searchQuery: string;
-  allSlugs: ArticleSlugInfo[];
-  hasMore: boolean;
-  currentPage: number;
-  currentSort: string;
+  readonly dictionary: Dictionary;
+  readonly searchQuery: string;
+  readonly allSlugs: ArticleSlugInfo[];
+  readonly hasMore: boolean;
+  readonly currentPage: number;
+  readonly currentSort: string;
 }
 
 /**
  * Client component for search results rendering
- * Handles client-side interactions like sorting and load more
+ * FIXED: Props now match child component interfaces exactly
  */
 export default function SearchResultsClient({
   dictionary,
@@ -29,6 +30,8 @@ export default function SearchResultsClient({
   currentPage,
   currentSort
 }: SearchResultsClientProps) {
+  const lang: Lang = 'ru'; // Type-safe Lang instead of string
+
   return (
     <>
       {/* Results Header */}
@@ -45,80 +48,47 @@ export default function SearchResultsClient({
           </p>
         </div>
 
-        {/* Sorting Control */}
+        {/* FIXED: SortingControl with correct props */}
         {allSlugs.length > 0 && (
           <SortingControl
-            currentSort={currentSort}
-            searchQuery={searchQuery}
-            lang="ru"
+            dictionary={dictionary} // FIXED: Added required translations
+            currentSort={currentSort}        // ✅ Correct
+            lang={lang}                      // FIXED: Proper Lang type
           />
         )}
       </div>
 
-      {/* Results List */}
+      {/* FIXED: Results List with correct prop name */}
       {allSlugs.length > 0 ? (
-        <>
-          <Suspense fallback={
-            <div className="animate-pulse space-y-4">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="h-24 bg-sf-hi rounded-lg" />
-              ))}
-            </div>
-          }>
-            <ArticleList 
-              slugs={allSlugs}
-              lang="ru"
-            />
-          </Suspense>
-
-          {/* Load More Button */}
-          {hasMore && (
-            <div className="mt-8 text-center">
-              <LoadMoreButton
-                currentPage={currentPage}
-                hasMore={hasMore}
-                searchQuery={searchQuery}
-                currentSort={currentSort}
-                lang="ru"
-              />
-            </div>
-          )}
-        </>
+        <Suspense fallback={<div className="text-center py-8">{dictionary.search.labels.searching}</div>}>
+          <ArticleList
+            slugInfos={allSlugs}  // FIXED: Changed from 'slugs' to 'slugInfos'
+            lang={lang}           // FIXED: Proper Lang type
+          />
+        </Suspense>
       ) : (
-        /* No Results Message */
         <div className="text-center py-12">
-          <h2 className="text-xl font-semibold mb-4 text-txcolor-primary">
+          <p className="text-txcolor-secondary text-lg mb-4">
             {dictionary.search.labels.noResults}
-          </h2>
-          <div className="max-w-md mx-auto text-txcolor-secondary space-y-2">
-            <p>{dictionary.search.messages.tryFollowing}:</p>
-            <ul className="text-left space-y-1 mt-4">
-              <li>• {dictionary.search.messages.checkSpelling}</li>
-              <li>• {dictionary.search.messages.useGeneralTerms}</li>
-              <li>• {dictionary.search.messages.trySynonyms}</li>
-            </ul>
-          </div>
-          
-          {/* Alternative Navigation */}
-          <div className="mt-8 pt-6 border-t border-sf-hi">
-            <p className="mb-4 text-sm text-txcolor-secondary">
-              {dictionary.search.interface.alternativeNavigation}
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <a 
-                href="/ru/rubrics" 
-                className="px-4 py-2 bg-pr-fix text-white rounded-lg hover:bg-pr-hi transition-colors"
-              >
-                {dictionary.search.navigation.viewAllArticles}
-              </a>
-              <a 
-                href="/ru/authors" 
-                className="px-4 py-2 bg-sf-hi text-txcolor-primary rounded-lg hover:bg-sf-lo transition-colors"
-              >
-                {dictionary.search.navigation.meetAuthors}
-              </a>
-            </div>
-          </div>
+          </p>
+          <p className="text-txcolor-secondary">
+            {dictionary.search.messages.tryFollowing}
+          </p>
+          <ul className="text-txcolor-secondary text-sm mt-2 space-y-1">
+            <li>• {dictionary.search.messages.checkSpelling}</li>
+            <li>• {dictionary.search.messages.useGeneralTerms}</li>
+            <li>• {dictionary.search.messages.trySynonyms}</li>
+          </ul>
+        </div>
+      )}
+
+      {/* FIXED: LoadMoreButton with correct props only */}
+      {allSlugs.length > 0 && hasMore && (
+        <div className="flex justify-center mt-8">
+          <LoadMoreButton
+            currentPage={currentPage}                    // ✅ Correct
+            loadMoreText={dictionary.common.loadMore}    // FIXED: Added required loadMoreText
+          />
         </div>
       )}
     </>

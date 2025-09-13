@@ -1,27 +1,39 @@
 // src/main/components/Navigation/SortingControl.tsx
+// Migrated to new dictionary structure - clean implementation
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { SortingTranslations, Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import { NavButton } from '../Interface';
 import { ChevronDownIcon } from '../Interface/Icons';
 import type { DropdownItemType } from '../Interface/Dropdown/types';
 import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../Interface/Dropdown';
 
 interface SortingControlProps {
-  translations: SortingTranslations;
-  currentSort: string;
-  lang: Lang;
+  readonly dictionary: Dictionary; // MIGRATED: Full dictionary instead of SortingTranslations
+  readonly currentSort: string;
+  readonly lang: Lang; // MIGRATED: New Lang type
 }
 
-export default function SortingControl({ translations, currentSort, lang }: SortingControlProps) {
+/**
+ * SortingControl - Migrated to new dictionary structure
+ * Uses dictionary.sorting instead of separate translations prop
+ */
+export default function SortingControl({ 
+  dictionary, 
+  currentSort, 
+  lang 
+}: SortingControlProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
+  // Access sorting translations from dictionary
+  const sorting = dictionary.sorting;
+
   const sortItems: DropdownItemType[] = [
-    { id: 'desc', label: translations.newest, value: 'desc' },
-    { id: 'asc', label: translations.oldest, value: 'asc' }
+    { id: 'desc', label: sorting.newest, value: 'desc' },
+    { id: 'asc', label: sorting.oldest, value: 'asc' }
   ];
 
   const items = sortItems.map(item => ({
@@ -38,7 +50,7 @@ export default function SortingControl({ translations, currentSort, lang }: Sort
   return (
     <div className="flex flex-col gap-2">
       <span className="text-sm font-medium text-prcolor">
-        {translations.sortOrder}
+        {sorting.sortOrder}
       </span>
       <Dropdown
         items={items}
@@ -50,7 +62,7 @@ export default function SortingControl({ translations, currentSort, lang }: Sort
           <NavButton
             context="desktop"
             className="flex items-center justify-between w-full px-4 py-2 border-2 border-prcolor rounded-md"
-            aria-label={translations.sortOrder}
+            aria-label={sorting.sortOrder}
           >
             <span className="truncate">
               {sortItems.find(item => item.value === currentSort)?.label}

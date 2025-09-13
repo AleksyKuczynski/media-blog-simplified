@@ -1,5 +1,5 @@
 // src/main/components/SEO/metadata/SearchMetadata.tsx
-// Fixed search metadata with proper imports and correct dictionary paths
+// Fixed search metadata with proper type safety and correct API usage
 
 import { Metadata } from 'next';
 import { 
@@ -37,10 +37,10 @@ export const generateSearchMetadata = (
     siteName: seoDict.site.name 
   });
   
-  // Create enhanced description
+  // Create enhanced description - FIXED: Remove invalid 'description' property
   const baseDescription = searchDict.templates.pageDescription;
   const description = getProcessedSEODescription(seoDict, 'search', {
-    description: baseDescription,
+    title: baseDescription, // Use 'title' instead of 'description'
     siteName: seoDict.site.name
   });
   
@@ -57,12 +57,13 @@ export const generateSearchMetadata = (
     console.warn('Search SEO validation errors:', validation.errors);
   }
 
-  // Create SEO data
+  // Create SEO data with search-specific image
   const seoData = createWebsiteSEOData(
     title,
     description,
     keywords,
-    getCanonicalURL('/search')
+    getCanonicalURL('/search'),
+    'https://event4me.eu/og-search.jpg' // Search-specific OG image
   );
 
   // Validate and build metadata
@@ -75,46 +76,34 @@ export const generateSearchMetadata = (
     'search:enhanced': 'true',
     'search:functionality': 'static-interface',
     'search:language': seoDict.regional.language,
+    // Dublin Core for search
+    'DC.relation.isPartOf': getCanonicalURL('/'),
+    'DC.relation.hasFormat': 'application/html',
+    'DC.type': 'Text.SearchPage',
+    // Yandex-specific for search
+    'yandex:search': 'true',
   };
 
-  // Build the metadata using the core builder
-  const metadata = buildMetadata(seoData, {
-    // Open Graph specific for search
-    openGraph: {
-      type: 'website',
+  // FIXED: Use only valid SEOContext properties, no openGraph
+  const metadata = buildMetadata(
+    seoData,
+    {
+      // Only valid SEOContext properties
+      baseUrl: 'https://event4me.eu',
+      defaultImageUrl: 'https://event4me.eu/og-search.jpg',
+      siteName: seoDict.site.name,
       locale: 'ru_RU',
-      siteName: seoDict.site.name, // FIXED: was siteName
-      images: [
-        {
-          url: 'https://event4me.eu/og-search.jpg',
-          width: 1200,
-          height: 630,
-          alt: searchDict.templates.pageTitle,
-        },
-      ],
+      region: 'RU',
     },
-    
-    // Twitter Card
-    twitter: {
-      card: 'summary',
-      title: baseTitle,
-      description: baseDescription,
-    },
-    
-    // Robots directives for search page
-    robots: {
-      index: true,
-      follow: true,
-      'max-snippet': -1,
-      'max-image-preview': 'large',
-    },
-  }, additionalMeta);
+    additionalMeta
+  );
 
   return metadata;
 };
 
 /**
  * Generate search-specific Open Graph data
+ * This is now a utility function since buildMetadata handles OG internally
  */
 export const getSearchOpenGraphData = (
   dictionary: Dictionary
@@ -125,7 +114,7 @@ export const getSearchOpenGraphData = (
   return {
     type: 'website' as const,
     locale: 'ru_RU',
-    siteName: seoDict.site.name, // FIXED: was siteName
+    siteName: seoDict.site.name,
     title: searchDict.templates.pageTitle,
     description: searchDict.templates.pageDescription,
     url: getCanonicalURL('/search'),
@@ -149,7 +138,7 @@ export const validateSearchMetadata = (dictionary: Dictionary): boolean => {
     'search.templates.pageTitle',
     'search.templates.pageDescription',
     'search.labels.placeholder',
-    'seo.site.name', // FIXED: was siteName
+    'seo.site.name',
   ];
 
   const missing = required.filter(path => {
@@ -176,15 +165,15 @@ export const getSearchMetaTags = (
   const seoDict = dictionary.seo;
 
   return {
-    // Dublin Core for search
-    'DC.relation.isPartOf': getCanonicalURL('/'),
-    'DC.relation.hasFormat': 'application/html',
-    'DC.type': 'Text.SearchPage',
-    
     // Search-specific
     'search:interface': 'enabled',
     'search:language': seoDict.regional.language,
     'search:region': seoDict.regional.region,
+    
+    // Dublin Core for search
+    'DC.relation.isPartOf': getCanonicalURL('/'),
+    'DC.relation.hasFormat': 'application/html',
+    'DC.type': 'Text.SearchPage',
     
     // Yandex-specific for search
     'yandex:search': 'true',
