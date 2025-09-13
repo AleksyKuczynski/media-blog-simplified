@@ -1,11 +1,9 @@
-// src/app/ru/search/page.tsx - Optimized with  SEO
+// src/app/ru/search/page.tsx - Fixed Server Component
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import ArticleList from '@/main/components/Main/ArticleList';
-import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import SortingControl from '@/main/components/Navigation/SortingControl';
 import Section from '@/main/components/Main/Section';
-import SearchBar from '@/main/components/Search/SearchBar';
+import SearchBarClient from '@/main/components/Search/SearchBarClient';
+import SearchResultsClient from '@/main/components/Search/SearchResultsClient';
 import { russianDictionary } from '@/main/lib/dictionary/dictionary';
 import { fetchArticleSlugs } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
@@ -41,7 +39,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const hasSearchQuery = searchQuery && searchQuery.length >= 3;
 
   if (hasSearchQuery) {
-    // Client-side search results loading
+    // Server-side search results fetching
     for (let page = 1; page <= currentPage; page++) {
       const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
         page,
@@ -61,10 +59,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   return (
     <>
-      {/*  SEO - static only */}
+      {/* SEO Components - Server Side */}
       <SearchSEO dictionary={dict} />
       
-      {/* Main Content */}
+      {/* Main Content - Server Side */}
       <main id="main-content" className="min-h-screen">
         <Section 
           title={pageTitle}
@@ -81,16 +79,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 {dict.search.templates.pageDescription}
               </p>
               
-              {/* Centered Search Bar */}
+              {/* Centered Search Bar - Client Component */}
               <div className="max-w-lg mx-auto">
-                <SearchBar 
+                <SearchBarClient 
                   dictionary={dict}
                   lang="ru"
                   className="w-full"
                 />
               </div>
               
-              {/* Optional: Search suggestions */}
+              {/* Search suggestions - Server Side */}
               <div className="mt-12 text-sm text-txcolor-secondary">
                 <p className="mb-4">{dict.search.interface.alternativeNavigation}</p>
                 <div className="flex flex-wrap justify-center gap-4">
@@ -117,100 +115,16 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             </div>
           )}
 
-          {/* Search Results Section - Only show when there's a search query */}
+          {/* Search Results Section - Client Component */}
           {hasSearchQuery && (
-            <>
-              {/* Results Header */}
-              <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-                <div>
-                  <h1 className="text-xl font-bold text-txcolor-primary mb-2">
-                    {dict.search.templates.resultsFor.replace('{query}', `"${searchQuery}"`)}
-                  </h1>
-                  <p className="text-txcolor-secondary">
-                    {allSlugs.length > 0 
-                      ? `${dict.search.pluralization.result.many}: ${allSlugs.length}`
-                      : dict.search.labels.noResults
-                    }
-                  </p>
-                </div>
-
-                {/* Sorting Control */}
-                {allSlugs.length > 0 && (
-                  <SortingControl
-                    currentSort={currentSort}
-                    searchQuery={searchQuery}
-                    lang="ru"
-                  />
-                )}
-              </div>
-
-              {/* Results List */}
-              {allSlugs.length > 0 ? (
-                <>
-                  <Suspense fallback={
-                    <div className="animate-pulse space-y-4">
-                      {[...Array(6)].map((_, i) => (
-                        <div key={i} className="h-24 bg-sf-hi rounded-lg" />
-                      ))}
-                    </div>
-                  }>
-                    <ArticleList 
-                      slugs={allSlugs}
-                      lang="ru"
-                    />
-                  </Suspense>
-
-                  {/* Load More Button */}
-                  {hasMore && (
-                    <div className="mt-8 text-center">
-                      <LoadMoreButton
-                        currentPage={currentPage}
-                        hasMore={hasMore}
-                        searchQuery={searchQuery}
-                        currentSort={currentSort}
-                        lang="ru"
-                      />
-                    </div>
-                  )}
-                </>
-              ) : (
-                /* No Results Message */
-                <div className="text-center py-12">
-                  <h2 className="text-xl font-semibold mb-4 text-txcolor-primary">
-                    {dict.search.labels.noResults}
-                  </h2>
-                  <div className="max-w-md mx-auto text-txcolor-secondary space-y-2">
-                    <p>{dict.search.messages.tryFollowing}:</p>
-                    <ul className="text-left space-y-1 mt-4">
-                      <li>• {dict.search.messages.checkSpelling}</li>
-                      <li>• {dict.search.messages.useGeneralTerms}</li>
-                      <li>• {dict.search.messages.trySynonyms}</li>
-                    </ul>
-                  </div>
-                  
-                  {/* Alternative Navigation */}
-                  <div className="mt-8 pt-6 border-t border-sf-hi">
-                    <p className="mb-4 text-sm text-txcolor-secondary">
-                      {dict.search.interface.alternativeNavigation}
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-4">
-                      <a 
-                        href="/ru/rubrics" 
-                        className="px-4 py-2 bg-pr-fix text-white rounded-lg hover:bg-pr-hi transition-colors"
-                      >
-                        {dict.search.navigation.viewAllArticles}
-                      </a>
-                      <a 
-                        href="/ru/authors" 
-                        className="px-4 py-2 bg-sf-hi text-txcolor-primary rounded-lg hover:bg-sf-lo transition-colors"
-                      >
-                        {dict.search.navigation.meetAuthors}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
+            <SearchResultsClient
+              dictionary={dict}
+              searchQuery={searchQuery}
+              allSlugs={allSlugs}
+              hasMore={hasMore}
+              currentPage={currentPage}
+              currentSort={currentSort}
+            />
           )}
         </Section>
       </main>

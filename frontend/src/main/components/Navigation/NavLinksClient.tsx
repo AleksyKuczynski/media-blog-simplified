@@ -7,13 +7,11 @@ import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 // NEW: Import new dictionary types
-import { Dictionary } from '@/main/lib/dictionary/types'
-// OLD: Import old types for compatibility
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes'
+import { Dictionary, Lang } from '@/main/lib/dictionary/types'
 
 interface NavLinksClientProps {
-  dictionary: Dictionary // NEW: Use new dictionary structure
-  lang: Lang // KEEP: Lang parameter for compatibility
+  dictionary: Dictionary
+  lang: Lang
 }
 
 export default function NavLinksClient({ dictionary, lang }: NavLinksClientProps) {

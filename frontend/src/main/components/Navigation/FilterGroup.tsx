@@ -3,12 +3,13 @@
 
 import React from 'react';
 import { Category } from '@/main/lib/directus/directusInterfaces';
-import { SortingTranslations, CategoryTranslations, Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { SortingTranslations, CategoryTranslations } from '@/main/lib/dictionaries/dictionariesTypes';
 import { ChevronDownIcon } from '../Interface/Icons';
 import SortingControl from './SortingControl';
 import { useFilterGroup } from './useFilterGroup';
 import { CustomButton, NavButton } from '../Interface';
 import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../Interface/Dropdown';
+import { Lang } from '@/main/lib/dictionary/types';
 
 interface FilterGroupProps {
   categories: Category[];

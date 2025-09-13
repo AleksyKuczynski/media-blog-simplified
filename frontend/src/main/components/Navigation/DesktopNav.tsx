@@ -7,16 +7,11 @@ import React from 'react'
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
 import ExpandableSearch from '../Search/ExpandableSearch'
-
-// NEW: Import new dictionary types
-import { Dictionary } from '@/main/lib/dictionary/types'
-// OLD: Import old types for compatibility
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes'
+import { Dictionary, Lang } from '@/main/lib/dictionary/types'
 
 interface DesktopNavProps {
-  dictionary: Dictionary // NEW: Use new dictionary structure
-  lang: Lang // KEEP: Lang parameter for compatibility
-  translations: any // OLD: Compatibility translations (deprecated, will be removed)
+  dictionary: Dictionary
+  lang: Lang
   isSearchPage: boolean
   currentPageTitle?: string
   currentPath?: string

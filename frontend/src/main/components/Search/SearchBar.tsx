@@ -1,25 +1,23 @@
-// src/main/components/Search/SearchBar.tsx - Updated with new dictionary
+// src/main/components/Search/SearchBar.tsx - Fixed with 'use client'
+'use client'
+
 import React from 'react';
 import { SearchIcon, NavButton, CloseIcon } from '../Interface';
 import SearchInput from './SearchInput';
 import SearchDropdown from './SearchDropdown';
 import { useSearchLogic } from './useSearchLogic';
-
-// NEW: Import new dictionary types
-import { Dictionary } from '@/main/lib/dictionary/types';
-// OLD: Keep Lang for compatibility with useSearchLogic
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 
 interface SearchBarProps {
-  dictionary: Dictionary; // NEW: Use new dictionary structure
-  lang: Lang; // KEEP: For compatibility with useSearchLogic
+  dictionary: Dictionary;
+  lang: Lang;
   className?: string;
   onSearchComplete?: () => void;
 }
 
 /**
  * SearchBar - Main search component with enhanced dictionary support
- * Now uses the new modular dictionary structure for better maintainability
+ * Now properly marked as client component to handle hooks
  */
 export default function SearchBar({
   dictionary,
@@ -28,7 +26,6 @@ export default function SearchBar({
   onSearchComplete
 }: SearchBarProps) {
   // Create compatibility translation object for useSearchLogic
-  // TODO: Update useSearchLogic to use new dictionary structure in next iteration
   const compatibilityTranslations = {
     placeholder: dictionary.search.labels.placeholder,
     submit: dictionary.search.labels.submit,
@@ -97,7 +94,7 @@ export default function SearchBar({
 
       <SearchDropdown
         state={state}
-        translations={compatibilityTranslations} // Use compatibility translations
+        translations={compatibilityTranslations}
         onItemSelect={handlers.handleSelect}
         className="rounded-lg shadow-lg"
         ariaLabel={dictionary.search.accessibility.searchResultsLabel}

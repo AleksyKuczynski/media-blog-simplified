@@ -1,24 +1,19 @@
 // src/main/components/Navigation/NavLinks.tsx
-// Fixed to support both dictionaries and maintain compatibility
 
 import Link from 'next/link'
 import NavLinksClient from './NavLinksClient'
-
-// NEW: Import new dictionary types and SEO helpers
-import { Dictionary, NavigationRoute } from '@/main/lib/dictionary/types'
+import { Dictionary, Lang, NavigationRoute } from '@/main/lib/dictionary/types'
 import { getNavigationLinkSEO } from '@/main/components/SEO'
-// OLD: Import old types for compatibility
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes'
 
 interface NavLinksProps {
-  dictionary: Dictionary // NEW: Use new dictionary structure
-  lang: Lang // KEEP: Lang parameter for compatibility
+  dictionary: Dictionary
+  lang: Lang
   className?: string
 }
 
-// NEW: Updated navigation configuration using new dictionary structure
+// Navigation configuration
 type NavigationLink = {
-  route: NavigationRoute // NEW: Use type-safe route keys
+  route: NavigationRoute
   href: string
   priority: number
 }

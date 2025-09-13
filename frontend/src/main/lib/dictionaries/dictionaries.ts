@@ -1,6 +1,7 @@
 // src/main/lib/dictionaries/dictionaries.ts - Enhanced with Missing Navigation Keys
 import 'server-only'
-import { Dictionary, Lang } from './dictionariesTypes';
+import { Dictionary } from './dictionariesTypes';
+import { Lang } from '../dictionary/types';
 
 // Enhanced Russian dictionary with comprehensive SEO optimization and missing navigation keys
 const RUSSIAN_DICTIONARY: Dictionary = {

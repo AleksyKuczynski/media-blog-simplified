@@ -64,6 +64,30 @@ export interface NavigationDictionary {
 // COMMON INTERFACES
 // ===================================================================
 
+export interface CommonDictionary {
+  readonly loading: string;
+  readonly readMore: string;
+  readonly showMore: string;
+  readonly showLess: string;
+  readonly published: string;
+  readonly by: string;
+  readonly in: string;
+  readonly minutes: string;
+  readonly readingTime: string;
+  readonly loadMore: string;
+  readonly editorial: string;
+  readonly tableOfContents: string;
+  readonly noResults: string;
+  readonly noContent: string;
+  readonly backToTop: string;
+  readonly pagination: CommonPagination;
+  readonly articles: {
+    readonly one: string;
+    readonly few: string;
+    readonly many: string;
+  };
+}
+
 export interface CommonPagination {
   readonly page: string;
   readonly of: string;
@@ -219,10 +243,7 @@ export interface SEODictionary {
 
 export interface Dictionary {
   readonly navigation: NavigationDictionary;
-  readonly common: {
-    // ... existing properties ...
-    readonly pagination: CommonPagination; // ADD
-  };
+  readonly common: CommonDictionary;
   readonly search: SearchDictionary;
   readonly seo: SEODictionary;
 }

@@ -1,5 +1,5 @@
 // src/main/components/ArticleCards/interfaces.ts - IMPROVED IMAGE SUPPORT
-import { Lang } from "@/main/lib/dictionaries/dictionariesTypes";
+import { Dictionary, Lang } from "@/main/lib/dictionary/types";
 import { ArticleCardType } from "@/main/lib/directus";
 
 // Enhanced ImageProps with proper Next.js Image support
@@ -15,7 +15,8 @@ export interface ImageProps {
 interface BaseArticleCardProps {
   article: ArticleCardType;
   articleLink: string;
-  dict: { common: { readMore: string } };
+  dict: { common: Dictionary['common'] };
+    lang: Lang;
 }
 
 export interface ArticleCardProps {
@@ -24,13 +25,13 @@ export interface ArticleCardProps {
   authorSlug?: string;
   rubricSlug?: string;
   layout?: ArticleCardType['layout'];
+  dictionary: Dictionary;
 }
 
 export interface ArticleCardVariantProps extends BaseArticleCardProps {
   formattedDate: string;
   imageProps: ImageProps | null;
   layout: ArticleCardType['layout'];
-  lang: string;
 }
 
 export interface NewsCardProps extends BaseArticleCardProps {
@@ -43,7 +44,6 @@ export interface StandardCardProps extends BaseArticleCardProps {
   formattedDate: string;
   imageProps: ImageProps | null;
   layout: 'regular' | 'latest' | 'promoted';
-  lang: string;
 }
 
 // Utility function to calculate image dimensions

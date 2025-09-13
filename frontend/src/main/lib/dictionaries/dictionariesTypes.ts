@@ -1,5 +1,4 @@
 // src/main/lib/dictionaries/dictionariesTypes.ts - Updated with Missing Navigation Keys
-export type Lang = 'ru'; // Simplified to Russian only
 
 // Enhanced navigation interface with missing keys and SEO descriptions
 export interface NavigationTranslations {

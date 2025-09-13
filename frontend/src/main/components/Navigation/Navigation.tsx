@@ -7,17 +7,12 @@ import { usePathname } from 'next/navigation'
 import DesktopNavigation from './DesktopNav'
 import MobileNavigation from './MobileNav'
 import SkipLinks from './SkipLinks'
-
-// NEW: Import new dictionary types and SEO components
-import { Dictionary } from '@/main/lib/dictionary/types'
+import { Dictionary, Lang } from '@/main/lib/dictionary/types'
 import { CompleteNavigationSchema } from '@/main/components/SEO'
 
-// OLD: Import old types for compatibility with Search components
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes'
-
 interface NavigationProps {
-  dictionary: Dictionary // NEW: Use new dictionary structure
-  lang: Lang // KEEP: Lang parameter for compatibility with fetching library
+  dictionary: Dictionary
+  lang: Lang
   currentPath?: string
   breadcrumbs?: Array<{ name: string; href: string }>
 }
@@ -48,41 +43,6 @@ export default function Navigation({
 
   const currentPageTitle = getCurrentPageTitle()
 
-  // CREATE: Old format translations for Search components compatibility
-  const compatibilityTranslations = {
-    navigation: {
-      home: dictionary.navigation.labels.home,
-      articles: dictionary.navigation.labels.articles,
-      rubrics: dictionary.navigation.labels.rubrics,
-      authors: dictionary.navigation.labels.authors,
-      search: dictionary.navigation.labels.search,
-      logoAlt: dictionary.navigation.accessibility.logoAlt,
-      mainNavigation: dictionary.navigation.accessibility.mainNavigation,
-      primarySectionsLabel: dictionary.navigation.accessibility.primarySectionsLabel,
-      mainMenuLabel: dictionary.navigation.accessibility.mainMenuLabel,
-      searchAndSettingsLabel: dictionary.navigation.accessibility.searchAndSettingsLabel,
-      siteSearchLabel: dictionary.navigation.accessibility.siteSearchLabel,
-      openMenu: dictionary.navigation.accessibility.openMenu,
-      closeMenu: dictionary.navigation.accessibility.closeMenu,
-      menuTitle: dictionary.navigation.accessibility.menuTitle,
-      menuDescription: dictionary.navigation.accessibility.menuDescription,
-      logoMainPageLabel: dictionary.navigation.accessibility.logoMainPageLabel,
-      // Add descriptions for existing NavLinks
-      articlesDescription: dictionary.navigation.descriptions.articles,
-      rubricsDescription: dictionary.navigation.descriptions.rubrics,
-      authorsDescription: dictionary.navigation.descriptions.authors,
-    },
-    search: {
-      placeholder: dictionary.search.labels.placeholder,
-      searching: dictionary.search.labels.searching,
-      noResults: dictionary.search.labels.noResults,
-      results: dictionary.search.labels.results,
-      pageTitle: dictionary.search.templates.pageTitle,
-      submit: dictionary.search.labels.submit,
-      minCharacters: dictionary.search.labels.minCharacters,
-    }
-  }
-
   return (
     <>
       {/* Enhanced skip links with new dictionary structure */}
@@ -111,16 +71,14 @@ export default function Navigation({
         
         <DesktopNavigation
           dictionary={dictionary}
-          lang={lang} // KEEP: Pass lang for compatibility
-          translations={compatibilityTranslations} // OLD: For Search components
+          lang={lang}
           isSearchPage={isSearchPage}
           currentPageTitle={currentPageTitle}
           currentPath={currentPath}
         />
         <MobileNavigation
           dictionary={dictionary}
-          lang={lang} // KEEP: Pass lang for compatibility
-          translations={compatibilityTranslations} // OLD: For Search components
+          lang={lang}
           isSearchPage={isSearchPage}
           currentPageTitle={currentPageTitle}
           currentPath={currentPath}

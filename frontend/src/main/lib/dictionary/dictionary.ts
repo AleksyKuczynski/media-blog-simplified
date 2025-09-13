@@ -64,12 +64,33 @@ export const russianDictionary: Dictionary = {
   // COMMON - Common interface elements
   // ===================================================================
   common: {
-    // ... existing entries ...
+    loading: 'Загрузка...',
+    readMore: 'Читать далее',
+    showMore: 'Показать больше',
+    showLess: 'Показать меньше',
+    published: 'Опубликовано',
+    by: 'Автор',
+    in: 'в',
+    minutes: 'мин',
+    readingTime: 'время чтения',
+    loadMore: 'Загрузить ещё',
+    editorial: 'Редакционная статья',
+    tableOfContents: 'Содержание',
+    noResults: 'Результаты не найдены',
+    noContent: 'Контент недоступен',
+    backToTop: 'Наверх',
+    
     pagination: {
       page: 'Страница',
       of: 'из',
       next: 'Следующая',
       previous: 'Предыдущая',
+    },
+
+    articles: {
+      one: 'статья',
+      few: 'статьи',
+      many: 'статей',
     },
   },
 
