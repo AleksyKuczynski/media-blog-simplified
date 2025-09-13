@@ -1,5 +1,5 @@
 // src/main/components/Navigation/DesktopNav.tsx
-// Fixed to use new dictionary structure with ExpandableSearch
+// Fixed to use correct dictionary entry names
 
 'use client'
 
@@ -19,7 +19,7 @@ interface DesktopNavProps {
 
 export default function DesktopNavigation({
   dictionary,
-  lang, // KEEP: Lang parameter
+  lang,
   currentPageTitle,
 }: DesktopNavProps) {
   return (
@@ -58,11 +58,11 @@ export default function DesktopNavigation({
           itemScope
           itemType="https://schema.org/Organization"
         >
-          {/* Enhanced schema metadata from new dictionary */}
-          <meta itemProp="name" content={dictionary.seo.site.siteName} />
-          <meta itemProp="description" content={dictionary.seo.site.siteDescription} />
+          {/* FIXED: Use correct dictionary property names */}
+          <meta itemProp="name" content={dictionary.seo.site.name} />
+          <meta itemProp="description" content={dictionary.seo.site.description} />
           <meta itemProp="url" content="https://event4me.eu" />
-          <meta itemProp="areaServed" content={dictionary.seo.regional.geographicCoverage} />
+          <meta itemProp="areaServed" content={dictionary.seo.regional.region} />
           
           <Logo 
             lang={lang}
@@ -72,7 +72,7 @@ export default function DesktopNavigation({
           />
         </div>
         
-        {/* Right: Enhanced Search - FIXED: Use new dictionary structure */}
+        {/* Right: Enhanced Search */}
         <div 
           className="flex items-center justify-end space-x-4"
           role="group"
@@ -84,7 +84,7 @@ export default function DesktopNavigation({
             aria-label={dictionary.navigation.accessibility.siteSearchLabel}
           >
             <ExpandableSearch 
-              dictionary={dictionary} // NEW: Use new dictionary structure
+              dictionary={dictionary}
               lang={lang}
             />
           </div>

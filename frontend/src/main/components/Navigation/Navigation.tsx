@@ -1,5 +1,5 @@
 // src/main/components/Navigation/Navigation.tsx
-// Fixed to support both dictionaries and maintain compatibility
+// Fixed to use correct dictionary entry names
 
 'use client'
 
@@ -24,14 +24,14 @@ export interface NavProps extends NavigationProps {
 
 export default function Navigation({ 
   dictionary, 
-  lang, // KEEP: Lang parameter
+  lang,
   currentPath,
   breadcrumbs = []
 }: NavigationProps) {
   const pathname = usePathname()
   const isSearchPage = pathname === '/ru/search'
   
-  // NEW: Determine current page context using new dictionary structure
+  // Determine current page context using new dictionary structure
   const getCurrentPageTitle = (): string => {
     if (pathname === '/ru') return dictionary.navigation.labels.home
     if (pathname.startsWith('/ru/articles')) return dictionary.navigation.labels.articles
@@ -45,10 +45,10 @@ export default function Navigation({
 
   return (
     <>
-      {/* Enhanced skip links with new dictionary structure */}
+      {/* Enhanced skip links with dictionary structure */}
       <SkipLinks dictionary={dictionary} />
       
-      {/* NEW: Complete navigation schema with enhanced structured data */}
+      {/* Complete navigation schema with enhanced structured data */}
       <CompleteNavigationSchema 
         dictionary={dictionary}
         currentPath={currentPath || pathname.replace('/ru', '') || '/'}
@@ -64,10 +64,10 @@ export default function Navigation({
         itemType="https://schema.org/WebSite"
         aria-label={dictionary.navigation.accessibility.mainNavigation}
       >
-        {/* NEW: Enhanced site identity for schema with new dictionary */}
-        <meta itemProp="name" content={dictionary.seo.site.siteName} />
+        {/* FIXED: Enhanced site identity for schema with correct property names */}
+        <meta itemProp="name" content={dictionary.seo.site.name} />
         <meta itemProp="url" content="https://event4me.eu" />
-        <meta itemProp="description" content={dictionary.seo.site.siteDescription} />
+        <meta itemProp="description" content={dictionary.seo.site.description} />
         
         <DesktopNavigation
           dictionary={dictionary}

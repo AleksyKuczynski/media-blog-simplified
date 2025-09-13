@@ -1,10 +1,14 @@
 // src/main/components/SEO/index.tsx
-// Clean public API for new SEO component system
+// Updated SEO public API with search components
 
 import { buildMetadata } from './core/MetadataBuilder';
 import { SchemaBuilder } from './core/SchemaBuilder';
 import { generateMainNavigationMetadata, generateNavigationMetadata, getNavigationLinkSEO, getNavigationOpenGraphData, validateNavigationMetadata } from './metadata/NavigationMetadata';
 import { CompleteNavigationSchema, MinimalNavigationSchema, NavigationSchema } from './schemas/NavigationSchema';
+
+// NEW: Search components imports
+import { generateSearchMetadata, getSearchOpenGraphData, validateSearchMetadata, getSearchMetaTags } from './metadata/SearchMetadata';
+import { SearchSchema, MinimalSearchSchema, SearchActionSchema } from './schemas/SearchSchema';
 
 // ===================================================================
 // CORE EXPORTS - Foundation components and utilities
@@ -85,12 +89,30 @@ export type {
 } from './schemas/NavigationSchema';
 
 // ===================================================================
+// SEARCH EXPORTS - Search-specific components
+// ===================================================================
+
+// Search metadata
+export {
+  generateSearchMetadata,
+  getSearchOpenGraphData,
+  validateSearchMetadata,
+  getSearchMetaTags,
+} from './metadata/SearchMetadata';
+
+// Search schemas
+export {
+  SearchSchema,
+  MinimalSearchSchema,
+  SearchActionSchema,
+} from './schemas/SearchSchema';
+
+// ===================================================================
 // CONVENIENCE EXPORTS - High-level utilities for common use cases
 // ===================================================================
 
 /**
  * Complete SEO setup for navigation-enhanced pages
- * This is the main entry point for most use cases
  */
 export const useNavigationSEO = () => {
   return {
@@ -107,6 +129,26 @@ export const useNavigationSEO = () => {
     // Utilities
     validateNavigationMetadata,
     getNavigationLinkSEO,
+  };
+};
+
+/**
+ * Complete SEO setup for search pages
+ */
+export const useSearchSEO = () => {
+  return {
+    // Metadata generation
+    generateSearchMetadata,
+    getSearchOpenGraphData,
+    validateSearchMetadata,
+    
+    // Schema generation
+    SearchSchema,
+    MinimalSearchSchema,
+    SearchActionSchema,
+    
+    // Utilities
+    getSearchMetaTags,
   };
 };
 
@@ -137,49 +179,21 @@ export const NavigationSEOBundle: React.FC<NavigationSEOBundleProps> = ({
   );
 };
 
-// ===================================================================
-// MIGRATION HELPERS - For gradual transition from old system
-// ===================================================================
-
 /**
- * Legacy compatibility wrapper
- * Helps migrate from old SEO components to new system
+ * Essential SEO components bundle for search pages
  */
-export const LegacyNavigationSEOWrapper: React.FC<{
-  lang: 'ru';
-  translations: any; // Old translation format
-  currentPath?: string;
-}> = ({ lang, translations, currentPath }) => {
-  // This component helps bridge old and new systems during migration
-  // It accepts old translation format and converts to new dictionary structure
-  
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(
-      'LegacyNavigationSEOWrapper is deprecated. Please migrate to new dictionary system.'
-    );
-  }
-  
-  // For now, return null - implement conversion logic during migration
-  return null;
-};
+export interface SearchSEOBundleProps {
+  dictionary: any; // Will be properly typed as Dictionary
+  minimal?: boolean;
+}
 
-/**
- * Validation helper for migration
- * Helps ensure new components work correctly
- */
-export const validateMigration = (
-  oldTranslations: any,
-  newDictionary: any
-): { isValid: boolean; errors: string[] } => {
-  const errors: string[] = [];
+export const SearchSEOBundle: React.FC<SearchSEOBundleProps> = ({
+  dictionary,
+  minimal = false,
+}) => {
+  const SchemaComponent = minimal ? MinimalSearchSchema : SearchSchema;
   
-  // Add validation logic to compare old vs new structure
-  // This helps ensure nothing is lost during migration
-  
-  return {
-    isValid: errors.length === 0,
-    errors,
-  };
+  return <SchemaComponent dictionary={dictionary} />;
 };
 
 // ===================================================================
@@ -227,7 +241,7 @@ export const SEODebugUtils = {
       const paths = [
         'navigation.labels.home',
         'navigation.descriptions.home',
-        'seo.site.siteName',
+        'seo.site.name', // FIXED: was siteName
         'search.labels.placeholder',
       ];
       
@@ -250,8 +264,8 @@ export const SEODebugUtils = {
 // EXPORT EVERYTHING FOR EASY IMPORTS
 // ===================================================================
 
-// Default export for convenience
-export default {
+// Create named export to avoid eslint error
+const SEOComponents = {
   // Core
   buildMetadata,
   SchemaBuilder,
@@ -260,10 +274,19 @@ export default {
   NavigationSchema,
   generateNavigationMetadata,
   
+  // Search  
+  SearchSchema,
+  generateSearchMetadata,
+  
   // Bundles
   NavigationSEOBundle,
+  SearchSEOBundle,
   useNavigationSEO,
+  useSearchSEO,
   
   // Utils
   SEODebugUtils,
 };
+
+// Default export for convenience - fixes eslint error
+export default SEOComponents;

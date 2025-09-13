@@ -1,5 +1,5 @@
 // src/main/components/SEO/schemas/NavigationSchema.tsx
-// Fixed navigation structured data using new dictionary and core builders
+// Fixed navigation structured data - corrected dictionary paths
 
 import React from 'react';
 import { SchemaBuilder, createNavigationSchema, createWebsiteSchema } from '../core/SchemaBuilder';
@@ -31,7 +31,7 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
   const navDict = dictionary.navigation;
   const seoDict = dictionary.seo;
   
-  // Define navigation elements
+  // Define navigation elements using correct dictionary paths
   const navigationElements = [
     {
       name: navDict.labels.home,
@@ -55,17 +55,17 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
     },
   ];
 
-  // Create navigation schemas
+  // Create navigation schemas - use correct geographic data from SEO section
   const navigationSchemas = createNavigationSchema(
     navigationElements,
-    navDict.seo.geographicAreas
+    seoDict.regional.targetMarkets // FIXED: was navDict.seo.geographicAreas
   );
 
-  // Create website schema with search functionality
+  // Create website schema with search functionality - use correct property names
   const websiteSchema = createWebsiteSchema(
-    seoDict.site.siteName,
+    seoDict.site.name, // FIXED: was siteName
     getCanonicalURL('/'),
-    seoDict.site.siteDescription,
+    seoDict.site.description, // FIXED: was siteDescription
     getCanonicalURL('/search')
   );
 
@@ -90,23 +90,23 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
     '@context': 'https://schema.org',
     '@type': 'SiteNavigationElement',
     '@id': `${getCanonicalURL('/')}#main-navigation`,
-    name: navDict.seo.navigationTitle,
-    description: navDict.seo.navigationDescription,
+    name: `Навигация ${seoDict.site.name}`, // Create title from available data
+    description: `Основная навигация по сайту ${seoDict.site.name}`,
     url: getCanonicalURL('/'),
     inLanguage: 'ru',
     
-    // Enhanced properties for main navigation
+    // Enhanced properties for main navigation using available data
     audience: {
       '@type': 'Audience',
-      name: navDict.seo.audience,
-      geographicArea: navDict.seo.geographicAreas,
+      name: `Аудитория ${seoDict.site.name}`,
+      geographicArea: seoDict.regional.targetMarkets, // Use available geographic data
     },
     
     // Part of website
     isPartOf: {
       '@type': 'WebSite',
       '@id': `${getCanonicalURL('/')}#website`,
-      name: seoDict.site.siteName,
+      name: seoDict.site.name, // FIXED: use correct property
       url: getCanonicalURL('/'),
     },
     
@@ -123,14 +123,14 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
  * Schema for mobile navigation
  */
 export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
-  const navDict = dictionary.navigation;
+  const seoDict = dictionary.seo;
 
   const mobileNavigationSchema: ExtendedSchemaData = {
     '@context': 'https://schema.org',
     '@type': 'SiteNavigationElement',
     '@id': `${getCanonicalURL('/')}#mobile-navigation`,
-    name: `${navDict.seo.navigationTitle} (мобильная версия)`,
-    description: `${navDict.seo.navigationDescription} Адаптировано для мобильных устройств.`,
+    name: `${seoDict.site.name} (мобильная версия)`, // FIXED: use available data
+    description: `Мобильная навигация по сайту ${seoDict.site.name}`,
     url: getCanonicalURL('/'),
     inLanguage: 'ru',
     
@@ -138,7 +138,7 @@ export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
     audience: {
       '@type': 'Audience',
       name: 'Пользователи мобильных устройств',
-      geographicArea: navDict.seo.geographicAreas,
+      geographicArea: seoDict.regional.targetMarkets, // Use available data
     },
     
     // Enhanced accessibility for mobile
@@ -161,13 +161,13 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': `${getCanonicalURL('/')}#search`,
-    name: seoDict.site.siteName,
+    name: seoDict.site.name,
     url: getCanonicalURL('/'),
-    inLanguage: 'ru', // Added missing inLanguage
+    inLanguage: 'ru',
     
     potentialAction: {
       '@type': 'SearchAction',
-      name: searchDict.accessibility.searchLabel,
+      name: searchDict.labels.submit, // Use available search label
       target: {
         '@type': 'EntryPoint',
         urlTemplate: `${getCanonicalURL('/search')}?search={search_term_string}`,
@@ -179,7 +179,7 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
       'query-input': {
         '@type': 'PropertyValueSpecification',
         valueName: 'search_term_string',
-        description: searchDict.accessibility.searchDescription,
+        description: searchDict.labels.placeholder, // Use available description
         valueRequired: true,
         valueMinLength: 3,
         valueMaxLength: 100,

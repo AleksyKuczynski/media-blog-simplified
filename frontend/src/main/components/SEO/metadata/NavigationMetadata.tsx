@@ -1,5 +1,5 @@
 // src/main/components/SEO/metadata/NavigationMetadata.tsx
-// Navigation-specific metadata generation using new dictionary - FINAL FIX
+// Navigation-specific metadata generation - FIXED imports and dictionary paths
 
 import { Metadata } from 'next';
 import { 
@@ -8,7 +8,13 @@ import {
   validateSEOData 
 } from '../core/MetadataBuilder';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { getCanonicalURL, getPageTypeKeywords, getProcessedSEODescription, getProcessedSEOTitle, validateSEOMetadata } from '@/main/lib/dictionary/helpers';
+import { 
+  getCanonicalURL,
+  getProcessedSEOTitle,
+  getProcessedSEODescription,
+  getPageTypeKeywords,
+  validateSEOMetadata,
+} from '@/main/lib/dictionary/helpers';
 
 // ===================================================================
 // NAVIGATION METADATA PROPS
@@ -50,7 +56,7 @@ export const generateNavigationMetadata = ({
 
   const pageType = getPageTypeFromPath(currentPath);
   
-  // Build SEO content
+  // Build SEO content using imported helper functions
   const title = getProcessedSEOTitle(seoDict, pageType as any);
   const description = getProcessedSEODescription(seoDict, pageType as any);
   const keywords = getPageTypeKeywords(
@@ -82,7 +88,7 @@ export const generateNavigationMetadata = ({
     console.error('Invalid SEO data for navigation metadata');
   }
 
-  // FIXED: Use proper type for additionalMeta
+  // Additional metadata for navigation pages
   const additionalMeta: Record<string, string | number | undefined> = {
     'navigation:enhanced': 'true',
     'navigation:path': currentPath,
@@ -94,18 +100,20 @@ export const generateNavigationMetadata = ({
 
 /**
  * Generate metadata specifically for the main navigation component
- * This includes schema.org markup for the navigation itself
+ * Uses correct dictionary paths
  */
 export const generateMainNavigationMetadata = (
   dictionary: Dictionary
 ): Record<string, string> => {
+  // Use available dictionary properties - no navigation.seo section
   const navDict = dictionary.navigation;
+  const seoDict = dictionary.seo;
   
   return {
-    'navigation:title': navDict.seo.navigationTitle,
-    'navigation:description': navDict.seo.navigationDescription,
-    'navigation:audience': navDict.seo.audience,
-    'navigation:geographic-areas': navDict.seo.geographicAreas.join(', '),
+    'navigation:title': `${navDict.labels.home} - ${seoDict.site.name}`,
+    'navigation:description': `Навигация по сайту ${seoDict.site.name}`,
+    'navigation:audience': seoDict.regional.targetMarkets.join(', '),
+    'navigation:geographic-areas': seoDict.regional.targetMarkets.join(', '),
   };
 };
 
@@ -117,18 +125,17 @@ export const getNavigationOpenGraphData = (
   currentPath: string = ''
 ) => {
   const seoDict = dictionary.seo;
-  const navigationDict = dictionary.navigation;
   
   return {
     type: 'website' as const,
     locale: 'ru_RU',
-    siteName: seoDict.site.siteName,
+    siteName: seoDict.site.name, // FIXED: was siteName
     images: [
       {
         url: 'https://event4me.eu/og-navigation.jpg',
         width: 1200,
         height: 630,
-        alt: navigationDict.seo.navigationTitle,
+        alt: `Навигация ${seoDict.site.name}`, // Use available data
       },
     ],
   };
@@ -141,12 +148,6 @@ export const generateBreadcrumbMetadata = (
   dictionary: Dictionary,
   breadcrumbs: Array<{ name: string; href: string }>
 ): Record<string, string> => {
-  const breadcrumbData = breadcrumbs.map((crumb, index) => ({
-    position: index + 1,
-    name: crumb.name,
-    url: getCanonicalURL(crumb.href),
-  }));
-
   return {
     'breadcrumb:count': breadcrumbs.length.toString(),
     'breadcrumb:current': breadcrumbs[breadcrumbs.length - 1]?.name || '',
@@ -170,22 +171,19 @@ export const getNavigationLinkSEO = (
   return {
     label: navDict.labels[route],
     description: navDict.descriptions[route],
-    url: getCanonicalURL(
-      route === 'home' ? '/' : `/${route}`
-    ),
-    ariaLabel: navDict.accessibility.logoMainPageLabel,
+    url: getCanonicalURL(route === 'home' ? '/' : `/${route}`),
   };
 };
 
 /**
  * Validate navigation metadata completeness
+ * Uses correct dictionary paths that actually exist
  */
 export const validateNavigationMetadata = (dictionary: Dictionary): boolean => {
   const required = [
     'navigation.labels.home',
     'navigation.descriptions.home',
-    'navigation.seo.navigationTitle',
-    'seo.site.siteName',
+    'seo.site.name', // FIXED: was siteName
   ];
 
   const missing = required.filter(path => {
@@ -202,20 +200,20 @@ export const validateNavigationMetadata = (dictionary: Dictionary): boolean => {
 };
 
 /**
- * Get enhanced meta tags for navigation pages - FIXED
+ * Get enhanced meta tags for navigation pages
+ * Uses available dictionary properties
  */
 export const getNavigationMetaTags = (
   dictionary: Dictionary,
   route: string
 ): Record<string, string | number | undefined> => {
-  const navDict = dictionary.navigation;
   const seoDict = dictionary.seo;
 
   return {
     // Dublin Core for navigation
     'DC.relation.isPartOf': getCanonicalURL('/'),
     'DC.relation.hasFormat': 'application/html',
-    'DC.audience': navDict.seo.audience,
+    'DC.audience': seoDict.regional.targetMarkets.join(', '),
     
     // Navigation-specific
     'navigation:section': route,
@@ -224,6 +222,6 @@ export const getNavigationMetaTags = (
     
     // Yandex-specific for navigation
     'yandex:navigation': 'true',
-    'yandex:audience': navDict.seo.audience,
+    'yandex:audience': seoDict.regional.targetMarkets.join(', '),
   };
 };
