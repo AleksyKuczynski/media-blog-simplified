@@ -181,7 +181,153 @@ export interface SearchDictionary {
 }
 
 // ===================================================================
-// SEO CORE TYPES - Foundation for all SEO components
+// SECTIONS - Page-specific content
+// ===================================================================
+
+export interface HomeTranslations {
+  readonly welcomeTitle: string;
+  readonly welcomeDescription: string;
+  readonly featuredContent: string;
+  readonly latestUpdates: string;
+  readonly exploreRubrics: string;
+  readonly viewAllRubrics: string;
+  readonly featuredRubrics: string;
+  readonly featuredDescription: string;
+  readonly rubricsDescription: string;
+  readonly rubricsSectionDescription: string;
+  readonly viewAllRubricsDescription: string;
+  readonly quickNavigation: string;
+}
+
+export interface ArticlesTranslations {
+  readonly allArticles: string;
+  readonly featuredArticles: string;
+  readonly latestArticles: string;
+  readonly noArticlesFound: string;
+  readonly noFeaturedArticles: string;
+  readonly moreArticlesToLoad: string;
+  readonly loadMore: string;
+}
+
+export interface AuthorsTranslations {
+  readonly allAuthors: string;
+  readonly ourAuthors: string;
+  readonly noAuthorsFound: string;
+  readonly moreAuthorsToLoad: string;
+}
+
+export interface AuthorTranslations {
+  readonly noArticlesFound: string;
+  readonly articlesByAuthor: string;
+  readonly authorProfile: string;
+  readonly articlesWrittenBy: string;
+}
+
+export interface CategoriesTranslations {
+  readonly allCategories: string;
+  readonly noArticlesFound: string;
+}
+
+export interface RubricsTranslations {
+  readonly allRubrics: string;
+  readonly featuredRubric: string;
+  readonly articlesInRubric: string;
+  readonly rubricList: string;
+  readonly noRubricsAvailable: string;
+  readonly iconAltText: string;
+  readonly noIcon: string;
+  readonly rubricIcon: string;
+  readonly checkBackLater: string;
+  readonly readMoreAbout: string;
+  readonly exploreRubric: string;
+  readonly rubricsCatalog: string;
+  readonly browseAllRubrics: string;
+  readonly categoriesDescription: string;
+  readonly totalRubrics: string;
+  readonly rubricCard: string;
+  readonly viewRubricDetails: string;
+}
+
+export interface SectionsTranslations {
+  readonly home: HomeTranslations;
+  readonly articles: ArticlesTranslations;
+  readonly authors: AuthorsTranslations;
+  readonly author: AuthorTranslations;
+  readonly categories: CategoriesTranslations;
+  readonly rubrics: RubricsTranslations;
+}
+
+// ===================================================================
+// INTERFACE CONTROLS - Sorting, filtering, categories
+// ===================================================================
+
+export interface SortingTranslations {
+  readonly sortOrder: string;
+  readonly newest: string;
+  readonly oldest: string;
+}
+
+export interface FilterTranslations {
+  readonly all: string;
+  readonly category: string;
+  readonly author: string;
+  readonly date: string;
+  readonly reset: string;
+}
+
+export interface CategoryTranslations {
+  readonly all: string;
+  readonly music: string;
+  readonly events: string;
+  readonly culture: string;
+  readonly ideas: string;
+  readonly mystic: string;
+  readonly allCategories: string;
+}
+
+// ===================================================================
+// ACCESSIBILITY - Screen reader and navigation aids
+// ===================================================================
+
+export interface Accessibility {
+  readonly iconDescription: string;
+  readonly decorativeIcon: string;
+  readonly rubricVisualIndicator: string;
+  readonly rubricDescription: string;
+  readonly expandDescription: string;
+}
+
+// ===================================================================
+// FOOTER - Site footer content
+// ===================================================================
+
+export interface FooterAbout {
+  readonly title: string;
+  readonly description: string;
+}
+
+export interface FooterQuickLinks {
+  readonly title: string;
+}
+
+export interface FooterSocialLinks {
+  readonly title: string;
+}
+
+export interface FooterContact {
+  readonly faq: string;
+  readonly helpCenter: string;
+}
+
+export interface FooterTranslations {
+  readonly about: FooterAbout;
+  readonly quickLinks: FooterQuickLinks;
+  readonly socialLinks: FooterSocialLinks;
+  readonly contact: FooterContact;
+}
+
+// ===================================================================
+// SEO TYPES - Complete Russian market optimization
 // ===================================================================
 
 export interface SEOSiteInfo {
@@ -234,24 +380,46 @@ export interface SEORegionalSettings {
   readonly targetMarkets: readonly string[];
 }
 
+export interface SEOStructuredData {
+  readonly organizationName: string;
+  readonly organizationDescription: string;
+  readonly contactEmail: string;
+  readonly socialProfiles: readonly string[];
+  readonly geographicAreas: readonly string[];
+  readonly rubricsCollection: {
+    readonly name: string;
+    readonly description: string;
+    readonly numberOfItems: string;
+    readonly itemListElement: string;
+  };
+}
+
 export interface SEODictionary {
   readonly site: SEOSiteInfo;
   readonly titles: SEOTitleTemplates;
   readonly descriptions: SEODescriptionTemplates;
   readonly keywords: SEOKeywordGroups;
   readonly regional: SEORegionalSettings;
+  readonly structuredData: SEOStructuredData;
 }
 
 // ===================================================================
-// MAIN DICTIONARY TYPE - Modular and extensible
+// MAIN DICTIONARY TYPE - Complete and modular
 // ===================================================================
 
 export interface Dictionary {
   readonly navigation: NavigationDictionary;
   readonly common: CommonDictionary;
   readonly search: SearchDictionary;
+  readonly sections: SectionsTranslations;
+  readonly sorting: SortingTranslations;
+  readonly filter: FilterTranslations;
+  readonly categories: CategoryTranslations;
+  readonly accessibility: Accessibility;
+  readonly footer: FooterTranslations;
   readonly seo: SEODictionary;
 }
+
 
 // ===================================================================
 // UTILITY TYPES - For type safety and validation

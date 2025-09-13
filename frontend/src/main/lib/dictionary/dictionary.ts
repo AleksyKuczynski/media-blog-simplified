@@ -171,7 +171,140 @@ export const russianDictionary: Dictionary = {
   },
 
   // ===================================================================
-  // SEO - Search engine optimization for Russian market
+  // SECTIONS - Complete section-specific translations
+  // ===================================================================
+  sections: {
+    home: {
+      welcomeTitle: 'Добро пожаловать на EventForMe',
+      welcomeDescription: 'Медиа о культурных событиях, музыке и современных идеях',
+      featuredContent: 'Рекомендуемое',
+      latestUpdates: 'Последние обновления',
+      exploreRubrics: 'Изучить рубрики',
+      viewAllRubrics: 'Все рубрики',
+      featuredRubrics: 'Рекомендуемые рубрики',
+      featuredDescription: 'Лучшие материалы наших авторов',
+      rubricsDescription: 'Тематические разделы контента',
+      rubricsSectionDescription: 'Познакомьтесь с нашими тематическими рубриками',
+      viewAllRubricsDescription: 'Посмотреть полный каталог рубрик',
+      quickNavigation: 'Быстрая навигация',
+    },
+
+    articles: {
+      allArticles: 'Все статьи',
+      featuredArticles: 'Рекомендуемые статьи',
+      latestArticles: 'Последние статьи',
+      noArticlesFound: 'Статьи не найдены',
+      noFeaturedArticles: 'Нет рекомендуемых статей',
+      moreArticlesToLoad: 'Есть еще статьи для загрузки',
+      loadMore: 'Загрузить еще',
+    },
+
+    authors: {
+      allAuthors: 'Все авторы',
+      ourAuthors: 'Наши авторы',
+      noAuthorsFound: 'Авторы не найдены',
+      moreAuthorsToLoad: 'Есть еще авторы для загрузки',
+    },
+
+    author: {
+      noArticlesFound: 'Статьи этого автора не найдены',
+      articlesByAuthor: 'Статьи автора',
+      authorProfile: 'Профиль автора',
+      articlesWrittenBy: 'Статьи, написанные автором',
+    },
+
+    categories: {
+      allCategories: 'Все категории',
+      noArticlesFound: 'Статьи этой категории не найдены',
+    },
+
+    rubrics: {
+      allRubrics: 'Все рубрики',
+      featuredRubric: 'Рекомендуемая рубрика',
+      articlesInRubric: 'Статьи в рубрике',
+      rubricList: 'Список рубрик',
+      noRubricsAvailable: 'Рубрики недоступны',
+      iconAltText: 'Иконка рубрики',
+      noIcon: 'Без иконки',
+      rubricIcon: 'Иконка рубрики',
+      checkBackLater: 'Загляните позже',
+      readMoreAbout: 'Читать больше о',
+      exploreRubric: 'Изучить рубрику',
+      rubricsCatalog: 'Каталог рубрик',
+      browseAllRubrics: 'Просмотреть все рубрики',
+      categoriesDescription: 'Тематические категории контента',
+      totalRubrics: 'Всего рубрик',
+      rubricCard: 'Карточка рубрики',
+      viewRubricDetails: 'Посмотреть детали рубрики',
+    },
+  },
+
+  // ===================================================================
+  // SORTING - Sorting interface translations
+  // ===================================================================
+  sorting: {
+    sortOrder: 'Порядок сортировки',
+    newest: 'Сначала новые',
+    oldest: 'Сначала старые',
+  },
+
+  // ===================================================================
+  // FILTER - Filter interface translations
+  // ===================================================================
+  filter: {
+    all: 'Все',
+    category: 'Категория',
+    author: 'Автор',
+    date: 'Дата',
+    reset: 'Сбросить',
+  },
+
+  // ===================================================================
+  // CATEGORIES - Content category translations
+  // ===================================================================
+  categories: {
+    all: 'Все',
+    music: 'Музыка',
+    events: 'События',
+    culture: 'Культура',
+    ideas: 'Идеи',
+    mystic: 'Мистика',
+    allCategories: 'Все категории',
+  },
+
+  // ===================================================================
+  // ACCESSIBILITY - Accessibility labels and descriptions
+  // ===================================================================
+  accessibility: {
+    iconDescription: 'Иконка',
+    decorativeIcon: 'Декоративная иконка',
+    rubricVisualIndicator: 'Визуальный индикатор рубрики',
+    rubricDescription: 'Описание рубрики',
+    expandDescription: 'Развернуть описание',
+  },
+
+  // ===================================================================
+  // FOOTER - Footer content
+  // ===================================================================
+  footer: {
+    about: {
+      title: 'О проекте',
+      description: 'EventForMe — медиа-проект о культурных событиях, музыке и современных идеях',
+    },
+    quickLinks: {
+      title: 'Быстрые ссылки',
+    },
+    socialLinks: {
+      title: 'Мы в соцсетях',
+    },
+    contact: {
+      faq: 'Часто задаваемые вопросы',
+      helpCenter: 'Центр помощи',
+    },
+  },
+
+  // ===================================================================
+  // SEO - Complete Russian market optimization
   // ===================================================================
   seo: {
     site: {
@@ -183,9 +316,9 @@ export const russianDictionary: Dictionary = {
       socialProfiles: [
         'https://t.me/eventforme',
         'https://vk.com/eventforme'
-      ] as const,
+      ],
       organizationDescription: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
-      geographicAreas: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine', 'EU'] as const,
+      geographicAreas: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine', 'EU'],
     },
 
     titles: {
@@ -224,30 +357,25 @@ export const russianDictionary: Dictionary = {
       language: 'ru',
       region: 'RU',
       geographicCoverage: 'Russia',
-      targetMarkets: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine'] as const,
+      targetMarkets: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine'],
+    },
+
+    // Structured data configuration
+    structuredData: {
+      organizationName: 'EventForMe',
+      organizationDescription: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
+      contactEmail: 'info@event4me.eu',
+      socialProfiles: [
+        'https://t.me/eventforme',
+        'https://vk.com/eventforme'
+      ],
+      geographicAreas: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine', 'EU'],
+      rubricsCollection: {
+        name: 'Рубрики EventForMe',
+        description: 'Полный каталог тематических рубрик медиа-проекта EventForMe о культурных событиях',
+        numberOfItems: 'Количество рубрик',
+        itemListElement: 'Элемент каталога рубрик',
+      },
     },
   },
 } as const;
-
-// ===================================================================
-// DICTIONARY ACCESS FUNCTIONS
-// ===================================================================
-
-export const getDictionary = async (lang: 'ru'): Promise<Dictionary> => {
-  return russianDictionary;
-};
-
-export const getNavigationDictionary = async (lang: 'ru') => {
-  const dict = await getDictionary(lang);
-  return dict.navigation;
-};
-
-export const getSearchDictionary = async (lang: 'ru') => {
-  const dict = await getDictionary(lang);
-  return dict.search;
-};
-
-export const getSEODictionary = async (lang: 'ru') => {
-  const dict = await getDictionary(lang);
-  return dict.seo;
-};
