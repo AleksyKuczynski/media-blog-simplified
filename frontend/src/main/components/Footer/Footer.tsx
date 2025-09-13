@@ -1,38 +1,50 @@
 // src/main/components/Footer/Footer.tsx
-import { Dictionary, Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+// MIGRATED: Updated to use unified dictionary system
+
+import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import Link from 'next/link';
 
 interface FooterProps {
   lang: Lang;
-  translations: Dictionary;
+  dictionary: Dictionary; // UPDATED: Use new unified dictionary
 }
 
-export default function Footer({ lang, translations }: FooterProps) {
-  const { footer, navigation } = translations;
+export default function Footer({ lang, dictionary }: FooterProps) {
+  // UPDATED: Use new dictionary structure
+  const { footer, navigation } = dictionary;
   const currentYear = new Date().getFullYear();
 
-  // ✅ SIMPLIFIED: Basic structured data only
+  // Enhanced structured data using new dictionary
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "EventForMe",
-    "url": `https://event4me.eu/ru`, // ✅ HARDCODED: Static Russian URL
+    "name": dictionary.seo.site.name,
+    "url": dictionary.seo.site.url,
+    "description": dictionary.seo.site.organizationDescription,
     "logo": "https://event4me.eu/logo.png",
     "contactPoint": {
       "@type": "ContactPoint",
-      "email": "support@event4me.eu",
+      "email": dictionary.seo.site.contactEmail,
       "contactType": "customer support"
-    }
+    },
+    "sameAs": dictionary.seo.site.socialProfiles,
+    "areaServed": dictionary.seo.site.geographicAreas
   };
 
   return (
     <footer className="bg-sf-cont text-on-sf-var py-16">
+      {/* Enhanced structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      
       <div className="container mx-auto px-4">
         
-        {/* ✅ SIMPLIFIED: Single column layout for mobile, basic grid for desktop */}
+        {/* Improved layout for better accessibility */}
         <div className="flex flex-col space-y-12 md:grid md:grid-cols-3 md:gap-12 md:space-y-0">
           
-          {/* About Section */}
+          {/* About Section - UPDATED: Use new dictionary structure */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-prcolor">
               {footer.about.title}
@@ -42,18 +54,18 @@ export default function Footer({ lang, translations }: FooterProps) {
             </p>
           </div>
 
-          {/* Essential Navigation */}
+          {/* Essential Navigation - UPDATED: Use new dictionary structure */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-prcolor">
               {footer.quickLinks.title}
             </h3>
-            <nav className="space-y-2">
+            <nav className="space-y-2" aria-label="Быстрая навигация">
               <div>
                 <Link 
                   href="/ru" 
                   className="text-on-sf-var hover:text-prcolor transition-colors duration-200"
                 >
-                  {navigation.home}
+                  {navigation.labels.home}
                 </Link>
               </div>
               <div>
@@ -61,7 +73,7 @@ export default function Footer({ lang, translations }: FooterProps) {
                   href="/ru/articles" 
                   className="text-on-sf-var hover:text-prcolor transition-colors duration-200"
                 >
-                  {navigation.articles}
+                  {navigation.labels.articles}
                 </Link>
               </div>
               <div>
@@ -69,7 +81,7 @@ export default function Footer({ lang, translations }: FooterProps) {
                   href="/ru/rubrics" 
                   className="text-on-sf-var hover:text-prcolor transition-colors duration-200"
                 >
-                  {navigation.rubrics}
+                  {navigation.labels.rubrics}
                 </Link>
               </div>
               <div>
@@ -77,70 +89,53 @@ export default function Footer({ lang, translations }: FooterProps) {
                   href="/ru/authors" 
                   className="text-on-sf-var hover:text-prcolor transition-colors duration-200"
                 >
-                  {navigation.authors}
-                </Link>
-              </div>
-              <div>
-                <Link 
-                  href="/ru/search" 
-                  className="text-on-sf-var hover:text-prcolor transition-colors duration-200"
-                >
-                  {navigation.search}
+                  {navigation.labels.authors}
                 </Link>
               </div>
             </nav>
           </div>
 
-          {/* Legal & Attribution */}
+          {/* Social Links - UPDATED: Use new dictionary structure */}
           <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-prcolor">
+              {footer.socialLinks.title}
+            </h3>
             <div className="space-y-2">
-              <p className="text-sm text-on-sf-var">
-                &copy; {currentYear} EventForMe. {footer.credentials.copyright}
-              </p>
-              <div className="space-y-1">
-                <div>
-                  <Link 
-                    href="/ru/privacy-policy" 
-                    className="text-sm text-on-sf-var hover:text-prcolor transition-colors duration-200"
-                  >
-                    {footer.credentials.privacyPolicy}
-                  </Link>
-                </div>
-                <div>
-                  <Link 
-                    href="/ru/terms" 
-                    className="text-sm text-on-sf-var hover:text-prcolor transition-colors duration-200"
-                  >
-                    {footer.credentials.termsOfService}
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* Attribution */}
-            <div className="pt-4 border-t border-ol-var">
-              <div className="flex items-center space-x-2 text-sm text-on-sf-var">
-                <span>{footer.kuKraft.designedWithLove}</span>
-                <a 
-                  href="https://kukraft.com" 
-                  target="_blank" 
+              <div>
+                <Link 
+                  href={dictionary.seo.site.socialProfiles[0]} // Telegram
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className="text-prcolor hover:text-prcolor-dark transition-colors duration-200"
+                  className="text-on-sf-var hover:text-prcolor transition-colors duration-200"
                 >
-                  KuKraft
-                </a>
+                  Telegram
+                </Link>
+              </div>
+              <div>
+                <Link 
+                  href={dictionary.seo.site.socialProfiles[1]} // VK
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-on-sf-var hover:text-prcolor transition-colors duration-200"
+                >
+                  VKontakte
+                </Link>
               </div>
             </div>
           </div>
+        </div>
 
+        {/* Footer bottom section */}
+        <div className="mt-12 pt-8 border-t border-ol-var/20 text-center text-sm text-on-sf-var">
+          <p>
+            © {currentYear} {dictionary.seo.site.name}. 
+            {dictionary.seo.regional.geographicCoverage === 'Russia' ? 
+              ' Медиа о культурных событиях.' : 
+              ' Cultural events media.'
+            }
+          </p>
         </div>
       </div>
-
-      {/* ✅ PRESERVED: SEO structured data */}
-      <script 
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
     </footer>
-  );
+  )
 }

@@ -112,37 +112,40 @@ export const validateSEOContent = (
 };
 
 // ===================================================================
-// RUSSIAN-SPECIFIC HELPERS
+// LOCALIZATION HELPERS - Language-agnostic
 // ===================================================================
 
 /**
- * Russian pluralization helper for article counts
+ * Get article count with proper pluralization using dictionary
  */
-export const getRussianArticleCount = (count: number): string => {
+export const getLocalizedArticleCount = (count: number, articlePlurals: { one: string, few: string, many: string }): string => {
   if (count % 10 === 1 && count % 100 !== 11) {
-    return `${count} статья`;
+    return `${count} ${articlePlurals.one}`;
   } else if ([2, 3, 4].includes(count % 10) && ![12, 13, 14].includes(count % 100)) {
-    return `${count} статьи`;
+    return `${count} ${articlePlurals.few}`;
   } else {
-    return `${count} статей`;
+    return `${count} ${articlePlurals.many}`;
   }
 };
 
 /**
- * Generate Russian-specific accessibility labels
+ * Generate accessibility label for rubric icons using dictionary
  */
-export const getRubricIconAlt = (rubricName: string): string => {
-  return `Иконка рубрики ${rubricName}`;
-};
-
-export const getRubricIconDescription = (rubricName: string): string => {
-  return `Визуальный индикатор для рубрики "${rubricName}"`;
+export const getRubricIconAlt = (rubricName: string, iconDescriptionTemplate: string): string => {
+  return `${iconDescriptionTemplate} ${rubricName}`;
 };
 
 /**
- * Truncate description with Russian-aware word boundaries
+ * Generate detailed accessibility description for rubric icons
  */
-export const truncateRussianDescription = (description: string, maxLength: number = 120): string => {
+export const getRubricIconDescription = (rubricName: string, template: string): string => {
+  return template.replace('{rubricName}', rubricName);
+};
+
+/**
+ * Truncate description with language-aware word boundaries
+ */
+export const truncateDescription = (description: string, maxLength: number = 120): string => {
   if (description.length <= maxLength) return description;
   
   const truncated = description.substring(0, maxLength);
@@ -164,6 +167,11 @@ export const generateCanonicalUrl = (path: string): string => {
 };
 
 /**
+ * Get canonical URL (alias for consistency)
+ */
+export const getCanonicalURL = generateCanonicalUrl;
+
+/**
  * Validate URL format
  */
 export const isValidUrl = (url: string): boolean => {
@@ -173,4 +181,24 @@ export const isValidUrl = (url: string): boolean => {
   } catch {
     return false;
   }
+};
+
+// ===================================================================
+// COMPATIBILITY HELPERS - For migration from old dictionary system
+// ===================================================================
+
+/**
+ * Get dictionary section with fallback (for migration compatibility)
+ */
+export const getDictionarySection = (dictionary: any, sectionPath: string, fallback: any = null) => {
+  return sectionPath.split('.').reduce((obj, key) => obj?.[key], dictionary) || fallback;
+};
+
+/**
+ * Merge old dictionary format with new format during migration
+ */
+export const mergeDictionaryFormats = (oldDict: any, newDict: any): any => {
+  // This helper assists during migration to ensure no data is lost
+  // Implementation can be enhanced as needed during the migration process
+  return { ...oldDict, ...newDict };
 };
