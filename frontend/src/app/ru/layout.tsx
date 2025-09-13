@@ -1,22 +1,20 @@
 // src/app/ru/layout.tsx
-// Fixed to support both old and new dictionary systems during migration
+// MIGRATED: Now uses only the unified dictionary system - NO HARDCODED CONTENT
 
 import React from 'react'
 import { Metadata } from 'next'
 import Footer from '@/main/components/Footer/Footer'
-
-// OLD: Import old dictionary system for non-migrated components
-import { getDictionary as getOldDictionary } from '@/main/lib/dictionaries/dictionaries'
-import { Dictionary as OldDictionary } from '@/main/lib/dictionaries/dictionariesTypes'
-
-// NEW: Import new dictionary system for migrated Navigation
-import { getDictionary as getNewDictionary } from '@/main/lib/dictionary/dictionary'
-import { Dictionary as NewDictionary } from '@/main/lib/dictionary/types'
 import Navigation from '@/main/components/Navigation/Navigation'
+import { getDictionary } from '@/main/lib/dictionary/dictionary'
 
-export const metadata: Metadata = {
-  title: "EventForMe — Медиа о культурных событиях",
-  description: "EventForMe — ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира",
+// Generate metadata using dictionary
+export async function generateMetadata(): Promise<Metadata> {
+  const dictionary = await getDictionary('ru');
+  
+  return {
+    title: dictionary.seo.titles.homePrefix,
+    description: dictionary.seo.descriptions.home,
+  };
 }
 
 export default async function MainLayout({
@@ -24,20 +22,17 @@ export default async function MainLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Get both dictionaries during migration period
-  const [oldDict, newDict] = await Promise.all([
-    getOldDictionary('ru'), // For non-migrated components
-    getNewDictionary('ru')  // For migrated Navigation
-  ])
+  // UNIFIED: Single dictionary call
+  const dictionary = await getDictionary('ru');
 
   return (
     <>
-      {/* NEW: Enhanced Navigation with new dictionary system */}
+      {/* Navigation with unified dictionary system */}
       <Navigation 
-        dictionary={newDict} // NEW: Use new dictionary system
-        lang="ru" // KEEP: Lang parameter for compatibility with fetching library
-        currentPath="" // Will be determined by usePathname in Navigation
-        breadcrumbs={[]} // Can be enhanced later for specific pages
+        dictionary={dictionary}
+        lang="ru"
+        currentPath=""
+        breadcrumbs={[]}
       />
       
       {/* Main content area with proper semantic structure */}
@@ -46,24 +41,32 @@ export default async function MainLayout({
         className="flex-grow pt-16 xl:pt-24 min-h-screen" 
         role="main"
         tabIndex={-1}
-        aria-label="Основное содержимое страницы"
+        aria-label={dictionary.navigation.accessibility.skipToContent}
       >        
-        {/* OLD: Keep existing pattern for non-migrated components */}
+        {/* UPDATED: Pass unified dictionary sections to children */}
         {React.cloneElement(children as React.ReactElement, { 
-          searchTranslations: oldDict.search, // OLD: Search components need old dictionary
-          sortingTranslations: oldDict.sorting // OLD: Sorting components need old dictionary
+          // Components can now access unified dictionary sections
+          searchTranslations: dictionary.search,
+          sortingTranslations: dictionary.sorting,
+          sectionsTranslations: dictionary.sections,
+          commonTranslations: dictionary.common,
+          categoriesTranslations: dictionary.categories,
+          filterTranslations: dictionary.filter,
+          accessibilityTranslations: dictionary.accessibility,
+          // Keep full dictionary available for gradual migration
+          dictionary: dictionary
         })}      
       </main>
       
-      {/* Footer with proper semantic structure and ID for skip links */}
+      {/* Footer with unified dictionary system */}
       <footer 
         id="site-footer"
         role="contentinfo" 
-        aria-label="Информация о сайте и дополнительные ссылки"
+        aria-label={dictionary.footer.about.description}
       >
         <Footer
-          lang="ru" // KEEP: Lang parameter for compatibility
-          translations={oldDict} // OLD: Footer still uses old dictionary system
+          lang="ru"
+          dictionary={dictionary}
         />
       </footer>
     </>

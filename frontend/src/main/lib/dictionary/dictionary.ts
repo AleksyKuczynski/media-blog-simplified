@@ -379,3 +379,26 @@ export const russianDictionary: Dictionary = {
     },
   },
 } as const;
+
+// ===================================================================
+// DICTIONARY ACCESS FUNCTIONS
+// ===================================================================
+
+export const getDictionary = async (lang: 'ru'): Promise<Dictionary> => {
+  return russianDictionary;
+};
+
+export const getNavigationDictionary = async (lang: 'ru') => {
+  const dict = await getDictionary(lang);
+  return dict.navigation;
+};
+
+export const getSearchDictionary = async (lang: 'ru') => {
+  const dict = await getDictionary(lang);
+  return dict.search;
+};
+
+export const getSEODictionary = async (lang: 'ru') => {
+  const dict = await getDictionary(lang);
+  return dict.seo;
+};

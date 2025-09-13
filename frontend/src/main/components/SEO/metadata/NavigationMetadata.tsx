@@ -8,13 +8,7 @@ import {
   validateSEOData 
 } from '../core/MetadataBuilder';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { 
-  getProcessedSEOTitle,
-  getProcessedSEODescription,
-  getPageTypeKeywords,
-  getCanonicalURL,
-  validateSEOMetadata 
-} from '@/main/lib/dictionary/helpers';
+import { getCanonicalURL } from '@/main/lib/dictionary/helpers';
 
 // ===================================================================
 // NAVIGATION METADATA PROPS

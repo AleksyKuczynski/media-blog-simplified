@@ -1,8 +1,8 @@
-// src/main/components/Main/RubricCard.tsx - Enhanced with description support
+// src/main/components/Main/RubricCard.tsx - MIGRATED: Uses unified dictionary
 import Link from "next/link";
 import Image from "next/image";
-import { Dictionary } from '@/main/lib/dictionaries/dictionariesTypes';
-import { getRussianArticleCount } from '@/main/lib/dictionaries/dictionaries';
+import { Dictionary } from '@/main/lib/dictionary/types';
+import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers';
 import { Asset } from '@/main/lib/directus/directusInterfaces';
 import { DIRECTUS_URL } from '@/main/lib/directus/directusConstants';
 
@@ -10,29 +10,34 @@ interface RubricCardProps {
   rubric: {
     slug: string;
     name: string;
-    description?: string;  // ✅ NEW: Add description field
+    description?: string;
     articleCount: number;
     nav_icon?: string;
     iconMetadata?: Asset | null;
   };
-  lang: string;
-  dict: Dictionary;
+  dictionary: Dictionary; // UPDATED: Use unified dictionary type
 }
 
-export function RubricCard({ rubric, lang, dict }: RubricCardProps) {
-  // Use proper Russian pluralization for article count
-  const articleCountText = getRussianArticleCount(rubric.articleCount);
+export function RubricCard({ rubric, dictionary }: RubricCardProps) {
+  // UPDATED: Use language-agnostic helper with dictionary pluralization
+  const articleCountText = getLocalizedArticleCount(
+    rubric.articleCount, 
+    dictionary.common.articles
+  );
   
   // Generate icon URL if available
   const iconUrl = rubric.nav_icon ? `${DIRECTUS_URL}/assets/${rubric.nav_icon}` : null;
-  const iconAlt = rubric.iconMetadata?.title || `Иконка рубрики ${rubric.name}`;
+  
+  // UPDATED: Use dictionary for accessibility text
+  const iconAlt = rubric.iconMetadata?.title || 
+    `${dictionary.accessibility.rubricVisualIndicator} ${rubric.name}`;
 
   return (
     <Link 
       href={`/ru/${rubric.slug}`} 
       className="block group"
       aria-label={`${rubric.name} - ${articleCountText}`}
-      title={`Перейти к рубрике "${rubric.name}" (${articleCountText})`}
+      title={`${dictionary.sections.rubrics.exploreRubric} "${rubric.name}" (${articleCountText})`}
     >
       <article 
         className="
@@ -68,77 +73,44 @@ export function RubricCard({ rubric, lang, dict }: RubricCardProps) {
           </header>
         )}
 
-        {/* Title Section */}
-        <header className={iconUrl ? "" : "mb-4"}>
+        {/* Content Section */}
+        <div className="flex-1 flex flex-col justify-center">
+          {/* Title */}
           <h3 
-            className="
-              text-lg font-display font-semibold mb-2
-              text-on-sf group-hover:text-pr-cont
-              transition-colors duration-200
-            "
+            className="text-xl font-bold text-on-sf mb-3 group-hover:text-primary transition-colors"
             itemProp="name"
           >
             {rubric.name}
           </h3>
-        </header>
 
-        {/* ✅ NEW: Description Section */}
-        {rubric.description && (
-          <div className="flex-1 mb-4 max-w-full">
+          {/* Description - NEW: Enhanced with proper truncation */}
+          {rubric.description && (
             <p 
-              className="
-                text-sm text-on-sf-var leading-relaxed text-center
-                overflow-hidden
-              "
-              style={{
-                display: '-webkit-box',
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-              }}
+              className="text-on-sf-var text-sm mb-4 leading-relaxed"
               itemProp="description"
-              title={rubric.description} // Full description on hover
             >
-              {rubric.description}
+              {rubric.description.length > 100 
+                ? `${rubric.description.substring(0, 100).trim()}...`
+                : rubric.description
+              }
             </p>
+          )}
+
+          {/* Article Count */}
+          <div className="text-sm text-muted-foreground mt-auto">
+            <span itemProp="articleCount">
+              {articleCountText}
+            </span>
           </div>
-        )}
-        
-        {/* Article count with proper spacing */}
-        <footer 
-          className={`text-sm text-on-sf-var mt-auto ${rubric.description ? '' : 'mt-4'}`}
-          aria-label={`В рубрике ${rubric.name} ${articleCountText}`}
-        >
-          <span itemProp="articleBody">
-            {articleCountText}
+        </div>
+
+        {/* Call to Action */}
+        <footer className="mt-4 pt-4 border-t border-ol-var/30 w-full text-center">
+          <span className="text-sm text-primary font-medium group-hover:underline">
+            {dictionary.sections.rubrics.exploreRubric} →
           </span>
         </footer>
-        
-        {/* ✅ ENHANCED: Schema.org metadata with description */}
-        <meta itemProp="url" content={`https://event4me.eu/ru/${rubric.slug}`} />
-        <meta itemProp="inLanguage" content="ru" />
-        <meta itemProp="articleSection" content={rubric.name} />
-        <meta itemProp="publisher" content="EventForMe" />
-        {rubric.description && (
-          <meta itemProp="description" content={rubric.description} />
-        )}
-        
-        {/* Icon metadata for structured data */}
-        {iconUrl && rubric.iconMetadata && (
-          <>
-            <meta itemProp="image" content={iconUrl} />
-            <div itemScope itemType="https://schema.org/ImageObject" className="hidden">
-              <meta itemProp="url" content={iconUrl} />
-              <meta itemProp="width" content={rubric.iconMetadata.width.toString()} />
-              <meta itemProp="height" content={rubric.iconMetadata.height.toString()} />
-              <meta itemProp="name" content={iconAlt} />
-            </div>
-          </>
-        )}
       </article>
     </Link>
   );
 }
-
-export default RubricCard;

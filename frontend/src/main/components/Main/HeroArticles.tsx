@@ -1,23 +1,31 @@
-// src/main/components/Main/HeroArticles.tsx - CLEANED UP
+// src/main/components/Main/HeroArticles.tsx - MIGRATED: Uses unified dictionary
 import { Suspense } from 'react';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import ArticleCard from '../ArticleCards/ArticleCard';
 
 interface HeroArticlesProps {
-  heroSlugs: string[];
-  lang: Lang;
+  slugs: string[]; // UPDATED: More descriptive prop name
+  dictionary: Dictionary; // NEW: Unified dictionary instead of separate translations
   rubricSlug?: string;
 }
 
-export default function HeroArticles({ heroSlugs, lang, rubricSlug }: HeroArticlesProps) {
-  if (heroSlugs.length === 0) {
-    return null;
+export default function HeroArticles({ slugs, dictionary, rubricSlug }: HeroArticlesProps) {
+  if (slugs.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        {dictionary.sections.articles.noFeaturedArticles}
+      </div>
+    );
   }
 
-  const [promotedSlug, ...latestSlugs] = heroSlugs;
+  const [promotedSlug, ...latestSlugs] = slugs;
 
   return (
-    <Suspense fallback={<div className="p-8 text-center">Loading featured articles...</div>}>
+    <Suspense fallback={
+      <div className="p-8 text-center">
+        {dictionary.common.loading}
+      </div>
+    }>
       <div className="
         grid grid-cols-1 xl:grid-cols-2
         container mx-auto 
@@ -32,9 +40,10 @@ export default function HeroArticles({ heroSlugs, lang, rubricSlug }: HeroArticl
         ">
           <ArticleCard 
             slug={promotedSlug} 
-            lang={lang} 
+            lang="ru" // UPDATED: Static lang since we're Russian-only
             rubricSlug={rubricSlug} 
             layout="promoted"
+            dictionary={dictionary} // NEW: Pass unified dictionary
           />
         </div>
         
@@ -48,9 +57,10 @@ export default function HeroArticles({ heroSlugs, lang, rubricSlug }: HeroArticl
             <ArticleCard 
               key={slug} 
               slug={slug} 
-              lang={lang} 
+              lang="ru" // UPDATED: Static lang since we're Russian-only
               rubricSlug={rubricSlug} 
               layout="latest"
+              dictionary={dictionary} // NEW: Pass unified dictionary
             />
           ))}
         </div>

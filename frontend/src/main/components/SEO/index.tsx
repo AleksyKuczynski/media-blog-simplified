@@ -1,11 +1,10 @@
 // src/main/components/SEO/index.tsx
 // Clean public API for new SEO component system
 
-import { NavigationSchema } from '../Navigation/NavigationSchema';
 import { buildMetadata } from './core/MetadataBuilder';
 import { SchemaBuilder } from './core/SchemaBuilder';
 import { generateMainNavigationMetadata, generateNavigationMetadata, getNavigationLinkSEO, getNavigationOpenGraphData, validateNavigationMetadata } from './metadata/NavigationMetadata';
-import { CompleteNavigationSchema, MinimalNavigationSchema } from './schemas/NavigationSchema';
+import { CompleteNavigationSchema, MinimalNavigationSchema, NavigationSchema } from './schemas/NavigationSchema';
 
 // ===================================================================
 // CORE EXPORTS - Foundation components and utilities
