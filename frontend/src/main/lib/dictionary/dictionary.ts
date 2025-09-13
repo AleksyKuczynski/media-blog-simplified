@@ -61,6 +61,19 @@ export const russianDictionary: Dictionary = {
   },
 
   // ===================================================================
+  // COMMON - Common interface elements
+  // ===================================================================
+  common: {
+    // ... existing entries ...
+    pagination: {
+      page: 'Страница',
+      of: 'из',
+      next: 'Следующая',
+      previous: 'Предыдущая',
+    },
+  },
+
+  // ===================================================================
   // SEARCH - User discovery and content exploration
   // ===================================================================
   search: {
@@ -78,6 +91,8 @@ export const russianDictionary: Dictionary = {
       pageTitle: 'Поиск - EventForMe',
       pageDescription: 'Поиск статей, авторов и контента на EventForMe',
       relatedTo: 'связанные с',
+      noResultsDescription: 'Результаты не найдены. Попробуйте изменить поисковый запрос',
+      resultsSummary: '{count} {resultWord} для запроса "{query}"',
     },
 
     accessibility: {
@@ -90,6 +105,48 @@ export const russianDictionary: Dictionary = {
       searchingAnnouncement: 'Выполняется поиск, пожалуйста подождите...',
       clearSearchLabel: 'Очистить поисковый запрос',
     },
+
+    messages: {
+      searchQuery: 'Поисковый запрос',
+      foundResults: 'Найдено',
+      tryFollowing: 'Попробуйте',
+      checkSpelling: 'Проверить правописание запроса',
+      useGeneralTerms: 'Использовать более общие термины',
+      trySynonyms: 'Попробовать синонимы',
+    },
+
+    interface: {
+      title: 'Поиск по контенту EventForMe',
+      description: 'Используйте поисковую строку выше, чтобы найти интересующие вас статьи, авторов или рубрики',
+      alternativeNavigation: 'Или перейдите к рубрикам для просмотра контента по темам',
+    },
+
+    navigation: {
+      popularRubrics: 'Популярные рубрики',
+      latestArticles: 'Последние статьи',
+      ourAuthors: 'Наши авторы',
+      viewAllArticles: 'Посмотреть все статьи',
+      meetAuthors: 'Познакомиться с авторами',
+    },
+
+    pluralization: {
+      result: {
+        one: 'результат',
+        few: 'результата',
+        many: 'результатов',
+      },
+    },
+
+    schema: {
+      searchActionDescription: 'Поиск статей, авторов и рубрик на EventForMe',
+      searchInterfaceDescription: 'Форма поиска по контенту EventForMe',
+      breadcrumbNavigation: 'Навигационная цепочка',
+      searchResultsDescription: 'Результаты поиска на EventForMe',
+      searchResultsList: 'Список результатов поиска',
+      searchResultsFound: 'найденных результатов о культуре и событиях',
+      mentionedInSearch: 'Статья найдена по запросу',
+    },
+
   },
 
   // ===================================================================

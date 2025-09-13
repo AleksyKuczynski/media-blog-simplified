@@ -1,10 +1,9 @@
 // src/main/lib/dictionary/types.ts
-// New parallel dictionary system - Clean type definitions
 
 export type Lang = 'ru';
 
 // ===================================================================
-// NAVIGATION TYPES - Enhanced and granular
+// NAVIGATION TYPES
 // ===================================================================
 
 export interface NavigationLabels {
@@ -62,7 +61,18 @@ export interface NavigationDictionary {
 }
 
 // ===================================================================
-// SEARCH TYPES - Focused and complete
+// COMMON INTERFACES
+// ===================================================================
+
+export interface CommonPagination {
+  readonly page: string;
+  readonly of: string;
+  readonly next: string;
+  readonly previous: string;
+}
+
+// ===================================================================
+// SEARCH TYPES
 // ===================================================================
 
 export interface SearchLabels {
@@ -75,10 +85,12 @@ export interface SearchLabels {
 }
 
 export interface SearchTemplates {
-  readonly resultsFor: string; // "Результаты для "{query}""
-  readonly pageTitle: string;  // "Поиск - {siteName}"
+  readonly resultsFor: string;
+  readonly pageTitle: string;
   readonly pageDescription: string;
   readonly relatedTo: string;
+  readonly noResultsDescription: string;
+  readonly resultsSummary: string;
 }
 
 export interface SearchAccessibility {
@@ -92,10 +104,56 @@ export interface SearchAccessibility {
   readonly clearSearchLabel: string;
 }
 
+export interface SearchMessages {
+  readonly searchQuery: string;
+  readonly foundResults: string;
+  readonly tryFollowing: string;
+  readonly checkSpelling: string;
+  readonly useGeneralTerms: string;
+  readonly trySynonyms: string;
+}
+
+export interface SearchInterface {
+  readonly title: string;
+  readonly description: string;
+  readonly alternativeNavigation: string;
+}
+
+export interface SearchNavigation {
+  readonly popularRubrics: string;
+  readonly latestArticles: string;
+  readonly ourAuthors: string;
+  readonly viewAllArticles: string;
+  readonly meetAuthors: string;
+}
+
+export interface SearchPluralization {
+  readonly result: {
+    readonly one: string;
+    readonly few: string;
+    readonly many: string;
+  };
+}
+
+export interface SearchSchema {
+  readonly searchActionDescription: string;
+  readonly searchInterfaceDescription: string;
+  readonly breadcrumbNavigation: string;
+  readonly searchResultsDescription: string;
+  readonly searchResultsList: string;
+  readonly searchResultsFound: string;
+  readonly mentionedInSearch: string;
+}
+
 export interface SearchDictionary {
   readonly labels: SearchLabels;
   readonly templates: SearchTemplates;
   readonly accessibility: SearchAccessibility;
+  readonly messages: SearchMessages;
+  readonly interface: SearchInterface;
+  readonly navigation: SearchNavigation;
+  readonly pluralization: SearchPluralization;
+  readonly schema: SearchSchema;
 }
 
 // ===================================================================
@@ -161,6 +219,10 @@ export interface SEODictionary {
 
 export interface Dictionary {
   readonly navigation: NavigationDictionary;
+  readonly common: {
+    // ... existing properties ...
+    readonly pagination: CommonPagination; // ADD
+  };
   readonly search: SearchDictionary;
   readonly seo: SEODictionary;
 }
