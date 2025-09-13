@@ -175,25 +175,28 @@ export const russianDictionary: Dictionary = {
   // ===================================================================
   seo: {
     site: {
-      siteName: 'EventForMe',
-      siteDescription: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
-      contactEmail: 'contact@event4me.eu',
+      name: 'EventForMe',
+      fullName: 'EventForMe — Медиа о культурных событиях',
+      description: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
+      url: 'https://event4me.eu',
+      contactEmail: 'info@event4me.eu',
       socialProfiles: [
-        'https://vk.com/event4me',
-        'https://t.me/event4me',
-        'https://instagram.com/event4me',
-        'https://youtube.com/@event4me',
-      ],
+        'https://t.me/eventforme',
+        'https://vk.com/eventforme'
+      ] as const,
+      organizationDescription: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
+      geographicAreas: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine', 'EU'] as const,
     },
 
     titles: {
       homePrefix: 'EventForMe — Медиа о культурных событиях',
-      homeSuffix: '— музыка, идеи, тайны мира',
+      homeSuffix: 'музыка, идеи, культура',
       articleTemplate: '{title} — EventForMe',
-      rubricTemplate: '{rubric} — рубрика на EventForMe',
-      authorTemplate: '{author} — автор EventForMe',
-      searchTemplate: 'Поиск — EventForMe',
+      rubricTemplate: '{rubric} — EventForMe', 
+      authorTemplate: 'Статьи {author} — EventForMe',
+      searchTemplate: 'Поиск: {query} — EventForMe',
       rubricsListTitle: 'Все рубрики — EventForMe',
+      rubricsList: 'Каталог рубрик — EventForMe',
     },
 
     descriptions: {
@@ -221,7 +224,7 @@ export const russianDictionary: Dictionary = {
       language: 'ru',
       region: 'RU',
       geographicCoverage: 'Russia',
-      targetMarkets: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine'],
+      targetMarkets: ['Russia', 'Belarus', 'Kazakhstan', 'Ukraine'] as const,
     },
   },
 } as const;

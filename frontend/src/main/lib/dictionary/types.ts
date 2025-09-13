@@ -185,10 +185,14 @@ export interface SearchDictionary {
 // ===================================================================
 
 export interface SEOSiteInfo {
-  readonly siteName: string;
-  readonly siteDescription: string;
+  readonly name: string;
+  readonly fullName: string;
+  readonly description: string;
+  readonly url: string;
   readonly contactEmail: string;
   readonly socialProfiles: readonly string[];
+  readonly organizationDescription: string;
+  readonly geographicAreas: readonly string[];
 }
 
 export interface SEOTitleTemplates {
@@ -199,6 +203,7 @@ export interface SEOTitleTemplates {
   readonly authorTemplate: string;
   readonly searchTemplate: string;
   readonly rubricsListTitle: string;
+  readonly rubricsList: string;
 }
 
 export interface SEODescriptionTemplates {
@@ -260,10 +265,6 @@ export const isValidRoute = (route: string): route is NavigationRoute => {
   return ['home', 'articles', 'rubrics', 'authors', 'search'].includes(route);
 };
 
-export const isValidPageType = (pageType: string): pageType is SEOPageType => {
-  return ['home', 'article', 'rubric', 'author', 'search', 'rubrics-collection'].includes(pageType);
-};
-
 // Template replacement utility type
 export interface TemplateVariables {
   readonly siteName?: string;
@@ -271,4 +272,19 @@ export interface TemplateVariables {
   readonly rubric?: string;
   readonly author?: string;
   readonly query?: string;
+}
+
+// Template processing function type
+export type TemplateProcessor = (template: string, variables: TemplateVariables) => string;
+
+// Type guards for runtime validation
+export const isValidPageType = (pageType: string): pageType is SEOPageType => {
+  return ['home', 'article', 'rubric', 'author', 'search', 'rubrics-collection'].includes(pageType);
+};
+
+// SEO metadata validation type
+export interface SEOValidationResult {
+  readonly isValid: boolean;
+  readonly warnings: readonly string[];
+  readonly errors: readonly string[];
 }
