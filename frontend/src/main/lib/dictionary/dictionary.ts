@@ -136,11 +136,45 @@ export const russianDictionary: Dictionary = {
   // SEARCH - Simple search labels
   // ===================================================================
   search: {
-    placeholder: 'Поиск статей...',
-    noResults: 'Результатов не найдено',
-    searching: 'Поиск...',
     labels: {
+      placeholder: 'Поиск статей...',
+      submit: 'Найти',
       results: 'Результаты поиска',
+      noResults: 'Ничего не найдено',
+      searching: 'Поиск...',
+      minCharacters: 'Введите минимум 3 символа',
+      foundResults: 'Найдено результатов:', // For count display
+    },
+    templates: {
+      resultsFor: 'Результаты для {query}',
+      pageTitle: 'Поиск',
+      pageDescription: 'Поиск статей и материалов',
+      relatedTo: 'связанные с',
+      resultsCount: '{count} {label}', // For result count formatting
+    },
+    accessibility: {
+      searchLabel: 'Поиск по сайту',
+      searchButtonLabel: 'Начать поиск',
+      clearSearchLabel: 'Очистить поиск',
+      searchInputLabel: 'Введите поисковый запрос',
+      searchDescription: 'Поиск статей, рубрик и авторов',
+      searchResultsLabel: 'Результаты поиска',
+    },
+    interface: {
+      alternativeNavigation: 'Или выберите раздел:',
+      searchSuggestion: 'Попробуйте поискать что-то другое',
+      tryFollowing: 'Попробуйте следующее:', // For no results help
+    },
+    navigation: {
+      popularRubrics: 'Популярные рубрики',
+      latestArticles: 'Последние статьи',  
+      ourAuthors: 'Наши авторы',
+    },
+    help: {
+      checkSpelling: 'Проверьте правописание',
+      useGeneralTerms: 'Используйте более общие термины',
+      trySynonyms: 'Попробуйте синонимы',
+      searchTips: 'Советы по поиску:',
     },
   },
 

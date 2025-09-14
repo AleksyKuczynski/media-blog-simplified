@@ -193,16 +193,62 @@ export interface Accessibility {
 }
 
 // ===================================================================
-// SEARCH & FOOTER - Simple interfaces
+// SEARCH & FOOTER - Complete interfaces
 // ===================================================================
 
-export interface SearchDictionary {
+export interface SearchLabels {
   readonly placeholder: string;
+  readonly submit: string;
+  readonly results: string;
   readonly noResults: string;
   readonly searching: string;
-  readonly labels: {
-    readonly results: string;
-  };
+  readonly minCharacters: string;
+  readonly foundResults: string;      // "Найдено результатов:"
+}
+
+export interface SearchTemplates {
+  readonly resultsFor: string;         // "Результаты для {query}"
+  readonly pageTitle: string;          // "Поиск"
+  readonly pageDescription: string;    // "Поиск статей и материалов"
+  readonly relatedTo: string;          // "связанные с"
+  readonly resultsCount: string;       // "{count} {label}" for count formatting
+}
+
+export interface SearchAccessibility {
+  readonly searchLabel: string;
+  readonly searchButtonLabel: string;
+  readonly clearSearchLabel: string;
+  readonly searchInputLabel: string;
+  readonly searchDescription: string;
+  readonly searchResultsLabel: string;
+}
+
+export interface SearchInterface {
+  readonly alternativeNavigation: string;
+  readonly searchSuggestion: string;
+  readonly tryFollowing: string;       // For no results section
+}
+
+export interface SearchNavigation {
+  readonly popularRubrics: string;
+  readonly latestArticles: string;
+  readonly ourAuthors: string;
+}
+
+export interface SearchHelp {
+  readonly checkSpelling: string;
+  readonly useGeneralTerms: string;
+  readonly trySynonyms: string;
+  readonly searchTips: string;
+}
+
+export interface SearchDictionary {
+  readonly labels: SearchLabels;
+  readonly templates: SearchTemplates;
+  readonly accessibility: SearchAccessibility;
+  readonly interface: SearchInterface;
+  readonly navigation: SearchNavigation;
+  readonly help: SearchHelp;
 }
 
 export interface FooterDictionary {

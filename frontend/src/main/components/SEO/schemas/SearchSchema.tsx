@@ -75,7 +75,7 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
         'query-input': {
           '@type': 'PropertyValueSpecification',
           valueName: 'search_term_string',
-          description: dictionary.search.placeholder,
+          description: dictionary.search.labels.placeholder,
           valueRequired: true,
           valueMinLength: 2,
           valueMaxLength: 100,
@@ -218,7 +218,7 @@ export const SearchActionSchema: React.FC<{ dictionary: Dictionary }> = ({
       'query-input': {
         '@type': 'PropertyValueSpecification',
         valueName: 'search_term_string',
-        description: dictionary.search.placeholder,
+        description: dictionary.search.labels.placeholder,
         valueRequired: true,
         valueMinLength: 2,
         valueMaxLength: 100,

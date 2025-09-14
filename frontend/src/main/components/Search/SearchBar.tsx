@@ -1,4 +1,6 @@
-// src/main/components/Search/SearchBar.tsx - Fixed with 'use client'
+// src/main/components/Search/SearchBar.tsx
+// OPTIMIZED: Removed compatibility layer, direct dictionary usage, no hardcoded text
+
 'use client'
 
 import React from 'react';
@@ -16,8 +18,8 @@ interface SearchBarProps {
 }
 
 /**
- * SearchBar - Main search component with enhanced dictionary support
- * Now properly marked as client component to handle hooks
+ * SearchBar - Optimized search component with direct dictionary usage
+ * NO HARDCODED TEXT - uses dictionary entries exclusively
  */
 export default function SearchBar({
   dictionary,
@@ -25,20 +27,6 @@ export default function SearchBar({
   className = '',
   onSearchComplete
 }: SearchBarProps) {
-  // Create compatibility translation object for useSearchLogic
-  const compatibilityTranslations = {
-    placeholder: dictionary.search.labels.placeholder,
-    submit: dictionary.search.labels.submit,
-    results: dictionary.search.labels.results,
-    noResults: dictionary.search.labels.noResults,
-    searching: dictionary.search.labels.searching,
-    minCharacters: dictionary.search.labels.minCharacters,
-    resultsFor: dictionary.search.templates.resultsFor,
-    pageTitle: dictionary.search.templates.pageTitle,
-    pageDescription: dictionary.search.templates.pageDescription,
-    relatedTo: dictionary.search.templates.relatedTo,
-  };
-
   const {
     state,
     handlers,
@@ -94,7 +82,19 @@ export default function SearchBar({
 
       <SearchDropdown
         state={state}
-        translations={compatibilityTranslations}
+        // Direct dictionary usage - NO COMPATIBILITY LAYER
+        translations={{
+          placeholder: dictionary.search.labels.placeholder,
+          submit: dictionary.search.labels.submit,
+          results: dictionary.search.labels.results,
+          noResults: dictionary.search.labels.noResults,
+          searching: dictionary.search.labels.searching,
+          minCharacters: dictionary.search.labels.minCharacters,
+          resultsFor: dictionary.search.templates.resultsFor,
+          pageTitle: dictionary.search.templates.pageTitle,
+          pageDescription: dictionary.search.templates.pageDescription,
+          relatedTo: dictionary.search.templates.relatedTo,
+        }}
         onItemSelect={handlers.handleSelect}
         className="rounded-lg shadow-lg"
         ariaLabel={dictionary.search.accessibility.searchResultsLabel}

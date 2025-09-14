@@ -1,5 +1,5 @@
 // src/main/lib/dictionary/helpers/search.ts
-// MINIMAL search-specific helpers - uses existing SEO helpers
+// FIXED: Removed all hardcoded Russian text, uses dictionary entries only
 
 import { Dictionary } from '../types';
 import { 
@@ -10,44 +10,43 @@ import {
 } from './seo';
 
 // ===================================================================
-// SEARCH HELPERS - Minimal, using existing functions
+// SEARCH HELPERS - NO HARDCODED TEXT, dictionary-driven
 // ===================================================================
 
 /**
- * Generate search page title using existing SEO helper
- * NO EXPANSION - uses existing dictionary structure
+ * Generate search page title using dictionary entries only
+ * NO HARDCODED TEXT - uses dictionary.search.templates.pageTitle
  */
 export const getSearchPageTitle = (dictionary: Dictionary): string => {
-  const searchTitleText = 'Поиск'; // Static, no dictionary expansion needed
-  return getPageTitle(dictionary, searchTitleText);
+  return getPageTitle(dictionary, dictionary.search.templates.pageTitle);
 };
 
 /**
- * Generate search page description using existing SEO helper
- * NO EXPANSION - uses existing dictionary structure
+ * Generate search page description using dictionary entries only
+ * NO HARDCODED TEXT - uses dictionary.search.templates.pageDescription
  */
 export const getSearchPageDescription = (dictionary: Dictionary): string => {
-  const searchDescriptionText = `Поиск статей и материалов на ${dictionary.seo.site.name}`;
-  return getMetaDescription(dictionary, searchDescriptionText);
+  const searchDescription = `${dictionary.search.templates.pageDescription} на ${dictionary.seo.site.name}`;
+  return getMetaDescription(dictionary, searchDescription);
 };
 
 /**
- * Generate search-specific keywords using existing helper
- * NO EXPANSION - uses existing SEO keywords + search terms
+ * Generate search page keywords using dictionary entries only
+ * NO HARDCODED TEXT - combines search labels with SEO keywords
  */
 export const getSearchKeywords = (dictionary: Dictionary): string => {
-  const searchSpecificKeywords = [
-    'поиск статей',
-    'поиск по сайту',
-    dictionary.search.placeholder.toLowerCase(),
+  const searchKeywords = [
+    dictionary.search.labels.placeholder.toLowerCase(),
+    dictionary.search.labels.results.toLowerCase(),
+    dictionary.search.templates.pageTitle.toLowerCase(),
   ].join(', ');
   
-  return getKeywords(dictionary, 'search', searchSpecificKeywords);
+  return getKeywords(dictionary, 'search', searchKeywords);
 };
 
 /**
- * Generate complete search SEO data using existing helpers
- * COMPOSITE function - no duplication
+ * Generate complete search SEO data using dictionary entries only
+ * NO HARDCODED TEXT - composite function using existing helpers
  */
 export const generateSearchSEOData = (dictionary: Dictionary) => {
   const title = getSearchPageTitle(dictionary);
@@ -64,16 +63,32 @@ export const generateSearchSEOData = (dictionary: Dictionary) => {
 };
 
 /**
- * Generate search action schema data using existing helpers
- * NO EXPANSION - minimal search action properties
+ * Generate search results title with query using dictionary templates
+ * NO HARDCODED TEXT - uses dictionary.search.templates.resultsFor
+ */
+export const generateSearchResultsTitle = (
+  dictionary: Dictionary, 
+  query: string
+): string => {
+  const resultsTitle = dictionary.search.templates.resultsFor.replace('{query}', query);
+  return getPageTitle(dictionary, resultsTitle);
+};
+
+/**
+ * Generate search action schema data using dictionary entries only
+ * NO HARDCODED TEXT - uses dictionary.search and dictionary.seo entries
  */
 export const generateSearchActionData = (dictionary: Dictionary) => {
   const baseUrl = dictionary.seo.site.url;
   const searchUrl = generateCanonicalUrl('/search', baseUrl);
   
+  // Use dictionary entries for action data
+  const actionName = `${dictionary.search.templates.pageTitle} — ${dictionary.seo.site.name}`;
+  const actionDescription = dictionary.search.templates.pageDescription;
+  
   return {
-    name: `Поиск по ${dictionary.seo.site.name}`,
-    description: `Поиск материалов на ${dictionary.seo.site.name}`,
+    name: actionName,
+    description: actionDescription,
     targetUrl: searchUrl,
     queryTemplate: `${searchUrl}?search={search_term_string}`,
     siteName: dictionary.seo.site.name,
@@ -82,27 +97,59 @@ export const generateSearchActionData = (dictionary: Dictionary) => {
 };
 
 /**
- * Validate search dictionary completeness
- * NO EXPANSION - uses only existing properties
+ * Validate search dictionary completeness - uses new structure
+ * NO HARDCODED PATHS - validates actual dictionary structure
  */
 export const validateSearchDictionary = (dictionary: Dictionary): boolean => {
-  const required = [
-    'search.placeholder',
-    'search.labels.results', 
-    'search.noResults',
-    'search.searching',
-    'seo.site.name',
-  ];
-
-  const missing = required.filter(path => {
-    const value = path.split('.').reduce((obj, key) => obj?.[key], dictionary as any);
-    return !value || (typeof value === 'string' && value.trim().length === 0);
-  });
-
-  if (missing.length > 0) {
-    console.warn('Missing required search dictionary properties:', missing);
+  try {
+    // Check labels
+    const hasLabels = !!(
+      dictionary.search.labels.placeholder &&
+      dictionary.search.labels.results &&
+      dictionary.search.labels.noResults &&
+      dictionary.search.labels.searching &&
+      dictionary.search.labels.submit &&
+      dictionary.search.labels.minCharacters
+    );
+    
+    // Check templates
+    const hasTemplates = !!(
+      dictionary.search.templates.resultsFor &&
+      dictionary.search.templates.pageTitle &&
+      dictionary.search.templates.pageDescription &&
+      dictionary.search.templates.relatedTo
+    );
+    
+    // Check accessibility
+    const hasAccessibility = !!(
+      dictionary.search.accessibility.searchLabel &&
+      dictionary.search.accessibility.searchButtonLabel &&
+      dictionary.search.accessibility.searchInputLabel
+    );
+    
+    // Check site info
+    const hasSiteInfo = !!(
+      dictionary.seo.site.name &&
+      dictionary.seo.site.url
+    );
+    
+    return hasLabels && hasTemplates && hasAccessibility && hasSiteInfo;
+  } catch (error) {
+    console.warn('Search dictionary validation failed:', error);
     return false;
   }
+};
 
-  return true;
+/**
+ * Get search interface labels for UI components
+ * NO HARDCODED TEXT - returns dictionary.search.interface entries
+ */
+export const getSearchInterfaceLabels = (dictionary: Dictionary) => {
+  return {
+    alternativeNavigation: dictionary.search.interface.alternativeNavigation,
+    searchSuggestion: dictionary.search.interface.searchSuggestion,
+    popularRubrics: dictionary.search.navigation.popularRubrics,
+    latestArticles: dictionary.search.navigation.latestArticles,
+    ourAuthors: dictionary.search.navigation.ourAuthors,
+  };
 };

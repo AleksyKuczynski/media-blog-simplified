@@ -9,9 +9,11 @@ import {
   validateSEOData 
 } from '../core/MetadataBuilder';
 import {
+  generateSearchResultsTitle,
   generateSearchSEOData,
   validateSearchDictionary,
 } from '@/main/lib/dictionary/helpers/search';
+import { processTemplate } from '@/main/lib/dictionary/helpers';
 
 // ===================================================================
 // TYPES - Simple and focused
@@ -53,14 +55,24 @@ export const generateSearchMetadata = async ({
     const searchSEOData = generateSearchSEOData(dictionary);
     
     // Customize title/description if provided
-    const title = customTitle || searchSEOData.title;
-    const description = customDescription || searchSEOData.description;
+    const baseTitle = customTitle || searchSEOData.title;
+    const baseDescription = customDescription || searchSEOData.description;
     
-    // Add query context if provided (for dynamic search results)
-    const finalTitle = query ? `${query} — ${title}` : title;
-    const finalDescription = query 
-      ? `Результаты поиска "${query}" на ${dictionary.seo.site.name}`
-      : description;
+    // Add query context if provided - uses dictionary template
+    const finalTitle = query 
+      ? generateSearchResultsTitle(dictionary, query)
+      : baseTitle;
+    
+    // Generate description with query using dictionary template
+    const finalDescription = query && resultCount !== undefined
+      ? processTemplate(
+          `${dictionary.search.templates.resultsFor} на {siteName}`, 
+          { 
+            query, 
+            siteName: dictionary.seo.site.name 
+          }
+        )
+      : baseDescription;
 
     // Create SEO data using existing function - NO DUPLICATION
     const seoData = createWebsiteSEOData(
@@ -110,8 +122,8 @@ export const generateSearchMetadata = async ({
     
     // Fallback metadata using basic info
     return {
-      title: `Поиск — ${dictionary.seo.site.name}`,
-      description: `Поиск материалов на ${dictionary.seo.site.name}`,
+      title: dictionary.search.templates.pageTitle,
+      description: dictionary.search.templates.pageDescription,
     };
   }
 };
@@ -152,12 +164,17 @@ export const getSearchOpenGraphData = (
 ) => {
   const searchSEOData = generateSearchSEOData(dictionary);
   
+  // Use dictionary templates for title construction
   const title = query 
-    ? `${query} — Поиск — ${dictionary.seo.site.name}`
+    ? generateSearchResultsTitle(dictionary, query)
     : searchSEOData.title;
     
+  // Use dictionary template for description with query
   const description = query
-    ? `Результаты поиска "${query}" на ${dictionary.seo.site.name}`
+    ? processTemplate(
+        `${dictionary.search.templates.resultsFor} на {siteName}`,
+        { query, siteName: dictionary.seo.site.name }
+      )
     : searchSEOData.description;
 
   return {
