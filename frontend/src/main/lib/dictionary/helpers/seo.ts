@@ -1,333 +1,215 @@
 // src/main/lib/dictionary/helpers/seo.ts
-// SEO generation and optimization utilities for Russian market
+// SEO utilities - updated for simplified dictionary structure
 
-import { Dictionary, SEOPageType, TemplateVariables, SEOValidationResult } from '../types';
-import { generateSEOTitle, generateSEODescription } from './templates';
-import { validateSEOContent } from './validation';
-
-// ===================================================================
-// SEO CONTENT GENERATION
-// ===================================================================
+import { Dictionary } from '../types';
+import { processTemplate, createSEOVariables } from './templates';
 
 /**
- * Generate processed SEO title for different page types
- * Uses dictionary templates with variable substitution and proper fallbacks
- * Optimized for Russian market and Google/Yandex requirements
- * 
- * @param seoDict - SEO section from dictionary
- * @param pageType - Type of page (home, article, rubric, etc.)
- * @param variables - Template variables for substitution
- * @returns Optimized SEO title
+ * Generate page title using simplified templates
+ * @example getPageTitle(dictionary, 'Музыка') => "Музыка — EventForMe"
  */
-export const getProcessedSEOTitle = (
-  seoDict: Dictionary['seo'], 
-  pageType: SEOPageType,
-  variables: TemplateVariables = {}
-): string => {
-  const templates = seoDict.titles;
-  const fallbackTitle = seoDict.site.name || 'EventForMe';
-  
-  let template: string;
-  
-  switch (pageType) {
-    case 'home':
-      template = `${templates.homePrefix} ${templates.homeSuffix}`;
-      break;
-    case 'article':
-      template = templates.articleTemplate;
-      break;
-    case 'rubric':
-      template = templates.rubricTemplate;
-      break;
-    case 'author':
-      template = templates.authorTemplate;
-      break;
-    case 'search':
-      template = templates.searchTemplate;
-      break;
-    case 'rubrics-collection':
-      template = templates.rubricsListTitle;
-      break;
-    default:
-      template = `{title} — ${fallbackTitle}`;
-  }
-
-  const processedTitle = generateSEOTitle(template, variables, fallbackTitle);
-  
-  // SEO length validation with warning
-  if (processedTitle.length > 60) {
-    console.warn(`SEO Title length (${processedTitle.length}) exceeds recommended 60 characters for page type: ${pageType}`);
-  }
-  
-  return processedTitle;
+export const getPageTitle = (dictionary: Dictionary, title: string): string => {
+  return processTemplate(dictionary.seo.templates.pageTitle, {
+    title,
+    siteName: dictionary.seo.site.name,
+  });
 };
 
 /**
- * Generate processed SEO description for different page types
- * Uses dictionary templates with length validation and Russian market optimization
- * 
- * @param seoDict - SEO section from dictionary  
- * @param pageType - Type of page
- * @param variables - Template variables for substitution
- * @returns Optimized SEO description (≤160 chars)
+ * Generate collection page title
+ * @example getCollectionTitle(dictionary, 'рубрики') => "Все рубрики — EventForMe"  
  */
-export const getProcessedSEODescription = (
-  seoDict: Dictionary['seo'],
-  pageType: SEOPageType,
-  variables: TemplateVariables = {}
-): string => {
-  const templates = seoDict.descriptions;
-  const fallbackDescription = seoDict.site.description || 'EventForMe — медиа-платформа о культуре и событиях';
-  
-  let template: string;
-  
-  switch (pageType) {
-    case 'home':
-      template = templates.home;
-      break;
-    case 'article':
-      template = templates.articleTemplate;
-      break;
-    case 'rubric':
-      template = templates.rubricTemplate;
-      break;
-    case 'author':
-      template = templates.authorTemplate;
-      break;
-    case 'search':
-      template = templates.searchTemplate;
-      break;
-    case 'rubrics-collection':
-      template = templates.rubricsList;
-      break;
-    default:
-      template = fallbackDescription;
-  }
-
-  return generateSEODescription(template, variables, fallbackDescription, 160);
+export const getCollectionTitle = (dictionary: Dictionary, collection: string): string => {
+  const collectionTitle = processTemplate(dictionary.sections.templates.collectionTitle, {
+    section: collection,
+  });
+  return processTemplate(dictionary.seo.templates.collectionPage, {
+    collection: collectionTitle,
+    siteName: dictionary.seo.site.name,
+  });
 };
 
 /**
- * Get relevant keywords for specific page types
- * Combines general keywords with page-specific ones for Russian market optimization
- * Supports both Google and Yandex keyword strategies
- * 
- * @param seoDict - SEO section from dictionary
- * @param pageType - Type of page
- * @param additionalKeywords - Extra keywords to include
- * @returns Comma-separated keyword string
+ * Generate meta description using templates
+ * @example getMetaDescription(dictionary, 'Статьи о музыке') => "Статьи о музыке на EventForMe"
  */
-export const getPageTypeKeywords = (
-  seoDict: Dictionary['seo'],
-  pageType: SEOPageType,
-  additionalKeywords: string[] = []
-): string => {
-  const keywords = seoDict.keywords;
-  const generalKeywords = keywords.general;
-  
-  let pageSpecificKeywords: string;
-  
-  switch (pageType) {
-    case 'home':
-      pageSpecificKeywords = generalKeywords;
-      break;
-    case 'article':
-      pageSpecificKeywords = keywords.articles;
-      break;
-    case 'rubric':
-      pageSpecificKeywords = keywords.rubrics;
-      break;
-    case 'author':
-      pageSpecificKeywords = keywords.authors;
-      break;
-    case 'search':
-      pageSpecificKeywords = generalKeywords;
-      break;
-    case 'rubrics-collection':
-      pageSpecificKeywords = keywords.rubricsList;
-      break;
-    default:
-      pageSpecificKeywords = generalKeywords;
-  }
-
-  // Combine page-specific keywords with additional ones
-  const allKeywords = [pageSpecificKeywords, ...additionalKeywords]
-    .filter(Boolean)
-    .filter(keyword => keyword.trim().length > 0)
-    .join(', ');
-
-  return allKeywords;
+export const getMetaDescription = (dictionary: Dictionary, description: string): string => {
+  return processTemplate(dictionary.seo.templates.metaDescription, {
+    description,
+    siteName: dictionary.seo.site.name,
+  });
 };
 
 /**
- * Validate complete SEO metadata for a page
- * Enhanced validation with Russian market-specific checks
- * 
- * @param title - SEO title to validate
- * @param description - SEO description to validate  
- * @param keywords - Keywords string to validate
- * @param pageType - Type of page for specific validation rules
- * @returns Validation result with errors and warnings
+ * Generate keywords for page type using simplified structure
  */
-export const validateSEOMetadata = (
-  title: string,
-  description: string,
-  keywords: string,
-  pageType?: SEOPageType
-): SEOValidationResult => {
-  // Use existing validation function as base
-  const baseValidation = validateSEOContent(
-    title, 
-    description, 
-    keywords, 
-    pageType || 'home'
-  );
-
-  // Add additional validations specific to Russian market
-  const warnings = [...baseValidation.warnings];
-  const errors = [...baseValidation.errors];
-
-  // Russian-specific SEO checks
-  if (title && !title.match(/[а-яё]/i)) {
-    warnings.push('Title should contain Russian text for Russian market optimization');
+export const getKeywords = (dictionary: Dictionary, pageType: string, customKeywords?: string): string => {
+  const baseKeywords = dictionary.seo.keywords.base;
+  
+  // Map page types to keyword categories
+  let typeKeywords = '';
+  switch (pageType) {
+    case 'rubrics':
+    case 'rubric':
+      typeKeywords = dictionary.seo.keywords.rubrics;
+      break;
+    case 'articles':
+    case 'article':
+      typeKeywords = dictionary.seo.keywords.articles;
+      break;
+    case 'authors':
+    case 'author':
+      typeKeywords = dictionary.seo.keywords.authors;
+      break;
+    default:
+      typeKeywords = '';
   }
-
-  if (description && !description.match(/[а-яё]/i)) {
-    warnings.push('Description should contain Russian text for Russian market optimization');
+  
+  if (customKeywords) {
+    return `${customKeywords}, ${baseKeywords}`;
   }
+  
+  return typeKeywords ? `${typeKeywords}, ${baseKeywords}` : baseKeywords;
+};
 
-  // Check for EventForMe branding  
-  if (title && !title.toLowerCase().includes('event') && pageType !== 'home') {
-    warnings.push('Consider including EventForMe branding in title for brand recognition');
+/**
+ * Generate canonical URL - simple construction
+ */
+export const generateCanonicalUrl = (path: string, baseUrl?: string): string => {
+  const url = baseUrl || 'https://event4me.eu';
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  return `${url}${cleanPath}`;
+};
+
+/**
+ * Basic SEO validation - check for Russian content and length
+ */
+export const validateSEOContent = (content: {
+  title: string;
+  description: string;
+  keywords?: string;
+}): { isValid: boolean; warnings: string[] } => {
+  const warnings: string[] = [];
+  
+  // Title validation
+  if (content.title.length > 60) {
+    warnings.push('Title may be too long for search results');
   }
-
-  // Keyword density check
-  if (keywords) {
-    const keywordArray = keywords.split(',').map(k => k.trim()).filter(k => k.length > 0);
+  
+  if (content.title.length < 10) {
+    warnings.push('Title is too short');
+  }
+  
+  // Description validation
+  if (content.description.length > 160) {
+    warnings.push('Description may be too long for search results');
+  }
+  
+  if (content.description.length < 50) {
+    warnings.push('Description is too short');
+  }
+  
+  // Russian content validation
+  if (!content.title.match(/[а-яё]/i)) {
+    warnings.push('Title should contain Russian text');
+  }
+  
+  if (!content.description.match(/[а-яё]/i)) {
+    warnings.push('Description should contain Russian text');
+  }
+  
+  // Keywords validation
+  if (content.keywords) {
+    const keywordArray = content.keywords.split(',').map(k => k.trim());
     if (keywordArray.length > 10) {
-      warnings.push(`Too many keywords (${keywordArray.length}). Consider focusing on 5-8 primary keywords.`);
-    }
-    if (keywordArray.length === 0) {
-      warnings.push('No keywords found. Add relevant keywords for better SEO.');
+      warnings.push('Consider using fewer keywords for better focus');
     }
   }
-
+  
   return {
-    isValid: errors.length === 0,
+    isValid: warnings.length === 0,
     warnings,
-    errors,
   };
 };
 
-// ===================================================================
-// PAGE TYPE UTILITIES  
-// ===================================================================
-
 /**
- * Determine page type from URL path
- * Used for automatic SEO optimization based on page context
- * 
- * @param path - URL path to analyze
- * @returns Detected page type
+ * Generate complete SEO metadata object
+ * Simplified version that works with new dictionary structure
  */
-export const getPageTypeFromPath = (path: string): SEOPageType => {
-  if (!path || path === '/' || path === '/ru') return 'home';
+export const generateSEOMetadata = (dictionary: Dictionary, options: {
+  type: 'page' | 'collection';
+  title: string;
+  description: string;
+  path: string;
+  keywords?: string;
+  imageUrl?: string;
+}) => {
+  const { type, title, description, path, keywords, imageUrl } = options;
   
-  // Remove language prefix and leading slash for analysis
-  const cleanPath = path.replace(/^\/ru\//, '').replace(/^\//, '');
-  
-  if (cleanPath.startsWith('articles/') || cleanPath.match(/^[^\/]+\/[^\/]+$/)) {
-    return 'article';
-  }
-  if (cleanPath.startsWith('rubrics') && cleanPath !== 'rubrics') {
-    return 'rubric';
-  }
-  if (cleanPath === 'rubrics') {
-    return 'rubrics-collection';
-  }
-  if (cleanPath.startsWith('authors/')) {
-    return 'author';
-  }
-  if (cleanPath.startsWith('search')) {
-    return 'search';
-  }
-  
-  return 'home';
-};
-
-/**
- * Generate SEO-optimized variables object from page data
- * Creates consistent variable mapping for template processing
- * 
- * @param pageData - Raw page data
- * @returns Formatted template variables
- */
-export const createSEOVariables = (pageData: {
-  title?: string;
-  rubric?: string;
-  author?: string;
-  query?: string;
-  siteName?: string;
-}): TemplateVariables => {
-  return {
-    siteName: pageData.siteName || 'EventForMe',
-    title: pageData.title || '',
-    rubric: pageData.rubric || '',
-    author: pageData.author || '',
-    query: pageData.query || '',
-  };
-};
-
-// ===================================================================
-// RUSSIAN MARKET SPECIFIC OPTIMIZATIONS
-// ===================================================================
-
-/**
- * Check if content is optimized for Russian search engines
- * Validates content against Yandex and Google.ru requirements
- * 
- * @param title - SEO title
- * @param description - SEO description  
- * @param keywords - Keywords string
- * @returns Optimization status and recommendations
- */
-export const validateRussianSEO = (
-  title: string,
-  description: string,
-  keywords: string
-): {
-  isOptimized: boolean;
-  recommendations: string[];
-} => {
-  const recommendations: string[] = [];
-  
-  // Cyrillic content check
-  const hasRussianTitle = title.match(/[а-яё]/i);
-  const hasRussianDescription = description.match(/[а-яё]/i);
-  
-  if (!hasRussianTitle) {
-    recommendations.push('Add Russian text to title for better local search performance');
-  }
-  
-  if (!hasRussianDescription) {
-    recommendations.push('Add Russian text to description for better local search performance');
-  }
-  
-  // Yandex-specific checks
-  if (keywords) {
-    const russianKeywords = keywords.split(',').filter(k => k.match(/[а-яё]/i));
-    if (russianKeywords.length === 0) {
-      recommendations.push('Include Russian keywords for Yandex optimization');
-    }
-  }
-  
-  // Length optimization for Russian text (typically longer)
-  if (description.length < 140 && hasRussianDescription) {
-    recommendations.push('Russian descriptions can be slightly longer (up to 160 chars) - consider adding more detail');
-  }
+  const seoTitle = type === 'collection' 
+    ? getCollectionTitle(dictionary, title)
+    : getPageTitle(dictionary, title);
+    
+  const seoDescription = getMetaDescription(dictionary, description);
+  const seoKeywords = getKeywords(dictionary, type, keywords);
+  const canonicalUrl = generateCanonicalUrl(path, dictionary.seo.site.url);
   
   return {
-    isOptimized: recommendations.length === 0,
-    recommendations
+    title: seoTitle,
+    description: seoDescription,
+    keywords: seoKeywords,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        'ru': canonicalUrl,
+        'ru-RU': canonicalUrl,
+      },
+    },
+    openGraph: {
+      title: seoTitle,
+      description: seoDescription,
+      url: canonicalUrl,
+      siteName: dictionary.seo.site.name,
+      locale: 'ru_RU',
+      type: 'website',
+      ...(imageUrl && {
+        images: [{
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: seoTitle,
+        }],
+      }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seoTitle,
+      description: seoDescription,
+      ...(imageUrl && { images: [imageUrl] }),
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
   };
 };
+
+// Fix default export - assign to variable first
+const seoHelpers = {
+  getPageTitle,
+  getCollectionTitle,
+  getMetaDescription,
+  getKeywords,
+  generateCanonicalUrl,
+  validateSEOContent,
+  generateSEOMetadata,
+};
+
+export default seoHelpers;

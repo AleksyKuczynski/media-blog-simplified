@@ -1,159 +1,179 @@
-// Enhanced /ru/rubrics/page.tsx with complete SEO optimization
+// src/app/ru/rubrics/page.tsx - MIGRATED: Uses new SEO components and unified dictionary
 import { Metadata } from 'next';
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
-import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
+import { getDictionary as getNewDictionary } from '@/main/lib/dictionary/dictionary';
 import { Rubric } from '@/main/lib/directus/directusInterfaces';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
-import { generateSEOMetadata } from '@/main/components/SEO/SEOManager';
-import { StructuredDataManager } from '@/main/components/SEO/StructuredDataManager';
+
+// NEW: Import new SEO components
+import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
+import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
+import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers';
 
 export const dynamic = 'force-dynamic';
 
-// ✅ NEW: Add proper metadata generation for rubrics listing page
+/**
+ * MIGRATED: Generate metadata using new CollectionMetadata component
+ * Replaces old generateSEOMetadata from SEOManager
+ */
 export async function generateMetadata(): Promise<Metadata> {
-  const dict = await getDictionary('ru');
+  const [rubrics, dictionary] = await Promise.all([
+    fetchAllRubrics('ru'),
+    getNewDictionary('ru'), // UPDATED: Use new dictionary
+  ]);
   
-  return generateSEOMetadata({
-    dict,
-    pageType: 'rubrics-collection' as any, // Extend the type to include this
-    pageData: {
-      title: dict.seo.titles.rubricsListTitle,
-      description: dict.seo.descriptions.rubricsList,
-      keywords: dict.seo.keywords.rubricsList,
-      path: '/rubrics',
-      // Add Open Graph image for social sharing
-      imageUrl: 'https://event4me.eu/og-rubrics.jpg'
-    }
+  // Transform rubrics data for metadata generation
+  const rubricsData = rubrics.map(rubric => {
+    const translation = rubric.translations.find(t => t.languages_code === 'ru');
+    return {
+      name: translation?.name || rubric.slug,
+      slug: rubric.slug,
+      description: translation?.description,
+    };
+  });
+
+  // UPDATED: Use new CollectionMetadata component
+  return await generateCollectionMetadata({
+    dictionary,
+    collectionType: 'rubrics',
+    collectionData: {
+      totalCount: rubrics.length,
+      featured: rubricsData.slice(0, 6), // First 6 as featured
+      path: '/ru/rubrics',
+      // Use dictionary for custom text
+      customTitle: dictionary.sections.rubrics.collectionPageTitle,
+      customDescription: dictionary.sections.rubrics.collectionPageDescription,
+    },
   });
 }
 
 export default async function AllRubricsPage() {
-  const [rubrics, dict] = await Promise.all([
+  const [rubrics, dictionary] = await Promise.all([
     fetchAllRubrics('ru'),
-    getDictionary('ru')
+    getNewDictionary('ru'), // UPDATED: Use new unified dictionary
   ]);
   
+  // UPDATED: Use new dictionary structure
   const breadcrumbItems = [
-    { label: dict.sections.rubrics.allRubrics, href: '/ru/rubrics' },
+    { label: dictionary.sections.rubrics.allRubrics, href: '/ru/rubrics' },
   ];
   
-  const rubricBasics = rubrics.map(r => ({
-    slug: r.slug,
-    name: r.translations.find(t => t.languages_code === 'ru')?.name || r.slug
-  }));
-
-  // ✅ ENHANCED: Transform rubrics with complete SEO data for structured data
+  // Transform rubrics for RubricCard component
   const transformedRubrics = rubrics.map((rubric: Rubric) => {
     const translation = rubric.translations.find(t => t.languages_code === 'ru');
     return {
       slug: rubric.slug,
       name: translation?.name || rubric.slug,
-      description: translation?.description || `Статьи в рубрике ${translation?.name || rubric.slug}`,
-      articleCount: rubric.articleCount,
+      description: translation?.description,
+      articleCount: rubric.article_count || 0,
       nav_icon: rubric.nav_icon,
-      iconMetadata: rubric.iconMetadata
+      iconMetadata: rubric.iconMetadata,
     };
   });
 
-  // ✅ NEW: Prepare data for structured data schema
-  const structuredDataProps = {
-    rubrics: transformedRubrics,
-    totalItems: rubrics.length
-  };
+  // Prepare data for CollectionPageSchema
+  const schemaItems = transformedRubrics.map(rubric => ({
+    name: rubric.name,
+    slug: rubric.slug,
+    description: rubric.description,
+    url: `/ru/${rubric.slug}`,
+    articleCount: rubric.articleCount,
+    icon: rubric.nav_icon,
+  }));
+
+  // UPDATED: Use existing pluralization helper instead of creating new function
+  const totalRubricsText = pluralizeRussian(
+    rubrics.length, 
+    dictionary.common.rubrics
+  );
 
   return (
     <>
-      {/* ✅ NEW: Add structured data for CollectionPage schema */}
-      <StructuredDataManager 
-        dict={dict}
-        pageType="rubrics-collection"
-        data={structuredDataProps}
+      {/* NEW: Use CollectionPageSchema instead of StructuredDataManager */}
+      <CollectionPageSchema
+        dictionary={dictionary}
+        collectionType="rubrics"
+        items={schemaItems}
+        totalCount={rubrics.length}
+        currentPath="/ru/rubrics"
       />
       
+      {/* UPDATED: Use new dictionary structure for breadcrumbs */}
       <Breadcrumbs 
         items={breadcrumbItems} 
-        rubrics={rubricBasics}
+        rubrics={[]} // No need for rubric basics on rubrics page
         lang="ru"
         translations={{
-          home: dict.navigation.home,
-          allRubrics: dict.sections.rubrics.allRubrics,
-          allAuthors: dict.sections.authors.ourAuthors,
+          home: dictionary.navigation.labels.home,
+          allRubrics: dictionary.sections.rubrics.allRubrics,
+          allAuthors: dictionary.sections.authors.ourAuthors,
         }}
       />
       
-      {/* ✅ ENHANCED: Semantic HTML structure with proper heading hierarchy */}
-      <Section>
-        <header className="mb-8 text-center">
-          <h1 
-            className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4"
-            itemProp="headline"
-          >
-            {dict.sections.rubrics.allRubrics}
-          </h1>
-          
-          {/* ✅ NEW: Add descriptive text for better SEO and UX */}
-          <p 
-            className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
-            itemProp="description"
-          >
-            {dict.sections.rubrics.categoriesDescription}
-          </p>
-          
-          {/* ✅ NEW: Add rubrics count for better UX */}
-          <p 
-            className="text-sm text-gray-500 dark:text-gray-400 mt-2"
-            aria-label={`${dict.sections.rubrics.totalRubrics}: ${rubrics.length}`}
-          >
-            {dict.sections.rubrics.totalRubrics}: <strong>{rubrics.length}</strong>
-          </p>
-        </header>
+      {/* Page header */}
+      <header className="mb-8">
+        <h1 className="text-4xl font-bold mb-4">
+          {dictionary.sections.rubrics.allRubrics}
+        </h1>
         
-        {/* ✅ ENHANCED: Semantic main content area */}
-        <main 
-          role="main" 
-          aria-label={dict.sections.rubrics.rubricsCatalog}
-          itemScope 
-          itemType="https://schema.org/CollectionPage"
-        >
-          {/* Hidden metadata for SEO */}
-          <meta itemProp="name" content={dict.seo.titles.rubricsListTitle} />
-          <meta itemProp="description" content={dict.seo.descriptions.rubricsList} />
-          <meta itemProp="url" content="https://event4me.eu/ru/rubrics" />
-          <meta itemProp="inLanguage" content="ru" />
-          
+        {/* Page description */}
+        <p className="text-lg text-on-sf-var mb-4 max-w-3xl">
+          {dictionary.sections.rubrics.collectionPageDescription}
+        </p>
+        
+        {/* Rubrics count */}
+        <p className="text-sm text-muted-foreground">
+          {dictionary.sections.rubrics.totalRubrics}: {totalRubricsText}
+        </p>
+      </header>
+
+      {/* Main content section */}
+      <Section 
+        isOdd={true}
+        ariaLabel={dictionary.sections.rubrics.rubricsCatalog}
+      >
+        {rubrics.length > 0 ? (
           <CardGrid>
-            {transformedRubrics.map((rubric, index) => (
-              <div 
+            {transformedRubrics.map((rubric) => (
+              <RubricCard 
                 key={rubric.slug}
-                itemScope 
-                itemType="https://schema.org/Thing"
-                itemProp="mainEntity"
-                role="article"
-                aria-label={`${dict.sections.rubrics.rubricCard}: ${rubric.name}`}
-              >
-                <RubricCard 
-                  rubric={rubric}
-                  lang="ru"
-                  dict={dict}
-                />
-                
-                {/* ✅ NEW: Additional structured data for each rubric */}
-                <meta itemProp="position" content={(index + 1).toString()} />
-              </div>
+                rubric={rubric}
+                dictionary={dictionary} // UPDATED: Pass unified dictionary
+              />
             ))}
           </CardGrid>
-          
-          {/* ✅ NEW: Additional semantic information */}
-          <footer className="mt-8 text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              {dict.sections.rubrics.browseAllRubrics}
+        ) : (
+          /* No rubrics state */
+          <div className="text-center py-12">
+            <p className="text-lg text-on-sf-var mb-4">
+              {dictionary.sections.rubrics.noRubricsAvailable}
             </p>
-          </footer>
-        </main>
+            <p className="text-sm text-muted-foreground">
+              {dictionary.sections.rubrics.checkBackLater}
+            </p>
+          </div>
+        )}
       </Section>
+      
+      {/* Additional sections could go here */}
+      {rubrics.length > 0 && (
+        <Section 
+          isOdd={false}
+          ariaLabel={dictionary.sections.rubrics.categoriesDescription}
+        >
+          <div className="text-center max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold mb-4">
+              {dictionary.sections.rubrics.browseAllRubrics}
+            </h2>
+            <p className="text-on-sf-var">
+              {dictionary.sections.rubrics.categoriesDescription}
+            </p>
+          </div>
+        </Section>
+      )}
     </>
   );
 }

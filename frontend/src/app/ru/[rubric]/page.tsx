@@ -1,25 +1,33 @@
-// src/app/ru/[rubric]/page.tsx
-
+// src/app/ru/[rubric]/page.tsx - MIGRATED: Uses new SEO components and unified dictionary
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
-import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
+import { getDictionary as getNewDictionary } from '@/main/lib/dictionary/dictionary';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ArticleSlugInfo } from '@/main/lib/directus/index';
 import Section from '@/main/components/Main/Section';
-import { generateSEOMetadata } from '@/main/components/SEO/SEOManager';
-import { StructuredDataManager } from '@/main/components/SEO/StructuredDataManager';
+
+// NEW: Import new SEO components instead of old ones
+import { generateRubricMetadata } from '@/main/components/SEO/metadata/RubricMetadata';
+import { RubricPageSchema } from '@/main/components/SEO/schemas/RubricPageSchema';
+import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers';
 
 export const dynamic = 'force-dynamic';
 
+/**
+ * MIGRATED: Generate metadata using new RubricMetadata component
+ * Replaces old generateSEOMetadata from SEOManager
+ */
 export async function generateMetadata({ 
   params 
 }: { 
   params: { rubric: string } 
 }): Promise<Metadata> {
-  const dict = await getDictionary('ru');
-  const rubricDetails = await fetchRubricDetails(params.rubric, 'ru');
+  const [dictionary, rubricDetails] = await Promise.all([
+    getNewDictionary('ru'), // UPDATED: Use new dictionary
+    fetchRubricDetails(params.rubric, 'ru'),
+  ]);
   
   if (!rubricDetails) {
     return {
@@ -28,18 +36,25 @@ export async function generateMetadata({
     };
   }
 
-  const rubricName = rubricDetails.translations.find(t => t.languages_code === 'ru')?.name || params.rubric;
+  const rubricTranslation = rubricDetails.translations.find(t => t.languages_code === 'ru');
+  const rubricName = rubricTranslation?.name || params.rubric;
+  const rubricDescription = rubricTranslation?.description;
 
-  // ✅ USE your SEOManager component!
-  return generateSEOMetadata({
-    dict,
-    pageType: 'rubric',
-    pageData: {
-      title: rubricName,
-      description: `Все статьи в рубрике ${rubricName} на EventForMe`,
-      path: `/${params.rubric}`,
-      keywords: `${rubricName}, ${dict.seo.keywords.rubrics}`
-    }
+  // Get article count for this rubric
+  const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], undefined, params.rubric);
+  const articleCount = slugs.length; // This is just page 1, but gives us a count
+
+  // UPDATED: Use new RubricMetadata component
+  return await generateRubricMetadata({
+    dictionary,
+    rubricData: {
+      name: rubricName,
+      slug: params.rubric,
+      description: rubricDescription,
+      articleCount,
+      path: `/ru/${params.rubric}`,
+      featured: false, // Could be determined by some logic
+    },
   });
 }
 
@@ -47,27 +62,31 @@ export default async function RubricPage({
   params,
   searchParams 
 }: { 
-  params: { rubric: string }, // ✅ REMOVED: lang parameter - no longer expected in static routes
+  params: { rubric: string },
   searchParams: { page?: string }
 }) {
-  const dict = await getDictionary('ru'); // ✅ HARDCODED: Russian language
+  // UPDATED: Use new dictionary
+  const dictionary = await getNewDictionary('ru');
   const currentPage = Number(searchParams.page) || 1;
   
   try {
-    const rubricDetails = await fetchRubricDetails(params.rubric, 'ru'); // ✅ HARDCODED: Russian language
-    const rubricBasics = await fetchRubricBasics('ru'); // ✅ HARDCODED: Russian language
+    const [rubricDetails, rubricBasics] = await Promise.all([
+      fetchRubricDetails(params.rubric, 'ru'),
+      fetchRubricBasics('ru'),
+    ]);
 
     if (!rubricDetails) {
       notFound();
     }
 
+    // Fetch articles for current page and all previous pages
     let allSlugs: ArticleSlugInfo[] = [];
     let hasMore = false;
 
     for (let page = 1; page <= currentPage; page++) {
       const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
         page,
-        'desc', // You might want to add sorting options to the rubric page in the future
+        'desc',
         undefined,
         undefined,
         [],
@@ -79,54 +98,153 @@ export default async function RubricPage({
       if (!pageHasMore) break;
     }
 
-    const rubricName = rubricDetails.translations.find(t => t.languages_code === 'ru')?.name || params.rubric; // ✅ HARDCODED: Russian language
+    const rubricTranslation = rubricDetails.translations.find(t => t.languages_code === 'ru');
+    const rubricName = rubricTranslation?.name || params.rubric;
+    const rubricDescription = rubricTranslation?.description;
 
+    // UPDATED: Use new dictionary structure for breadcrumbs
     const breadcrumbItems = [
-      { label: dict.sections.rubrics.allRubrics, href: '/ru/rubrics' }, // ✅ HARDCODED: Static Russian URL
-      { label: rubricName, href: `/ru/${params.rubric}` }, // ✅ HARDCODED: Static Russian URL
+      { label: dictionary.sections.rubrics.allRubrics, href: '/ru/rubrics' },
+      { label: rubricName, href: `/ru/${params.rubric}` },
     ];
+
+    // Generate localized article count text
+    const articleCountText = getLocalizedArticleCount(
+      allSlugs.length, 
+      dictionary.common.articles
+    );
 
     return (
       <>
-        <StructuredDataManager 
-          dict={dict}
-          pageType="rubric"
-          data={{
+        {/* NEW: Use RubricPageSchema instead of StructuredDataManager */}
+        <RubricPageSchema
+          dictionary={dictionary}
+          rubricData={{
             name: rubricName,
-            description: `Статьи в рубрике ${rubricName}`,
-            url: `https://event4me.eu/ru/${params.rubric}`,
-            articleCount: allSlugs.length
+            slug: params.rubric,
+            description: rubricDescription,
+            articleCount: allSlugs.length,
+            articles: allSlugs.map(slug => ({
+              title: slug.title,
+              slug: slug.slug,
+              url: `/ru/${params.rubric}/${slug.slug}`,
+              publishedAt: slug.published_at,
+            })),
           }}
+          currentPath={`/ru/${params.rubric}`}
         />
+        
+        {/* UPDATED: Use new dictionary structure */}
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={rubricBasics}
-          lang="ru" // ✅ HARDCODED: Russian language
+          lang="ru"
           translations={{
-            home: dict.navigation.home,
-            allRubrics: dict.sections.rubrics.allRubrics,
-            allAuthors: dict.sections.authors.ourAuthors,
+            home: dictionary.navigation.labels.home,
+            allRubrics: dictionary.sections.rubrics.allRubrics,
+            allAuthors: dictionary.sections.authors.ourAuthors,
           }}
         />
-        <h1 className="text-4xl font-bold mb-8">{rubricName}</h1>
+        
+        {/* Page header */}
+        <header className="mb-8">
+          <h1 className="text-4xl font-bold mb-4">
+            {rubricName}
+          </h1>
+          
+          {/* Rubric description if available */}
+          {rubricDescription && (
+            <p className="text-lg text-on-sf-var mb-4 max-w-4xl">
+              {rubricDescription}
+            </p>
+          )}
+          
+          {/* Article count and navigation info */}
+          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <span>
+              {dictionary.sections.rubrics.articlesInRubric}: {articleCountText}
+            </span>
+            {currentPage > 1 && (
+              <span>
+                {dictionary.common.page} {currentPage}
+              </span>
+            )}
+          </div>
+        </header>
+
+        {/* Main content section */}
         <Section 
           isOdd={true}
-          ariaLabel={rubricName}
+          ariaLabel={`${dictionary.sections.rubrics.articlesInRubric} ${rubricName}`}
         >
-          <ArticleList 
-            slugInfos={allSlugs} 
-            lang="ru" // ✅ HARDCODED: Russian language
-            rubricSlug={params.rubric} 
-          />
-          {hasMore && (
-            <div className="mt-8 flex justify-center">
-              <LoadMoreButton
-                currentPage={currentPage}
-                loadMoreText={dict.common.loadMore}
+          {allSlugs.length > 0 ? (
+            <>
+              <ArticleList 
+                slugInfos={allSlugs} 
+                lang="ru"
+                rubricSlug={params.rubric} 
+                dictionary={dictionary}
               />
+              
+              {/* Load more button */}
+              {hasMore && (
+                <div className="mt-8 flex justify-center">
+                  <LoadMoreButton
+                    currentPage={currentPage}
+                    loadMoreText={dictionary.common.loadMore}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            /* No articles state */
+            <div className="text-center py-12">
+              <h2 className="text-xl font-semibold mb-4">
+                {dictionary.sections.articles.noArticlesFound}
+              </h2>
+              <p className="text-on-sf-var mb-6">
+                В рубрике "{rubricName}" пока нет статей
+              </p>
+              <a 
+                href="/ru/rubrics"
+                className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                {dictionary.sections.rubrics.browseAllRubrics}
+              </a>
             </div>
           )}
         </Section>
+        
+        {/* Additional information section */}
+        {allSlugs.length > 0 && (
+          <Section 
+            isOdd={false}
+            ariaLabel={`${dictionary.sections.rubrics.readMoreAbout} ${rubricName}`}
+          >
+            <div className="text-center max-w-3xl mx-auto">
+              <h2 className="text-2xl font-bold mb-4">
+                {dictionary.sections.rubrics.readMoreAbout} {rubricName}
+              </h2>
+              <p className="text-on-sf-var mb-6">
+                {dictionary.sections.rubrics.categoriesDescription}
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center">
+                <a 
+                  href="/ru/rubrics"
+                  className="px-4 py-2 border border-ol-var rounded-lg hover:bg-sf-hi transition-colors"
+                >
+                  {dictionary.sections.rubrics.allRubrics}
+                </a>
+                <a 
+                  href="/ru/articles"
+                  className="px-4 py-2 border border-ol-var rounded-lg hover:bg-sf-hi transition-colors"
+                >
+                  {dictionary.sections.articles.allArticles}
+                </a>
+              </div>
+            </div>
+          </Section>
+        )}
       </>
     );
   } catch (error) {
