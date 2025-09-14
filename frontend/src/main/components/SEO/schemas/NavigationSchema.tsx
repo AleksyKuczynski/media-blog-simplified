@@ -8,7 +8,6 @@ import { ExtendedSchemaData } from '../core/types';
 import {
   generateCanonicalUrl,
   generateNavigationElements,
-  isValidUrl,
 } from '@/main/lib/dictionary/helpers';
 
 // ===================================================================

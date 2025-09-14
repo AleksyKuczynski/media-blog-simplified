@@ -1,100 +1,87 @@
 // src/main/components/Navigation/NavLinks.tsx
+// DRY: Uses existing helpers, no dictionary expansion
 
-import Link from 'next/link'
-import NavLinksClient from './NavLinksClient'
-import { Dictionary, Lang, NavigationRoute } from '@/main/lib/dictionary/types'
-import { getNavigationLinkSEO } from '@/main/components/SEO'
+import Link from 'next/link';
+import NavLinksClient from './NavLinksClient';
+import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { getNavigationLinksConfig } from '@/main/lib/dictionary/helpers/navigation';
+
+// ===================================================================
+// TYPES - Simple and clean
+// ===================================================================
 
 interface NavLinksProps {
-  dictionary: Dictionary
-  lang: Lang
-  className?: string
+  dictionary: Dictionary;
+  lang: Lang;
+  className?: string;
 }
 
-// Navigation configuration
-type NavigationLink = {
-  route: NavigationRoute
-  href: string
-  priority: number
-}
+// ===================================================================
+// MAIN NAVLINKS COMPONENT - DRY
+// ===================================================================
 
-// Enhanced navigation links configuration
-const NAVIGATION_LINKS: NavigationLink[] = [
-  { 
-    route: 'articles',
-    href: '/articles',
-    priority: 1
-  },
-  { 
-    route: 'rubrics',
-    href: '/rubrics',
-    priority: 2
-  },
-  { 
-    route: 'authors',
-    href: '/authors',
-    priority: 3
-  },
-]
-
+/**
+ * NavLinks component using existing helpers
+ * NO DUPLICATION - uses getNavigationLinksConfig helper
+ */
 export default function NavLinks({ dictionary, lang, className }: NavLinksProps) {
-  return (
-    <>
-      {NAVIGATION_LINKS.map((link, index) => {
-        // NEW: Get enhanced SEO data using helper function
-        const linkSEO = getNavigationLinkSEO(dictionary, link.route)
-        
-        return (
+  try {
+    // Use existing helper function - NO DUPLICATION
+    const navigationLinks = getNavigationLinksConfig(dictionary);
+
+    return (
+      <>
+        {navigationLinks.map((link, index) => (
           <li 
-            key={link.href} 
+            key={link.href}
             className={`nav-link-item list-none ${className || ''}`}
             role="menuitem"
-            itemScope
-            itemType="https://schema.org/SiteNavigationElement"
           >
             <Link 
               href={`/ru${link.href}`}
               className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200"
-              data-href={link.href}
-              aria-label={linkSEO.description} // NEW: Use enhanced SEO description
-              title={linkSEO.description}
-              itemProp="url"
-              // Enhanced SEO attributes
+              aria-label={link.ariaLabel}
+              title={link.title}
+              data-nav-section={link.key}
               data-nav-priority={link.priority}
-              data-nav-section={link.route}
-              data-nav-enhanced-seo="true" // NEW: Indicate enhanced SEO
             >
-              <span itemProp="name">{linkSEO.label}</span> {/* NEW: Use SEO helper */}
-              
-              {/* Enhanced accessibility description */}
-              <span className="sr-only" aria-describedby={`nav-desc-${index}`}>
-                - {linkSEO.description}
-              </span>
-              
-              {/* Enhanced schema metadata */}
-              <meta itemProp="description" content={linkSEO.description} />
-              <meta itemProp="position" content={`${index + 1}`} />
-              <meta itemProp="inLanguage" content="ru" />
-              <meta itemProp="audience" content={dictionary.navigation.seo.audience} /> {/* NEW: Enhanced audience targeting */}
+              {link.label}
             </Link>
-            
-            {/* Hidden detailed description for screen readers */}
-            <span 
-              id={`nav-desc-${index}`}
-              className="sr-only"
-              role="tooltip"
-            >
-              {linkSEO.description}
-            </span>
           </li>
-        )
-      })}
-      
-      {/* Client-side active state management */}
-      <NavLinksClient 
-        dictionary={dictionary} 
-        lang={lang} // KEEP: Pass lang for compatibility
-      />
-    </>
-  )
+        ))}
+        
+        {/* Client-side active state management */}
+        <NavLinksClient 
+          dictionary={dictionary} 
+          lang={lang}
+        />
+      </>
+    );
+    
+  } catch (error) {
+    console.error('NavLinks: Error rendering navigation links', error);
+    
+    // Fallback navigation using basic dictionary properties
+    return (
+      <>
+        <li role="menuitem">
+          <Link href="/ru/articles" className="nav-link px-4 py-2">
+            {dictionary.navigation.labels.articles}
+          </Link>
+        </li>
+        <li role="menuitem">
+          <Link href="/ru/rubrics" className="nav-link px-4 py-2">
+            {dictionary.navigation.labels.rubrics}
+          </Link>
+        </li>
+        <li role="menuitem">
+          <Link href="/ru/authors" className="nav-link px-4 py-2">
+            {dictionary.navigation.labels.authors}
+          </Link>
+        </li>
+        
+        <NavLinksClient dictionary={dictionary} lang={lang} />
+      </>
+    );
+  }
 }

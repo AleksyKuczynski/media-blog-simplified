@@ -1,238 +1,302 @@
 // src/main/components/SEO/schemas/SearchSchema.tsx
-// Fixed search schema with proper SchemaBuilder import and correct dictionary paths
+// DRY: Uses existing helpers, no dictionary expansion
 
 import React from 'react';
 import { SchemaBuilder } from '../core/SchemaBuilder';
-import { ExtendedSchemaData } from '../core/types';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { getCanonicalURL } from '@/main/lib/dictionary/helpers';
+import { ExtendedSchemaData } from '../core/types';
+import {
+  generateCanonicalUrl,
+  generateNavigationElements,
+} from '@/main/lib/dictionary/helpers';
+import {
+  generateSearchActionData,
+  validateSearchDictionary,
+} from '@/main/lib/dictionary/helpers/search';
 
-interface SearchSchemaProps {
+// ===================================================================
+// SEARCH SCHEMA TYPES
+// ===================================================================
+
+export interface SearchSchemaProps {
   readonly dictionary: Dictionary;
+  readonly query?: string;
 }
 
+// ===================================================================
+// MAIN SEARCH SCHEMA COMPONENT - DRY
+// ===================================================================
+
 /**
- * Enhanced search schema focused on WebSite SearchAction
- * Uses SchemaBuilder component and correct dictionary paths
+ * Generate structured data for search functionality
+ * NO DUPLICATION - uses existing helpers
  */
 export const SearchSchema: React.FC<SearchSchemaProps> = ({
+  dictionary,
+  query,
+}) => {
+  try {
+    // Validate dictionary first
+    if (!validateSearchDictionary(dictionary)) {
+      console.error('SearchSchema: Invalid dictionary structure');
+      return null;
+    }
+
+    const seoDict = dictionary.seo;
+    
+    // Use existing helper - NO DUPLICATION
+    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
+    const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
+    const searchActionData = generateSearchActionData(dictionary);
+
+    // Create website schema with search functionality - using existing pattern
+    const websiteSchema: ExtendedSchemaData = {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      '@id': `${baseUrl}#website`,
+      name: seoDict.site.name,
+      description: seoDict.site.description,
+      url: baseUrl,
+      inLanguage: 'ru',
+      
+      // Search capability using existing helper data
+      potentialAction: {
+        '@type': 'SearchAction',
+        name: searchActionData.name,
+        description: searchActionData.description,
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: searchActionData.queryTemplate,
+          actionPlatform: [
+            'https://schema.org/DesktopWebPlatform',
+            'https://schema.org/MobileWebPlatform'
+          ],
+        },
+        'query-input': {
+          '@type': 'PropertyValueSpecification',
+          valueName: 'search_term_string',
+          description: dictionary.search.placeholder,
+          valueRequired: true,
+          valueMinLength: 2,
+          valueMaxLength: 100,
+        },
+      },
+    };
+
+    // Create search page schema
+    const searchPageSchema: ExtendedSchemaData = {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      '@id': searchUrl,
+      name: `Поиск — ${seoDict.site.name}`,
+      description: `Поиск материалов на ${seoDict.site.name}`,
+      url: searchUrl,
+      inLanguage: 'ru',
+      isPartOf: { 
+        '@type': 'WebSite',
+        '@id': `${baseUrl}#website` 
+      },
+      
+      // Main content describes the search interface - NO EXPANSION
+      mainEntity: {
+        '@type': 'WebPageElement',
+        '@id': `${searchUrl}#search-interface`,
+        name: 'Интерфейс поиска',
+        description: `Поиск статей и материалов на ${seoDict.site.name}`,
+      },
+      
+      // Enhanced properties using existing data
+      audience: {
+        '@type': 'Audience',
+        geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
+      },
+
+      // Accessibility features - static, no expansion needed
+      accessibilityFeature: [
+        'structuralNavigation',
+        'ARIA', 
+        'keyboardNavigation',
+        'searchFunctionality'
+      ],
+      accessibilityControl: ['fullKeyboardControl', 'fullMouseControl', 'fullTouchControl'],
+      accessibilityHazard: ['none'],
+    };
+
+    // Combine schemas
+    const allSchemas = [websiteSchema, searchPageSchema];
+
+    return <SchemaBuilder schema={allSchemas} priority="high" />;
+    
+  } catch (error) {
+    console.error('SearchSchema: Error generating schema', error);
+    return null;
+  }
+};
+
+// ===================================================================
+// MINIMAL SEARCH SCHEMA - DRY
+// ===================================================================
+
+/**
+ * Minimal search schema for performance-critical contexts
+ * NO DUPLICATION - uses existing helpers
+ */
+export const MinimalSearchSchema: React.FC<{ dictionary: Dictionary }> = ({ 
+  dictionary 
+}) => {
+  try {
+    const seoDict = dictionary.seo;
+    
+    if (!seoDict?.site) {
+      console.error('MinimalSearchSchema: Invalid dictionary structure');
+      return null;
+    }
+
+    // Use existing helper - NO DUPLICATION
+    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
+    const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
+
+    const minimalSchema: ExtendedSchemaData = {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      '@id': `${baseUrl}#website`,
+      name: seoDict.site.name,
+      url: baseUrl,
+      inLanguage: 'ru',
+      
+      potentialAction: {
+        '@type': 'SearchAction',
+        name: `Поиск по ${seoDict.site.name}`,
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${searchUrl}?search={search_term_string}`,
+        },
+        'query-input': 'required name=search_term_string',
+      },
+    };
+
+    return <SchemaBuilder schema={minimalSchema} priority="normal" />;
+    
+  } catch (error) {
+    console.error('MinimalSearchSchema: Error generating schema', error);
+    return null;
+  }
+};
+
+// ===================================================================
+// SEARCH ACTION SCHEMA - DRY
+// ===================================================================
+
+/**
+ * Search action schema for integration with other components
+ * NO DUPLICATION - uses existing helpers
+ */
+export const SearchActionSchema: React.FC<{ dictionary: Dictionary }> = ({
   dictionary
 }) => {
-  const searchDict = dictionary.search;
-  const seoDict = dictionary.seo;
+  try {
+    // Use existing helper - NO DUPLICATION
+    const searchActionData = generateSearchActionData(dictionary);
+    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
 
-  // Core WebSite schema with search capability
-  const websiteSchema: ExtendedSchemaData = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    '@id': `${getCanonicalURL('/')}#website`,
-    name: seoDict.site.name, // FIXED: was siteName
-    description: seoDict.site.description, // FIXED: was siteDescription
-    url: getCanonicalURL('/'),
-    inLanguage: seoDict.regional.language,
-    
-    // Search capability definition
-    potentialAction: {
+    const searchActionSchema: ExtendedSchemaData = {
+      '@context': 'https://schema.org',
       '@type': 'SearchAction',
-      name: searchDict.accessibility.searchLabel,
-      description: searchDict.schema.searchActionDescription,
+      '@id': `${searchActionData.targetUrl}#search-action`,
+      name: searchActionData.name,
+      description: searchActionData.description,
+      
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${getCanonicalURL('/search')}?search={search_term_string}`,
+        urlTemplate: searchActionData.queryTemplate,
         actionPlatform: [
           'https://schema.org/DesktopWebPlatform',
           'https://schema.org/MobileWebPlatform'
         ],
       },
+      
       'query-input': {
         '@type': 'PropertyValueSpecification',
         valueName: 'search_term_string',
-        description: searchDict.accessibility.searchDescription,
+        description: dictionary.search.placeholder,
         valueRequired: true,
-        valueMinLength: 3,
+        valueMinLength: 2,
         valueMaxLength: 100,
       },
-    },
 
-    // Publisher information
-    publisher: {
-      '@type': 'Organization',
-      '@id': `${getCanonicalURL('/')}#organization`,
-      name: seoDict.site.name, // FIXED: was siteName
-      url: getCanonicalURL('/'),
-      description: seoDict.site.description, // FIXED: was siteDescription
-      sameAs: seoDict.site.socialProfiles,
-      
-      contactPoint: {
-        '@type': 'ContactPoint',
-        email: seoDict.site.contactEmail,
-        contactType: 'customer support',
-        availableLanguage: ['ru', 'Russian'],
+      // Enhanced properties using existing data
+      agent: {
+        '@type': 'Organization',
+        name: dictionary.seo.site.name,
+        url: baseUrl,
       },
-    },
-  };
+    };
 
-  // Enhanced breadcrumb for search navigation
-  const breadcrumbSchema: ExtendedSchemaData = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    '@id': `${getCanonicalURL('/search')}#breadcrumb`,
+    return <SchemaBuilder schema={searchActionSchema} priority="normal" />;
     
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: dictionary.navigation.labels.home,
-        item: {
-          '@type': 'WebPage',
-          '@id': getCanonicalURL('/'),
-          name: dictionary.navigation.labels.home,
-          url: getCanonicalURL('/'),
-          inLanguage: 'ru',
-        },
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: searchDict.templates.pageTitle,
-        item: {
-          '@type': 'WebPage',
-          '@id': getCanonicalURL('/search'),
-          name: searchDict.templates.pageTitle,
-          url: getCanonicalURL('/search'),
-          inLanguage: 'ru',
-        },
-      },
-    ],
-    
-    // Enhanced properties
-    numberOfItems: 2,
-    name: searchDict.schema.breadcrumbNavigation,
-    description: `Навигация: ${dictionary.navigation.labels.home} → ${searchDict.templates.pageTitle}`,
-  };
-
-  // WebPage schema for the search interface
-  const webPageSchema: ExtendedSchemaData = {
-    '@context': 'https://schema.org',
-    '@type': 'WebPage',
-    '@id': getCanonicalURL('/search'),
-    name: searchDict.templates.pageTitle,
-    description: searchDict.templates.pageDescription,
-    url: getCanonicalURL('/search'),
-    inLanguage: seoDict.regional.language,
-    isPartOf: { 
-      '@type': 'WebSite',
-      '@id': `${getCanonicalURL('/')}#website` 
-    },
-    
-    // Main content describes the search interface
-    mainEntity: {
-      '@type': 'WebPageElement',
-      '@id': `${getCanonicalURL('/search')}#search-interface`,
-      name: searchDict.schema.searchInterfaceDescription,
-      description: `${searchDict.templates.pageDescription} для поиска статей о культуре и музыке`,
-    },
-    
-    breadcrumb: { 
-      '@type': 'BreadcrumbList',
-      '@id': `${getCanonicalURL('/search')}#breadcrumb` 
-    },
-
-    // Enhanced properties for search page
-    audience: {
-      '@type': 'Audience',
-      name: dictionary.navigation.seo.audience,
-      geographicArea: seoDict.regional.targetMarkets,
-    },
-
-    // Accessibility features
-    accessibilityFeature: [
-      'structuralNavigation',
-      'ARIA',
-      'keyboardNavigation',
-      'searchFunctionality'
-    ],
-    accessibilityControl: ['fullKeyboardControl', 'fullMouseControl', 'fullTouchControl'],
-    accessibilityHazard: ['none'],
-  };
-
-  // Combine all schemas
-  const allSchemas = [websiteSchema, breadcrumbSchema, webPageSchema];
-
-  return <SchemaBuilder schema={allSchemas} priority="high" />;
+  } catch (error) {
+    console.error('SearchActionSchema: Error generating schema', error);
+    return null;
+  }
 };
 
-/**
- * Minimal search schema for performance-critical contexts
- */
-export const MinimalSearchSchema: React.FC<{ dictionary: Dictionary }> = ({ 
-  dictionary 
-}) => {
-  const searchDict = dictionary.search;
-  const seoDict = dictionary.seo;
-
-  const minimalSchema: ExtendedSchemaData = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    '@id': `${getCanonicalURL('/')}#website`,
-    name: seoDict.site.name,
-    url: getCanonicalURL('/'),
-    inLanguage: seoDict.regional.language,
-    
-    potentialAction: {
-      '@type': 'SearchAction',
-      name: searchDict.accessibility.searchLabel,
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${getCanonicalURL('/search')}?search={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
-  };
-
-  return <SchemaBuilder schema={minimalSchema} priority="normal" />;
-};
+// ===================================================================
+// SEARCH BREADCRUMB SCHEMA - DRY
+// ===================================================================
 
 /**
- * Search action schema for integration with other components
+ * Breadcrumb schema for search pages using existing helpers
+ * NO DUPLICATION - reuses navigation helpers
  */
-export const SearchActionSchema: React.FC<{ dictionary: Dictionary }> = ({
+export const SearchBreadcrumbSchema: React.FC<{ dictionary: Dictionary }> = ({
   dictionary
 }) => {
-  const searchDict = dictionary.search;
+  try {
+    // Use existing helper - NO DUPLICATION
+    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
+    const searchUrl = generateCanonicalUrl('/search', dictionary.seo.site.url);
 
-  const searchActionSchema: ExtendedSchemaData = {
-    '@context': 'https://schema.org',
-    '@type': 'SearchAction',
-    '@id': `${getCanonicalURL('/search')}#search-action`,
-    name: searchDict.accessibility.searchLabel,
-    description: searchDict.schema.searchActionDescription,
-    
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: `${getCanonicalURL('/search')}?search={search_term_string}`,
-      actionPlatform: [
-        'https://schema.org/DesktopWebPlatform',
-        'https://schema.org/MobileWebPlatform'
+    const breadcrumbSchema: ExtendedSchemaData = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      '@id': `${searchUrl}#breadcrumb`,
+      
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: dictionary.navigation.labels.home,
+          item: {
+            '@type': 'WebPage',
+            '@id': baseUrl,
+            name: dictionary.navigation.labels.home,
+            url: baseUrl,
+            inLanguage: 'ru',
+          },
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Поиск', // Static, no expansion needed
+          item: {
+            '@type': 'WebPage',
+            '@id': searchUrl,
+            name: 'Поиск',
+            url: searchUrl,
+            inLanguage: 'ru',
+          },
+        },
       ],
-    },
+      
+      numberOfItems: 2,
+      name: 'Навигация к поиску',
+      description: `${dictionary.navigation.labels.home} → Поиск`,
+    };
+
+    return <SchemaBuilder schema={breadcrumbSchema} priority="normal" />;
     
-    'query-input': {
-      '@type': 'PropertyValueSpecification',
-      valueName: 'search_term_string',
-      description: searchDict.accessibility.searchDescription,
-      valueRequired: true,
-      valueMinLength: 3,
-      valueMaxLength: 100,
-    },
-
-    // Enhanced properties
-    agent: {
-      '@type': 'Organization',
-      name: dictionary.seo.site.name,
-      url: getCanonicalURL('/'),
-    },
-  };
-
-  return <SchemaBuilder schema={searchActionSchema} priority="normal" />;
+  } catch (error) {
+    console.error('SearchBreadcrumbSchema: Error generating schema', error);
+    return null;
+  }
 };

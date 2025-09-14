@@ -91,6 +91,24 @@ export interface NavigationDictionary {
 }
 
 // ===================================================================
+// FILTER - Simple filtering functionality
+// ===================================================================
+
+export interface FilterDictionary {
+  readonly allCategories: string;
+  readonly category: string;
+  readonly sortOrder: string;
+  readonly reset: string;
+  readonly newest: string;
+  readonly oldest: string;
+  readonly categorySelector: string;
+  readonly sortingControl: string;
+  readonly resetButton: string;
+  readonly filterGroup: string;
+  readonly dropdownLabel: string;
+}
+
+// ===================================================================
 // CONTENT SECTIONS - Compact and template-driven
 // ===================================================================
 
@@ -130,6 +148,7 @@ export interface SEOSiteInfo {
 }
 
 export interface SEORegional {
+  readonly language: string;
   readonly region: string;
   readonly targetMarkets: readonly string[];
 }
@@ -202,6 +221,7 @@ export interface Dictionary {
   readonly seo: SEODictionary;
   readonly accessibility: Accessibility;
   readonly search: SearchDictionary;
+  readonly filter: FilterDictionary;
   readonly footer: FooterDictionary;
 }
 

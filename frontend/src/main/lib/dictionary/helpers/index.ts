@@ -59,7 +59,39 @@ export {
   validateNavigationAccessibility,
   generateNavigationElements,
   generateNavigationSEOData,
+  getNavigationLinkData,
+  getNavigationLinksConfig,
+  getSkipLinksData,
+  getSkipLinksAccessibility,
 } from './navigation';
+
+// ===================================================================
+// SEARCH FUNCTIONS - NEW: Search-specific helpers
+// ===================================================================
+
+export {
+  getSearchPageTitle,
+  getSearchPageDescription,
+  getSearchKeywords,
+  generateSearchSEOData,
+  generateSearchActionData,
+  validateSearchDictionary,
+} from './search';
+
+// ===================================================================
+// FILTER FUNCTIONS - NEW: Filter-specific helpers
+// ===================================================================
+
+export {
+  getFilterLabels,
+  getSortingOptions,
+  generateCategoryDropdownItems,
+  generateFilterUrls,
+  getCurrentCategoryInfo,
+  generateFilterStateData,
+  validateFilterDictionary,
+  getFilterAccessibilityData,
+} from './filter';
 
 // ===================================================================
 // VALIDATION UTILITIES

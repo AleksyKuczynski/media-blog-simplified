@@ -132,3 +132,94 @@ export const generateNavigationElements = (dictionary: Dictionary) => {
     },
   ];
 };
+
+/**
+ * Generate navigation link data for NavLinks component
+ * Uses existing dictionary structure - no expansion needed
+ */
+export const getNavigationLinkData = (
+  dictionary: Dictionary,
+  linkKey: 'articles' | 'rubrics' | 'authors'
+) => {
+  // Use existing dictionary properties
+  const label = dictionary.navigation.labels[linkKey];
+  const description = dictionary.navigation.descriptions[linkKey];
+  
+  return {
+    label,
+    description,
+    // Create SEO-friendly title using existing pattern
+    title: `${label} — ${dictionary.seo.site.name}`,
+    // Use description for aria-label
+    ariaLabel: description,
+  };
+};
+
+/**
+ * Generate navigation links configuration using existing dictionary
+ * NO EXPANSION - works with current structure
+ */
+export const getNavigationLinksConfig = (dictionary: Dictionary) => {
+  const links = [
+    {
+      key: 'articles' as const,
+      href: '/articles',
+      priority: 1,
+      ...getNavigationLinkData(dictionary, 'articles'),
+    },
+    {
+      key: 'rubrics' as const,
+      href: '/rubrics', 
+      priority: 2,
+      ...getNavigationLinkData(dictionary, 'rubrics'),
+    },
+    {
+      key: 'authors' as const,
+      href: '/authors',
+      priority: 3,
+      ...getNavigationLinkData(dictionary, 'authors'),
+    },
+  ];
+
+  return links;
+};
+
+/**
+ * Get skip links data using existing dictionary properties
+ * Uses only properties that actually exist, static text for others
+ */
+export const getSkipLinksData = (dictionary: Dictionary) => {
+  return {
+    // Use existing properties
+    skipToContent: {
+      href: '#main-content',
+      label: dictionary.navigation.accessibility.skipToContent,
+    },
+    skipToNavigation: {
+      href: '#main-navigation', 
+      label: dictionary.navigation.accessibility.skipToNavigation,
+    },
+    // Static text for missing properties (no dictionary expansion)
+    skipToSearch: {
+      href: '#site-search',
+      label: 'Перейти к поиску', // Static, no expansion
+    },
+    skipToFooter: {
+      href: '#site-footer',
+      label: 'Перейти к подвалу', // Static, no expansion
+    },
+  };
+};
+
+/**
+ * Get accessibility labels for skip links
+ * Uses existing properties where possible, static fallbacks
+ */
+export const getSkipLinksAccessibility = (dictionary: Dictionary) => {
+  return {
+    // Use existing main navigation label
+    navigationLabel: dictionary.navigation.accessibility.mainNavigation,
+    // Static fallback for missing property
+    keyboardNavigationLabel: 'Быстрая навигация', // Static, no expansion
+  };
+};

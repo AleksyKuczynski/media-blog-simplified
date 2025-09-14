@@ -126,6 +126,7 @@ export const russianDictionary: Dictionary = {
       authors: 'авторы, эксперты, журналисты, блогеры',
     },
     regional: {
+      language: 'ru',
       region: 'Россия',
       targetMarkets: ['Россия', 'СНГ', 'русскоязычное сообщество'],
     },
@@ -141,6 +142,24 @@ export const russianDictionary: Dictionary = {
     labels: {
       results: 'Результаты поиска',
     },
+  },
+
+  // ===================================================================
+  // FILTER & SORTING - Simple filter functionality
+  // ===================================================================
+  filter: {
+    allCategories: 'Все категории',
+    category: 'Категория', 
+    sortOrder: 'Сортировка',
+    reset: 'Сброс',
+    newest: 'Сначала новые',
+    oldest: 'Сначала старые',
+    // Accessibility
+    categorySelector: 'Выбор категории',
+    sortingControl: 'Управление сортировкой', 
+    resetButton: 'Сбросить фильтры',
+    filterGroup: 'Группа фильтров',
+    dropdownLabel: 'Меню фильтров',
   },
 
   // ===================================================================

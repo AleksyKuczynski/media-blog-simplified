@@ -1,182 +1,239 @@
 // src/main/components/SEO/metadata/SearchMetadata.tsx
-// Fixed search metadata with proper type safety and correct API usage
+// DRY: Uses existing helpers, no dictionary expansion
 
 import { Metadata } from 'next';
+import { Dictionary } from '@/main/lib/dictionary/types';
 import { 
   buildMetadata, 
   createWebsiteSEOData,
   validateSEOData 
 } from '../core/MetadataBuilder';
-import { Dictionary } from '@/main/lib/dictionary/types';
-import { 
-  getCanonicalURL,
-  getProcessedSEOTitle,
-  getProcessedSEODescription,
-  getPageTypeKeywords,
-  validateSEOMetadata,
-} from '@/main/lib/dictionary/helpers';
+import {
+  generateSearchSEOData,
+  validateSearchDictionary,
+} from '@/main/lib/dictionary/helpers/search';
 
-interface SearchMetadataProps {
-  readonly dictionary: Dictionary;
+// ===================================================================
+// TYPES - Simple and focused
+// ===================================================================
+
+export interface SearchMetadataProps {
+  dictionary: Dictionary;
+  query?: string;
+  resultCount?: number;
+  customTitle?: string;
+  customDescription?: string;
+  imageUrl?: string;
 }
 
+// ===================================================================
+// MAIN SEARCH METADATA FUNCTIONS - DRY
+// ===================================================================
+
 /**
- * Generate static search page metadata
- * Focuses on search interface capability, not dynamic results
+ * Generate search page metadata using existing helpers
+ * NO DUPLICATION - uses existing SEO and search helpers
  */
-export const generateSearchMetadata = (
-  dictionary: Dictionary
-): Metadata => {
-  const searchDict = dictionary.search;
-  const seoDict = dictionary.seo;
+export const generateSearchMetadata = async ({
+  dictionary,
+  query,
+  resultCount,
+  customTitle,
+  customDescription,
+  imageUrl,
+}: SearchMetadataProps): Promise<Metadata> => {
   
-  // Build SEO content using helper functions
-  const baseTitle = searchDict.templates.pageTitle;
-  const title = getProcessedSEOTitle(seoDict, 'search', { 
-    title: baseTitle,
-    siteName: seoDict.site.name 
-  });
-  
-  // Create enhanced description - FIXED: Remove invalid 'description' property
-  const baseDescription = searchDict.templates.pageDescription;
-  const description = getProcessedSEODescription(seoDict, 'search', {
-    title: baseDescription, // Use 'title' instead of 'description'
-    siteName: seoDict.site.name
-  });
-  
-  // Get search-specific keywords
-  const keywords = getPageTypeKeywords(seoDict, 'search', [
-    'поиск статей',
-    'поиск по сайту',
-    searchDict.labels.placeholder.toLowerCase()
-  ]);
+  try {
+    // Validate dictionary first
+    if (!validateSearchDictionary(dictionary)) {
+      console.error('SearchMetadata: Invalid dictionary structure');
+    }
 
-  // Validate SEO content
-  const validation = validateSEOMetadata(title, description, keywords, 'search');
-  if (!validation.isValid) {
-    console.warn('Search SEO validation errors:', validation.errors);
+    // Use existing search helper - NO DUPLICATION
+    const searchSEOData = generateSearchSEOData(dictionary);
+    
+    // Customize title/description if provided
+    const title = customTitle || searchSEOData.title;
+    const description = customDescription || searchSEOData.description;
+    
+    // Add query context if provided (for dynamic search results)
+    const finalTitle = query ? `${query} — ${title}` : title;
+    const finalDescription = query 
+      ? `Результаты поиска "${query}" на ${dictionary.seo.site.name}`
+      : description;
+
+    // Create SEO data using existing function - NO DUPLICATION
+    const seoData = createWebsiteSEOData(
+      finalTitle,
+      finalDescription,
+      searchSEOData.keywords,
+      searchSEOData.canonicalUrl,
+      imageUrl || `${dictionary.seo.site.url}/og-search.jpg`
+    );
+
+    // Validate using existing function - NO DUPLICATION
+    if (!validateSEOData(seoData)) {
+      console.error('SearchMetadata: Invalid SEO data');
+    }
+
+    // Additional search-specific metadata
+    const additionalMeta: Record<string, string | number | undefined> = {
+      'search:interface': 'enabled',
+      'search:language': dictionary.seo.regional?.language || 'ru',
+      'search:region': dictionary.seo.regional?.region || 'RU',
+      'DC.type': 'Text.SearchPage',
+      'DC.language': 'ru',
+      'DC.relation.isPartOf': dictionary.seo.site.url,
+      
+      // Add query and result info if available
+      ...(query && { 'search:query': query }),
+      ...(resultCount !== undefined && { 'search:resultCount': resultCount }),
+    };
+
+    // Use existing MetadataBuilder - NO DUPLICATION
+    const metadata = buildMetadata(
+      seoData,
+      {
+        baseUrl: dictionary.seo.site.url,
+        defaultImageUrl: `${dictionary.seo.site.url}/og-search.jpg`,
+        siteName: dictionary.seo.site.name,
+        locale: 'ru_RU',
+        region: dictionary.seo.regional?.region || 'RU',
+      },
+      additionalMeta
+    );
+
+    return metadata;
+    
+  } catch (error) {
+    console.error('SearchMetadata: Error generating metadata', error);
+    
+    // Fallback metadata using basic info
+    return {
+      title: `Поиск — ${dictionary.seo.site.name}`,
+      description: `Поиск материалов на ${dictionary.seo.site.name}`,
+    };
   }
-
-  // Create SEO data with search-specific image
-  const seoData = createWebsiteSEOData(
-    title,
-    description,
-    keywords,
-    getCanonicalURL('/search'),
-    'https://event4me.eu/og-search.jpg' // Search-specific OG image
-  );
-
-  // Validate and build metadata
-  if (!validateSEOData(seoData)) {
-    console.error('Invalid SEO data for search metadata');
-  }
-
-  // Additional metadata for search page
-  const additionalMeta: Record<string, string | number | undefined> = {
-    'search:enhanced': 'true',
-    'search:functionality': 'static-interface',
-    'search:language': seoDict.regional.language,
-    // Dublin Core for search
-    'DC.relation.isPartOf': getCanonicalURL('/'),
-    'DC.relation.hasFormat': 'application/html',
-    'DC.type': 'Text.SearchPage',
-    // Yandex-specific for search
-    'yandex:search': 'true',
-  };
-
-  // FIXED: Use only valid SEOContext properties, no openGraph
-  const metadata = buildMetadata(
-    seoData,
-    {
-      // Only valid SEOContext properties
-      baseUrl: 'https://event4me.eu',
-      defaultImageUrl: 'https://event4me.eu/og-search.jpg',
-      siteName: seoDict.site.name,
-      locale: 'ru_RU',
-      region: 'RU',
-    },
-    additionalMeta
-  );
-
-  return metadata;
 };
 
 /**
- * Generate search-specific Open Graph data
- * This is now a utility function since buildMetadata handles OG internally
+ * Generate search metadata for static search page
+ * Uses existing helpers - simplified API
+ */
+export const generateStaticSearchMetadata = async (
+  dictionary: Dictionary
+): Promise<Metadata> => {
+  return generateSearchMetadata({ dictionary });
+};
+
+/**
+ * Generate search metadata for dynamic search results
+ * Uses existing helpers - adds query context
+ */
+export const generateDynamicSearchMetadata = async (
+  dictionary: Dictionary,
+  query: string,
+  resultCount?: number
+): Promise<Metadata> => {
+  return generateSearchMetadata({ 
+    dictionary, 
+    query, 
+    resultCount 
+  });
+};
+
+/**
+ * Get search OpenGraph data - uses existing pattern
+ * NO DUPLICATION - reuses search SEO data
  */
 export const getSearchOpenGraphData = (
-  dictionary: Dictionary
+  dictionary: Dictionary,
+  query?: string
 ) => {
-  const searchDict = dictionary.search;
-  const seoDict = dictionary.seo;
+  const searchSEOData = generateSearchSEOData(dictionary);
   
+  const title = query 
+    ? `${query} — Поиск — ${dictionary.seo.site.name}`
+    : searchSEOData.title;
+    
+  const description = query
+    ? `Результаты поиска "${query}" на ${dictionary.seo.site.name}`
+    : searchSEOData.description;
+
   return {
-    type: 'website' as const,
+    title,
+    description,
+    url: searchSEOData.canonicalUrl,
+    siteName: dictionary.seo.site.name,
     locale: 'ru_RU',
-    siteName: seoDict.site.name,
-    title: searchDict.templates.pageTitle,
-    description: searchDict.templates.pageDescription,
-    url: getCanonicalURL('/search'),
+    type: 'website' as const,
+    
     images: [
       {
-        url: 'https://event4me.eu/og-search.jpg',
+        url: `${dictionary.seo.site.url}/og-search.jpg`,
         width: 1200,
         height: 630,
-        alt: searchDict.templates.pageTitle,
+        alt: title,
       },
     ],
   };
 };
 
 /**
- * Validate search metadata completeness
- * Uses correct dictionary paths that actually exist
+ * Validate search metadata - uses existing validation patterns
+ * NO DUPLICATION
  */
-export const validateSearchMetadata = (dictionary: Dictionary): boolean => {
-  const required = [
-    'search.templates.pageTitle',
-    'search.templates.pageDescription',
-    'search.labels.placeholder',
-    'seo.site.name',
-  ];
+export const validateSearchMetadata = (
+  metadata: Metadata
+): { 
+  isValid: boolean; 
+  errors: string[] 
+} => {
+  const errors: string[] = [];
 
-  const missing = required.filter(path => {
-    const value = path.split('.').reduce((obj, key) => obj?.[key], dictionary as any);
-    return !value || (typeof value === 'string' && value.trim().length === 0);
-  });
+  if (!metadata.title) errors.push('Search title is required');
+  if (!metadata.description) errors.push('Search description is required');
 
-  if (missing.length > 0) {
-    console.warn('Missing required search metadata:', missing);
-    return false;
+  if (metadata.title && typeof metadata.title === 'string' && metadata.title.length > 60) {
+    errors.push('Search title too long (>60 chars)');
   }
 
-  return true;
+  if (metadata.description && metadata.description.length > 160) {
+    errors.push('Search description too long (>160 chars)');
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+  };
 };
 
 /**
- * Get enhanced meta tags for search page
- * Uses available dictionary properties
+ * Get search meta tags - uses existing pattern
+ * NO DUPLICATION
  */
 export const getSearchMetaTags = (
-  dictionary: Dictionary
-): Record<string, string | number | undefined> => {
-  const searchDict = dictionary.search;
-  const seoDict = dictionary.seo;
+  dictionary: Dictionary,
+  query?: string
+) => {
+  const searchSEOData = generateSearchSEOData(dictionary);
+  
+  const title = query 
+    ? `${query} — ${searchSEOData.title}`
+    : searchSEOData.title;
 
-  return {
-    // Search-specific
-    'search:interface': 'enabled',
-    'search:language': seoDict.regional.language,
-    'search:region': seoDict.regional.region,
-    
-    // Dublin Core for search
-    'DC.relation.isPartOf': getCanonicalURL('/'),
-    'DC.relation.hasFormat': 'application/html',
-    'DC.type': 'Text.SearchPage',
-    
-    // Yandex-specific for search
-    'yandex:search': 'true',
-    'yandex:verification': process.env.YANDEX_VERIFICATION || '',
-  };
+  return [
+    { name: 'title', content: title },
+    { name: 'description', content: searchSEOData.description },
+    { name: 'keywords', content: searchSEOData.keywords },
+    { property: 'og:title', content: title },
+    { property: 'og:description', content: searchSEOData.description },
+    { property: 'og:url', content: searchSEOData.canonicalUrl },
+    { property: 'og:site_name', content: dictionary.seo.site.name },
+    { name: 'twitter:title', content: title },
+    { name: 'twitter:description', content: searchSEOData.description },
+    { name: 'search:interface', content: 'enabled' },
+    { name: 'DC.type', content: 'Text.SearchPage' },
+    { name: 'DC.language', content: 'ru' },
+  ];
 };

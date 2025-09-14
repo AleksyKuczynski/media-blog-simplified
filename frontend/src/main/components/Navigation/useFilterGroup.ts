@@ -1,92 +1,214 @@
 // src/main/components/Navigation/useFilterGroup.ts
-// MIGRATED: Uses new dictionary system and types
+// FIXED: Type-safe, follows React hooks rules, uses dictionary entries
+
 import { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Category } from '@/main/lib/directus/directusInterfaces';
-import { Lang, CategoryTranslations } from '@/main/lib/dictionary/types'; // MIGRATED: New dictionary types
+import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import {
+  generateFilterStateData,
+  generateFilterUrls,
+  validateFilterDictionary,
+  getFilterLabels,
+  getSortingOptions,
+} from '@/main/lib/dictionary/helpers/filter';
 import type { DropdownItemType } from '../Interface/Dropdown/types';
+
+// ===================================================================
+// TYPES - Simplified and clean, FIXED TYPES
+// ===================================================================
 
 interface UseFilterGroupProps {
   readonly categories: Category[];
-  readonly categoryTranslations: CategoryTranslations; // MIGRATED: Uses new CategoryTranslations
-  readonly lang: Lang; // MIGRATED: Uses new Lang type
+  readonly dictionary: Dictionary;
+  readonly lang: Lang;
 }
 
+interface UseFilterGroupReturn {
+  // Current state
+  currentCategory: string;
+  currentSort: string;
+  isArticlesPath: boolean;
+  // UI data - FIXED: ensure all strings are non-undefined
+  categoryItems: DropdownItemType[];
+  filterLabels: ReturnType<typeof getFilterLabels>;
+  sortingOptions: ReturnType<typeof getSortingOptions>;
+  selectedCategoryName: string; // FIXED: always string, never undefined
+  // Actions
+  handleCategoryChange: (item: DropdownItemType) => void;
+  handleReset: () => void;
+}
+
+// ===================================================================
+// MAIN USEFILTERGROUP HOOK - FIXED
+// ===================================================================
+
 /**
- * useFilterGroup - MIGRATED to new dictionary system
- * Now uses CategoryTranslations from new dictionary structure
+ * useFilterGroup - FIXED: Type-safe hook using dictionary entries
+ * NO DUPLICATION - uses generateFilterStateData and generateFilterUrls
+ * FOLLOWS HOOKS RULES - hooks called at top level
  */
 export function useFilterGroup({ 
   categories, 
-  categoryTranslations,
+  dictionary,
   lang
-}: UseFilterGroupProps) {
+}: UseFilterGroupProps): UseFilterGroupReturn {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Computed states
-  const isArticlesPath = useMemo(() => 
-    pathname.endsWith('/articles')
-  , [pathname]);
+  // FIXED: All hooks called at top level, no conditional calls
+  
+  // Validate dictionary structure
+  const isDictionaryValid = useMemo(() => 
+    validateFilterDictionary(dictionary), 
+    [dictionary]
+  );
 
-  const currentCategory = useMemo(() => {
-    const categorySlug = pathname.split('/').pop();
-    return categories.some(cat => cat.slug === categorySlug) ? categorySlug : '';
-  }, [pathname, categories]);
-
-  const currentSort = useMemo(() => 
-    searchParams.get('sort') || 'desc'
-  , [searchParams]);
-
-  // MIGRATED: Prepare dropdown items using new dictionary structure
-  const categoryItems = useMemo<DropdownItemType[]>(() => [
-    { 
-      id: 'all',
-      label: categoryTranslations.allCategories, // MIGRATED: Still works with new structure
-      value: '',
-      selected: currentCategory === ''
-    },
-    ...categories.map(category => ({
-      id: category.slug,
-      label: category.name,
-      value: category.slug,
-      selected: category.slug === currentCategory
-    }))
-  ], [categories, categoryTranslations.allCategories, currentCategory]);
-
-  // Handlers - functionality unchanged
-  const handleCategoryChange = useCallback((item: DropdownItemType) => {
-    const currentSort = searchParams.get('sort') || 'desc';
-    const params = new URLSearchParams();
-    params.set('sort', currentSort); // Preserve current sort order
-
-    if (item.value) {
-      router.push(`/ru/category/${item.value}?${params.toString()}`);
-    } else {
-      router.push(`/ru/articles?${params.toString()}`);
+  // Generate all filter state using existing helper - NO DUPLICATION
+  const filterState = useMemo(() => {
+    if (!isDictionaryValid) {
+      console.warn('useFilterGroup: Dictionary validation failed, using fallbacks');
     }
-  }, [router, searchParams]);
+    
+    try {
+      return generateFilterStateData(dictionary, categories, pathname, searchParams);
+    } catch (error) {
+      console.error('useFilterGroup: Error generating filter state', error);
+      
+      // FIXED: Fallback with proper types
+      const filterLabels = getFilterLabels(dictionary);
+      return {
+        currentCategory: '',
+        currentSort: 'desc',
+        isArticlesPath: pathname.endsWith('/articles'),
+        filterLabels,
+        sortingOptions: getSortingOptions(dictionary),
+        categoryItems: [{
+          id: 'all',
+          label: filterLabels.allCategories,
+          value: '',
+          selected: true,
+        }],
+        selectedCategoryName: filterLabels.allCategories, // FIXED: always string
+      };
+    }
+  }, [dictionary, categories, pathname, searchParams, isDictionaryValid]);
 
-  const handleReset = useCallback(() => {
-    if (isArticlesPath) {
-      if (currentCategory || currentSort !== 'desc') {
-        router.push(`/ru/articles`);
+  // Extract values from filter state for easy access
+  const {
+    currentCategory,
+    currentSort,
+    isArticlesPath,
+    filterLabels,
+    sortingOptions,
+    categoryItems,
+    selectedCategoryName, // FIXED: guaranteed to be string
+  } = filterState;
+
+  // Handle category change using existing helper - NO DUPLICATION
+  const handleCategoryChange = useCallback((item: DropdownItemType) => {
+    try {
+      const baseUrl = dictionary.seo?.site?.url || 'https://event4me.eu';
+      const newUrl = generateFilterUrls(baseUrl, item.value, currentSort);
+      
+      // Convert absolute URL to relative path for router
+      const relativePath = newUrl.replace(baseUrl, '').replace('/ru', '');
+      router.push(`/ru${relativePath}`);
+      
+    } catch (error) {
+      console.error('useFilterGroup: Error handling category change', error);
+      
+      // Fallback navigation
+      if (item.value) {
+        router.push(`/ru/category/${item.value}?sort=${currentSort}`);
+      } else {
+        router.push(`/ru/articles?sort=${currentSort}`);
       }
-    } else {
-      router.push(`/ru/articles`);
+    }
+  }, [router, currentSort, dictionary.seo?.site?.url]);
+
+  // Handle reset using existing patterns - NO DUPLICATION
+  const handleReset = useCallback(() => {
+    try {
+      if (isArticlesPath && !currentCategory && currentSort === 'desc') {
+        // Already at default state, no action needed
+        return;
+      }
+      
+      // Reset to default articles page
+      router.push('/ru/articles');
+      
+    } catch (error) {
+      console.error('useFilterGroup: Error handling reset', error);
+      // Fallback reset
+      router.push('/ru/articles');
     }
   }, [router, isArticlesPath, currentCategory, currentSort]);
 
   return {
-    // States
+    // Current state
     currentCategory,
     currentSort,
     isArticlesPath,
-    // Prepared data
+    
+    // UI data - FIXED: all properly typed
     categoryItems,
-    // Action handlers
+    filterLabels,
+    sortingOptions,
+    selectedCategoryName, // FIXED: guaranteed string
+    
+    // Actions
     handleCategoryChange,
     handleReset,
   };
+}
+
+// ===================================================================
+// UTILITY HOOKS - Additional filter-related hooks, FIXED
+// ===================================================================
+
+/**
+ * useFilterValidation - Hook for validating filter state
+ * Uses existing validation patterns
+ */
+export function useFilterValidation(dictionary: Dictionary, categories: Category[]) {
+  return useMemo(() => {
+    const issues: string[] = [];
+    
+    if (!validateFilterDictionary(dictionary)) {
+      issues.push('Filter dictionary validation failed');
+    }
+    
+    if (!Array.isArray(categories)) {
+      issues.push('Categories must be an array');
+    }
+    
+    if (categories.length === 0) {
+      issues.push('No categories provided');
+    }
+    
+    return {
+      isValid: issues.length === 0,
+      issues,
+    };
+  }, [dictionary, categories]);
+}
+
+/**
+ * useFilterUrls - Hook for generating filter-related URLs
+ * Uses existing URL generation helpers
+ */
+export function useFilterUrls(dictionary: Dictionary) {
+  const baseUrl = dictionary.seo?.site?.url || 'https://event4me.eu';
+  
+  return useMemo(() => ({
+    generateCategoryUrl: (categorySlug: string, sort: string = 'desc') =>
+      generateFilterUrls(baseUrl, categorySlug, sort),
+    
+    generateArticlesUrl: (sort: string = 'desc') =>
+      generateFilterUrls(baseUrl, '', sort),
+    
+    baseUrl,
+  }), [baseUrl]);
 }
