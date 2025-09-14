@@ -90,38 +90,3 @@ export const getLocalizedRubricCount = (dictionary: Dictionary, count: number): 
 export const getLocalizedAuthorCount = (dictionary: Dictionary, count: number): string => {
   return formatCount(dictionary, count, 'authors');
 };
-
-/**
- * Navigation-specific helpers
- */
-
-/**
- * Get page title for navigation
- * @example getNavigationPageTitle(dictionary, 'рубрики') => "Рубрики — EventForMe"
- */
-export const getNavigationPageTitle = (dictionary: Dictionary, page: string): string => {
-  return processTemplate(dictionary.navigation.templates.pageTitle, {
-    page,
-    siteName: dictionary.seo.site.name,
-  });
-};
-
-/**
- * Get section description for navigation
- * @example getNavigationSectionDescription(dictionary, 'Изучить', 'рубрики') => "Изучить рубрики на EventForMe"
- */
-export const getNavigationSectionDescription = (dictionary: Dictionary, action: string, section: string): string => {
-  return processTemplate(dictionary.navigation.templates.sectionDescription, {
-    action,
-    section,
-    siteName: dictionary.seo.site.name,
-  });
-};
-
-/**
- * Get breadcrumb navigation text with proper separator
- * @example getBreadcrumbText(dictionary, ['Главная', 'Рубрики']) => "Главная → Рубрики"
- */
-export const getBreadcrumbText = (dictionary: Dictionary, items: string[]): string => {
-  return items.join(` ${dictionary.navigation.templates.breadcrumbSeparator} `);
-};

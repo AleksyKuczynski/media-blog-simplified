@@ -59,6 +59,14 @@ export interface NavigationTemplates {
   readonly breadcrumbSeparator: string; // "→" or "/" 
 }
 
+export interface NavigationDescriptions {
+  readonly home: string;
+  readonly articles: string;
+  readonly rubrics: string;
+  readonly authors: string;
+  readonly search: string;
+}
+
 export interface NavigationAccessibility {
   readonly mainNavigation: string;
   readonly menuTitle: string;
@@ -78,6 +86,7 @@ export interface NavigationAccessibility {
 export interface NavigationDictionary {
   readonly labels: NavigationLabels;
   readonly templates: NavigationTemplates;
+  readonly descriptions: NavigationDescriptions;
   readonly accessibility: NavigationAccessibility;
 }
 

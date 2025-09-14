@@ -213,3 +213,5 @@ const seoHelpers = {
 };
 
 export default seoHelpers;
+
+export { generateCanonicalUrl as getCanonicalURL };

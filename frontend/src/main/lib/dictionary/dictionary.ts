@@ -15,6 +15,13 @@ export const russianDictionary: Dictionary = {
       authors: 'Авторы',
       search: 'Поиск',
     },
+    descriptions: {
+      home: 'Главная страница EventForMe — медиа о культурных событиях',
+      articles: 'Статьи о музыке, искусстве и культурных событиях',
+      rubrics: 'Тематические рубрики EventForMe по направлениям культуры',
+      authors: 'Авторы EventForMe — журналисты и экспертыпо культуре',
+      search: 'Поиск статей и материалов на EventForMe',
+    },
     templates: {
       pageTitle: '{page} — {siteName}',
       sectionDescription: '{action} {section} на {siteName}',

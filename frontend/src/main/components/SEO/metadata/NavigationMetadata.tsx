@@ -1,18 +1,20 @@
 // src/main/components/SEO/metadata/NavigationMetadata.tsx
-// MIGRATION EXAMPLE: Clean, granular navigation-specific metadata
+// DRY: Uses existing helpers instead of duplicating logic
 
 import { Metadata } from 'next';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { 
-  getPageTitle, 
-  getMetaDescription, 
-  generateCanonicalUrl,
-  getKeywords, 
-  getBreadcrumbText
+  buildMetadata, 
+  createWebsiteSEOData,
+  validateSEOData 
+} from '../core/MetadataBuilder';
+import {
+  generateNavigationSEOData,
+  getBreadcrumbText,
 } from '@/main/lib/dictionary/helpers';
 
 // ===================================================================
-// TYPES - Clean and focused on navigation
+// TYPES - Clean and focused
 // ===================================================================
 
 export interface NavigationMetadataProps {
@@ -21,6 +23,7 @@ export interface NavigationMetadataProps {
   pageType?: 'main' | 'section' | 'breadcrumb';
   customTitle?: string;
   customDescription?: string;
+  imageUrl?: string;
 }
 
 export interface NavigationSEOData {
@@ -32,12 +35,12 @@ export interface NavigationSEOData {
 }
 
 // ===================================================================
-// CORE NAVIGATION METADATA FUNCTIONS
+// MAIN NAVIGATION METADATA FUNCTIONS - DRY
 // ===================================================================
 
 /**
- * Generate navigation-specific metadata using new dictionary structure
- * This replaces old SEOManager navigation logic
+ * Generate navigation-specific metadata using existing helpers
+ * NO DUPLICATION - reuses all existing SEO and navigation functions
  */
 export const generateNavigationMetadata = async ({
   dictionary,
@@ -45,70 +48,72 @@ export const generateNavigationMetadata = async ({
   pageType = 'main',
   customTitle,
   customDescription,
+  imageUrl,
 }: NavigationMetadataProps): Promise<Metadata> => {
-  // Clean path for canonical URL
-  const cleanPath = currentPath.startsWith('/') ? currentPath : `/${currentPath}`;
   
-  // Generate title using template system
-  const title = customTitle || getPageTitle(dictionary, dictionary.navigation.labels.home);
+  // Determine page title based on context
+  let pageTitle = dictionary.navigation.labels.home;
+  switch (pageType) {
+    case 'section':
+      pageTitle = 'Навигация';
+      break;
+    case 'breadcrumb':
+      pageTitle = 'Навигация по сайту';
+      break;
+  }
   
-  // Generate description using templates
-  const description = customDescription || getMetaDescription(
-    dictionary, 
-    dictionary.seo.site.description
+  // Use existing composite helper - NO DUPLICATION
+  const seoData = generateNavigationSEOData(
+    dictionary,
+    customTitle || pageTitle,
+    currentPath,
+    pageType
   );
 
-  // Generate canonical URL
-  const canonicalUrl = generateCanonicalUrl(cleanPath);
-  
-  // Get appropriate keywords
-  const keywords = getKeywords(dictionary, 'navigation');
+  // Override description if custom provided
+  const description = customDescription || seoData.description;
 
-  // Build metadata object
-  const metadata: Metadata = {
-    title,
+  // Create SEO data object using existing function
+  const websiteSEOData = createWebsiteSEOData(
+    seoData.title,
     description,
-    keywords,
-    
-    // OpenGraph for navigation
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
+    seoData.keywords,
+    seoData.canonicalUrl,
+    imageUrl || `${dictionary.seo.site.url}/og-navigation.jpg`
+  );
+
+  // Validate using existing function
+  if (!validateSEOData(websiteSEOData)) {
+    console.error('NavigationMetadata: Invalid SEO data');
+  }
+
+  // Additional navigation-specific metadata
+  const additionalMeta: Record<string, string | number | undefined> = {
+    'navigation:type': pageType,
+    'navigation:path': currentPath,
+    'DC.type': 'Text.Navigation',
+    'DC.language': 'ru',
+    'DC.relation.isPartOf': dictionary.seo.site.url,
+  };
+
+  // Use existing MetadataBuilder - NO DUPLICATION
+  const metadata = buildMetadata(
+    websiteSEOData,
+    {
+      baseUrl: dictionary.seo.site.url,
+      defaultImageUrl: `${dictionary.seo.site.url}/og-navigation.jpg`,
       siteName: dictionary.seo.site.name,
       locale: 'ru_RU',
-      type: 'website',
+      region: dictionary.seo.regional.region,
     },
-
-    // Twitter Card
-    twitter: {
-      card: 'summary',
-      title,
-      description,
-    },
-
-    // Additional meta tags for navigation
-    other: {
-      'DC.title': title,
-      'DC.description': description,
-      'DC.language': 'ru',
-      'DC.type': 'Text.Navigation',
-      'navigation:type': pageType,
-      'navigation:path': cleanPath,
-    },
-
-    // Canonical URL
-    alternates: {
-      canonical: canonicalUrl,
-    },
-  };
+    additionalMeta
+  );
 
   return metadata;
 };
 
 /**
- * Generate metadata for main site navigation
- * Used by main navigation components
+ * Generate main navigation metadata - uses existing function
  */
 export const generateMainNavigationMetadata = async (
   dictionary: Dictionary,
@@ -122,8 +127,7 @@ export const generateMainNavigationMetadata = async (
 };
 
 /**
- * Generate OpenGraph data specifically for navigation
- * Separated for reuse in different contexts
+ * Generate OpenGraph data for navigation - uses existing helpers
  */
 export const getNavigationOpenGraphData = (
   dictionary: Dictionary,
@@ -139,7 +143,6 @@ export const getNavigationOpenGraphData = (
     locale: 'ru_RU',
     type: 'website' as const,
     
-    // Navigation-specific OG properties
     images: [
       {
         url: `${dictionary.seo.site.url}/og-navigation.jpg`,
@@ -152,8 +155,7 @@ export const getNavigationOpenGraphData = (
 };
 
 /**
- * Generate breadcrumb metadata for navigation
- * Clean implementation using navigation utils
+ * Generate breadcrumb metadata - uses existing helper
  */
 export const generateBreadcrumbMetadata = (
   dictionary: Dictionary,
@@ -161,6 +163,7 @@ export const generateBreadcrumbMetadata = (
 ): Record<string, string> => {
   if (breadcrumbs.length === 0) return {};
 
+  // Use existing helper function - NO DUPLICATION
   const breadcrumbText = getBreadcrumbText(
     dictionary, 
     breadcrumbs.map(item => item.name)
@@ -174,8 +177,7 @@ export const generateBreadcrumbMetadata = (
 };
 
 /**
- * Get navigation link SEO attributes
- * For individual navigation links
+ * Get navigation link SEO attributes - reuses existing patterns
  */
 export const getNavigationLinkSEO = (
   dictionary: Dictionary,
@@ -186,16 +188,16 @@ export const getNavigationLinkSEO = (
     title: `${linkText} — ${dictionary.seo.site.name}`,
     'aria-label': linkText,
     href,
-    // For structured data
     'data-navigation-link': linkText.toLowerCase(),
   };
 };
 
 /**
- * Validate navigation metadata
- * Ensures all required properties are present
+ * Validate navigation metadata - reuses existing validation patterns
  */
-export const validateNavigationMetadata = (metadata: Metadata): { 
+export const validateNavigationMetadata = (
+  metadata: Metadata
+): { 
   isValid: boolean; 
   errors: string[] 
 } => {
@@ -205,12 +207,10 @@ export const validateNavigationMetadata = (metadata: Metadata): {
   if (!metadata.description) errors.push('Navigation description is required');
   if (!metadata.alternates?.canonical) errors.push('Canonical URL is required');
 
-  // Check title length
   if (metadata.title && typeof metadata.title === 'string' && metadata.title.length > 60) {
     errors.push('Navigation title too long (>60 chars)');
   }
 
-  // Check description length  
   if (metadata.description && metadata.description.length > 160) {
     errors.push('Navigation description too long (>160 chars)');
   }
@@ -222,8 +222,7 @@ export const validateNavigationMetadata = (metadata: Metadata): {
 };
 
 /**
- * Get navigation meta tags for HTML head
- * Returns clean array of meta tag objects
+ * Get navigation meta tags - reuses existing SEO data patterns
  */
 export const getNavigationMetaTags = (
   dictionary: Dictionary,
@@ -239,7 +238,6 @@ export const getNavigationMetaTags = (
     { property: 'og:site_name', content: dictionary.seo.site.name },
     { name: 'twitter:title', content: seoData.title },
     { name: 'twitter:description', content: seoData.description },
-    // Navigation-specific tags
     { name: 'navigation:site', content: dictionary.seo.site.name },
     { name: 'DC.type', content: 'Text.Navigation' },
     { name: 'DC.language', content: 'ru' },

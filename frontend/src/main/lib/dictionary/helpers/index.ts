@@ -1,31 +1,39 @@
 // src/main/lib/dictionary/helpers/index.ts
-// UPDATED: Clean exports for navigation-enhanced dictionary
+// CONSOLIDATED: Clean DRY exports with no duplication
 
 import { Dictionary } from '../types';
 
 // ===================================================================
-// CORE HELPERS - From main implementation files
+// TEMPLATE PROCESSING - Core logic
 // ===================================================================
 
-// Template processing
 export {
   processTemplate,
   createSEOVariables,
   validateTemplate,
 } from './templates';
 
-// SEO optimization  
+// ===================================================================
+// SEO FUNCTIONS - Single source of truth for SEO operations
+// ===================================================================
+
 export {
   getPageTitle,
   getCollectionTitle,
   getMetaDescription,
   getKeywords,
-  generateCanonicalUrl,
+  generateCanonicalUrl, // MAIN URL function - use everywhere
   validateSEOContent,
   generateSEOMetadata,
 } from './seo';
 
-// Content formatting - UPDATED with navigation helpers
+// Create alias for consistency
+export { generateCanonicalUrl as getCanonicalURL } from './seo';
+
+// ===================================================================
+// CONTENT FORMATTING - No navigation duplicates
+// ===================================================================
+
 export {
   formatCount,
   formatTotalCount,
@@ -37,13 +45,26 @@ export {
   getLocalizedArticleCount,
   getLocalizedRubricCount,
   getLocalizedAuthorCount,
-  // Navigation-specific helpers
+} from './content';
+
+// ===================================================================
+// NAVIGATION FUNCTIONS - Single source of truth
+// ===================================================================
+
+export {
   getNavigationPageTitle,
   getNavigationSectionDescription,
   getBreadcrumbText,
-} from './content';
+  getNavigationAccessibilityLabels,
+  validateNavigationAccessibility,
+  generateNavigationElements,
+  generateNavigationSEOData,
+} from './navigation';
 
-// Validation utilities
+// ===================================================================
+// VALIDATION UTILITIES
+// ===================================================================
+
 export {
   validateTemplate as validateTemplateProcessing,
   isValidUrl,
@@ -62,51 +83,9 @@ export type {
 } from '../types';
 
 // ===================================================================
-// CONVENIENCE RE-EXPORTS - Main functions only
+// CONVENIENCE EXPORTS
 // ===================================================================
 
-// Most commonly used functions
 export {
   getDictionary,
 } from '../dictionary';
-
-// ===================================================================
-// NAVIGATION-SPECIFIC UTILITIES
-// ===================================================================
-
-/**
- * Get all navigation accessibility labels for a dictionary
- * Useful for validation and testing
- */
-export const getNavigationAccessibilityLabels = (dictionary: Dictionary) => {
-  return dictionary.navigation.accessibility;
-};
-
-/**
- * Validate that navigation dictionary has all required accessibility properties
- */
-export const validateNavigationAccessibility = (dictionary: Dictionary): boolean => {
-  const required = [
-    'mainNavigation',
-    'menuTitle', 
-    'menuDescription',
-    'openMenu',
-    'closeMenu',
-    'logoAlt',
-    'logoMainPageLabel',
-    'primarySectionsLabel',
-    'mainMenuLabel',
-    'searchAndSettingsLabel',
-    'siteSearchLabel',
-    'skipToContent',
-    'skipToNavigation',
-  ];
-
-  const accessibility = dictionary.navigation.accessibility;
-  
-  return required.every(key => {
-    const hasProperty = key in accessibility;
-    const hasValue = accessibility[key as keyof typeof accessibility]?.trim().length > 0;
-    return hasProperty && hasValue;
-  });
-};
