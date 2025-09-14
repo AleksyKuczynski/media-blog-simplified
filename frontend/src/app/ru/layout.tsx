@@ -1,5 +1,5 @@
 // src/app/ru/layout.tsx
-// MIGRATED: Now uses only the unified dictionary system - NO HARDCODED CONTENT
+// FIXED: Removed problematic React.cloneElement, simplified prop passing, better type safety
 
 import React from 'react'
 import { Metadata } from 'next'
@@ -12,8 +12,23 @@ export async function generateMetadata(): Promise<Metadata> {
   const dictionary = await getDictionary('ru');
   
   return {
-    title: dictionary.seo.titles.homePrefix,
-    description: dictionary.seo.descriptions.home,
+    title: dictionary.seo.site.name,
+    description: dictionary.seo.site.description,
+    openGraph: {
+      title: dictionary.seo.site.fullName,
+      description: dictionary.seo.site.description,
+      siteName: dictionary.seo.site.name,
+      locale: 'ru_RU',
+      type: 'website',
+    },
+    twitter: {
+      title: dictionary.seo.site.name,
+      description: dictionary.seo.site.description,
+      card: 'summary_large_image',
+    },
+    alternates: {
+      canonical: dictionary.seo.site.url,
+    },
   };
 }
 
@@ -22,11 +37,11 @@ export default async function MainLayout({
 }: {
   children: React.ReactNode
 }) {
-  // UNIFIED: Single dictionary call
+  // Single dictionary call for the entire layout
   const dictionary = await getDictionary('ru');
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       {/* Navigation with unified dictionary system */}
       <Navigation 
         dictionary={dictionary}
@@ -43,32 +58,22 @@ export default async function MainLayout({
         tabIndex={-1}
         aria-label={dictionary.navigation.accessibility.skipToContent}
       >        
-        {/* UPDATED: Pass unified dictionary sections to children */}
-        {React.cloneElement(children as React.ReactElement, { 
-          // Components can now access unified dictionary sections
-          searchTranslations: dictionary.search,
-          sortingTranslations: dictionary.sorting,
-          sectionsTranslations: dictionary.sections,
-          commonTranslations: dictionary.common,
-          categoriesTranslations: dictionary.categories,
-          filterTranslations: dictionary.filter,
-          accessibilityTranslations: dictionary.accessibility,
-          // Keep full dictionary available for gradual migration
-          dictionary: dictionary
-        })}      
+        {/* FIXED: Simple children rendering without cloneElement */}
+        <div data-dictionary-available="true">
+          {children}
+        </div>
       </main>
       
       {/* Footer with unified dictionary system */}
-      <footer 
-        id="site-footer"
-        role="contentinfo" 
-        aria-label={dictionary.footer.about.description}
-      >
-        <Footer
-          lang="ru"
-          dictionary={dictionary}
-        />
-      </footer>
-    </>
-  )
+      <Footer
+        lang="ru"
+        dictionary={dictionary}
+      />
+    </div>
+  );
+}
+
+// Export dictionary for child components to use
+export async function getLayoutDictionary() {
+  return await getDictionary('ru');
 }

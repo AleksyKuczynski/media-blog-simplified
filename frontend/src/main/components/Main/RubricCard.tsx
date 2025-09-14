@@ -1,5 +1,5 @@
 // src/main/components/Main/RubricCard.tsx
-// FIXED: Correct helper function usage, complete dictionary integration, enhanced UX
+// FIXED: Removed onError handler to make it Server Component compatible
 
 import Link from "next/link";
 import Image from "next/image";
@@ -21,11 +21,11 @@ interface RubricCardProps {
 }
 
 /**
- * RubricCard - FIXED: Proper helper usage, complete dictionary integration
+ * RubricCard - Server Component compatible (no event handlers)
  * NO HARDCODED TEXT - all text comes from dictionary entries
  */
 export function RubricCard({ rubric, dictionary }: RubricCardProps) {
-  // FIXED: Correct parameter order for getLocalizedArticleCount helper
+  // Fixed: Correct parameter order for getLocalizedArticleCount helper
   const articleCountText = getLocalizedArticleCount(dictionary, rubric.articleCount);
   
   // Generate icon URL if available with proper validation
@@ -73,6 +73,7 @@ export function RubricCard({ rubric, dictionary }: RubricCardProps) {
               bg-sf-hi rounded-full group-hover:bg-pr-cont/10 transition-colors duration-200
               shadow-sm group-hover:shadow-md
             ">
+              {/* FIXED: Removed onError handler for Server Component compatibility */}
               <Image
                 src={iconUrl}
                 alt={iconAlt}
@@ -86,10 +87,6 @@ export function RubricCard({ rubric, dictionary }: RubricCardProps) {
                 priority={false}
                 loading="lazy"
                 itemProp="image"
-                onError={(e) => {
-                  // Hide image on error
-                  e.currentTarget.style.display = 'none';
-                }}
               />
             </div>
           </header>

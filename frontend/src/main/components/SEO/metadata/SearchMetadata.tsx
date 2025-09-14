@@ -122,8 +122,8 @@ export const generateSearchMetadata = async ({
     
     // Fallback metadata using basic info
     return {
-      title: dictionary.search.templates.pageTitle,
-      description: dictionary.search.templates.pageDescription,
+      title: `Поиск — ${dictionary.seo.site.name}`,
+      description: `Поиск материалов на ${dictionary.seo.site.name}`,
     };
   }
 };
