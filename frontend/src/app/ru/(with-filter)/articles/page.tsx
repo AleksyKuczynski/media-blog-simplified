@@ -1,91 +1,171 @@
-// src/app/ru/(with-filter)/articles/page.tsx - ADD SUSPENSE
+// src/app/ru/(with-filter)/articles/page.tsx
+// EXAMPLE: How to properly use enhanced ArticleList and LoadMoreButton with dictionary
 
 import { Suspense } from 'react';
-import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
-import { fetchHeroSlugs, fetchArticleSlugs } from '@/main/lib/directus/index';
-import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
+import { Metadata } from 'next';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import HeroArticles from '@/main/components/Main/HeroArticles';
 import Section from '@/main/components/Main/Section';
+import HeroArticles from '@/main/components/Main/HeroArticles';
+import { getDictionary } from '@/main/lib/dictionary/dictionary';
+import { fetchArticleSlugs } from '@/main/lib/directus';
+import { generatePageMetadata } from '@/main/components/SEO/metadata/PageMetadata';
+import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 
-export const dynamic = 'force-dynamic';
+interface ArticlesPageProps {
+  searchParams: { 
+    page?: string; 
+    sort?: string;
+    category?: string;
+  };
+}
 
-export default async function ArticlesPage({ searchParams }: { 
-  searchParams: { page?: string, sort?: string, category?: string, search?: string }
-}) {
-  const dict = await getDictionary('ru');
+// Generate metadata using new SEO system
+export async function generateMetadata(): Promise<Metadata> {
+  const dictionary = await getDictionary('ru');
+  
+  return await generatePageMetadata({
+    dictionary,
+    pageType: 'articles',
+    pageData: {
+      title: dictionary.sections.articles.allArticles,
+      description: 'Все статьи о культурных событиях, музыке и современных идеях',
+      path: '/ru/articles',
+    },
+  });
+}
+
+export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
+  // Get dictionary first
+  const dictionary = await getDictionary('ru');
+  
+  // Parse parameters
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';
-  const currentCategory = searchParams.category || '';
-  const currentSearch = searchParams.search || '';
-  const isSortExplicit = 'sort' in searchParams;
-  const isDefaultView = !isSortExplicit && !currentCategory && !currentSearch;
-
-  let heroSlugs: string[] = [];
+  const categoryFilter = searchParams.category;
+  
+  // Default view logic
+  const isDefaultView = currentPage === 1 && !categoryFilter && currentSort === 'desc';
+  
+  // Fetch articles for all pages up to current
   let allSlugs: ArticleSlugInfo[] = [];
   let hasMore = false;
-
-  if (isDefaultView) {
-    try {
-      heroSlugs = await fetchHeroSlugs('ru');
-    } catch (error) {
-      console.error('Error fetching hero articles:', error);
+  let heroSlugs: ArticleSlugInfo[] = [];
+  
+  try {
+    // Get hero articles for default view
+    if (isDefaultView) {
+      const heroResponse = await fetchArticleSlugs(1, 'desc', categoryFilter, undefined, ['featured']);
+      heroSlugs = heroResponse.slugs.slice(0, 3);
     }
-  }
 
-  for (let page = 1; page <= currentPage; page++) {
-    const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
-      page, 
-      currentSort,
-      currentCategory, 
-      currentSearch, 
-      heroSlugs
-    );
-    allSlugs = [...allSlugs, ...slugs];
-    hasMore = pageHasMore;
-    if (!pageHasMore) break;
+    // Get regular articles
+    for (let page = 1; page <= currentPage; page++) {
+      const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
+        page,
+        currentSort,
+        categoryFilter
+      );
+      
+      // Filter out hero articles from regular list on default view
+      const filteredSlugs = isDefaultView && page === 1 
+        ? slugs.filter(slug => !heroSlugs.some(hero => hero.slug === slug.slug))
+        : slugs;
+        
+      allSlugs = [...allSlugs, ...filteredSlugs];
+      hasMore = pageHasMore;
+      
+      if (!pageHasMore) break;
+    }
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    // Handle error state gracefully
   }
 
   return (
     <>
-      {isDefaultView && (
-        <Section 
-          title={dict.sections.articles.featuredArticles}
-          ariaLabel={dict.sections.articles.featuredArticles}
+      {/* Hero Section for Default View */}
+      {isDefaultView && heroSlugs.length > 0 && (
+        <Section
+          title={dictionary.sections.articles.featuredArticles}
+          className="py-8"
+          ariaLabel={dictionary.sections.articles.featuredArticles}
         >
-          <Suspense fallback={<div>{dict.common.loading}</div>}>
+          <Suspense fallback={
+            <div className="text-center py-8" role="status">
+              {dictionary.common.status.loading}
+            </div>
+          }>
             {heroSlugs.length > 0 ? (
               <HeroArticles 
                 heroSlugs={heroSlugs} 
                 lang="ru"
+                dictionary={dictionary}
               />
             ) : (
-              <div>{dict.sections.articles.noFeaturedArticles}</div>
+              <div className="text-center py-4 text-gray-600">
+                {dictionary.sections.articles.noFeaturedArticles}
+              </div>
             )}
           </Suspense>
         </Section>
       )}
 
+      {/* Main Articles Section */}
       <Section 
-        isOdd={true}
-        title={isDefaultView ? dict.sections.articles.latestArticles : dict.sections.articles.allArticles}
-        ariaLabel={isDefaultView ? dict.sections.articles.latestArticles : dict.sections.articles.allArticles}
+        isOdd={!isDefaultView || heroSlugs.length === 0}
+        title={isDefaultView 
+          ? dictionary.sections.articles.latestArticles 
+          : dictionary.sections.articles.allArticles
+        }
+        ariaLabel={isDefaultView 
+          ? dictionary.sections.articles.latestArticles 
+          : dictionary.sections.articles.allArticles
+        }
       >
-        <ArticleList slugInfos={allSlugs} lang="ru" />
-        {hasMore && (
-          <div className="mt-8 flex justify-center">
-            {/* ✅ FIX: Wrap LoadMoreButton with Suspense */}
-            <Suspense fallback={
-              <div className="bg-gray-200 dark:bg-gray-700 rounded-lg px-6 py-3 animate-pulse">
-                Loading...
+        {allSlugs.length > 0 ? (
+          <>
+            {/* Enhanced ArticleList with proper dictionary usage */}
+            <ArticleList 
+              slugInfos={allSlugs} 
+              lang="ru" 
+              dictionary={dictionary}
+              categorySlug={categoryFilter}
+              showCount={true}
+              ariaLabel={`${dictionary.sections.articles.allArticles}. Показано статей: ${allSlugs.length}`}
+            />
+            
+            {/* Enhanced LoadMoreButton with dictionary */}
+            {hasMore && (
+              <div className="mt-12">
+                <Suspense fallback={
+                  <div className="text-center">
+                    <div className="bg-gray-200 dark:bg-gray-700 rounded-lg px-6 py-3 animate-pulse">
+                      {dictionary.common.status.loading}
+                    </div>
+                  </div>
+                }>
+                  <LoadMoreButton 
+                    currentPage={currentPage}
+                    dictionary={dictionary}
+                    disabled={false}
+                  />
+                </Suspense>
               </div>
-            }>
-              <LoadMoreButton 
-                currentPage={currentPage}
-                loadMoreText={dict.common.loadMore}
-              />
-            </Suspense>
+            )}
+          </>
+        ) : (
+          <div 
+            className="text-center py-12"
+            role="status"
+            aria-label={dictionary.accessibility.emptyState}
+          >
+            <p className="text-gray-600 dark:text-gray-400">
+              {categoryFilter 
+                ? `${dictionary.sections.articles.noArticlesFound} в этой категории`
+                : dictionary.sections.articles.noArticlesFound
+              }
+            </p>
           </div>
         )}
       </Section>

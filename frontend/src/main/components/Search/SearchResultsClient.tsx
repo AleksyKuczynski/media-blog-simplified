@@ -90,7 +90,7 @@ export default function SearchResultsClient({
         <div className="flex justify-center mt-8">
           <LoadMoreButton
             currentPage={currentPage}
-            loadMoreText={dictionary.common.actions.loadMore}
+            dictionary={dictionary}
           />
         </div>
       )}

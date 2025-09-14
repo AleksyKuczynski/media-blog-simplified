@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/main/lib/directus/index';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang } from '@/main/lib/dictionary/types';
 
 interface AuthorCardProps {
   author: AuthorDetails;

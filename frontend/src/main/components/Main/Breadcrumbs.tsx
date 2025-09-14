@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/main/components/Interface/Icons';
 import { RubricBasic } from '@/main/lib/directus/directusInterfaces';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang } from '@/main/lib/dictionary/types';
 
 export interface BreadcrumbItem {
   label: string;

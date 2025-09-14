@@ -128,10 +128,66 @@ export interface SectionLabels {
   readonly collection: string;     // "коллекция"
   readonly catalog: string;        // "каталог"
 }
+export interface HomeSectionLabels {
+  readonly welcomeTitle: string;        //  'Добро пожаловать в EventForMe',
+  readonly welcomeDescription: string;        //  'Медиа о культурных событиях, искусстве и творческих инициативах',
+  readonly featuredContent: string;        //  'Избранное',
+  readonly latestUpdates: string;        //  'Последние обновления',
+  readonly exploreRubrics: string;        //  'Изучить рубрики',
+  readonly viewAllRubrics: string;        //  'Посмотреть все рубрики',
+  readonly featuredRubrics: string;        //  'Избранные рубрики',
+  readonly featuredDescription: string;        //  'Рекомендуемые материалы',
+  readonly rubricsDescription: string;        //  'Откройте для себя тематические разделы',
+  readonly rubricsSectionDescription: string;        //  'Наши рубрики охватывают все аспекты культурной жизни',
+  readonly viewAllRubricsDescription: string;        //  'Полный каталог всех доступных рубрик',
+  readonly quickNavigation: string;        //  'Быстрая навигация',
+}
+
+export interface RubricsSectionLabels {
+  readonly allRubrics: string;        //  'Все рубрики',
+  readonly featuredRubric: string;        //  'Избранная рубрика',
+  readonly articlesInRubric: string;        //  'Статьи в рубрике',
+  readonly rubricList: string;        //  'Список рубрик',
+  readonly noRubricsAvailable: string;        //  'Рубрики пока недоступны',
+  readonly iconAltText: string;        //  'Иконка рубрики',
+  readonly noIcon: string;        //  'Без иконки',
+  readonly rubricIcon: string;        //  'Иконка рубрики',
+  readonly checkBackLater: string;        //  'Загляните позже',
+  readonly readMoreAbout: string;        //  'Читать больше о',
+  readonly exploreRubric: string;        //  'Изучить рубрику', // CRITICAL: Missing entry
+  readonly rubricsCatalog: string;        //  'Каталог рубрик',
+  readonly browseAllRubrics: string;        //  'Просмотреть все рубрики',
+  readonly categoriesDescription: string;        //  'Исследуйте наши тематические рубрики',
+  readonly totalRubrics: string;        //  'Всего рубрик',
+  readonly rubricCard: string;        //  'Карточка рубрики',
+  readonly viewRubricDetails: string;        //  'Посмотреть детали рубрики',
+  readonly articlesCount: string;        //  'Статей в рубрике',
+  readonly enterRubric: string;        //  'Войти в рубрику',
+  readonly discoverContent: string;        //  'Открыть содержимое',
+  readonly moreDetails: string;        //  'Подробнее',
+}
+
+export interface ArticlesLabels {
+  readonly allArticles: string;       // 'Все статьи',
+  readonly featuredArticles: string;       // 'Избранные статьи',
+  readonly latestArticles: string;       // 'Последние статьи',
+  readonly noArticlesFound: string;       // 'Статьи не найдены',
+  readonly noFeaturedArticles: string;       // 'Нет избранных статей',
+  readonly moreArticlesToLoad: string;       // 'Есть ещё статьи для загрузки',
+  readonly loadMore: string;       // 'Загрузить ещё статьи',
+  readonly loadingArticles: string;       // 'Загружаются статьи...',
+  readonly errorLoadingArticles: string;       // 'Ошибка при загрузке статей',
+  readonly articlesInCategory: string;       // 'Статьи в категории',
+  readonly articlesInRubric: string;       // 'Статьи в рубрике',
+  readonly articlesByAuthor: string;       // 'Статьи автора',
+}
 
 export interface SectionsTranslations {
   readonly labels: SectionLabels;
   readonly templates: ContentTemplates;
+  readonly home: HomeSectionLabels;
+  readonly rubrics: RubricsSectionLabels;
+  readonly articles: ArticlesLabels;
 }
 
 // ===================================================================
@@ -142,9 +198,11 @@ export interface SEOSiteInfo {
   readonly name: string;
   readonly fullName: string;
   readonly description: string;
+  readonly organizationDescription: string; // For structured data
   readonly url: string;
   readonly contactEmail: string;
   readonly socialProfiles: readonly string[];
+  readonly geographicAreas: readonly string[]; // For schema.org
 }
 
 export interface SEORegional {
@@ -190,10 +248,28 @@ export interface Accessibility {
   readonly skipToContent: string;
   readonly mainNavigation: string;
   readonly currentPage: string;
+  readonly iconDescription: string;       // 'Иконка рубрики',
+  readonly decorativeIcon: string;       // 'Декоративная иконка',
+  readonly rubricVisualIndicator: string;       // 'Визуальный индикатор рубрики',
+  readonly rubricDescription: string;       // 'Описание рубрики',
+  readonly expandDescription: string;       // 'Развернуть описание',
+  readonly articlesList: string;       // 'Список статей',
+  readonly articlesGrid: string;       // 'Сетка статей',
+  readonly loadMoreButton: string;       // 'Загрузить больше статей',
+  readonly loadingContent: string;       // 'Загружается содержимое',
+  readonly emptyState: string;       // 'Пустое состояние',
+  readonly errorState: string;       // 'Состояние ошибки',
+  readonly retryAction: string;       // 'Повторить действие',
+  readonly totalPages: string;       // 'Всего страниц',
+  readonly articleCard: string;       // 'Карточка статьи',
+  readonly articleLink: string;       // 'Ссылка на статью',
+  readonly publishedDate: string;       // 'Дата публикации',
+  readonly authorInfo: string;       // 'Информация об авторе',
+  readonly categoryInfo: string;       // 'Информация о категории',
 }
 
 // ===================================================================
-// SEARCH & FOOTER - Complete interfaces
+// SEARCH - Complete interfaces
 // ===================================================================
 
 export interface SearchLabels {
@@ -251,9 +327,34 @@ export interface SearchDictionary {
   readonly help: SearchHelp;
 }
 
+// ===================================================================
+// FOOTER - Complete interface for Footer component
+// ===================================================================
+
+export interface FooterAbout {
+  readonly title: string;        // "О проекте"
+  readonly description: string;  // Project description text
+}
+
+export interface FooterQuickLinks {
+  readonly title: string;        // "Быстрые ссылки"
+  readonly ariaLabel: string;    // "Навигация по сайту" (replaces hardcoded)
+}
+
+export interface FooterSocialLinks {
+  readonly title: string;        // "Социальные сети"
+}
+
+export interface FooterLegal {
+  readonly copyright: string;    // Copyright template "© {year} {siteName}"
+  readonly rights: string;       // Rights statement
+}
+
 export interface FooterDictionary {
-  readonly copyright: string;
-  readonly about: string;
+  readonly about: FooterAbout;
+  readonly quickLinks: FooterQuickLinks;
+  readonly socialLinks: FooterSocialLinks;
+  readonly legal: FooterLegal;
 }
 
 // ===================================================================

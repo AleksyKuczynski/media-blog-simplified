@@ -94,6 +94,58 @@ export const russianDictionary: Dictionary = {
       emptyCollection: 'В {collection} пока нет {items}',
       totalCount: 'Всего: {count} {countLabel}',
     },
+    home: {
+      welcomeTitle: 'Добро пожаловать в EventForMe',
+      welcomeDescription: 'Медиа о культурных событиях, искусстве и творческих инициативах',
+      featuredContent: 'Избранное',
+      latestUpdates: 'Последние обновления',
+      exploreRubrics: 'Изучить рубрики',
+      viewAllRubrics: 'Посмотреть все рубрики',
+      featuredRubrics: 'Избранные рубрики',
+      featuredDescription: 'Рекомендуемые материалы',
+      rubricsDescription: 'Откройте для себя тематические разделы',
+      rubricsSectionDescription: 'Наши рубрики охватывают все аспекты культурной жизни',
+      viewAllRubricsDescription: 'Полный каталог всех доступных рубрик',
+      quickNavigation: 'Быстрая навигация',
+    },
+    rubrics: {
+      allRubrics: 'Все рубрики',
+      featuredRubric: 'Избранная рубрика',
+      articlesInRubric: 'Статьи в рубрике',
+      rubricList: 'Список рубрик',
+      noRubricsAvailable: 'Рубрики пока недоступны',
+      iconAltText: 'Иконка рубрики',
+      noIcon: 'Без иконки',
+      rubricIcon: 'Иконка рубрики',
+      checkBackLater: 'Загляните позже',
+      readMoreAbout: 'Читать больше о',
+      exploreRubric: 'Изучить рубрику', // CRITICAL: Missing entry
+      rubricsCatalog: 'Каталог рубрик',
+      browseAllRubrics: 'Просмотреть все рубрики',
+      categoriesDescription: 'Исследуйте наши тематические рубрики',
+      totalRubrics: 'Всего рубрик',
+      rubricCard: 'Карточка рубрики',
+      viewRubricDetails: 'Посмотреть детали рубрики',
+      articlesCount: 'Статей в рубрике',
+      enterRubric: 'Войти в рубрику',
+      discoverContent: 'Открыть содержимое',
+      moreDetails: 'Подробнее',
+    },
+
+    articles: {
+      allArticles: 'Все статьи',
+      featuredArticles: 'Избранные статьи',
+      latestArticles: 'Последние статьи',
+      noArticlesFound: 'Статьи не найдены',
+      noFeaturedArticles: 'Нет избранных статей',
+      moreArticlesToLoad: 'Есть ещё статьи для загрузки',
+      loadMore: 'Загрузить ещё статьи', // Specific to articles
+      loadingArticles: 'Загружаются статьи...',
+      errorLoadingArticles: 'Ошибка при загрузке статей',
+      articlesInCategory: 'Статьи в категории',
+      articlesInRubric: 'Статьи в рубрике',
+      articlesByAuthor: 'Статьи автора',
+    },
   },
 
   // ===================================================================
@@ -102,15 +154,16 @@ export const russianDictionary: Dictionary = {
   seo: {
     site: {
       name: 'EventForMe',
-      fullName: 'EventForMe — медиа о культурных событиях',
-      description: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
+      fullName: 'EventForMe - Медиа о культурных событиях',
+      description: 'Медиа о культурных событиях и творческих инициативах',
+      organizationDescription: 'Медиаплатформа, посвященная культурным событиям, искусству и творческим инициативам в России',
       url: 'https://event4me.eu',
       contactEmail: 'info@event4me.eu',
       socialProfiles: [
-        'https://vk.com/eventforme',
-        'https://t.me/eventforme',
-        'https://instagram.com/eventforme'
+        'https://t.me/event4me_eu',
+        'https://vk.com/event4me_eu',
       ],
+      geographicAreas: ['Russia', 'Europe'],
     },
     templates: {
       pageTitle: '{title} — {siteName}',
@@ -200,8 +253,21 @@ export const russianDictionary: Dictionary = {
   // FOOTER - Minimal footer content
   // ===================================================================
   footer: {
-    copyright: 'Все права защищены',
-    about: 'О проекте EventForMe',
+    about: {
+      title: 'О проекте',
+      description: 'Медиа о культурных событиях, искусстве и творческих инициативах. Открываем новые грани культурного пространства.',
+    },
+    quickLinks: {
+      title: 'Навигация',
+      ariaLabel: 'Навигация по сайту', // Replaces hardcoded "Быстрая навигация"
+    },
+    socialLinks: {
+      title: 'Социальные сети',
+    },
+    legal: {
+      copyright: '© {year} {siteName}',
+      rights: 'Медиа о культурных событиях.',
+    },
   },
 
   // ===================================================================
@@ -216,6 +282,24 @@ export const russianDictionary: Dictionary = {
     skipToContent: 'Перейти к основному содержанию',
     mainNavigation: 'Главная навигация',
     currentPage: 'Текущая страница',
+    iconDescription: 'Иконка рубрики',
+    decorativeIcon: 'Декоративная иконка',
+    rubricVisualIndicator: 'Визуальный индикатор рубрики',
+    rubricDescription: 'Описание рубрики',
+    expandDescription: 'Развернуть описание',
+    articlesList: 'Список статей',
+    articlesGrid: 'Сетка статей',
+    loadMoreButton: 'Загрузить больше статей',
+    loadingContent: 'Загружается содержимое',
+    emptyState: 'Пустое состояние',
+    errorState: 'Состояние ошибки',
+    retryAction: 'Повторить действие',
+    totalPages: 'Всего страниц',
+    articleCard: 'Карточка статьи',
+    articleLink: 'Ссылка на статью',
+    publishedDate: 'Дата публикации',
+    authorInfo: 'Информация об авторе',
+    categoryInfo: 'Информация о категории',
   },
 };
 

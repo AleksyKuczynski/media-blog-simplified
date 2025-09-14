@@ -1,6 +1,6 @@
 // src/main/components/Main/HeroArticles.tsx - MIGRATED: Uses unified dictionary
 import { Suspense } from 'react';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary/types';
 import ArticleCard from '../ArticleCards/ArticleCard';
 
 interface HeroArticlesProps {
@@ -23,7 +23,7 @@ export default function HeroArticles({ slugs, dictionary, rubricSlug }: HeroArti
   return (
     <Suspense fallback={
       <div className="p-8 text-center">
-        {dictionary.common.loading}
+        {dictionary.common.status.loading}
       </div>
     }>
       <div className="
