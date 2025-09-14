@@ -1,5 +1,5 @@
 // src/main/components/SEO/schemas/SearchSchema.tsx
-// DRY: Uses existing helpers, no dictionary expansion
+// FIXED: Removed all hardcoded Russian text, uses dictionary entries only
 
 import React from 'react';
 import { SchemaBuilder } from '../core/SchemaBuilder';
@@ -7,12 +7,12 @@ import { Dictionary } from '@/main/lib/dictionary/types';
 import { ExtendedSchemaData } from '../core/types';
 import {
   generateCanonicalUrl,
-  generateNavigationElements,
-} from '@/main/lib/dictionary/helpers';
+} from '@/main/lib/dictionary/helpers/seo';
 import {
   generateSearchActionData,
   validateSearchDictionary,
 } from '@/main/lib/dictionary/helpers/search';
+import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 
 // ===================================================================
 // SEARCH SCHEMA TYPES
@@ -24,12 +24,12 @@ export interface SearchSchemaProps {
 }
 
 // ===================================================================
-// MAIN SEARCH SCHEMA COMPONENT - DRY
+// MAIN SEARCH SCHEMA COMPONENT - FIXED
 // ===================================================================
 
 /**
  * Generate structured data for search functionality
- * NO DUPLICATION - uses existing helpers
+ * FIXED: Uses dictionary entries only, no hardcoded text
  */
 export const SearchSchema: React.FC<SearchSchemaProps> = ({
   dictionary,
@@ -44,12 +44,24 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
 
     const seoDict = dictionary.seo;
     
-    // Use existing helper - NO DUPLICATION
+    // Use existing helper - NO HARDCODED TEXT
     const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
     const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
     const searchActionData = generateSearchActionData(dictionary);
 
-    // Create website schema with search functionality - using existing pattern
+    // Create search page title using dictionary
+    const searchPageTitle = processTemplate(dictionary.navigation.templates.pageTitle, {
+      page: dictionary.search.templates.pageTitle,
+      siteName: seoDict.site.name,
+    });
+
+    // Create search page description using dictionary
+    const searchPageDescription = processTemplate(dictionary.accessibility.templates.pageDescription, {
+      description: dictionary.search.templates.pageDescription,
+      siteName: seoDict.site.name,
+    });
+
+    // Create website schema with search functionality - using dictionary
     const websiteSchema: ExtendedSchemaData = {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
@@ -59,7 +71,7 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
       url: baseUrl,
       inLanguage: 'ru',
       
-      // Search capability using existing helper data
+      // Search capability using dictionary data
       potentialAction: {
         '@type': 'SearchAction',
         name: searchActionData.name,
@@ -75,7 +87,7 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
         'query-input': {
           '@type': 'PropertyValueSpecification',
           valueName: 'search_term_string',
-          description: dictionary.search.labels.placeholder,
+          description: dictionary.search.accessibility.searchDescription,
           valueRequired: true,
           valueMinLength: 2,
           valueMaxLength: 100,
@@ -83,13 +95,13 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
       },
     };
 
-    // Create search page schema
+    // Create search page schema using dictionary
     const searchPageSchema: ExtendedSchemaData = {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
       '@id': searchUrl,
-      name: `Поиск — ${seoDict.site.name}`,
-      description: `Поиск материалов на ${seoDict.site.name}`,
+      name: searchPageTitle,
+      description: searchPageDescription,
       url: searchUrl,
       inLanguage: 'ru',
       isPartOf: { 
@@ -97,21 +109,21 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
         '@id': `${baseUrl}#website` 
       },
       
-      // Main content describes the search interface - NO EXPANSION
+      // Main content describes the search interface - using dictionary
       mainEntity: {
         '@type': 'WebPageElement',
         '@id': `${searchUrl}#search-interface`,
-        name: 'Интерфейс поиска',
-        description: `Поиск статей и материалов на ${seoDict.site.name}`,
+        name: dictionary.search.accessibility.searchLabel,
+        description: dictionary.search.accessibility.searchDescription,
       },
       
-      // Enhanced properties using existing data
+      // Enhanced properties using dictionary data
       audience: {
         '@type': 'Audience',
         geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
       },
 
-      // Accessibility features - static, no expansion needed
+      // Accessibility features - using static data (no expansion needed)
       accessibilityFeature: [
         'structuralNavigation',
         'ARIA', 
@@ -134,12 +146,12 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
 };
 
 // ===================================================================
-// MINIMAL SEARCH SCHEMA - DRY
+// MINIMAL SEARCH SCHEMA - FIXED
 // ===================================================================
 
 /**
  * Minimal search schema for performance-critical contexts
- * NO DUPLICATION - uses existing helpers
+ * FIXED: Uses dictionary entries only
  */
 export const MinimalSearchSchema: React.FC<{ dictionary: Dictionary }> = ({ 
   dictionary 
@@ -152,7 +164,7 @@ export const MinimalSearchSchema: React.FC<{ dictionary: Dictionary }> = ({
       return null;
     }
 
-    // Use existing helper - NO DUPLICATION
+    // Use dictionary helpers - NO HARDCODED TEXT
     const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
     const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
 
@@ -162,20 +174,14 @@ export const MinimalSearchSchema: React.FC<{ dictionary: Dictionary }> = ({
       '@id': `${baseUrl}#website`,
       name: seoDict.site.name,
       url: baseUrl,
-      inLanguage: 'ru',
-      
       potentialAction: {
         '@type': 'SearchAction',
-        name: `Поиск по ${seoDict.site.name}`,
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${searchUrl}?search={search_term_string}`,
-        },
+        target: `${searchUrl}?search={search_term_string}`,
         'query-input': 'required name=search_term_string',
       },
     };
 
-    return <SchemaBuilder schema={minimalSchema} priority="normal" />;
+    return <SchemaBuilder schema={minimalSchema} priority="low" />;
     
   } catch (error) {
     console.error('MinimalSearchSchema: Error generating schema', error);
@@ -184,119 +190,58 @@ export const MinimalSearchSchema: React.FC<{ dictionary: Dictionary }> = ({
 };
 
 // ===================================================================
-// SEARCH ACTION SCHEMA - DRY
+// SEARCH ACTION SCHEMA - New component for action-specific schema
 // ===================================================================
 
 /**
- * Search action schema for integration with other components
- * NO DUPLICATION - uses existing helpers
+ * Dedicated search action schema component
+ * Uses dictionary entries for all text content
  */
-export const SearchActionSchema: React.FC<{ dictionary: Dictionary }> = ({
-  dictionary
+export const SearchActionSchema: React.FC<{ dictionary: Dictionary }> = ({ 
+  dictionary 
 }) => {
   try {
-    // Use existing helper - NO DUPLICATION
-    const searchActionData = generateSearchActionData(dictionary);
-    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
+    if (!validateSearchDictionary(dictionary)) {
+      console.warn('SearchActionSchema: Invalid dictionary structure');
+      return null;
+    }
 
-    const searchActionSchema: ExtendedSchemaData = {
+    const searchActionData = generateSearchActionData(dictionary);
+    
+    const actionSchema: ExtendedSchemaData = {
       '@context': 'https://schema.org',
       '@type': 'SearchAction',
-      '@id': `${searchActionData.targetUrl}#search-action`,
       name: searchActionData.name,
       description: searchActionData.description,
-      
       target: {
         '@type': 'EntryPoint',
         urlTemplate: searchActionData.queryTemplate,
         actionPlatform: [
           'https://schema.org/DesktopWebPlatform',
-          'https://schema.org/MobileWebPlatform'
+          'https://schema.org/MobileWebPlatform',
+          'https://schema.org/IOSPlatform',
+          'https://schema.org/AndroidPlatform'
         ],
       },
-      
       'query-input': {
         '@type': 'PropertyValueSpecification',
         valueName: 'search_term_string',
-        description: dictionary.search.labels.placeholder,
+        description: dictionary.search.accessibility.searchInputLabel,
         valueRequired: true,
         valueMinLength: 2,
         valueMaxLength: 100,
       },
-
-      // Enhanced properties using existing data
       agent: {
         '@type': 'Organization',
         name: dictionary.seo.site.name,
-        url: baseUrl,
+        url: dictionary.seo.site.url,
       },
     };
 
-    return <SchemaBuilder schema={searchActionSchema} priority="normal" />;
+    return <SchemaBuilder schema={actionSchema} priority="normal" />;
     
   } catch (error) {
     console.error('SearchActionSchema: Error generating schema', error);
-    return null;
-  }
-};
-
-// ===================================================================
-// SEARCH BREADCRUMB SCHEMA - DRY
-// ===================================================================
-
-/**
- * Breadcrumb schema for search pages using existing helpers
- * NO DUPLICATION - reuses navigation helpers
- */
-export const SearchBreadcrumbSchema: React.FC<{ dictionary: Dictionary }> = ({
-  dictionary
-}) => {
-  try {
-    // Use existing helper - NO DUPLICATION
-    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
-    const searchUrl = generateCanonicalUrl('/search', dictionary.seo.site.url);
-
-    const breadcrumbSchema: ExtendedSchemaData = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      '@id': `${searchUrl}#breadcrumb`,
-      
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: dictionary.navigation.labels.home,
-          item: {
-            '@type': 'WebPage',
-            '@id': baseUrl,
-            name: dictionary.navigation.labels.home,
-            url: baseUrl,
-            inLanguage: 'ru',
-          },
-        },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: 'Поиск', // Static, no expansion needed
-          item: {
-            '@type': 'WebPage',
-            '@id': searchUrl,
-            name: 'Поиск',
-            url: searchUrl,
-            inLanguage: 'ru',
-          },
-        },
-      ],
-      
-      numberOfItems: 2,
-      name: 'Навигация к поиску',
-      description: `${dictionary.navigation.labels.home} → Поиск`,
-    };
-
-    return <SchemaBuilder schema={breadcrumbSchema} priority="normal" />;
-    
-  } catch (error) {
-    console.error('SearchBreadcrumbSchema: Error generating schema', error);
     return null;
   }
 };

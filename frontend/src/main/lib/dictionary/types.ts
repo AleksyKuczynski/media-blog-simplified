@@ -302,7 +302,9 @@ export interface SearchAccessibility {
 export interface SearchInterface {
   readonly alternativeNavigation: string;
   readonly searchSuggestion: string;
-  readonly tryFollowing: string;       // For no results section
+  readonly popularRubrics: string;
+  readonly latestArticles: string;
+  readonly ourAuthors: string;
 }
 
 export interface SearchNavigation {
@@ -311,20 +313,12 @@ export interface SearchNavigation {
   readonly ourAuthors: string;
 }
 
-export interface SearchHelp {
-  readonly checkSpelling: string;
-  readonly useGeneralTerms: string;
-  readonly trySynonyms: string;
-  readonly searchTips: string;
-}
-
 export interface SearchDictionary {
   readonly labels: SearchLabels;
   readonly templates: SearchTemplates;
   readonly accessibility: SearchAccessibility;
   readonly interface: SearchInterface;
   readonly navigation: SearchNavigation;
-  readonly help: SearchHelp;
 }
 
 // ===================================================================

@@ -214,20 +214,16 @@ export const russianDictionary: Dictionary = {
       searchResultsLabel: 'Результаты поиска',
     },
     interface: {
-      alternativeNavigation: 'Или выберите раздел:',
+      alternativeNavigation: 'Альтернативная навигация',
       searchSuggestion: 'Попробуйте поискать что-то другое',
-      tryFollowing: 'Попробуйте следующее:', // For no results help
+      popularRubrics: 'Популярные рубрики',
+      latestArticles: 'Последние статьи',
+      ourAuthors: 'Наши авторы',
     },
     navigation: {
       popularRubrics: 'Популярные рубрики',
-      latestArticles: 'Последние статьи',  
+      latestArticles: 'Последние статьи',
       ourAuthors: 'Наши авторы',
-    },
-    help: {
-      checkSpelling: 'Проверьте правописание',
-      useGeneralTerms: 'Используйте более общие термины',
-      trySynonyms: 'Попробуйте синонимы',
-      searchTips: 'Советы по поиску:',
     },
   },
 
