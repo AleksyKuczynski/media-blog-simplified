@@ -1,5 +1,7 @@
 // src/main/lib/dictionary/helpers/index.ts
-// CLEAN EXPORTS ONLY - No implementation mixing
+// UPDATED: Clean exports for navigation-enhanced dictionary
+
+import { Dictionary } from '../types';
 
 // ===================================================================
 // CORE HELPERS - From main implementation files
@@ -20,9 +22,10 @@ export {
   getKeywords,
   generateCanonicalUrl,
   validateSEOContent,
+  generateSEOMetadata,
 } from './seo';
 
-// Content formatting
+// Content formatting - UPDATED with navigation helpers
 export {
   formatCount,
   formatTotalCount,
@@ -30,6 +33,14 @@ export {
   getLinkTitle,
   getEmptyMessage,
   getItemsInCollection,
+  getLocalizedCount,
+  getLocalizedArticleCount,
+  getLocalizedRubricCount,
+  getLocalizedAuthorCount,
+  // Navigation-specific helpers
+  getNavigationPageTitle,
+  getNavigationSectionDescription,
+  getBreadcrumbText,
 } from './content';
 
 // Validation utilities
@@ -47,6 +58,7 @@ export type {
   Dictionary,
   SEOPageType,
   TemplateVariables,
+  SEODictionary,
 } from '../types';
 
 // ===================================================================
@@ -55,6 +67,46 @@ export type {
 
 // Most commonly used functions
 export {
-  // From simplified_dictionary
   getDictionary,
 } from '../dictionary';
+
+// ===================================================================
+// NAVIGATION-SPECIFIC UTILITIES
+// ===================================================================
+
+/**
+ * Get all navigation accessibility labels for a dictionary
+ * Useful for validation and testing
+ */
+export const getNavigationAccessibilityLabels = (dictionary: Dictionary) => {
+  return dictionary.navigation.accessibility;
+};
+
+/**
+ * Validate that navigation dictionary has all required accessibility properties
+ */
+export const validateNavigationAccessibility = (dictionary: Dictionary): boolean => {
+  const required = [
+    'mainNavigation',
+    'menuTitle', 
+    'menuDescription',
+    'openMenu',
+    'closeMenu',
+    'logoAlt',
+    'logoMainPageLabel',
+    'primarySectionsLabel',
+    'mainMenuLabel',
+    'searchAndSettingsLabel',
+    'siteSearchLabel',
+    'skipToContent',
+    'skipToNavigation',
+  ];
+
+  const accessibility = dictionary.navigation.accessibility;
+  
+  return required.every(key => {
+    const hasProperty = key in accessibility;
+    const hasValue = accessibility[key as keyof typeof accessibility]?.trim().length > 0;
+    return hasProperty && hasValue;
+  });
+};

@@ -1,11 +1,11 @@
 // src/main/lib/dictionary/dictionary.ts
-// SIMPLIFIED: No pluralization, compact and template-driven
+// FIXED: Added missing navigation accessibility properties
 
 import { Dictionary } from './types';
 
 export const russianDictionary: Dictionary = {
   // ===================================================================
-  // NAVIGATION - Clean and simple
+  // NAVIGATION - Complete with accessibility
   // ===================================================================
   navigation: {
     labels: {
@@ -19,6 +19,21 @@ export const russianDictionary: Dictionary = {
       pageTitle: '{page} — {siteName}',
       sectionDescription: '{action} {section} на {siteName}',
       breadcrumbSeparator: '→',
+    },
+    accessibility: {
+      mainNavigation: 'Главная навигация',
+      menuTitle: 'Навигационное меню',
+      menuDescription: 'Навигация по основным разделам сайта EventForMe',
+      openMenu: 'Открыть меню',
+      closeMenu: 'Закрыть меню',
+      logoAlt: 'EventForMe — медиа о культурных событиях',
+      logoMainPageLabel: 'EventForMe — главная страница',
+      primarySectionsLabel: 'Основные разделы сайта',
+      mainMenuLabel: 'Главное меню',
+      searchAndSettingsLabel: 'Поиск и настройки',
+      siteSearchLabel: 'Поиск по сайту',
+      skipToContent: 'Перейти к основному содержанию',
+      skipToNavigation: 'Перейти к навигации',
     },
   },
 
@@ -58,110 +73,98 @@ export const russianDictionary: Dictionary = {
   // ===================================================================
   sections: {
     labels: {
-      articles: 'статьи',
-      rubrics: 'рубрики',
-      authors: 'авторы',
-      collection: 'коллекция',
-      catalog: 'каталог',
+      articles: 'статьи',       // lowercase for templates
+      rubrics: 'рубрики',       // lowercase for templates
+      authors: 'авторы',        // lowercase for templates
+      collection: 'коллекция',  // Generic term
+      catalog: 'каталог',       // Alternative to collection
     },
     templates: {
       pageTitle: '{section} — {siteName}',
-      collectionTitle: 'Все {section}',                    // "Все рубрики"
-      itemInCollection: '{item} в {collection}',           // "Статьи в рубрике"
-      itemByAuthor: '{item} автора {author}',             // "Статьи автора Иван"
-      emptyCollection: 'В {collection} пока нет {items}',  // "В рубрике пока нет статей"
-      totalCount: 'Всего: {count} {countLabel}',          // "Всего: 5 Статей:"
+      collectionTitle: 'Все {section}',        // "Все рубрики"
+      itemInCollection: '{item} в {collection}', // "Статья в рубрике"
+      itemByAuthor: '{item} автора {author}',   // "Статьи автора Иван"
+      emptyCollection: 'В {collection} пока нет {items}',
+      totalCount: 'Всего: {count} {countLabel}',
     },
   },
 
   // ===================================================================
-  // SEO - Compact templates for consistent metadata
+  // SEO - Complete site information
   // ===================================================================
   seo: {
     site: {
       name: 'EventForMe',
-      fullName: 'EventForMe — Культурные события и современные идеи',
+      fullName: 'EventForMe — медиа о культурных событиях',
       description: 'Ведущий медиа-проект о культурных событиях, музыке, современных идеях и тайнах мира',
       url: 'https://event4me.eu',
       contactEmail: 'info@event4me.eu',
       socialProfiles: [
+        'https://vk.com/eventforme',
         'https://t.me/eventforme',
-        'https://vk.com/eventforme'
+        'https://instagram.com/eventforme'
       ],
     },
     templates: {
       pageTitle: '{title} — {siteName}',
       metaDescription: '{description} на {siteName}',
-      collectionPage: '{collection} — {siteName}',           // "Все рубрики — EventForMe"
-      itemPage: '{item} — {siteName}',                       // "Музыка — EventForMe"
+      collectionPage: '{collection} — {siteName}', 
+      itemPage: '{item} — {siteName}',
       searchPage: 'Поиск: {query} — {siteName}',
     },
     keywords: {
-      base: 'культурные события, музыка, современные идеи, EventForMe',
-      rubrics: 'рубрики, разделы, тематические материалы',
-      articles: 'статьи, публикации, материалы',
-      authors: 'авторы, журналисты, эксперты',
+      base: 'культурные события, музыка, современные идеи, медиа',
+      rubrics: 'рубрики, темы, категории, разделы',
+      articles: 'статьи, публикации, материалы, контент',
+      authors: 'авторы, эксперты, журналисты, блогеры',
+    },
+    regional: {
+      region: 'Россия',
+      targetMarkets: ['Россия', 'СНГ', 'русскоязычное сообщество'],
     },
   },
 
   // ===================================================================
-  // ACCESSIBILITY - Template-driven for consistency  
-  // ===================================================================
-  accessibility: {
-    templates: {
-      iconAlt: 'Иконка {item}',                    // "Иконка рубрики"
-      linkTitle: '{action} {item}',                // "Изучить рубрику"  
-      pageDescription: '{description} на {siteName}',
-    },
-    skipToContent: 'Перейти к содержанию',
-    mainNavigation: 'Главная навигация',
-    currentPage: 'Текущая страница',
-  },
-
-  // ===================================================================
-  // SIMPLE SECTIONS - No unnecessary complexity
+  // SEARCH - Simple search labels
   // ===================================================================
   search: {
     placeholder: 'Поиск статей...',
     noResults: 'Результатов не найдено',
     searching: 'Поиск...',
+    labels: {
+      results: 'Результаты поиска',
+    },
   },
 
+  // ===================================================================
+  // FOOTER - Minimal footer content
+  // ===================================================================
   footer: {
     copyright: 'Все права защищены',
-    about: 'О проекте',
+    about: 'О проекте EventForMe',
+  },
+
+  // ===================================================================
+  // ACCESSIBILITY - Template-driven accessibility
+  // ===================================================================
+  accessibility: {
+    templates: {
+      iconAlt: 'Иконка {item}',
+      linkTitle: '{action} {item}',
+      pageDescription: '{description} на {siteName}',
+    },
+    skipToContent: 'Перейти к основному содержанию',
+    mainNavigation: 'Главная навигация',
+    currentPage: 'Текущая страница',
   },
 };
 
-// ===================================================================
-// SIMPLE HELPER FUNCTIONS - No pluralization complexity
-// ===================================================================
-
 /**
- * Format count with simple label - no pluralization
- * @example formatCount(5, 'статей') => "Статей: 5"
+ * Main dictionary getter - returns Russian dictionary
+ * This replaces the old getDictionary function
  */
-export const formatCount = (count: number, label: string): string => {
-  return `${label} ${count}`;
-};
-
-/**
- * Process template with variables - simplified version
- * @example processTemplate('Все {section}', { section: 'рубрики' }) => "Все рубрики"
- */
-export const processTemplate = (template: string, variables: Record<string, string>): string => {
-  let result = template;
-  Object.entries(variables).forEach(([key, value]) => {
-    result = result.replace(new RegExp(`\\{${key}\\}`, 'g'), value);
-  });
-  return result;
-};
-
-/**
- * Get dictionary with locale support (currently only Russian)
- */
-export const getDictionary = (locale: 'ru'): Promise<Dictionary> => {
-  return Promise.resolve(russianDictionary);
+export const getDictionary = async (lang: 'ru' = 'ru'): Promise<Dictionary> => {
+  return russianDictionary;
 };
 
 export default russianDictionary;

@@ -1,5 +1,5 @@
 // src/main/lib/dictionary/types.ts
-// SIMPLIFIED: No complex pluralization, compact and reusable
+// UPDATED: Added navigation accessibility interface
 
 export type Lang = 'ru';
 
@@ -42,7 +42,7 @@ export interface CommonDictionary {
 }
 
 // ===================================================================
-// NAVIGATION - Simplified and reusable
+// NAVIGATION - Complete with accessibility
 // ===================================================================
 
 export interface NavigationLabels {
@@ -59,10 +59,26 @@ export interface NavigationTemplates {
   readonly breadcrumbSeparator: string; // "→" or "/" 
 }
 
+export interface NavigationAccessibility {
+  readonly mainNavigation: string;
+  readonly menuTitle: string;
+  readonly menuDescription: string;
+  readonly openMenu: string;
+  readonly closeMenu: string;
+  readonly logoAlt: string;
+  readonly logoMainPageLabel: string;
+  readonly primarySectionsLabel: string;
+  readonly mainMenuLabel: string;
+  readonly searchAndSettingsLabel: string;
+  readonly siteSearchLabel: string;
+  readonly skipToContent: string;
+  readonly skipToNavigation: string;
+}
+
 export interface NavigationDictionary {
   readonly labels: NavigationLabels;
   readonly templates: NavigationTemplates;
-  // Accessibility can be computed from templates + labels, no separate interface needed
+  readonly accessibility: NavigationAccessibility;
 }
 
 // ===================================================================
@@ -104,10 +120,15 @@ export interface SEOSiteInfo {
   readonly socialProfiles: readonly string[];
 }
 
+export interface SEORegional {
+  readonly region: string;
+  readonly targetMarkets: readonly string[];
+}
+
 export interface SEOTemplates {
   readonly pageTitle: string;           // "{title} — {siteName}"
   readonly metaDescription: string;     // "{description} на {siteName}"
-  readonly collectionPage: string;      // "Все {collection} — {siteName}"
+  readonly collectionPage: string;      // "{collection} — {siteName}"
   readonly itemPage: string;            // "{item} — {siteName}"
   readonly searchPage: string;          // "Поиск: {query} — {siteName}"
 }
@@ -123,6 +144,7 @@ export interface SEODictionary {
   readonly site: SEOSiteInfo;
   readonly templates: SEOTemplates;
   readonly keywords: SEOKeywords;
+  readonly regional: SEORegional;
 }
 
 // ===================================================================
@@ -143,7 +165,25 @@ export interface Accessibility {
 }
 
 // ===================================================================
-// MAIN DICTIONARY - Simplified and compact
+// SEARCH & FOOTER - Simple interfaces
+// ===================================================================
+
+export interface SearchDictionary {
+  readonly placeholder: string;
+  readonly noResults: string;
+  readonly searching: string;
+  readonly labels: {
+    readonly results: string;
+  };
+}
+
+export interface FooterDictionary {
+  readonly copyright: string;
+  readonly about: string;
+}
+
+// ===================================================================
+// MAIN DICTIONARY - Complete and simplified
 // ===================================================================
 
 export interface Dictionary {
@@ -152,15 +192,8 @@ export interface Dictionary {
   readonly sections: SectionsTranslations;
   readonly seo: SEODictionary;
   readonly accessibility: Accessibility;
-  readonly search: {
-    readonly placeholder: string;
-    readonly noResults: string;
-    readonly searching: string;
-  };
-  readonly footer: {
-    readonly copyright: string;
-    readonly about: string;
-  };
+  readonly search: SearchDictionary;
+  readonly footer: FooterDictionary;
 }
 
 // ===================================================================
@@ -176,7 +209,7 @@ export interface TemplateVariables {
   readonly section?: string;
   readonly collection?: string;
   readonly item?: string;
-  readonly items?: string;        // ADDED: For plural items like "статей", "рубрик"
+  readonly items?: string;        // For plural items like "статей", "рубрик"
   readonly author?: string;
   readonly query?: string;
   readonly count?: string;

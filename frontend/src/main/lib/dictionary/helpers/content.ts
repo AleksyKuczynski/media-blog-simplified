@@ -1,42 +1,39 @@
 // src/main/lib/dictionary/helpers/content.ts
-// Content formatting and display utilities
+// Content formatting helpers for simplified dictionary structure
 
 import { Dictionary } from '../types';
 import { processTemplate } from './templates';
 
 /**
- * Format count with simple label - no pluralization
- * @example formatCount(5, 'Статей:') => "Статей: 5"
+ * Format count with appropriate label - no pluralization needed
+ * @example formatCount(dictionary, 5, 'articles') => "Статей: 5"
  */
-export const formatCount = (count: number, label: string): string => {
+export const formatCount = (dictionary: Dictionary, count: number, type: keyof Dictionary['common']['count']): string => {
+  const label = dictionary.common.count[type];
   return `${label} ${count}`;
 };
 
 /**
  * Format total count using template
- * @example formatTotalCount(dictionary, 5, 'articles') => "Всего: 5 Статей:"
+ * @example formatTotalCount(dictionary, 15, 'статей') => "Всего: 15 статей"
  */
-export const formatTotalCount = (
-  dictionary: Dictionary, 
-  count: number, 
-  type: keyof Dictionary['common']['count']
-): string => {
+export const formatTotalCount = (dictionary: Dictionary, count: number, countLabel: string): string => {
   return processTemplate(dictionary.sections.templates.totalCount, {
     count: count.toString(),
-    countLabel: dictionary.common.count[type],
+    countLabel,
   });
 };
 
 /**
- * Generate accessible icon alt text
- * @example getIconAlt(dictionary, 'рубрики') => "Иконка рубрики"
+ * Generate icon alt text using accessibility template
+ * @example getIconAlt(dictionary, 'рубрика') => "Иконка рубрика"
  */
 export const getIconAlt = (dictionary: Dictionary, item: string): string => {
   return processTemplate(dictionary.accessibility.templates.iconAlt, { item });
 };
 
 /**
- * Generate accessible link title
+ * Generate link title using accessibility template  
  * @example getLinkTitle(dictionary, 'Изучить', 'рубрику') => "Изучить рубрику"
  */
 export const getLinkTitle = (dictionary: Dictionary, action: string, item: string): string => {
@@ -44,8 +41,8 @@ export const getLinkTitle = (dictionary: Dictionary, action: string, item: strin
 };
 
 /**
- * Generate empty state message using template
- * @example getEmptyMessage(dictionary, 'рубрике', 'статей') => "В рубрике пока нет статей"
+ * Get empty message for collections
+ * @example getEmptyMessage(dictionary, 'рубриках', 'статей') => "В рубриках пока нет статей"
  */
 export const getEmptyMessage = (dictionary: Dictionary, collection: string, items: string): string => {
   return processTemplate(dictionary.sections.templates.emptyCollection, {
@@ -55,8 +52,8 @@ export const getEmptyMessage = (dictionary: Dictionary, collection: string, item
 };
 
 /**
- * Generate "items in collection" text  
- * @example getItemsInCollection(dictionary, 'Статьи', 'рубрике') => "Статьи в рубрике"
+ * Generate "items in collection" text
+ * @example getItemsInCollection(dictionary, 'статья', 'рубрике') => "статья в рубрике"
  */
 export const getItemsInCollection = (dictionary: Dictionary, item: string, collection: string): string => {
   return processTemplate(dictionary.sections.templates.itemInCollection, {
@@ -66,85 +63,65 @@ export const getItemsInCollection = (dictionary: Dictionary, item: string, colle
 };
 
 /**
- * Generate breadcrumb text for navigation
- * @example getBreadcrumbText(dictionary, 'home') => "Главная"
+ * Localized count for Russian - simple numeric display without complex pluralization
+ * @example getLocalizedCount(5) => "5" (just returns the number, let templates handle text)
  */
-export const getBreadcrumbText = (dictionary: Dictionary, key: keyof Dictionary['navigation']['labels']): string => {
-  return dictionary.navigation.labels[key];
+export const getLocalizedCount = (count: number): string => {
+  return count.toString();
 };
 
 /**
- * Generate status message
- * @example getStatusMessage(dictionary, 'loading') => "Загрузка..."
+ * Get localized article count label - reuses existing dictionary entries
  */
-export const getStatusMessage = (dictionary: Dictionary, status: keyof Dictionary['common']['status']): string => {
-  return dictionary.common.status[status];
+export const getLocalizedArticleCount = (dictionary: Dictionary, count: number): string => {
+  return formatCount(dictionary, count, 'articles');
 };
 
 /**
- * Generate action label
- * @example getActionLabel(dictionary, 'loadMore') => "Загрузить еще"
+ * Get localized rubric count label - reuses existing dictionary entries
  */
-export const getActionLabel = (dictionary: Dictionary, action: keyof Dictionary['common']['actions']): string => {
-  return dictionary.common.actions[action];
+export const getLocalizedRubricCount = (dictionary: Dictionary, count: number): string => {
+  return formatCount(dictionary, count, 'rubrics');
 };
 
 /**
- * Generate section label
- * @example getSectionLabel(dictionary, 'articles') => "статьи"
+ * Get localized author count label - reuses existing dictionary entries  
  */
-export const getSectionLabel = (dictionary: Dictionary, section: keyof Dictionary['sections']['labels']): string => {
-  return dictionary.sections.labels[section];
+export const getLocalizedAuthorCount = (dictionary: Dictionary, count: number): string => {
+  return formatCount(dictionary, count, 'authors');
 };
 
 /**
- * Truncate text with Russian-aware word boundaries
- * @example truncateText('Длинный текст статьи...', 50) => "Длинный текст статьи..."
+ * Navigation-specific helpers
  */
-export const truncateText = (text: string, maxLength: number = 120): string => {
-  if (!text || text.length <= maxLength) {
-    return text;
-  }
-  
-  const truncated = text.substring(0, maxLength);
-  const lastSpace = truncated.lastIndexOf(' ');
-  
-  // Only truncate at word boundary if it's not too short
-  if (lastSpace > maxLength * 0.7) {
-    return truncated.substring(0, lastSpace).trim() + '...';
-  } else {
-    return truncated.trim() + '...';
-  }
+
+/**
+ * Get page title for navigation
+ * @example getNavigationPageTitle(dictionary, 'рубрики') => "Рубрики — EventForMe"
+ */
+export const getNavigationPageTitle = (dictionary: Dictionary, page: string): string => {
+  return processTemplate(dictionary.navigation.templates.pageTitle, {
+    page,
+    siteName: dictionary.seo.site.name,
+  });
 };
 
 /**
- * Generate page heading with consistent formatting
- * @example getPageHeading(dictionary, 'Все рубрики') => "Все рубрики"
+ * Get section description for navigation
+ * @example getNavigationSectionDescription(dictionary, 'Изучить', 'рубрики') => "Изучить рубрики на EventForMe"
  */
-export const getPageHeading = (dictionary: Dictionary, title: string, withSiteName: boolean = false): string => {
-  if (withSiteName) {
-    return processTemplate(dictionary.seo.templates.pageTitle, {
-      title,
-      siteName: dictionary.seo.site.name,
-    });
-  }
-  return title;
+export const getNavigationSectionDescription = (dictionary: Dictionary, action: string, section: string): string => {
+  return processTemplate(dictionary.navigation.templates.sectionDescription, {
+    action,
+    section,
+    siteName: dictionary.seo.site.name,
+  });
 };
 
-// Fix default export - assign to variable first
-const contentHelpers = {
-  formatCount,
-  formatTotalCount,
-  getIconAlt,
-  getLinkTitle,
-  getEmptyMessage,
-  getItemsInCollection,
-  getBreadcrumbText,
-  getStatusMessage,
-  getActionLabel,
-  getSectionLabel,
-  truncateText,
-  getPageHeading,
+/**
+ * Get breadcrumb navigation text with proper separator
+ * @example getBreadcrumbText(dictionary, ['Главная', 'Рубрики']) => "Главная → Рубрики"
+ */
+export const getBreadcrumbText = (dictionary: Dictionary, items: string[]): string => {
+  return items.join(` ${dictionary.navigation.templates.breadcrumbSeparator} `);
 };
-
-export default contentHelpers;
