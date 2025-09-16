@@ -7,8 +7,8 @@ import { generateMainNavigationMetadata, generateNavigationMetadata, getNavigati
 import { CompleteNavigationSchema, MinimalNavigationSchema, NavigationSchema } from './schemas/NavigationSchema';
 
 // NEW: Search components imports
-import { generateSearchMetadata, getSearchOpenGraphData, validateSearchMetadata, getSearchMetaTags } from './metadata/SearchMetadata';
-import { SearchSchema, MinimalSearchSchema, SearchActionSchema } from './schemas/SearchSchema';
+import { generateSearchMetadata } from './metadata/SearchMetadata';
+import { SearchSchema, MinimalSearchSchema } from './schemas/SearchSchema';
 
 // ===================================================================
 // CORE EXPORTS - Foundation components and utilities
@@ -95,16 +95,12 @@ export type {
 // Search metadata
 export {
   generateSearchMetadata,
-  getSearchOpenGraphData,
-  validateSearchMetadata,
-  getSearchMetaTags,
 } from './metadata/SearchMetadata';
 
 // Search schemas
 export {
   SearchSchema,
   MinimalSearchSchema,
-  SearchActionSchema,
 } from './schemas/SearchSchema';
 
 // ===================================================================
@@ -139,16 +135,10 @@ export const useSearchSEO = () => {
   return {
     // Metadata generation
     generateSearchMetadata,
-    getSearchOpenGraphData,
-    validateSearchMetadata,
     
     // Schema generation
     SearchSchema,
     MinimalSearchSchema,
-    SearchActionSchema,
-    
-    // Utilities
-    getSearchMetaTags,
   };
 };
 

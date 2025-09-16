@@ -1,5 +1,5 @@
 // src/app/ru/search/page.tsx
-// FIXED: Integrated SearchSEO functionality and removed hardcoded text
+// OPTIMIZED: Simplified states, clean dictionary usage, improved SEO
 
 import { Suspense } from 'react';
 import { Metadata } from 'next';
@@ -23,13 +23,13 @@ interface SearchPageProps {
   };
 }
 
-// Static metadata generation using fixed function
+// Static metadata generation - NO QUERY HANDLING
 export function generateMetadata(): Metadata {
   try {
     return generateSearchMetadataSimple(russianDictionary);
   } catch (error) {
     console.error('Search page metadata generation failed:', error);
-    // Fallback metadata using dictionary only - NO HARDCODED TEXT
+    // Fallback metadata using dictionary only
     return {
       title: `${russianDictionary.search.templates.pageTitle} — ${russianDictionary.seo.site.name}`,
       description: `${russianDictionary.search.templates.pageDescription} на ${russianDictionary.seo.site.name}`,
@@ -42,14 +42,18 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';
-  const searchQuery = searchParams.search || '';
+  const searchQuery = searchParams.search?.trim() || '';
 
+  // Determine page state based on requirements
+  const hasValidQuery = searchQuery.length >= 3;
+  const hasInvalidQuery = searchQuery.length > 0 && searchQuery.length < 3;
+  
   // Only fetch results if there's a valid search query
   let allSlugs: ArticleSlugInfo[] = [];
   let hasMore = false;
-  const hasSearchQuery = searchQuery && searchQuery.length >= 3;
+  let hasResults = false;
 
-  if (hasSearchQuery) {
+  if (hasValidQuery) {
     try {
       // Server-side search results fetching
       for (let page = 1; page <= currentPage; page++) {
@@ -64,63 +68,77 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         hasMore = pageHasMore;
         if (!pageHasMore) break;
       }
+      hasResults = allSlugs.length > 0;
     } catch (error) {
       console.error('Search results fetching failed:', error);
       // Continue with empty results, component will handle gracefully
     }
   }
 
-  // Static page title using dictionary
-  const pageTitle = dict.search.templates.pageTitle;
+  // Determine layout state
+  const isEmptyState = !searchQuery; // No query present
+  const isResultsState = hasValidQuery && hasResults; // Valid query with results  
+  const isNotFoundState = hasInvalidQuery || (hasValidQuery && !hasResults); // Invalid or no results
 
   return (
     <>
-      {/* Integrated SEO - Server Side Schema Only */}
-      <SearchSchema 
-        dictionary={dict} 
-        query={hasSearchQuery ? searchQuery : undefined} 
-      />
+      {/* Static SEO - NO QUERY HANDLING */}
+      <SearchSchema dictionary={dict} />
       
-      {/* Main search content */}
-      <Section
-        title={pageTitle}
-        className="container mx-auto px-4 py-8"
-      >
-        <div className="max-w-4xl mx-auto space-y-8">
-          {/* Page description - manually placed since Section doesn't support description prop */}
-          <div className="text-center mb-8">
-            <p className="text-lg text-gray-600">
-              {dict.search.templates.pageDescription}
-            </p>
+      {/* STATE 1: Empty page with middle-centered SearchBar */}
+      {isEmptyState && (
+        <div className="min-h-screen flex flex-col">
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-full max-w-2xl px-4">
+              <div className="text-center mb-8">
+                <h1 className="text-2xl font-bold text-txcolor-primary mb-4">
+                  {dict.search.templates.pageTitle}
+                </h1>
+                <p className="text-lg text-txcolor-secondary">
+                  {dict.search.templates.pageDescription}
+                </p>
+              </div>
+              
+              <Suspense fallback={
+                <div className="h-14 bg-gray-100 rounded-lg animate-pulse" />
+              }>
+                <SearchBarClient
+                  dictionary={dict}
+                  lang="ru"
+                  className="w-full"
+                />
+              </Suspense>
+            </div>
           </div>
+        </div>
+      )}
 
-          {/* Search interface */}
-          <div className="space-y-6">
-            <Suspense fallback={
-              <div 
-                className="h-14 bg-gray-100 rounded-lg animate-pulse"
-                aria-label={dict.common.status.loading}
-              />
-            }>
-              <SearchBarClient
-                dictionary={dict}
-                lang="ru"
-              />
-            </Suspense>
-          </div>
+      {/* STATE 2: Results page with top-centered SearchBar and ArticleList */}
+      {isResultsState && (
+        <Section className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto space-y-8">
+            {/* Top-centered SearchBar */}
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-txcolor-primary mb-6">
+                {dict.search.templates.pageTitle}
+              </h1>
+              
+              <Suspense fallback={
+                <div className="h-14 bg-gray-100 rounded-lg animate-pulse" />
+              }>
+                <SearchBarClient
+                  dictionary={dict}
+                  lang="ru"
+                  className="max-w-2xl mx-auto"
+                />
+              </Suspense>
+            </div>
 
-          {/* Search results or empty state */}
-          <div className="space-y-6">
+            {/* Search Results */}
             <Suspense fallback={
-              <div 
-                className="space-y-4"
-                aria-label={dict.common.status.loading}
-              >
+              <div className="space-y-4">
                 {Array.from({ length: 3 }, (_, i) => (
-                  <div 
-                    key={i}
-                    className="h-32 bg-gray-100 rounded-lg animate-pulse" 
-                  />
+                  <div key={i} className="h-32 bg-gray-100 rounded-lg animate-pulse" />
                 ))}
               </div>
             }>
@@ -134,8 +152,46 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               />
             </Suspense>
           </div>
+        </Section>
+      )}
+
+      {/* STATE 3: Not found - middle-centered SearchBar with message */}
+      {isNotFoundState && (
+        <div className="min-h-screen flex flex-col">
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-full max-w-2xl px-4">
+              <div className="text-center mb-8">
+                <h1 className="text-2xl font-bold text-txcolor-primary mb-4">
+                  {dict.search.templates.pageTitle}
+                </h1>
+                <p className="text-lg text-txcolor-secondary mb-4">
+                  {dict.search.templates.pageDescription}
+                </p>
+              </div>
+              
+              <Suspense fallback={
+                <div className="h-14 bg-gray-100 rounded-lg animate-pulse" />
+              }>
+                <SearchBarClient
+                  dictionary={dict}
+                  lang="ru"
+                  className="w-full"
+                />
+              </Suspense>
+
+              {/* Not found message */}
+              <div className="text-center mt-8">
+                <p className="text-txcolor-secondary">
+                  {hasInvalidQuery 
+                    ? dict.search.labels.minCharacters
+                    : dict.search.labels.noResults
+                  }
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </Section>
+      )}
     </>
   );
 }

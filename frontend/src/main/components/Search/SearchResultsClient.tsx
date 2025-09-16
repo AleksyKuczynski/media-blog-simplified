@@ -1,15 +1,14 @@
 // src/main/components/Search/SearchResultsClient.tsx
-// OPTIMIZED: No hardcoded text, proper dictionary usage, clean component structure
+// SIMPLIFIED: Only shows results, no empty/not-found states handled here
 
 'use client'
 
-import React, { Suspense } from 'react';
+import React from 'react';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import SortingControl from '@/main/components/Navigation/SortingControl';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { formatCount } from '@/main/lib/dictionary/helpers/content';
 
 interface SearchResultsClientProps {
@@ -22,8 +21,8 @@ interface SearchResultsClientProps {
 }
 
 /**
- * SearchResultsClient - Optimized component with dictionary-driven content
- * NO HARDCODED TEXT - uses dictionary entries exclusively
+ * SearchResultsClient - SIMPLIFIED: Only handles results display
+ * Empty and not-found states are handled by the parent Search page
  */
 export default function SearchResultsClient({
   dictionary,
@@ -35,119 +34,52 @@ export default function SearchResultsClient({
 }: SearchResultsClientProps) {
   const lang: Lang = 'ru';
 
-  // Generate results title using dictionary template
-  const resultsTitle = processTemplate(dictionary.search.templates.resultsFor, {
-    query: `"${searchQuery}"`,
-  });
+  // This component only renders when there are results
+  if (allSlugs.length === 0) {
+    return null;
+  }
 
   // Generate results count using dictionary count helper
-  const resultsCountText = allSlugs.length > 0 
-    ? formatCount(dictionary, allSlugs.length, 'results')
-    : dictionary.search.labels.noResults;
+  const resultsCountText = formatCount(dictionary, allSlugs.length, 'results');
 
   return (
-    <>
-      {/* Results Header - Dictionary-driven */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+    <div className="space-y-6">
+      {/* Results Header */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-xl font-bold text-txcolor-primary mb-2">
-            {resultsTitle}
-          </h1>
+          <h2 className="text-lg font-semibold text-txcolor-primary mb-2">
+            {dictionary.search.templates.pageTitle}: {searchQuery}
+          </h2>
           <p className="text-txcolor-secondary">
             {resultsCountText}
           </p>
         </div>
 
-        {/* Sorting Control - Only show when results exist */}
-        {allSlugs.length > 0 && (
-          <SortingControl
-            dictionary={dictionary}
-            currentSort={currentSort}
-            lang={lang}
-          />
-        )}
+        {/* Sorting Control */}
+        <SortingControl
+          dictionary={dictionary}
+          currentSort={currentSort}
+          lang={lang}
+        />
       </div>
 
-      {/* Results Content - Dictionary-driven messages */}
-      {allSlugs.length > 0 ? (
-        <Suspense fallback={
-          <div className="text-center py-8">
-            {dictionary.common.status.loading}
-          </div>
-        }>
-          <ArticleList
-            slugInfos={allSlugs}
-            lang={lang}
-            dictionary={dictionary}
-          />
-        </Suspense>
-      ) : (
-        <SearchNoResults dictionary={dictionary} />
-      )}
+      {/* Results List */}
+      <ArticleList
+        dictionary={dictionary}
+        slugInfos={allSlugs}
+        lang={lang}
+        className="space-y-6"
+      />
 
-      {/* Load More Button - Dictionary-driven text */}
-      {allSlugs.length > 0 && hasMore && (
-        <div className="flex justify-center mt-8">
+      {/* Load More Button */}
+      {hasMore && (
+        <div className="text-center pt-6">
           <LoadMoreButton
-            currentPage={currentPage}
             dictionary={dictionary}
+            currentPage={currentPage}
           />
         </div>
       )}
-    </>
-  );
-}
-
-/**
- * SearchNoResults - Separate component for no results state
- * NO HARDCODED TEXT - uses dictionary.search.help entries
- */
-function SearchNoResults({ dictionary }: { dictionary: Dictionary }) {
-  return (
-    <div className="text-center py-12">
-      <p className="text-txcolor-secondary text-lg mb-4">
-        {dictionary.search.labels.noResults}
-      </p>
-      
-      <p className="text-txcolor-secondary mb-4">
-        {dictionary.search.interface.tryFollowing}
-      </p>
-      
-      <div className="text-txcolor-secondary text-sm space-y-2">
-        <p className="font-medium">{dictionary.search.help.searchTips}</p>
-        <ul className="space-y-1 text-left inline-block">
-          <li>• {dictionary.search.help.checkSpelling}</li>
-          <li>• {dictionary.search.help.useGeneralTerms}</li>
-          <li>• {dictionary.search.help.trySynonyms}</li>
-        </ul>
-      </div>
-
-      {/* Alternative Navigation - Dictionary-driven */}
-      <div className="mt-8 pt-6 border-t border-bgcolor-accent">
-        <p className="text-txcolor-secondary mb-4">
-          {dictionary.search.interface.alternativeNavigation}
-        </p>
-        <div className="flex flex-wrap justify-center gap-4 text-sm">
-          <a 
-            href="/ru/rubrics" 
-            className="text-pr-fix hover:text-pr-hi transition-colors px-3 py-1 rounded-md hover:bg-bgcolor-accent/10"
-          >
-            {dictionary.search.navigation.popularRubrics}
-          </a>
-          <a 
-            href="/ru/articles" 
-            className="text-pr-fix hover:text-pr-hi transition-colors px-3 py-1 rounded-md hover:bg-bgcolor-accent/10"
-          >
-            {dictionary.search.navigation.latestArticles}
-          </a>
-          <a 
-            href="/ru/authors" 
-            className="text-pr-fix hover:text-pr-hi transition-colors px-3 py-1 rounded-md hover:bg-bgcolor-accent/10"
-          >
-            {dictionary.search.navigation.ourAuthors}
-          </a>
-        </div>
-      </div>
     </div>
   );
 }
