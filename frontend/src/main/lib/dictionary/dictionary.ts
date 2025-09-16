@@ -130,8 +130,12 @@ export const russianDictionary: Dictionary = {
       enterRubric: 'Войти в рубрику',
       discoverContent: 'Открыть содержимое',
       moreDetails: 'Подробнее',
+      collectionPageDescription: 'Изучите наши тематические рубрики и найдите интересные статьи о культурных событиях, музыке и современных идеях.',
     },
-
+    authors: {
+      // ... existing properties ...
+      collectionPageDescription: 'Познакомьтесь с нашими авторами и экспертами, которые пишут о культурных событиях и современных идеях.',
+    },
     articles: {
       allArticles: 'Все статьи',
       featuredArticles: 'Избранные статьи',
@@ -145,6 +149,7 @@ export const russianDictionary: Dictionary = {
       articlesInCategory: 'Статьи в категории',
       articlesInRubric: 'Статьи в рубрике',
       articlesByAuthor: 'Статьи автора',
+      collectionPageDescription: 'Читайте все статьи о культурных событиях, музыке, современных идеях и мистических явлениях.',
     },
   },
 

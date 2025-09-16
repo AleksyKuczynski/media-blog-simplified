@@ -1,184 +1,55 @@
 // src/main/components/SEO/core/MetadataBuilder.tsx
-// Completely fixed metadata logic for Next.js Metadata generation
+// FIXED: Correct variable order and Next.js Metadata compatibility
 
 import { Metadata } from 'next';
 import { 
   SEOData, 
-  MetadataBuilderProps, 
-  MetadataResult,
-  SEOContext
+  ArticleSEOData, 
+  WebsiteSEOData, 
+  CollectionSEOData,
+  BaseSEOData 
 } from './types';
 
 // ===================================================================
-// METADATA BUILDER - Pure functions for metadata generation
+// HELPER FUNCTIONS - DECLARED FIRST
 // ===================================================================
 
 /**
- * Default SEO context for the site
+ * Helper function to validate URLs
  */
-const DEFAULT_SEO_CONTEXT: SEOContext = {
-  baseUrl: 'https://event4me.eu',
-  defaultImageUrl: 'https://event4me.eu/og-default.jpg',
-  siteName: 'EventForMe',
-  locale: 'ru_RU',
-  region: 'RU',
+const isValidUrl = (url: string): boolean => {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
 };
 
 /**
- * Helper function to filter out undefined values and ensure Next.js compatibility
- * FIXED: Accept the same types as Next.js Metadata.other
+ * FIXED: Filter out undefined values with proper typing for Next.js Metadata
  */
-const filterDefinedValues = (
-  obj: Record<string, string | number | (string | number)[] | undefined>
-): Record<string, string | number | (string | number)[]> => {
+const filterDefinedValues = (obj: Record<string, any>): Record<string, string | number | (string | number)[]> => {
   const filtered: Record<string, string | number | (string | number)[]> = {};
   
-  Object.entries(obj).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== '') {
-      filtered[key] = value as string | number | (string | number)[];
+  for (const [key, value] of Object.entries(obj)) {
+    if (value !== undefined && value !== null) {
+      // Ensure value matches Next.js Metadata expected types
+      if (typeof value === 'string' || typeof value === 'number' || Array.isArray(value)) {
+        filtered[key] = value;
+      } else if (typeof value === 'boolean') {
+        filtered[key] = value.toString();
+      } else {
+        filtered[key] = String(value);
+      }
     }
-  });
+  }
   
   return filtered;
 };
 
 /**
- * Build Next.js Metadata from SEO data - COMPLETELY FIXED
- */
-export const buildMetadata = (
-  seoData: SEOData,
-  context: Partial<SEOContext> = {},
-  additionalMeta: Record<string, string | number | undefined> = {}
-): MetadataResult => {
-  const ctx = { ...DEFAULT_SEO_CONTEXT, ...context };
-  
-  // Create base other metadata - FIXED: Use compatible types
-  const baseOtherMeta: Record<string, string | number | (string | number)[] | undefined> = {
-    // Language and region
-    'content-language': 'ru',
-    'geo.region': ctx.region,
-    'geo.placename': 'Russia',
-    
-    // SEO directives
-    'robots': 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1',
-    'googlebot': 'index, follow',
-    
-    // Yandex optimization - only include if defined
-    ...(process.env.YANDEX_VERIFICATION && {
-      'yandex-verification': process.env.YANDEX_VERIFICATION
-    }),
-    
-    // Dublin Core metadata
-    'DC.title': seoData.title,
-    'DC.description': seoData.description,
-    'DC.language': 'ru',
-    'DC.creator': seoData.siteName,
-    'DC.publisher': seoData.siteName,
-    'DC.identifier': seoData.canonicalUrl,
-    'DC.coverage': 'Russia',
-    'DC.rights': 'Copyright EventForMe',
-  };
-
-  const baseMetadata: Metadata = {
-    title: seoData.title,
-    description: seoData.description,
-    keywords: seoData.keywords,
-    
-    // Canonical URL
-    alternates: {
-      canonical: seoData.canonicalUrl,
-      languages: {
-        'ru': seoData.canonicalUrl,
-        'x-default': seoData.canonicalUrl,
-      },
-    },
-
-    // Open Graph base
-    openGraph: {
-      title: seoData.title,
-      description: seoData.description,
-      url: seoData.canonicalUrl,
-      siteName: seoData.siteName,
-      locale: seoData.locale,
-      type: seoData.type === 'article' ? 'article' : 'website',
-      images: [
-        {
-          url: seoData.imageUrl || ctx.defaultImageUrl,
-          width: 1200,
-          height: 630,
-          alt: seoData.title,
-        },
-      ],
-    },
-
-    // Twitter Card
-    twitter: {
-      card: 'summary_large_image',
-      title: seoData.title,
-      description: seoData.description,
-      images: [seoData.imageUrl || ctx.defaultImageUrl],
-    },
-
-    // FIXED: Filter out undefined values before assigning to other
-    other: filterDefinedValues({
-      ...baseOtherMeta,
-      ...additionalMeta,
-    }),
-  };
-
-  // Article-specific metadata - FIXED
-  if (seoData.type === 'article') {
-    const articleData = seoData;
-    
-    baseMetadata.openGraph = {
-      ...baseMetadata.openGraph,
-      type: 'article',
-      publishedTime: articleData.publishedTime,
-      modifiedTime: articleData.modifiedTime,
-      section: articleData.section,
-      tags: articleData.tags as string[],
-    };
-
-    // Create article-specific meta - FIXED: Use compatible types
-    const articleMeta: Record<string, string | number | (string | number)[] | undefined> = {
-      'article:author': articleData.author,
-      'article:section': articleData.section,
-      'article:published_time': articleData.publishedTime,
-      'article:modified_time': articleData.modifiedTime,
-      'article:tag': articleData.tags.join(', '),
-      'DC.type': 'Text.Article',
-    };
-
-    // FIXED: Properly merge existing other metadata with new article metadata
-    baseMetadata.other = filterDefinedValues({
-      ...baseMetadata.other,
-      ...articleMeta,
-    });
-  }
-
-  // Collection-specific metadata - FIXED
-  if (seoData.type === 'collection') {
-    const collectionData = seoData;
-    
-    const collectionMeta: Record<string, string | number | (string | number)[] | undefined> = {
-      'DC.type': 'Text.Collection',
-      'collection:type': collectionData.collectionType,
-      'collection:itemCount': collectionData.itemCount.toString(),
-      'collection:language': 'ru',
-    };
-
-    // FIXED: Properly merge existing other metadata with new collection metadata
-    baseMetadata.other = filterDefinedValues({
-      ...baseMetadata.other,
-      ...collectionMeta,
-    });
-  }
-
-  return baseMetadata;
-};
-
-/**
- * Validate SEO data before building metadata
+ * FIXED: Validate SEO data before building metadata (DECLARED BEFORE USE)
  */
 export const validateSEOData = (seoData: SEOData): boolean => {
   if (!seoData.title || seoData.title.trim().length === 0) {
@@ -208,20 +79,120 @@ export const validateSEOData = (seoData: SEOData): boolean => {
   return true;
 };
 
-/**
- * Helper function to validate URLs
- */
-const isValidUrl = (url: string): boolean => {
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-};
+// ===================================================================
+// MAIN BUILDER FUNCTIONS
+// ===================================================================
 
 /**
- * Create SEO data for different page types
+ * FIXED: Core metadata building function with proper Next.js types
+ */
+export const buildMetadata = (seoData: SEOData): Metadata => {
+  const baseMetadata: Metadata = {
+    title: seoData.title,
+    description: seoData.description,
+    keywords: seoData.keywords,
+    
+    alternates: {
+      canonical: seoData.canonicalUrl,
+      languages: {
+        'ru': seoData.canonicalUrl,
+        'ru-RU': seoData.canonicalUrl,
+      },
+    },
+
+    openGraph: {
+      title: seoData.title,
+      description: seoData.description,
+      url: seoData.canonicalUrl,
+      siteName: seoData.siteName || 'EventForMe',
+      locale: seoData.locale || 'ru_RU',
+      type: seoData.type === 'article' ? 'article' : 'website',
+      images: seoData.imageUrl ? [
+        {
+          url: seoData.imageUrl,
+          width: 1200,
+          height: 630,
+          alt: seoData.title,
+        },
+      ] : [],
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      title: seoData.title,
+      description: seoData.description,
+      images: seoData.imageUrl ? [seoData.imageUrl] : [],
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+  };
+
+  // FIXED: Properly handle the 'other' field with correct filtering
+  const baseOtherMetadata = {
+    'DC.language': 'ru',
+    'DC.coverage': 'Russia',
+    'geo.region': 'RU',
+    'geo.placename': 'Russia',
+  };
+
+  // Article-specific metadata
+  if (seoData.type === 'article') {
+    const articleData = seoData as ArticleSEOData;
+    
+    const articleMeta = {
+      'article:author': articleData.author,
+      'article:section': articleData.section,
+      'article:published_time': articleData.publishedTime,
+      'article:modified_time': articleData.modifiedTime,
+      'article:tag': articleData.tags.join(', '),
+      'DC.type': 'Text.Article',
+    };
+
+    baseMetadata.other = filterDefinedValues({
+      ...baseOtherMetadata,
+      ...articleMeta,
+    });
+  }
+  // Collection-specific metadata  
+  else if (seoData.type === 'collection') {
+    const collectionData = seoData as CollectionSEOData;
+    
+    const collectionMeta = {
+      'DC.type': 'Text.Collection',
+      'collection:type': collectionData.collectionType,
+      'collection:itemCount': collectionData.itemCount.toString(),
+      'collection:language': 'ru',
+    };
+
+    baseMetadata.other = filterDefinedValues({
+      ...baseOtherMetadata,
+      ...collectionMeta,
+    });
+  }
+  // Website-specific metadata
+  else {
+    baseMetadata.other = filterDefinedValues(baseOtherMetadata);
+  }
+
+  return baseMetadata;
+};
+
+// ===================================================================
+// FACTORY FUNCTIONS
+// ===================================================================
+
+/**
+ * Create SEO data for website pages
  */
 export const createWebsiteSEOData = (
   title: string,
@@ -229,7 +200,7 @@ export const createWebsiteSEOData = (
   keywords: string,
   canonicalUrl: string,
   imageUrl?: string
-): SEOData => ({
+): WebsiteSEOData => ({
   type: 'website',
   title,
   description,
@@ -240,6 +211,9 @@ export const createWebsiteSEOData = (
   siteName: 'EventForMe',
 });
 
+/**
+ * Create SEO data for article pages
+ */
 export const createArticleSEOData = (
   title: string,
   description: string,
@@ -251,7 +225,7 @@ export const createArticleSEOData = (
   section: string,
   tags: readonly string[],
   imageUrl?: string
-): SEOData => ({
+): ArticleSEOData => ({
   type: 'article',
   title,
   description,
@@ -267,15 +241,18 @@ export const createArticleSEOData = (
   tags,
 });
 
+/**
+ * Create SEO data for collection pages
+ */
 export const createCollectionSEOData = (
   title: string,
   description: string,
   keywords: string,
   canonicalUrl: string,
-  itemCount: number,
   collectionType: string,
+  itemCount: number,
   imageUrl?: string
-): SEOData => ({
+): CollectionSEOData => ({
   type: 'collection',
   title,
   description,
@@ -284,18 +261,33 @@ export const createCollectionSEOData = (
   imageUrl,
   locale: 'ru_RU',
   siteName: 'EventForMe',
-  itemCount,
   collectionType,
+  itemCount,
 });
 
+// ===================================================================
+// PUBLIC API
+// ===================================================================
+
 /**
- * React component wrapper for metadata building
+ * MetadataBuilder - Core component for generating Next.js Metadata
  */
-export const MetadataBuilder = ({ seoData, additionalMeta = {} }: MetadataBuilderProps) => {
-  // This is a utility component - it doesn't render anything
-  // Metadata is handled by Next.js generateMetadata functions
-  return null;
+export const MetadataBuilder = {
+  build: buildMetadata,
+  validate: validateSEOData,
+  generate: (seoData: SEOData): Metadata => {
+    if (!validateSEOData(seoData)) {
+      console.warn('SEO data validation failed, proceeding with available data');
+    }
+    return buildMetadata(seoData);
+  },
 };
 
-// Export the main building function for use in generateMetadata
-export { buildMetadata as generateMetadata };
+/**
+ * Enhanced metadata generation with validation
+ */
+export const generateMetadata = (seoData: SEOData): Metadata => {
+  return MetadataBuilder.generate(seoData);
+};
+
+export default MetadataBuilder;

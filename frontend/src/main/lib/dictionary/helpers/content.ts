@@ -1,16 +1,29 @@
 // src/main/lib/dictionary/helpers/content.ts
-// FIXED: Correct parameter order and simplified count formatting
+// FIXED: Complete missing helper functions for content formatting
 
 import { Dictionary } from '../types';
 import { processTemplate } from './templates';
 
 /**
- * Format count with appropriate label - no pluralization needed
+ * Format count with appropriate label - simplified Russian approach
  * @example formatCount(dictionary, 5, 'articles') => "Статей: 5"
  */
 export const formatCount = (dictionary: Dictionary, count: number, type: keyof Dictionary['common']['count']): string => {
-  const label = dictionary.common.count[type];
-  return `${label} ${count}`;
+  try {
+    const label = dictionary.common.count[type];
+    return `${label} ${count}`;
+  } catch (error) {
+    console.warn(`Missing dictionary entry for count.${type}, using fallback`);
+    const fallbacks = {
+      articles: 'Статей:',
+      rubrics: 'Рубрик:',
+      authors: 'Авторов:',
+      results: 'Результатов:',
+      items: 'Элементов:'
+    };
+    const label = fallbacks[type] || 'Элементов:';
+    return `${label} ${count}`;
+  }
 };
 
 /**
@@ -18,10 +31,14 @@ export const formatCount = (dictionary: Dictionary, count: number, type: keyof D
  * @example formatTotalCount(dictionary, 15, 'статей') => "Всего: 15 статей"
  */
 export const formatTotalCount = (dictionary: Dictionary, count: number, countLabel: string): string => {
-  return processTemplate(dictionary.sections.templates.totalCount, {
-    count: count.toString(),
-    countLabel,
-  });
+  if (dictionary.sections?.templates?.totalCount) {
+    return processTemplate(dictionary.sections.templates.totalCount, {
+      count: count.toString(),
+      countLabel,
+    });
+  }
+  // Fallback
+  return `Всего: ${count} ${countLabel}`;
 };
 
 /**
@@ -29,11 +46,10 @@ export const formatTotalCount = (dictionary: Dictionary, count: number, countLab
  * @example getIconAlt(dictionary, 'рубрика') => "Иконка рубрика"
  */
 export const getIconAlt = (dictionary: Dictionary, item: string): string => {
-  // Use template if available, otherwise create simple text
   if (dictionary.accessibility?.templates?.iconAlt) {
     return processTemplate(dictionary.accessibility.templates.iconAlt, { item });
   }
-  return `${dictionary.accessibility.iconDescription} ${item}`;
+  return `Иконка ${item}`;
 };
 
 /**
@@ -52,10 +68,13 @@ export const getLinkTitle = (dictionary: Dictionary, action: string, item: strin
  * @example getEmptyMessage(dictionary, 'рубриках', 'статей') => "В рубриках пока нет статей"
  */
 export const getEmptyMessage = (dictionary: Dictionary, collection: string, items: string): string => {
-  return processTemplate(dictionary.sections.templates.emptyCollection, {
-    collection,
-    items,
-  });
+  if (dictionary.sections?.templates?.emptyCollection) {
+    return processTemplate(dictionary.sections.templates.emptyCollection, {
+      collection,
+      items,
+    });
+  }
+  return `В ${collection} пока нет ${items}`;
 };
 
 /**
@@ -63,22 +82,25 @@ export const getEmptyMessage = (dictionary: Dictionary, collection: string, item
  * @example getItemsInCollection(dictionary, 'статья', 'рубрике') => "статья в рубрике"
  */
 export const getItemsInCollection = (dictionary: Dictionary, item: string, collection: string): string => {
-  return processTemplate(dictionary.sections.templates.itemInCollection, {
-    item,
-    collection,
-  });
+  if (dictionary.sections?.templates?.itemInCollection) {
+    return processTemplate(dictionary.sections.templates.itemInCollection, {
+      item,
+      collection,
+    });
+  }
+  return `${item} в ${collection}`;
 };
 
 /**
  * Localized count for Russian - simple numeric display without complex pluralization
- * @example getLocalizedCount(5) => "5" (just returns the number, let templates handle text)
+ * @example getLocalizedCount(5) => "5"
  */
 export const getLocalizedCount = (count: number): string => {
   return count.toString();
 };
 
 /**
- * FIXED: Get localized article count label with correct parameter order
+ * CRITICAL FIX: Get localized article count label
  * @example getLocalizedArticleCount(dictionary, 5) => "Статей: 5"
  */
 export const getLocalizedArticleCount = (dictionary: Dictionary, count: number): string => {
@@ -86,7 +108,7 @@ export const getLocalizedArticleCount = (dictionary: Dictionary, count: number):
 };
 
 /**
- * Get localized rubric count label - reuses existing dictionary entries
+ * CRITICAL FIX: Get localized rubric count label
  * @example getLocalizedRubricCount(dictionary, 3) => "Рубрик: 3"
  */
 export const getLocalizedRubricCount = (dictionary: Dictionary, count: number): string => {
@@ -94,7 +116,7 @@ export const getLocalizedRubricCount = (dictionary: Dictionary, count: number): 
 };
 
 /**
- * Get localized author count label - reuses existing dictionary entries  
+ * CRITICAL FIX: Get localized author count label
  * @example getLocalizedAuthorCount(dictionary, 12) => "Авторов: 12"
  */
 export const getLocalizedAuthorCount = (dictionary: Dictionary, count: number): string => {
@@ -130,31 +152,18 @@ export const validateCount = (count: number): boolean => {
 };
 
 /**
- * Safe count formatting with error handling
- * Fallback for when dictionary entries might be missing
+ * Safe count formatting with comprehensive error handling
  */
 export const safeFormatCount = (dictionary: Dictionary, count: number, type: keyof Dictionary['common']['count']): string => {
   try {
     if (!validateCount(count)) {
+      console.warn('Invalid count provided:', count);
       return '0';
-    }
-    
-    if (!dictionary?.common?.count?.[type]) {
-      // Fallback when dictionary entry is missing
-      const fallbacks = {
-        articles: 'Статей:',
-        rubrics: 'Рубрик:',
-        authors: 'Авторов:',
-        results: 'Результатов:',
-        items: 'Элементов:'
-      };
-      const label = fallbacks[type] || 'Элементов:';
-      return `${label} ${count}`;
     }
     
     return formatCount(dictionary, count, type);
   } catch (error) {
-    console.warn('Error formatting count:', error);
+    console.error('Error formatting count:', error);
     return count.toString();
   }
 };

@@ -142,7 +142,10 @@ export interface HomeSectionLabels {
   readonly viewAllRubricsDescription: string;        //  'Полный каталог всех доступных рубрик',
   readonly quickNavigation: string;        //  'Быстрая навигация',
 }
-
+export interface AuthorsTranslations {
+  // ... existing properties ...
+  readonly collectionPageDescription: string;  // 'Познакомьтесь с нашими авторами и экспертами, которые пишут о культурных событиях и современных идеях.'
+}
 export interface RubricsSectionLabels {
   readonly allRubrics: string;        //  'Все рубрики',
   readonly featuredRubric: string;        //  'Избранная рубрика',
@@ -165,6 +168,7 @@ export interface RubricsSectionLabels {
   readonly enterRubric: string;        //  'Войти в рубрику',
   readonly discoverContent: string;        //  'Открыть содержимое',
   readonly moreDetails: string;        //  'Подробнее',
+  readonly collectionPageDescription: string;  // 'Изучите наши тематические рубрики и найдите интересные статьи о культурных событиях, музыке и современных идеях.'
 }
 
 export interface ArticlesLabels {
@@ -180,12 +184,14 @@ export interface ArticlesLabels {
   readonly articlesInCategory: string;       // 'Статьи в категории',
   readonly articlesInRubric: string;       // 'Статьи в рубрике',
   readonly articlesByAuthor: string;       // 'Статьи автора',
+  readonly collectionPageDescription: string;  // 'Читайте все статьи о культурных событиях, музыке, современных идеях и мистических явлениях.'
 }
 
 export interface SectionsTranslations {
   readonly labels: SectionLabels;
   readonly templates: ContentTemplates;
   readonly home: HomeSectionLabels;
+  readonly authors: AuthorsTranslations
   readonly rubrics: RubricsSectionLabels;
   readonly articles: ArticlesLabels;
 }
