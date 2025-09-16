@@ -139,6 +139,62 @@ export const generateStaticSearchMetadata = async (
 };
 
 /**
+ * Generate simple search metadata for static search page
+ * FIXED: This was the missing function that search page was calling
+ */
+export const generateSearchMetadataSimple = (
+  dictionary: Dictionary
+): Metadata => {
+  try {
+    // Validate dictionary first
+    if (!validateSearchDictionary(dictionary)) {
+      console.error('SearchMetadata: Invalid dictionary structure for simple metadata');
+    }
+
+    // Use existing search helper - NO DUPLICATION
+    const searchSEOData = generateSearchSEOData(dictionary);
+    
+    // Create basic SEO data using existing function
+    const seoData = createWebsiteSEOData(
+      searchSEOData.title,
+      searchSEOData.description,
+      searchSEOData.keywords,
+      searchSEOData.canonicalUrl,
+      `${dictionary.seo.site.url}/og-search.jpg`
+    );
+
+    // Use existing MetadataBuilder with basic context
+    const metadata = buildMetadata(
+      seoData,
+      {
+        baseUrl: dictionary.seo.site.url,
+        defaultImageUrl: `${dictionary.seo.site.url}/og-search.jpg`,
+        siteName: dictionary.seo.site.name,
+        locale: 'ru_RU',
+        region: dictionary.seo.regional?.region || 'RU',
+      },
+      {
+        'search:interface': 'enabled',
+        'search:language': dictionary.seo.regional?.language || 'ru',
+        'DC.type': 'Text.SearchPage',
+        'DC.language': 'ru',
+      }
+    );
+
+    return metadata;
+    
+  } catch (error) {
+    console.error('SearchMetadata: Error generating simple metadata', error);
+    
+    // Fallback metadata using dictionary only - NO HARDCODED TEXT
+    return {
+      title: `${dictionary.search.templates.pageTitle} — ${dictionary.seo.site.name}`,
+      description: `${dictionary.search.templates.pageDescription} на ${dictionary.seo.site.name}`,
+    };
+  }
+};
+
+/**
  * Generate search metadata for dynamic search results
  * Uses existing helpers - adds query context
  */

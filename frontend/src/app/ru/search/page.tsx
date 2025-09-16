@@ -1,5 +1,5 @@
 // src/app/ru/search/page.tsx
-// FIXED: Uses updated SEO components with proper error handling
+// FIXED: Integrated SearchSEO functionality and removed hardcoded text
 
 import { Suspense } from 'react';
 import { Metadata } from 'next';
@@ -9,8 +9,8 @@ import SearchResultsClient from '@/main/components/Search/SearchResultsClient';
 import { russianDictionary } from '@/main/lib/dictionary/dictionary';
 import { fetchArticleSlugs } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
-import { SearchSEO } from '@/main/components/SEO/SearchSEO';
 import { generateSearchMetadataSimple } from '@/main/components/SEO/metadata/SearchMetadata';
+import { SearchSchema } from '@/main/components/SEO/schemas/SearchSchema';
 
 // Force dynamic for search functionality
 export const dynamic = 'force-dynamic';
@@ -29,10 +29,10 @@ export function generateMetadata(): Metadata {
     return generateSearchMetadataSimple(russianDictionary);
   } catch (error) {
     console.error('Search page metadata generation failed:', error);
-    // Fallback metadata
+    // Fallback metadata using dictionary only - NO HARDCODED TEXT
     return {
-      title: 'Поиск — EventForMe',
-      description: 'Поиск статей и материалов на EventForMe',
+      title: `${russianDictionary.search.templates.pageTitle} — ${russianDictionary.seo.site.name}`,
+      description: `${russianDictionary.search.templates.pageDescription} на ${russianDictionary.seo.site.name}`,
     };
   }
 }
@@ -75,44 +75,52 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   return (
     <>
-      {/* SEO Components - Server Side with error boundary */}
-      <SearchSEO dictionary={dict} query={hasSearchQuery ? searchQuery : undefined} />
+      {/* Integrated SEO - Server Side Schema Only */}
+      <SearchSchema 
+        dictionary={dict} 
+        query={hasSearchQuery ? searchQuery : undefined} 
+      />
       
-      {/* Main Content */}
-      <Section className="min-h-screen bg-bgcolor-primary">
-        <div className="container mx-auto px-4 py-8">
-          
-          {/* Page Header using dictionary */}
-          <div className="mb-8 text-center">
-            <h1 className="text-2xl font-bold text-txcolor-primary mb-4">
-              {pageTitle}
-            </h1>
-            <p className="text-txcolor-secondary max-w-2xl mx-auto">
+      {/* Main search content */}
+      <Section
+        title={pageTitle}
+        className="container mx-auto px-4 py-8"
+      >
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Page description - manually placed since Section doesn't support description prop */}
+          <div className="text-center mb-8">
+            <p className="text-lg text-gray-600">
               {dict.search.templates.pageDescription}
             </p>
           </div>
 
-          {/* Search Interface */}
-          <div className="max-w-4xl mx-auto">
-            
-            {/* Search Bar - Client Component */}
-            <div className="mb-8">
-              <Suspense fallback={
-                <div className="h-12 bg-sf-hi rounded-lg animate-pulse"></div>
-              }>
-                <SearchBarClient 
-                  dictionary={dict}
-                  lang="ru"
-                  initialQuery={searchQuery}
-                />
-              </Suspense>
-            </div>
-
-            {/* Search Results - Client Component */}
+          {/* Search interface */}
+          <div className="space-y-6">
             <Suspense fallback={
-              <div className="space-y-4">
-                {[...Array(5)].map((_, i) => (
-                  <div key={i} className="h-24 bg-sf-hi rounded-lg animate-pulse"></div>
+              <div 
+                className="h-14 bg-gray-100 rounded-lg animate-pulse"
+                aria-label={dict.common.status.loading}
+              />
+            }>
+              <SearchBarClient
+                dictionary={dict}
+                lang="ru"
+              />
+            </Suspense>
+          </div>
+
+          {/* Search results or empty state */}
+          <div className="space-y-6">
+            <Suspense fallback={
+              <div 
+                className="space-y-4"
+                aria-label={dict.common.status.loading}
+              >
+                {Array.from({ length: 3 }, (_, i) => (
+                  <div 
+                    key={i}
+                    className="h-32 bg-gray-100 rounded-lg animate-pulse" 
+                  />
                 ))}
               </div>
             }>
@@ -125,62 +133,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 currentSort={currentSort}
               />
             </Suspense>
-
-            {/* Alternative Navigation when no search */}
-            {!hasSearchQuery && (
-              <div className="mt-12 text-center">
-                <h2 className="text-lg font-semibold text-txcolor-primary mb-6">
-                  {dict.search.interface.alternativeNavigation}
-                </h2>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-                  
-                  {/* Popular Rubrics */}
-                  <div className="p-6 bg-sf-hi rounded-lg hover:shadow-md transition-shadow">
-                    <h3 className="font-medium text-txcolor-primary mb-2">
-                      {dict.search.navigation.popularRubrics}
-                    </h3>
-                    <a 
-                      href="/ru/rubrics" 
-                      className="text-pr-fix hover:text-pr-active transition-colors"
-                      aria-label={dict.navigation.descriptions.rubrics}
-                    >
-                      {dict.common.actions.explore}
-                    </a>
-                  </div>
-
-                  {/* Latest Articles */}
-                  <div className="p-6 bg-sf-hi rounded-lg hover:shadow-md transition-shadow">
-                    <h3 className="font-medium text-txcolor-primary mb-2">
-                      {dict.search.navigation.latestArticles}
-                    </h3>
-                    <a 
-                      href="/ru/articles" 
-                      className="text-pr-fix hover:text-pr-active transition-colors"
-                      aria-label={dict.navigation.descriptions.articles}
-                    >
-                      {dict.common.actions.viewAll}
-                    </a>
-                  </div>
-
-                  {/* Our Authors */}
-                  <div className="p-6 bg-sf-hi rounded-lg hover:shadow-md transition-shadow">
-                    <h3 className="font-medium text-txcolor-primary mb-2">
-                      {dict.search.navigation.ourAuthors}
-                    </h3>
-                    <a 
-                      href="/ru/authors" 
-                      className="text-pr-fix hover:text-pr-active transition-colors"
-                      aria-label={dict.navigation.descriptions.authors}
-                    >
-                      {dict.common.actions.explore}
-                    </a>
-                  </div>
-
-                </div>
-              </div>
-            )}
-
           </div>
         </div>
       </Section>
