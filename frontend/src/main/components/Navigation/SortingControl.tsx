@@ -29,7 +29,7 @@ export default function SortingControl({
   const pathname = usePathname();
 
   // Access sorting translations from dictionary
-  const sorting = dictionary.sorting;
+  const sorting = dictionary.filter;
 
   const sortItems: DropdownItemType[] = [
     { id: 'desc', label: sorting.newest, value: 'desc' },
