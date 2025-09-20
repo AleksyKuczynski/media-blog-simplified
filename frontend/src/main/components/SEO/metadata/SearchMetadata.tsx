@@ -41,22 +41,7 @@ export const generateSearchMetadataSimple = (dictionary: Dictionary): Metadata =
     );
 
     // Use existing MetadataBuilder with basic context
-    const metadata = buildMetadata(
-      seoData,
-      {
-        baseUrl: dictionary.seo.site.url,
-        defaultImageUrl: `${dictionary.seo.site.url}/og-search.jpg`,
-        siteName: dictionary.seo.site.name,
-        locale: 'ru_RU',
-        region: dictionary.seo.regional?.region || 'RU',
-      },
-      {
-        'search:interface': 'enabled',
-        'search:language': dictionary.seo.regional?.language || 'ru',
-        'DC.type': 'Text.SearchPage',
-        'DC.language': 'ru',
-      }
-    );
+    const metadata = buildMetadata(seoData);
 
     return metadata;
     

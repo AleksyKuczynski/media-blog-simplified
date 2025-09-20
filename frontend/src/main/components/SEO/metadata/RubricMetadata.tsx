@@ -3,7 +3,8 @@
 
 import { Metadata } from 'next';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { processTemplate, createSEOVariables, validateSEOContent } from '@/main/lib/dictionary/helpers';
+import { createSEOVariables, processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import { validateSEOContent } from '@/main/lib/dictionary/helpers/validation';
 
 export interface RubricMetadataProps {
   dictionary: Dictionary;
@@ -49,10 +50,6 @@ export const generateRubricMetadata = async ({
     metaDescription = processTemplate(seo.descriptions.rubricTemplate, variables);
   }
 
-  // Generate keywords based on rubric type and custom keywords
-  const rubricKeywords = getRubricSpecificKeywords(slug, seo.keywords);
-  const keywords = customKeywords || `${name}, ${rubricKeywords}, ${seo.keywords.general}`;
-
   // Generate canonical URL
   const canonicalUrl = `${seo.site.url}${path.startsWith('/') ? path : `/${path}`}`;
 
@@ -90,7 +87,6 @@ export const generateRubricMetadata = async ({
   return {
     title,
     description: metaDescription,
-    keywords,
     
     alternates: {
       canonical: canonicalUrl,

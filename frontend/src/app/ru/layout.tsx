@@ -5,7 +5,7 @@ import React from 'react'
 import { Metadata } from 'next'
 import Footer from '@/main/components/Footer/Footer'
 import Navigation from '@/main/components/Navigation/Navigation'
-import { getDictionary } from '@/main/lib/dictionary/dictionary'
+import getDictionary from '@/main/lib/dictionary/getDictionary';
 
 // Generate metadata using dictionary
 export async function generateMetadata(): Promise<Metadata> {

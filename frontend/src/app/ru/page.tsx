@@ -6,7 +6,6 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 // Unified dictionary system
-import { getDictionary } from '@/main/lib/dictionary/dictionary';
 import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import { RubricCard } from '@/main/components/Main/RubricCard';
@@ -15,6 +14,7 @@ import CardGrid from '@/main/components/Main/CardGrid';
 
 // SEO components
 import { generateNavigationMetadata } from '@/main/components/SEO/metadata/NavigationMetadata';
+import getDictionary from '@/main/lib/dictionary/getDictionary';
 
 export const dynamic = 'force-dynamic';
 
