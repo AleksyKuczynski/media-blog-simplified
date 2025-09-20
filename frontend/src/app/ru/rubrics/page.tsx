@@ -1,19 +1,18 @@
 // src/app/ru/rubrics/page.tsx
-// Clean rubrics page using new dictionary structure directly
+// FIXED: Complete rubrics page with correct imports and proper implementation
 
 import { Metadata } from 'next';
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
-import { getDictionary } from '@/main/lib/dictionary/dictionary'; // NEW: Use new dictionary system
-import { Rubric } from '@/main/lib/directus/directusInterfaces';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 
-// NEW: Import clean SEO components
+// FIXED: Import clean SEO components with correct paths
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
-import { getLocalizedCount } from '@/main/lib/dictionary/helpers/seo';
+import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers/content'; // FIXED: Correct import
+import getDictionary from '@/main/lib/dictionary/getDictionary';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const [rubrics, dictionary] = await Promise.all([
       fetchAllRubrics('ru'),
-      getDictionary('ru'), // NEW: Direct dictionary usage
+      getDictionary('ru'), // FIXED: Consistent dictionary usage
     ]);
     
     // Transform rubrics data for metadata generation
@@ -37,7 +36,7 @@ export async function generateMetadata(): Promise<Metadata> {
       };
     });
 
-    // NEW: Clean metadata generation
+    // Clean metadata generation
     return await generateCollectionMetadata({
       dictionary,
       collectionType: 'rubrics',
@@ -50,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     console.error('Error generating rubrics metadata:', error);
     
-    // Fallback metadata
+    // Fallback metadata using basic structure
     return {
       title: 'Рубрики — EventForMe',
       description: 'Изучите наши тематические рубрики о культурных событиях и современном искусстве.',
@@ -62,7 +61,7 @@ export default async function RubricsPage() {
   try {
     const [rubrics, dictionary] = await Promise.all([
       fetchAllRubrics('ru'),
-      getDictionary('ru'), // NEW: Direct dictionary usage
+      getDictionary('ru'), // FIXED: Direct dictionary usage
     ]);
 
     // Transform rubrics for rendering
@@ -85,21 +84,20 @@ export default async function RubricsPage() {
       articleCount: rubric.articleCount || 0,
     }));
 
-    // NEW: Clean breadcrumb generation using dictionary
+    // Clean breadcrumb generation using dictionary
     const breadcrumbItems = [
       {
-        name: dictionary.navigation.labels.home,
+        label: dictionary.navigation.labels.home,
         href: '/ru',
       },
       {
-        name: dictionary.navigation.labels.rubrics,
+        label: dictionary.navigation.labels.rubrics,
         href: '/ru/rubrics',
       },
     ];
 
     return (
       <>
-        {/* NEW: Clean structured data schema */}
         <CollectionPageSchema
           dictionary={dictionary}
           collectionType="rubrics"
@@ -109,7 +107,6 @@ export default async function RubricsPage() {
           featured={false}
         />
         
-        {/* NEW: Clean breadcrumbs using dictionary */}
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={[]}
@@ -121,24 +118,20 @@ export default async function RubricsPage() {
           }}
         />
         
-        {/* NEW: Clean page header using dictionary templates */}
         <header className="mb-8">
           <h1 className="text-4xl font-bold mb-4">
             {dictionary.sections.rubrics.allRubrics}
           </h1>
           
-          {/* NEW: Description from dictionary */}
           <p className="text-lg text-on-sf-var mb-4 max-w-3xl">
             {dictionary.sections.rubrics.categoriesDescription}
           </p>
           
-          {/* NEW: Count using clean helper */}
           <p className="text-sm text-muted-foreground">
-            {getLocalizedCount(dictionary, rubrics.length, 'rubrics')}
+            {getLocalizedRubricCount(dictionary, rubrics.length)}
           </p>
         </header>
 
-        {/* Main content section */}
         <Section 
           isOdd={true}
           ariaLabel={dictionary.sections.rubrics.rubricsCatalog}
@@ -147,15 +140,14 @@ export default async function RubricsPage() {
             <CardGrid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {transformedRubrics.map((rubric) => (
                 <RubricCard
-                  key={rubric.id}
+                  key={rubric.slug}
                   rubric={rubric}
                   lang="ru"
-                  dictionary={dictionary} // NEW: Pass new dictionary directly
+                  dictionary={dictionary} // Pass complete dictionary
                 />
               ))}
             </CardGrid>
           ) : (
-            {/* NEW: Empty state using dictionary */}
             <div className="text-center py-12">
               <p className="text-lg text-muted-foreground mb-4">
                 {dictionary.sections.rubrics.noRubricsAvailable}
@@ -172,10 +164,11 @@ export default async function RubricsPage() {
   } catch (error) {
     console.error('Error rendering rubrics page:', error);
     
-    // NEW: Clean error fallback
+    // FIXED: Clean error fallback using dictionary structure
+    // Note: We can't access dictionary here in catch block, so use basic Russian text
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-4">Рубрики</h1>
+        <h1 className="text-4xl font-bold mb-4">Ошибка</h1>
         <p className="text-lg text-muted-foreground">
           Произошла ошибка при загрузке рубрик. Попробуйте обновить страницу.
         </p>
