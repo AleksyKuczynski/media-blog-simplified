@@ -1,5 +1,5 @@
 // src/main/components/Navigation/SkipLinks.tsx
-// DRY: Uses existing helpers, no dictionary expansion
+// FIXED: Aligned with actual helper function return values
 
 'use client';
 
@@ -14,12 +14,11 @@ interface SkipLinksProps {
 }
 
 /**
- * SkipLinks component using existing helpers
- * NO DUPLICATION - uses existing dictionary properties + static fallbacks
+ * SkipLinks component - FIXED to work with actual helper returns
  */
 export default function SkipLinks({ dictionary }: SkipLinksProps) {
   try {
-    // Use existing helper functions - NO DUPLICATION
+    // FIXED: Helper functions now return correct structure
     const skipLinks = getSkipLinksData(dictionary);
     const accessibility = getSkipLinksAccessibility(dictionary);
 
@@ -106,12 +105,12 @@ export default function SkipLinks({ dictionary }: SkipLinksProps) {
             </li>
             <li>
               <a href="#site-search" className={skipLinkClasses}>
-                Перейти к поиску
+                {dictionary.search.accessibility.searchLabel}
               </a>
             </li>
             <li>
               <a href="#site-footer" className={skipLinkClasses}>
-                Перейти к подвалу
+                Подвал сайта
               </a>
             </li>
           </ul>

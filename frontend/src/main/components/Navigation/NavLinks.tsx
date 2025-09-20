@@ -1,5 +1,5 @@
 // src/main/components/Navigation/NavLinks.tsx
-// DRY: Uses existing helpers, no dictionary expansion
+// FIXED: Aligned with actual helper function return values
 
 import Link from 'next/link';
 import NavLinksClient from './NavLinksClient';
@@ -17,23 +17,22 @@ interface NavLinksProps {
 }
 
 // ===================================================================
-// MAIN NAVLINKS COMPONENT - DRY
+// MAIN NAVLINKS COMPONENT - FIXED
 // ===================================================================
 
 /**
- * NavLinks component using existing helpers
- * NO DUPLICATION - uses getNavigationLinksConfig helper
+ * NavLinks component - FIXED to work with actual helper returns
  */
 export default function NavLinks({ dictionary, lang, className }: NavLinksProps) {
   try {
-    // Use existing helper function - NO DUPLICATION
+    // FIXED: Helper now returns array directly for main navigation
     const navigationLinks = getNavigationLinksConfig(dictionary);
 
     return (
       <>
         {navigationLinks.map((link, index) => (
           <li 
-            key={link.href}
+            key={link.href || `nav-${index}`} // FIXED: Fallback key if href is undefined
             className={`nav-link-item list-none ${className || ''}`}
             role="menuitem"
           >
@@ -42,6 +41,7 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
               className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200"
               aria-label={link.ariaLabel}
               title={link.title}
+              data-href={link.href} // FIXED: Add data-href attribute for NavLinksClient
               data-nav-section={link.key}
               data-nav-priority={link.priority}
             >
@@ -65,17 +65,17 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
     return (
       <>
         <li role="menuitem">
-          <Link href="/ru/articles" className="nav-link px-4 py-2">
+          <Link href="/ru/articles" className="nav-link px-4 py-2" data-href="/articles">
             {dictionary.navigation.labels.articles}
           </Link>
         </li>
         <li role="menuitem">
-          <Link href="/ru/rubrics" className="nav-link px-4 py-2">
+          <Link href="/ru/rubrics" className="nav-link px-4 py-2" data-href="/rubrics">
             {dictionary.navigation.labels.rubrics}
           </Link>
         </li>
         <li role="menuitem">
-          <Link href="/ru/authors" className="nav-link px-4 py-2">
+          <Link href="/ru/authors" className="nav-link px-4 py-2" data-href="/authors">
             {dictionary.navigation.labels.authors}
           </Link>
         </li>

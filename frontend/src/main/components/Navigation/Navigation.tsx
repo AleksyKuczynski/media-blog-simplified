@@ -1,5 +1,5 @@
 // src/main/components/Navigation/Navigation.tsx
-// Fixed to use correct dictionary entry names
+// FIXED: Removed invalid includeMobile prop from CompleteNavigationSchema
 
 'use client'
 
@@ -48,12 +48,11 @@ export default function Navigation({
       {/* Enhanced skip links with dictionary structure */}
       <SkipLinks dictionary={dictionary} />
       
-      {/* Complete navigation schema with enhanced structured data */}
+      {/* FIXED: Complete navigation schema with correct props only */}
       <CompleteNavigationSchema 
         dictionary={dictionary}
         currentPath={currentPath || pathname.replace('/ru', '') || '/'}
         breadcrumbs={breadcrumbs}
-        includeMobile={true}
       />
       
       {/* Enhanced navigation wrapper with better semantic markup */}
@@ -64,7 +63,7 @@ export default function Navigation({
         itemType="https://schema.org/WebSite"
         aria-label={dictionary.navigation.accessibility.mainNavigation}
       >
-        {/* FIXED: Enhanced site identity for schema with correct property names */}
+        {/* Enhanced site identity for schema with correct property names */}
         <meta itemProp="name" content={dictionary.seo.site.name} />
         <meta itemProp="url" content="https://event4me.eu" />
         <meta itemProp="description" content={dictionary.seo.site.description} />

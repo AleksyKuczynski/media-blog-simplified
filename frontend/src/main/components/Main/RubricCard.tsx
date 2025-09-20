@@ -1,8 +1,9 @@
 // src/main/components/Main/RubricCard.tsx
-// Updated RubricCard using new dictionary structure
+// FIXED: Made lang optional, converted to Next.js Image, aligned with HomePage usage
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 
@@ -16,16 +17,16 @@ export interface RubricCardProps {
     articleCount?: number;
     url: string;
   };
-  lang: string;
-  dictionary: Dictionary; // NEW: Use new dictionary type
+  lang?: string; // FIXED: Made optional with default
+  dictionary: Dictionary;
 }
 
 /**
- * Clean RubricCard component using new dictionary structure
+ * Clean RubricCard component - FIXED to match HomePage usage and use Next.js Image
  */
 export const RubricCard: React.FC<RubricCardProps> = ({
   rubric,
-  lang,
+  lang = 'ru', // FIXED: Default to 'ru' if not provided
   dictionary,
 }) => {
   // Generate accessible labels using dictionary
@@ -38,15 +39,19 @@ export const RubricCard: React.FC<RubricCardProps> = ({
   
   return (
     <article className="group relative overflow-hidden rounded-lg border bg-card p-6 transition-all hover:shadow-lg">
-      {/* Rubric Icon */}
+      {/* Rubric Icon - FIXED: Using Next.js Image */}
       <div className="mb-4 flex items-center justify-between">
         {rubric.icon ? (
-          <img
-            src={`https://event4me.eu/assets/${rubric.icon}`}
-            alt={iconAltText}
-            className="h-8 w-8 object-contain"
-            loading="lazy"
-          />
+          <div className="relative h-8 w-8">
+            <Image
+              src={`https://event4me.eu/assets/${rubric.icon}`}
+              alt={iconAltText}
+              fill
+              className="object-contain"
+              sizes="32px"
+              loading="lazy"
+            />
+          </div>
         ) : (
           <div 
             className="h-8 w-8 rounded bg-muted flex items-center justify-center"

@@ -1,52 +1,48 @@
 // src/main/lib/dictionary/helpers/navigation.ts
-// Navigation helpers optimized for new dictionary structure and SEO
+// FIXED: Completed missing functions and aligned return values with component expectations
 
 import { Dictionary } from '../types';
 import { processTemplate } from './templates';
 import { getPageTitle, getMetaDescription, getKeywords, generateCanonicalUrl } from './seo';
 
 // ===================================================================
-// NAVIGATION TITLE & DESCRIPTION HELPERS
+// NAVIGATION ACCESSIBILITY HELPERS - COMPLETED
 // ===================================================================
 
 /**
- * Get navigation page title using dictionary template
- * @example getNavigationPageTitle(dictionary, 'Рубрики') => "Рубрики — EventForMe"
+ * Get skip links data for accessibility - FIXED: Enhanced structure
  */
-export const getNavigationPageTitle = (dictionary: Dictionary, page: string): string => {
-  return processTemplate(dictionary.navigation.templates.pageTitle, {
-    page,
-    siteName: dictionary.seo.site.name,
-  });
+export const getSkipLinksData = (dictionary: Dictionary) => {
+  const { accessibility } = dictionary.navigation;
+  return {
+    skipToContent: {
+      href: '#main-content',
+      label: accessibility.skipToContent,
+    },
+    skipToNavigation: {
+      href: '#main-navigation', 
+      label: accessibility.skipToNavigation,
+    },
+    skipToSearch: {
+      href: '#site-search',
+      label: dictionary.search.accessibility.searchLabel, // Use existing search label
+    },
+    skipToFooter: {
+      href: '#site-footer',
+      label: 'Перейти к подвалу', // TODO: Add to dictionary if needed
+    },
+  };
 };
 
 /**
- * Get navigation section description using dictionary template
- * @example getNavigationSectionDescription(dictionary, 'Изучить', 'рубрики') => "Изучить рубрики на EventForMe"
+ * Get skip links accessibility attributes - COMPLETED
  */
-export const getNavigationSectionDescription = (
-  dictionary: Dictionary,
-  action: string,
-  section: string
-): string => {
-  return processTemplate(dictionary.navigation.templates.sectionDescription, {
-    action,
-    section,
-    siteName: dictionary.seo.site.name,
-  });
+export const getSkipLinksAccessibility = (dictionary: Dictionary) => {
+  return {
+    keyboardNavigationLabel: dictionary.navigation.accessibility.mainNavigation,
+    skipLinksRegion: 'Быстрая навигация', // TODO: Add to dictionary if needed
+  };
 };
-
-/**
- * Get breadcrumb text with proper separator
- * @example getBreadcrumbText(dictionary, ['Главная', 'Рубрики']) => "Главная → Рубрики"
- */
-export const getBreadcrumbText = (dictionary: Dictionary, items: string[]): string => {
-  return items.join(` ${dictionary.navigation.templates.breadcrumbSeparator} `);
-};
-
-// ===================================================================
-// NAVIGATION ACCESSIBILITY HELPERS
-// ===================================================================
 
 /**
  * Get all navigation accessibility labels
@@ -61,7 +57,7 @@ export const getNavigationAccessibilityLabels = (dictionary: Dictionary) => {
 export const validateNavigationAccessibility = (dictionary: Dictionary): boolean => {
   const required = [
     'mainNavigation',
-    'menuTitle',
+    'menuTitle', 
     'menuDescription',
     'openMenu',
     'closeMenu',
@@ -83,33 +79,6 @@ export const validateNavigationAccessibility = (dictionary: Dictionary): boolean
   });
 };
 
-/**
- * Get skip links data for accessibility
- */
-export const getSkipLinksData = (dictionary: Dictionary) => {
-  const { accessibility } = dictionary.navigation;
-  return [
-    {
-      href: '#main-content',
-      text: accessibility.skipToContent,
-    },
-    {
-      href: '#main-navigation',
-      text: accessibility.skipToNavigation,
-    },
-  ];
-};
-
-/**
- * Get skip links accessibility attributes
- */
-export const getSkipLinksAccessibility = (dictionary: Dictionary) => {
-  return {
-    'aria-label': dictionary.navigation.accessibility.primarySectionsLabel,
-    role: 'navigation',
-  };
-};
-
 // ===================================================================
 // NAVIGATION ELEMENTS GENERATION
 // ===================================================================
@@ -127,30 +96,60 @@ export const generateNavigationElements = (dictionary: Dictionary) => {
       description: descriptions.home,
       url: baseUrl,
       path: '/ru',
+      href: '/', // FIXED: Use '/' instead of empty string to avoid Link href issues
+      label: labels.home,
+      ariaLabel: descriptions.home,
+      title: descriptions.home,
+      key: 'home',
+      priority: 1,
     },
     {
       name: labels.articles,
       description: descriptions.articles,
       url: `${baseUrl}/ru/articles`,
       path: '/ru/articles',
+      href: '/articles', // For component usage
+      label: labels.articles,
+      ariaLabel: descriptions.articles,
+      title: descriptions.articles,
+      key: 'articles',
+      priority: 2,
     },
     {
       name: labels.rubrics,
       description: descriptions.rubrics,
       url: `${baseUrl}/ru/rubrics`,
       path: '/ru/rubrics',
+      href: '/rubrics', // For component usage
+      label: labels.rubrics,
+      ariaLabel: descriptions.rubrics,
+      title: descriptions.rubrics,
+      key: 'rubrics',
+      priority: 3,
     },
     {
       name: labels.authors,
       description: descriptions.authors,
       url: `${baseUrl}/ru/authors`,
       path: '/ru/authors',
+      href: '/authors', // For component usage
+      label: labels.authors,
+      ariaLabel: descriptions.authors,
+      title: descriptions.authors,
+      key: 'authors',
+      priority: 4,
     },
     {
       name: labels.search,
       description: descriptions.search,
       url: `${baseUrl}/ru/search`,
       path: '/ru/search',
+      href: '/search', // For component usage
+      label: labels.search,
+      ariaLabel: descriptions.search,
+      title: descriptions.search,
+      key: 'search',
+      priority: 5,
     },
   ];
 };
@@ -167,14 +166,25 @@ export const getNavigationLinkData = (
 };
 
 /**
- * Get navigation links configuration for UI components
+ * Get navigation links configuration for UI components - FIXED: Returns array for main nav
  */
 export const getNavigationLinksConfig = (dictionary: Dictionary) => {
+  const elements = generateNavigationElements(dictionary);
+  
+  // Return main navigation elements as array (excluding search for main nav)
+  return elements.slice(0, 4); // Home, Articles, Rubrics, Authors
+};
+
+/**
+ * Get complete navigation configuration (for advanced use cases)
+ */
+export const getCompleteNavigationConfig = (dictionary: Dictionary) => {
   const elements = generateNavigationElements(dictionary);
   
   return {
     main: elements.slice(0, 4), // Home, Articles, Rubrics, Authors
     secondary: elements.slice(4), // Search
+    all: elements,
     accessibility: getNavigationAccessibilityLabels(dictionary),
   };
 };
@@ -185,8 +195,6 @@ export const getNavigationLinksConfig = (dictionary: Dictionary) => {
 
 /**
  * Generate breadcrumb data using dictionary
- * @example generateBreadcrumbs(dictionary, ['rubrics', 'music']) => 
- * [{ name: 'Главная', href: '/ru' }, { name: 'Рубрики', href: '/ru/rubrics' }, ...]
  */
 export const generateBreadcrumbs = (
   dictionary: Dictionary,
@@ -231,6 +239,42 @@ export const generateBreadcrumbs = (
 };
 
 // ===================================================================
+// NAVIGATION TITLE & DESCRIPTION HELPERS
+// ===================================================================
+
+/**
+ * Get navigation page title using dictionary template
+ */
+export const getNavigationPageTitle = (dictionary: Dictionary, page: string): string => {
+  return processTemplate(dictionary.navigation.templates.pageTitle, {
+    page,
+    siteName: dictionary.seo.site.name,
+  });
+};
+
+/**
+ * Get navigation section description using dictionary template
+ */
+export const getNavigationSectionDescription = (
+  dictionary: Dictionary,
+  action: string,
+  section: string
+): string => {
+  return processTemplate(dictionary.navigation.templates.sectionDescription, {
+    action,
+    section,
+    siteName: dictionary.seo.site.name,
+  });
+};
+
+/**
+ * Get breadcrumb text with proper separator
+ */
+export const getBreadcrumbText = (dictionary: Dictionary, items: string[]): string => {
+  return items.join(` ${dictionary.navigation.templates.breadcrumbSeparator} `);
+};
+
+// ===================================================================
 // NAVIGATION SEO HELPERS
 // ===================================================================
 
@@ -248,7 +292,7 @@ export const generateNavigationSEOData = (
     dictionary,
     dictionary.navigation.descriptions.home
   );
-  const keywords = getKeywords(dictionary, 'base'); // Use base keywords for navigation
+  const keywords = getKeywords(dictionary, 'base');
   const canonicalUrl = generateCanonicalUrl(currentPath, dictionary.seo.site.url);
   
   return {
