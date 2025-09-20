@@ -1,13 +1,17 @@
-// src/main/lib/dictionary/helpers/navigationUtils.ts
-// Navigation-specific utilities - separate from main helpers
+// src/main/lib/dictionary/helpers/navigation.ts
+// Navigation helpers optimized for new dictionary structure and SEO
 
 import { Dictionary } from '../types';
-import { getCanonicalURL, getKeywords, getMetaDescription, getPageTitle } from './seo';
 import { processTemplate } from './templates';
+import { getPageTitle, getMetaDescription, getKeywords, generateCanonicalUrl } from './seo';
+
+// ===================================================================
+// NAVIGATION TITLE & DESCRIPTION HELPERS
+// ===================================================================
 
 /**
- * Get page title for navigation
- * @example getNavigationPageTitle(dictionary, 'рубрики') => "Рубрики — EventForMe"
+ * Get navigation page title using dictionary template
+ * @example getNavigationPageTitle(dictionary, 'Рубрики') => "Рубрики — EventForMe"
  */
 export const getNavigationPageTitle = (dictionary: Dictionary, page: string): string => {
   return processTemplate(dictionary.navigation.templates.pageTitle, {
@@ -17,10 +21,14 @@ export const getNavigationPageTitle = (dictionary: Dictionary, page: string): st
 };
 
 /**
- * Get section description for navigation
+ * Get navigation section description using dictionary template
  * @example getNavigationSectionDescription(dictionary, 'Изучить', 'рубрики') => "Изучить рубрики на EventForMe"
  */
-export const getNavigationSectionDescription = (dictionary: Dictionary, action: string, section: string): string => {
+export const getNavigationSectionDescription = (
+  dictionary: Dictionary,
+  action: string,
+  section: string
+): string => {
   return processTemplate(dictionary.navigation.templates.sectionDescription, {
     action,
     section,
@@ -29,28 +37,31 @@ export const getNavigationSectionDescription = (dictionary: Dictionary, action: 
 };
 
 /**
- * Get breadcrumb navigation text with proper separator
+ * Get breadcrumb text with proper separator
  * @example getBreadcrumbText(dictionary, ['Главная', 'Рубрики']) => "Главная → Рубрики"
  */
 export const getBreadcrumbText = (dictionary: Dictionary, items: string[]): string => {
   return items.join(` ${dictionary.navigation.templates.breadcrumbSeparator} `);
 };
 
+// ===================================================================
+// NAVIGATION ACCESSIBILITY HELPERS
+// ===================================================================
+
 /**
- * Get all navigation accessibility labels for a dictionary
- * Useful for validation and testing
+ * Get all navigation accessibility labels
  */
 export const getNavigationAccessibilityLabels = (dictionary: Dictionary) => {
   return dictionary.navigation.accessibility;
 };
 
 /**
- * Validate that navigation dictionary has all required accessibility properties
+ * Validate navigation accessibility completeness
  */
 export const validateNavigationAccessibility = (dictionary: Dictionary): boolean => {
   const required = [
     'mainNavigation',
-    'menuTitle', 
+    'menuTitle',
     'menuDescription',
     'openMenu',
     'closeMenu',
@@ -67,19 +78,164 @@ export const validateNavigationAccessibility = (dictionary: Dictionary): boolean
   const accessibility = dictionary.navigation.accessibility;
   
   return required.every(key => {
-    const hasProperty = key in accessibility;
-    const hasValue = accessibility[key as keyof typeof accessibility]?.trim().length > 0;
-    return hasProperty && hasValue;
+    const value = accessibility[key as keyof typeof accessibility];
+    return value && typeof value === 'string' && value.trim().length > 0;
   });
 };
 
+/**
+ * Get skip links data for accessibility
+ */
+export const getSkipLinksData = (dictionary: Dictionary) => {
+  const { accessibility } = dictionary.navigation;
+  return [
+    {
+      href: '#main-content',
+      text: accessibility.skipToContent,
+    },
+    {
+      href: '#main-navigation',
+      text: accessibility.skipToNavigation,
+    },
+  ];
+};
+
+/**
+ * Get skip links accessibility attributes
+ */
+export const getSkipLinksAccessibility = (dictionary: Dictionary) => {
+  return {
+    'aria-label': dictionary.navigation.accessibility.primarySectionsLabel,
+    role: 'navigation',
+  };
+};
+
 // ===================================================================
-// COMPOSITE HELPER FUNCTIONS - Using existing functions
+// NAVIGATION ELEMENTS GENERATION
 // ===================================================================
 
 /**
- * Generate complete navigation metadata using existing helpers
- * Combines existing SEO and navigation functions - no duplication
+ * Generate navigation elements data using dictionary
+ */
+export const generateNavigationElements = (dictionary: Dictionary) => {
+  const baseUrl = dictionary.seo.site.url;
+  const { labels, descriptions } = dictionary.navigation;
+  
+  return [
+    {
+      name: labels.home,
+      description: descriptions.home,
+      url: baseUrl,
+      path: '/ru',
+    },
+    {
+      name: labels.articles,
+      description: descriptions.articles,
+      url: `${baseUrl}/ru/articles`,
+      path: '/ru/articles',
+    },
+    {
+      name: labels.rubrics,
+      description: descriptions.rubrics,
+      url: `${baseUrl}/ru/rubrics`,
+      path: '/ru/rubrics',
+    },
+    {
+      name: labels.authors,
+      description: descriptions.authors,
+      url: `${baseUrl}/ru/authors`,
+      path: '/ru/authors',
+    },
+    {
+      name: labels.search,
+      description: descriptions.search,
+      url: `${baseUrl}/ru/search`,
+      path: '/ru/search',
+    },
+  ];
+};
+
+/**
+ * Get navigation link data for specific section
+ */
+export const getNavigationLinkData = (
+  dictionary: Dictionary,
+  section: 'home' | 'articles' | 'rubrics' | 'authors' | 'search'
+) => {
+  const elements = generateNavigationElements(dictionary);
+  return elements.find(element => element.path.includes(section === 'home' ? '' : section));
+};
+
+/**
+ * Get navigation links configuration for UI components
+ */
+export const getNavigationLinksConfig = (dictionary: Dictionary) => {
+  const elements = generateNavigationElements(dictionary);
+  
+  return {
+    main: elements.slice(0, 4), // Home, Articles, Rubrics, Authors
+    secondary: elements.slice(4), // Search
+    accessibility: getNavigationAccessibilityLabels(dictionary),
+  };
+};
+
+// ===================================================================
+// BREADCRUMB GENERATION
+// ===================================================================
+
+/**
+ * Generate breadcrumb data using dictionary
+ * @example generateBreadcrumbs(dictionary, ['rubrics', 'music']) => 
+ * [{ name: 'Главная', href: '/ru' }, { name: 'Рубрики', href: '/ru/rubrics' }, ...]
+ */
+export const generateBreadcrumbs = (
+  dictionary: Dictionary,
+  pathSegments: string[]
+): Array<{ name: string; href: string }> => {
+  const breadcrumbs = [
+    {
+      name: dictionary.navigation.labels.home,
+      href: '/ru',
+    },
+  ];
+  
+  let currentPath = '/ru';
+  
+  pathSegments.forEach((segment, index) => {
+    currentPath += `/${segment}`;
+    
+    // Map path segments to dictionary labels
+    let name = segment;
+    switch (segment) {
+      case 'rubrics':
+        name = dictionary.navigation.labels.rubrics;
+        break;
+      case 'authors':
+        name = dictionary.navigation.labels.authors;
+        break;
+      case 'articles':
+        name = dictionary.navigation.labels.articles;
+        break;
+      case 'search':
+        name = dictionary.navigation.labels.search;
+        break;
+      default:
+        // For dynamic segments (like specific rubric names), keep as is
+        name = segment.charAt(0).toUpperCase() + segment.slice(1);
+    }
+    
+    breadcrumbs.push({ name, href: currentPath });
+  });
+  
+  return breadcrumbs;
+};
+
+// ===================================================================
+// NAVIGATION SEO HELPERS
+// ===================================================================
+
+/**
+ * Generate complete navigation SEO data
  */
 export const generateNavigationSEOData = (
   dictionary: Dictionary,
@@ -87,11 +243,13 @@ export const generateNavigationSEOData = (
   currentPath: string,
   pageType: 'main' | 'section' | 'breadcrumb' = 'main'
 ) => {
-  // Use existing functions
   const title = getPageTitle(dictionary, pageTitle);
-  const description = getMetaDescription(dictionary, dictionary.seo.site.description);
-  const keywords = getKeywords(dictionary, 'navigation');
-  const canonicalUrl = getCanonicalURL(currentPath, dictionary.seo.site.url);
+  const description = getMetaDescription(
+    dictionary,
+    dictionary.navigation.descriptions.home
+  );
+  const keywords = getKeywords(dictionary, 'base'); // Use base keywords for navigation
+  const canonicalUrl = generateCanonicalUrl(currentPath, dictionary.seo.site.url);
   
   return {
     title,
@@ -103,123 +261,89 @@ export const generateNavigationSEOData = (
 };
 
 /**
- * Generate navigation elements data using existing helpers
- * Reuses existing navigation functions
+ * Get navigation Open Graph data
  */
-export const generateNavigationElements = (dictionary: Dictionary) => {
-  const baseUrl = dictionary.seo.site.url;
-  
-  return [
-    {
-      name: dictionary.navigation.labels.home,
-      url: getCanonicalURL('/', baseUrl),
-      description: dictionary.navigation.descriptions.home,
-    },
-    {
-      name: dictionary.navigation.labels.articles,
-      url: getCanonicalURL('/articles', baseUrl),
-      description: dictionary.navigation.descriptions.articles,
-    },
-    {
-      name: dictionary.navigation.labels.rubrics,
-      url: getCanonicalURL('/rubrics', baseUrl),
-      description: dictionary.navigation.descriptions.rubrics,
-    },
-    {
-      name: dictionary.navigation.labels.authors,
-      url: getCanonicalURL('/authors', baseUrl),
-      description: dictionary.navigation.descriptions.authors,
-    },
-  ];
-};
-
-/**
- * Generate navigation link data for NavLinks component
- * Uses existing dictionary structure - no expansion needed
- */
-export const getNavigationLinkData = (
+export const getNavigationOpenGraphData = (
   dictionary: Dictionary,
-  linkKey: 'articles' | 'rubrics' | 'authors'
+  title: string,
+  description: string,
+  currentPath: string
 ) => {
-  // Use existing dictionary properties
-  const label = dictionary.navigation.labels[linkKey];
-  const description = dictionary.navigation.descriptions[linkKey];
+  return {
+    title,
+    description,
+    url: generateCanonicalUrl(currentPath, dictionary.seo.site.url),
+    siteName: dictionary.seo.site.name,
+    locale: 'ru_RU',
+    type: 'website' as const,
+  };
+};
+
+// ===================================================================
+// NAVIGATION VALIDATION
+// ===================================================================
+
+/**
+ * Validate navigation dictionary structure
+ */
+export const validateNavigationDictionary = (dictionary: Dictionary): boolean => {
+  try {
+    // Check labels
+    const hasLabels = !!(
+      dictionary.navigation?.labels?.home &&
+      dictionary.navigation?.labels?.articles &&
+      dictionary.navigation?.labels?.rubrics &&
+      dictionary.navigation?.labels?.authors &&
+      dictionary.navigation?.labels?.search
+    );
+    
+    // Check templates
+    const hasTemplates = !!(
+      dictionary.navigation?.templates?.pageTitle &&
+      dictionary.navigation?.templates?.sectionDescription &&
+      dictionary.navigation?.templates?.breadcrumbSeparator
+    );
+    
+    // Check descriptions
+    const hasDescriptions = !!(
+      dictionary.navigation?.descriptions?.home &&
+      dictionary.navigation?.descriptions?.articles &&
+      dictionary.navigation?.descriptions?.rubrics &&
+      dictionary.navigation?.descriptions?.authors &&
+      dictionary.navigation?.descriptions?.search
+    );
+    
+    // Check accessibility
+    const hasAccessibility = validateNavigationAccessibility(dictionary);
+    
+    return hasLabels && hasTemplates && hasDescriptions && hasAccessibility;
+  } catch (error) {
+    console.warn('Navigation dictionary validation failed:', error);
+    return false;
+  }
+};
+
+// ===================================================================
+// MOBILE NAVIGATION HELPERS
+// ===================================================================
+
+/**
+ * Get mobile navigation configuration
+ */
+export const getMobileNavigationConfig = (dictionary: Dictionary) => {
+  const { accessibility } = dictionary.navigation;
   
   return {
-    label,
-    description,
-    // Create SEO-friendly title using existing pattern
-    title: `${label} — ${dictionary.seo.site.name}`,
-    // Use description for aria-label
-    ariaLabel: description,
-  };
-};
-
-/**
- * Generate navigation links configuration using existing dictionary
- * NO EXPANSION - works with current structure
- */
-export const getNavigationLinksConfig = (dictionary: Dictionary) => {
-  const links = [
-    {
-      key: 'articles' as const,
-      href: '/articles',
-      priority: 1,
-      ...getNavigationLinkData(dictionary, 'articles'),
+    menuButton: {
+      openText: accessibility.openMenu,
+      closeText: accessibility.closeMenu,
+      ariaLabel: accessibility.menuTitle,
     },
-    {
-      key: 'rubrics' as const,
-      href: '/rubrics', 
-      priority: 2,
-      ...getNavigationLinkData(dictionary, 'rubrics'),
+    menu: {
+      title: accessibility.menuTitle,
+      description: accessibility.menuDescription,
+      ariaLabel: accessibility.mainNavigation,
     },
-    {
-      key: 'authors' as const,
-      href: '/authors',
-      priority: 3,
-      ...getNavigationLinkData(dictionary, 'authors'),
-    },
-  ];
-
-  return links;
-};
-
-/**
- * Get skip links data using existing dictionary properties
- * Uses only properties that actually exist, static text for others
- */
-export const getSkipLinksData = (dictionary: Dictionary) => {
-  return {
-    // Use existing properties
-    skipToContent: {
-      href: '#main-content',
-      label: dictionary.navigation.accessibility.skipToContent,
-    },
-    skipToNavigation: {
-      href: '#main-navigation', 
-      label: dictionary.navigation.accessibility.skipToNavigation,
-    },
-    // Static text for missing properties (no dictionary expansion)
-    skipToSearch: {
-      href: '#site-search',
-      label: 'Перейти к поиску', // Static, no expansion
-    },
-    skipToFooter: {
-      href: '#site-footer',
-      label: 'Перейти к подвалу', // Static, no expansion
-    },
-  };
-};
-
-/**
- * Get accessibility labels for skip links
- * Uses existing properties where possible, static fallbacks
- */
-export const getSkipLinksAccessibility = (dictionary: Dictionary) => {
-  return {
-    // Use existing main navigation label
-    navigationLabel: dictionary.navigation.accessibility.mainNavigation,
-    // Static fallback for missing property
-    keyboardNavigationLabel: 'Быстрая навигация', // Static, no expansion
+    elements: generateNavigationElements(dictionary),
   };
 };

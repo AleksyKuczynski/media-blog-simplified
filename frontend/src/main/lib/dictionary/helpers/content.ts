@@ -1,239 +1,220 @@
 // src/main/lib/dictionary/helpers/content.ts
-// COMPLETELY FIXED: All helper functions with correct signatures and error handling
+// FIXED: Content formatting helpers using correct TemplateVariables
 
 import { Dictionary } from '../types';
 import { processTemplate } from './templates';
 
 // ===================================================================
-// CORE COUNT FORMATTING FUNCTIONS
+// COUNT FORMATTING - Clean, simple functions
 // ===================================================================
 
 /**
- * MAIN HELPER: Format count with appropriate label
- * This is the primary function that should be used throughout the app
- * @example formatCount(dictionary, 5, 'articles') => "Статей: 5"
+ * Get localized count with proper label from dictionary
  */
-export const formatCount = (
-  dictionary: Dictionary, 
-  count: number, 
-  type: keyof Dictionary['common']['count']
+export const getLocalizedCount = (
+  dictionary: Dictionary,
+  count: number,
+  type: 'articles' | 'rubrics' | 'authors' | 'results' | 'items'
 ): string => {
-  try {
-    const label = dictionary.common.count[type];
-    if (!label) {
-      throw new Error(`Missing dictionary entry for common.count.${type}`);
-    }
-    return `${label} ${count}`;
-  } catch (error) {
-    console.warn(`Dictionary error in formatCount: ${error}`);
-    
-    // Robust fallbacks
-    const fallbacks: Record<string, string> = {
-      articles: 'Статей:',
-      rubrics: 'Рубрик:',
-      authors: 'Авторов:',
-      results: 'Результатов:',
-      items: 'Элементов:'
-    };
-    
-    const label = fallbacks[type] || fallbacks.items || 'Элементов:';
-    return `${label} ${count}`;
-  }
+  const label = dictionary.common.count[type];
+  return `${label} ${count}`;
 };
 
 /**
- * Validate count parameters to prevent runtime errors
- */
-const validateCount = (count: number): boolean => {
-  return typeof count === 'number' && count >= 0 && !isNaN(count);
-};
-
-/**
- * Safe wrapper for formatCount with comprehensive error handling
- */
-const safeFormatCount = (
-  dictionary: Dictionary, 
-  count: number, 
-  type: keyof Dictionary['common']['count']
-): string => {
-  if (!validateCount(count)) {
-    console.warn('Invalid count provided:', count, 'using 0 instead');
-    count = 0;
-  }
-  
-  return formatCount(dictionary, count, type);
-};
-
-// ===================================================================
-// LEGACY COMPATIBILITY - Specific count functions
-// These maintain backward compatibility with existing code
-// ===================================================================
-
-/**
- * LEGACY COMPATIBILITY: Get localized article count
- * Maintains existing function signature for backward compatibility
- * @example getLocalizedArticleCount(dictionary, 5) => "Статей: 5"
+ * Get localized article count
  */
 export const getLocalizedArticleCount = (dictionary: Dictionary, count: number): string => {
-  return safeFormatCount(dictionary, count, 'articles');
+  return getLocalizedCount(dictionary, count, 'articles');
 };
 
 /**
- * LEGACY COMPATIBILITY: Get localized rubric count
- * @example getLocalizedRubricCount(dictionary, 3) => "Рубрик: 3"
+ * Get localized rubric count
  */
 export const getLocalizedRubricCount = (dictionary: Dictionary, count: number): string => {
-  return safeFormatCount(dictionary, count, 'rubrics');
+  return getLocalizedCount(dictionary, count, 'rubrics');
 };
 
 /**
- * LEGACY COMPATIBILITY: Get localized author count
- * @example getLocalizedAuthorCount(dictionary, 12) => "Авторов: 12"
+ * Get localized author count
  */
 export const getLocalizedAuthorCount = (dictionary: Dictionary, count: number): string => {
-  return safeFormatCount(dictionary, count, 'authors');
+  return getLocalizedCount(dictionary, count, 'authors');
 };
 
 /**
- * LEGACY COMPATIBILITY: Get localized results count
- * @example getLocalizedResultsCount(dictionary, 0) => "Результатов: 0"
- */
-export const getLocalizedResultsCount = (dictionary: Dictionary, count: number): string => {
-  return safeFormatCount(dictionary, count, 'results');
-};
-
-// ===================================================================
-// TEMPLATE PROCESSING FUNCTIONS
-// ===================================================================
-
-/**
- * Format total count using template if available
- * @example formatTotalCount(dictionary, 15, 'статей') => "Всего: 15 статей"
+ * Format total count using dictionary template
  */
 export const formatTotalCount = (
-  dictionary: Dictionary, 
-  count: number, 
+  dictionary: Dictionary,
+  count: number,
   countLabel: string
 ): string => {
-  try {
-    if (dictionary.sections?.templates?.totalCount) {
-      return processTemplate(dictionary.sections.templates.totalCount, {
-        count: count.toString(),
-        countLabel,
-      });
-    }
-  } catch (error) {
-    console.warn('Template processing error:', error);
-  }
-  
-  // Robust fallback
-  return `Всего: ${count} ${countLabel}`;
+  return processTemplate(dictionary.sections.templates.totalCount, {
+    count: count.toString(),
+    countLabel,
+  });
 };
 
 /**
- * Generate icon alt text using accessibility template
+ * Simple count formatting without labels
  */
-export const getIconAlt = (dictionary: Dictionary, item: string): string => {
-  try {
-    if (dictionary.accessibility?.templates?.iconAlt) {
-      return processTemplate(dictionary.accessibility.templates.iconAlt, { item });
-    }
-  } catch (error) {
-    console.warn('Template processing error for icon alt:', error);
-  }
-  
-  return `Иконка ${item}`;
-};
-
-/**
- * Generate link title using accessibility template
- */
-export const getLinkTitle = (dictionary: Dictionary, action: string, item: string): string => {
-  try {
-    if (dictionary.accessibility?.templates?.linkTitle) {
-      return processTemplate(dictionary.accessibility.templates.linkTitle, { action, item });
-    }
-  } catch (error) {
-    console.warn('Template processing error for link title:', error);
-  }
-  
-  return `${action} ${item}`;
+export const formatCount = (count: number): string => {
+  return count.toString();
 };
 
 // ===================================================================
-// COLLECTION HELPERS
+// CONTENT DESCRIPTION HELPERS - FIXED: Using correct template variables
 // ===================================================================
 
 /**
- * Get empty message for collections
+ * Get icon alt text using dictionary - FIXED: Using 'item' instead of 'name'
+ */
+export const getIconAlt = (dictionary: Dictionary, itemName: string): string => {
+  return processTemplate(dictionary.sections.rubrics.rubricIcon, { 
+    item: itemName  // FIXED: Use 'item' instead of 'name'
+  });
+};
+
+/**
+ * Get link title for accessibility - FIXED: Using correct variables
+ */
+export const getLinkTitle = (
+  dictionary: Dictionary,
+  itemName: string,
+  itemType: 'rubric' | 'article' | 'author'
+): string => {
+  const action = dictionary.common.actions.explore;
+  const typeLabel = itemType === 'rubric' ? 'рубрику' : 
+                   itemType === 'article' ? 'статью' : 'автора';
+  return `${action} ${typeLabel} ${itemName}`;
+};
+
+/**
+ * Get empty state message using dictionary templates
  */
 export const getEmptyMessage = (
-  dictionary: Dictionary, 
-  collection: string, 
+  dictionary: Dictionary,
+  collection: string,
   items: string
 ): string => {
-  try {
-    if (dictionary.sections?.templates?.emptyCollection) {
-      return processTemplate(dictionary.sections.templates.emptyCollection, {
-        collection,
-        items,
-      });
-    }
-  } catch (error) {
-    console.warn('Template processing error for empty message:', error);
-  }
-  
-  return `В ${collection} пока нет ${items}`;
+  return processTemplate(dictionary.sections.templates.emptyCollection, {
+    collection,
+    items,
+  });
 };
 
+// ===================================================================
+// RELATIONSHIP FORMATTERS
+// ===================================================================
+
 /**
- * Generate "items in collection" text
+ * Format item in collection relationship
  */
 export const getItemsInCollection = (
-  dictionary: Dictionary, 
-  item: string, 
+  dictionary: Dictionary,
+  item: string,
   collection: string
 ): string => {
+  return processTemplate(dictionary.sections.templates.itemInCollection, {
+    item,
+    collection,
+  });
+};
+
+/**
+ * Format item by author relationship
+ */
+export const getItemsByAuthor = (
+  dictionary: Dictionary,
+  item: string,
+  author: string
+): string => {
+  return processTemplate(dictionary.sections.templates.itemByAuthor, {
+    item,
+    author,
+  });
+};
+
+// ===================================================================
+// CONTENT STATE HELPERS - Simple dictionary access
+// ===================================================================
+
+export const getLoadingMessage = (dictionary: Dictionary): string => {
+  return dictionary.common.status.loading;
+};
+
+export const getErrorMessage = (dictionary: Dictionary): string => {
+  return dictionary.common.status.error;
+};
+
+export const getNotFoundMessage = (dictionary: Dictionary): string => {
+  return dictionary.common.status.notFound;
+};
+
+export const getEmptyStateMessage = (dictionary: Dictionary): string => {
+  return dictionary.common.status.empty;
+};
+
+export const getRetryMessage = (dictionary: Dictionary): string => {
+  return dictionary.common.status.retry;
+};
+
+// ===================================================================
+// ACTION HELPERS - Simple dictionary access
+// ===================================================================
+
+export const getLoadMoreText = (dictionary: Dictionary): string => {
+  return dictionary.common.actions.loadMore;
+};
+
+export const getShowMoreText = (dictionary: Dictionary): string => {
+  return dictionary.common.actions.showMore;
+};
+
+export const getShowLessText = (dictionary: Dictionary): string => {
+  return dictionary.common.actions.showLess;
+};
+
+export const getReadMoreText = (dictionary: Dictionary): string => {
+  return dictionary.common.actions.readMore;
+};
+
+export const getExploreText = (dictionary: Dictionary): string => {
+  return dictionary.common.actions.explore;
+};
+
+export const getViewAllText = (dictionary: Dictionary): string => {
+  return dictionary.common.actions.viewAll;
+};
+
+export const getBackToText = (dictionary: Dictionary, target: string): string => {
+  return `${dictionary.common.actions.backTo} ${target}`;
+};
+
+// ===================================================================
+// VALIDATION HELPERS
+// ===================================================================
+
+export const validateContentDictionary = (dictionary: Dictionary): boolean => {
   try {
-    if (dictionary.sections?.templates?.itemInCollection) {
-      return processTemplate(dictionary.sections.templates.itemInCollection, {
-        item,
-        collection,
-      });
-    }
+    return !!(
+      dictionary.common?.count &&
+      dictionary.common?.actions &&
+      dictionary.common?.status &&
+      dictionary.sections?.templates?.totalCount &&
+      dictionary.sections?.templates?.emptyCollection &&
+      dictionary.sections?.templates?.itemInCollection
+    );
   } catch (error) {
-    console.warn('Template processing error for items in collection:', error);
+    console.warn('Content dictionary validation failed:', error);
+    return false;
   }
-  
-  return `${item} в ${collection}`;
 };
 
-// ===================================================================
-// TEXT PROCESSING UTILITIES
-// ===================================================================
-
-/**
- * Enhanced description truncation with word boundary respect
- */
-export const truncateDescription = (description: string, maxLength: number = 100): string => {
-  if (!description || description.length <= maxLength) {
-    return description;
-  }
-  
-  const truncated = description.substring(0, maxLength);
-  const lastSpace = truncated.lastIndexOf(' ');
-  
-  // Respect word boundaries
-  if (lastSpace > maxLength * 0.8) {
-    return truncated.substring(0, lastSpace) + '...';
-  }
-  
-  return truncated + '...';
+export const getContentTypeLabels = (dictionary: Dictionary) => {
+  return dictionary.sections.labels;
 };
 
-/**
- * Simple localized count for display (just the number)
- */
-export const getLocalizedCount = (count: number): string => {
-  return validateCount(count) ? count.toString() : '0';
+export const getCollectionTitle = (dictionary: Dictionary, section: string): string => {
+  return processTemplate(dictionary.sections.templates.collectionTitle, { section });
 };

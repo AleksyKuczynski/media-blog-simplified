@@ -351,6 +351,7 @@ export interface TemplateVariables {
   readonly action?: string;
   readonly description?: string;
   readonly year?: string;
+  readonly name?: string; 
 }
 
 export type TemplateProcessor = (template: string, variables: TemplateVariables) => string;
