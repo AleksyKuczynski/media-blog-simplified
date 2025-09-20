@@ -206,6 +206,8 @@ const dictionary: Dictionary = {
       searching: 'Поиск...',
       submit: 'Найти',
       minCharacters: 'Минимум 2 символа',
+      queryTerm: 'Поисковый запрос',        // Unified for both navigation and search
+      searchAction: 'Поиск по сайту',
     },
     templates: {
       resultsFor: 'Результаты поиска: {query}',

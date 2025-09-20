@@ -234,6 +234,8 @@ export interface SearchLabels {
   readonly searching: string;
   readonly submit: string;
   readonly minCharacters: string;
+  readonly queryTerm: string;        // For unified "Поисковый запрос" usage
+  readonly searchAction: string;
 }
 
 export interface SearchTemplates {

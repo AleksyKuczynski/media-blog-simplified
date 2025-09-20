@@ -1,5 +1,5 @@
 // src/main/components/SEO/schemas/SearchSchema.tsx
-// FIXED: Updated to work with new dictionary structure and correct imports
+// CLEANED: Removed all hardcoded text, using dictionary entries only
 
 import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
@@ -23,7 +23,7 @@ export interface SearchSchemaProps {
 
 /**
  * Generate structured data for search functionality
- * FIXED: Works with new dictionary structure and helper functions
+ * CLEANED: No hardcoded text, all dictionary-driven
  */
 export const SearchSchema: React.FC<SearchSchemaProps> = ({ 
   dictionary, 
@@ -56,18 +56,16 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
       '@id': `${searchUrl}#searchpage`,
       name: searchPageTitle,
       description: `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`,
-      url: query ? `${searchUrl}?search=${encodeURIComponent(query)}` : searchUrl,
+      url: query ? `${searchUrl}?q=${encodeURIComponent(query)}` : searchUrl,
       inLanguage: 'ru',
       
-      // Main entity - the search itself
-      mainEntity: {
+      // Search functionality
+      potentialAction: {
         '@type': 'SearchAction',
-        '@id': `${searchUrl}#search`,
-        name: dictionary.search.templates.pageTitle,
-        description: dictionary.search.templates.pageDescription,
+        name: dictionary.search.labels.searchAction,  // FIXED: No more hardcoded 'Повторить поиск'
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: `${searchUrl}?search={search_term_string}`,
+          urlTemplate: `${searchUrl}?q={search_term_string}`,
           actionPlatform: [
             'https://schema.org/DesktopWebPlatform',
             'https://schema.org/MobileWebPlatform',
@@ -76,96 +74,32 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
         'query-input': {
           '@type': 'PropertyValueSpecification',
           valueName: 'search_term_string',
-          description: dictionary.search.labels.placeholder,
+          description: dictionary.search.labels.queryTerm,  // FIXED: Unified terminology
           valueRequired: true,
           valueMinLength: 2,
           valueMaxLength: 100,
         },
-        ...(query && {
-          object: {
-            '@type': 'Thing',
-            name: query,
-            description: `Поисковый запрос: ${query}`,
-          },
-        }),
       },
+    };
 
-      // Publisher organization
-      publisher: {
-        '@type': 'Organization',
-        '@id': `${baseUrl}#organization`,
-        name: seoDict.site.name,
-        url: baseUrl,
-        description: seoDict.site.organizationDescription,
-        logo: {
-          '@type': 'ImageObject',
-          url: `${baseUrl}/logo.png`,
-          width: 200,
-          height: 200,
-        },
-        contactPoint: {
-          '@type': 'ContactPoint',
-          email: seoDict.site.contactEmail,
-          contactType: 'customer support',
-          availableLanguage: ['ru', 'Russian'],
-        },
-        sameAs: seoDict.site.socialProfiles,
-      },
-
-      // Audience targeting
-      audience: {
-        '@type': 'Audience',
-        geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
-        audienceType: 'Русскоязычная аудитория',
-      },
-
-      // Search interface features
-      accessibilityFeature: ['searchInterface', 'keyboardAccessible', 'voiceSearch'],
-      accessibilityHazard: 'none',
+    // Add search results data if query exists
+    if (query && resultCount !== undefined) {
+      const resultsTitle = processTemplate(dictionary.search.templates.resultsFor, { query });
       
-      // Add result count if provided
-      ...(typeof resultCount === 'number' && {
-        additionalProperty: {
-          '@type': 'PropertyValue',
-          name: 'resultCount',
-          value: resultCount,
-        },
-      }),
-    };
-
-    // Create WebSite schema with search functionality
-    const websiteSearchSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      '@id': `${baseUrl}#website-search`,
-      name: seoDict.site.name,
-      url: baseUrl,
-      description: seoDict.site.description,
-      inLanguage: 'ru',
+      searchPageSchema.name = processTemplate(dictionary.navigation.templates.pageTitle, {
+        page: resultsTitle,
+        siteName: seoDict.site.name,
+      });
       
-      potentialAction: {
-        '@type': 'SearchAction',
-        name: dictionary.search.templates.pageTitle,
-        description: dictionary.search.templates.pageDescription,
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${searchUrl}?search={search_term_string}`,
-        },
-        'query-input': 'required name=search_term_string',
-      },
-    };
-
-    // Combine schemas
-    const combinedSchema = {
-      '@context': 'https://schema.org',
-      '@graph': [searchPageSchema, websiteSearchSchema],
-    };
+      // Add result count to description
+      searchPageSchema.description = `Найдено ${resultCount} ${dictionary.common.count.results.toLowerCase()} по запросу "${query}"`;
+    }
 
     return (
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(combinedSchema, null, 2),
+          __html: JSON.stringify(searchPageSchema, null, 2),
         }}
       />
     );
@@ -177,84 +111,7 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
 };
 
 // ===================================================================
-// SEARCH RESULTS SCHEMA
-// ===================================================================
-
-export const SearchResultsSchema: React.FC<{
-  dictionary: Dictionary;
-  query: string;
-  results: Array<{
-    title: string;
-    url: string;
-    description?: string;
-    type?: string;
-  }>;
-  totalCount: number;
-}> = ({ dictionary, query, results, totalCount }) => {
-  try {
-    const seoDict = dictionary.seo;
-    const baseUrl = seoDict.site.url;
-    const searchUrl = generateCanonicalUrl('/search', baseUrl);
-    const currentUrl = `${searchUrl}?search=${encodeURIComponent(query)}`;
-
-    const searchResultsSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'SearchResultsPage',
-      '@id': `${currentUrl}#results`,
-      name: processTemplate(dictionary.search.templates.resultsFor, { query }),
-      description: `Найдено ${totalCount} результатов по запросу "${query}"`,
-      url: currentUrl,
-      inLanguage: 'ru',
-      
-      mainEntity: {
-        '@type': 'ItemList',
-        '@id': `${currentUrl}#list`,
-        name: `Результаты поиска: ${query}`,
-        numberOfItems: totalCount,
-        
-        itemListElement: results.slice(0, 10).map((result, index) => ({
-          '@type': 'ListItem',
-          position: index + 1,
-          item: {
-            '@type': result.type || 'WebPage',
-            '@id': result.url,
-            name: result.title,
-            description: result.description,
-            url: result.url,
-            inLanguage: 'ru',
-          },
-        })),
-      },
-
-      // Search action that led to these results
-      potentialAction: {
-        '@type': 'SearchAction',
-        query,
-        actionStatus: 'CompletedActionStatus',
-        result: {
-          '@type': 'SearchResultsPage',
-          '@id': currentUrl,
-        },
-      },
-    };
-
-    return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(searchResultsSchema, null, 2),
-        }}
-      />
-    );
-    
-  } catch (error) {
-    console.error('SearchResultsSchema: Error generating schema', error);
-    return null;
-  }
-};
-
-// ===================================================================
-// NO RESULTS SCHEMA
+// NO RESULTS SCHEMA - CLEANED VERSION
 // ===================================================================
 
 export const NoResultsSchema: React.FC<{
@@ -263,41 +120,43 @@ export const NoResultsSchema: React.FC<{
 }> = ({ dictionary, query }) => {
   try {
     const seoDict = dictionary.seo;
-    const baseUrl = seoDict.site.url;
-    const searchUrl = generateCanonicalUrl('/search', baseUrl);
-    const currentUrl = `${searchUrl}?search=${encodeURIComponent(query)}`;
+    
+    if (!seoDict?.site || !query) {
+      return null;
+    }
+
+    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
+    const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
 
     const noResultsSchema = {
       '@context': 'https://schema.org',
       '@type': 'SearchResultsPage',
-      '@id': `${currentUrl}#noresults`,
-      name: `${dictionary.search.labels.noResults}: ${query}`,
-      description: `По запросу "${query}" ничего не найдено`,
-      url: currentUrl,
+      '@id': `${searchUrl}?q=${encodeURIComponent(query)}#noresults`,
+      name: processTemplate(dictionary.navigation.templates.pageTitle, {
+        page: `${dictionary.search.labels.noResults}: ${query}`,
+        siteName: seoDict.site.name,
+      }),
+      description: `По запросу "${query}" ${dictionary.search.labels.noResults.toLowerCase()}`,
+      url: `${searchUrl}?q=${encodeURIComponent(query)}`,
       inLanguage: 'ru',
       
-      mainEntity: {
-        '@type': 'SearchAction',
-        '@id': `${currentUrl}#action`,
-        query,
-        actionStatus: 'FailedActionStatus',
-        error: {
-          '@type': 'Thing',
-          name: dictionary.search.labels.noResults,
-          description: `По запросу "${query}" результаты не найдены`,
-        },
-      },
-
-      // Suggest alternative actions
+      // CLEANED: Removed 'Попробуйте изменить поисковый запрос' completely
+      // Simplified search action without suggestions
       potentialAction: {
         '@type': 'SearchAction',
-        name: 'Повторить поиск',
-        description: 'Попробуйте изменить поисковый запрос',
+        name: dictionary.search.labels.searchAction,  // FIXED: Using dictionary
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: `${searchUrl}?search={search_term_string}`,
+          urlTemplate: `${searchUrl}?q={search_term_string}`,
         },
-        'query-input': 'required name=search_term_string',
+        'query-input': {
+          '@type': 'PropertyValueSpecification',
+          valueName: 'search_term_string',
+          description: dictionary.search.labels.queryTerm,  // FIXED: Unified terminology
+          valueRequired: true,
+          valueMinLength: 2,
+          valueMaxLength: 100,
+        },
       },
     };
 

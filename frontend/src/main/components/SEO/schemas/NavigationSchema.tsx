@@ -1,5 +1,5 @@
 // src/main/components/SEO/schemas/NavigationSchema.tsx
-// FIXED: Updated to work with new dictionary structure and correct imports
+// CLEANED: Removed hardcoded text from SearchNavigationSchema
 
 import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
@@ -137,16 +137,13 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
       '@context': 'https://schema.org',
       '@type': 'SiteNavigationElement',
       '@id': `${baseUrl}#main-navigation`,
-      name: `Главная навигация ${seoDict.site.name}`,
-      description: `Основная навигация по сайту ${seoDict.site.name}`,
+      name: dictionary.navigation.accessibility.mainNavigation,
+      description: dictionary.navigation.accessibility.mainNavigation,
       url: baseUrl,
       inLanguage: 'ru',
-      
       audience: {
         '@type': 'Audience',
-        name: `Аудитория ${seoDict.site.name}`,
         geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
-        audienceType: 'Русскоязычная аудитория',
       },
     };
 
@@ -172,9 +169,8 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
 export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
   try {
     const seoDict = dictionary.seo;
-    const navDict = dictionary.navigation;
     
-    if (!seoDict?.site || !navDict?.accessibility) {
+    if (!seoDict?.site) {
       console.error('MobileNavigationSchema: Invalid dictionary structure');
       return null;
     }
@@ -183,18 +179,12 @@ export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
 
     const mobileNavigationSchema = {
       '@context': 'https://schema.org',
-      '@type': 'MobileApplication',
+      '@type': 'SiteNavigationElement',
       '@id': `${baseUrl}#mobile-navigation`,
-      name: `${seoDict.site.name} Mobile Navigation`,
-      applicationCategory: 'WebApplication',
-      operatingSystem: ['iOS', 'Android', 'Windows'],
-      
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'RUB',
-      },
-      
+      name: dictionary.navigation.accessibility.mainNavigation,
+      description: dictionary.navigation.accessibility.mainNavigation,
+      url: baseUrl,
+      inLanguage: 'ru',
       audience: {
         '@type': 'Audience',
         geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
@@ -217,7 +207,7 @@ export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
 };
 
 // ===================================================================
-// SEARCH NAVIGATION SCHEMA
+// SEARCH NAVIGATION SCHEMA - CLEANED VERSION
 // ===================================================================
 
 export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
@@ -242,8 +232,8 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
       
       potentialAction: {
         '@type': 'SearchAction',
-        name: 'Поиск по сайту',
-        description: `Поиск материалов на ${seoDict.site.name}`,
+        name: dictionary.search.labels.searchAction,  // FIXED: No more hardcoded 'Поиск по сайту'
+        description: `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`,  // FIXED: Using template
         target: {
           '@type': 'EntryPoint',
           urlTemplate: `${searchUrl}?search={search_term_string}`,
@@ -255,7 +245,7 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
         'query-input': {
           '@type': 'PropertyValueSpecification',
           valueName: 'search_term_string',
-          description: 'Поисковый запрос',
+          description: dictionary.search.labels.queryTerm,  // FIXED: Unified terminology
           valueRequired: true,
           valueMinLength: 2,
           valueMaxLength: 100,
