@@ -1,36 +1,57 @@
 // src/main/components/Main/RubricCard.tsx
-// FIXED: Made lang optional, converted to Next.js Image, aligned with HomePage usage
+// FIXED: Generate URL internally, handle Directus data structure directly
 
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import { DIRECTUS_URL } from '@/main/lib/directus';
 
+// Updated interface to match actual Directus Rubric structure
 export interface RubricCardProps {
   rubric: {
-    id: string;
     slug: string;
     name: string;
     description?: string;
-    icon?: string;
+    nav_icon?: string;
     articleCount?: number;
-    url: string;
+    iconMetadata?: {
+      id: string;
+      width: number;
+      height: number;
+      type: string;
+      filename: string;
+      title: string;
+    } | null;
   };
-  lang?: string; // FIXED: Made optional with default
+  lang?: string;
   dictionary: Dictionary;
 }
 
 /**
- * Clean RubricCard component - FIXED to match HomePage usage and use Next.js Image
+ * Generate rubric URL from slug and language
+ */
+const generateRubricUrl = (slug: string, lang: string = 'ru'): string => {
+  return `/${lang}/rubrics/${slug}`;
+};
+
+/**
+ * Clean RubricCard component - FIXED to handle Directus data directly
  */
 export const RubricCard: React.FC<RubricCardProps> = ({
   rubric,
-  lang = 'ru', // FIXED: Default to 'ru' if not provided
+  lang = 'ru',
   dictionary,
 }) => {
+  // Generate URL internally from slug
+  const rubricUrl = generateRubricUrl(rubric.slug, lang);
+  
+  // Generate unique key for list rendering (using slug as unique identifier)
+  const cardKey = `rubric-${rubric.slug}`;
+  
   // Generate accessible labels using dictionary
-  const iconAltText = rubric.icon 
+  const iconAltText = rubric.nav_icon 
     ? processTemplate(dictionary.sections.rubrics.rubricIcon, { name: rubric.name })
     : dictionary.sections.rubrics.noIcon;
   
@@ -38,13 +59,17 @@ export const RubricCard: React.FC<RubricCardProps> = ({
   const exploreText = `${dictionary.sections.rubrics.exploreRubric} ${rubric.name}`;
   
   return (
-    <article className="group relative overflow-hidden rounded-lg border bg-card p-6 transition-all hover:shadow-lg">
-      {/* Rubric Icon - FIXED: Using Next.js Image */}
+    <article 
+      className="group relative overflow-hidden rounded-lg border bg-card p-6 transition-all hover:shadow-lg"
+      data-rubric-slug={rubric.slug}
+      data-key={cardKey}
+    >
+      {/* Rubric Icon */}
       <div className="mb-4 flex items-center justify-between">
-        {rubric.icon ? (
+        {rubric.nav_icon ? (
           <div className="relative h-8 w-8">
             <Image
-              src={`https://event4me.eu/assets/${rubric.icon}`}
+              src={`${DIRECTUS_URL}/assets/${rubric.nav_icon}`}
               alt={iconAltText}
               fill
               className="object-contain"
@@ -64,17 +89,17 @@ export const RubricCard: React.FC<RubricCardProps> = ({
         )}
         
         {/* Article count if available */}
-        {rubric.articleCount !== undefined && (
+        {rubric.articleCount !== undefined && rubric.articleCount > 0 && (
           <span className="text-sm text-muted-foreground">
             {rubric.articleCount} {dictionary.sections.labels.articles}
           </span>
         )}
       </div>
       
-      {/* Rubric Title */}
+      {/* Rubric Title with generated URL */}
       <h2 className="mb-2 text-xl font-semibold group-hover:text-primary transition-colors">
         <Link 
-          href={rubric.url}
+          href={rubricUrl}
           className="before:absolute before:inset-0"
           aria-label={exploreText}
         >
@@ -103,7 +128,7 @@ export const RubricCard: React.FC<RubricCardProps> = ({
           collection: dictionary.sections.labels.rubrics,
         })}
         {rubric.description && `. ${rubric.description}`}
-        {rubric.articleCount !== undefined && 
+        {rubric.articleCount !== undefined && rubric.articleCount > 0 && 
           `. ${rubric.articleCount} ${dictionary.sections.labels.articles}.`
         }
         {` ${readMoreText}.`}

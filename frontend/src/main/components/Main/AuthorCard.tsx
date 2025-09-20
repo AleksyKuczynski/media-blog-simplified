@@ -72,7 +72,7 @@ export default function AuthorCard({ author, linkToProfile = true, lang }: Autho
 
   if (linkToProfile) {
     return (
-      <Link href={`/ru/authors/${author.slug}`} className="block h-full">
+      <Link href={`/${lang}/authors/${author.slug}`} className="block h-full">
         <CardContent />
       </Link>
     );
