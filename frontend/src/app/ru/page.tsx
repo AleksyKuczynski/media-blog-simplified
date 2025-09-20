@@ -4,16 +4,11 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-
-// Unified dictionary system
 import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import { RubricCard } from '@/main/components/Main/RubricCard';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
-
-// SEO components
-import { generateNavigationMetadata } from '@/main/components/SEO/metadata/NavigationMetadata';
 import getDictionary from '@/main/lib/dictionary/getDictionary';
 
 export const dynamic = 'force-dynamic';
@@ -83,12 +78,11 @@ export default async function HomePage() {
   const transformedRubrics = rubrics.map((rubric: Rubric) => {
     const translation = rubric.translations?.find(t => t.languages_code === 'ru');
     return {
-      slug: rubric.slug,
+      ...rubric, // Spread all original Rubric properties (includes any id if present)
       name: translation?.name || rubric.slug,
       description: translation?.description || '',
-      articleCount: rubric.articleCount || 0,
-      nav_icon: rubric.nav_icon,
-      iconMetadata: rubric.iconMetadata
+      icon: rubric.nav_icon, // Map nav_icon to expected icon property
+      url: `/ru/${rubric.slug}`, // Add required url property
     };
   }).slice(0, 6); // Show only first 6 rubrics on home page
 

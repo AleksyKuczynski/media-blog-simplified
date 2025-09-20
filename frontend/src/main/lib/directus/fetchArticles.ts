@@ -1,7 +1,7 @@
 // src/main/lib/directus/fetchArticles.ts
 
 import { ArticleCardType, DIRECTUS_URL } from "./index";
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang } from '../dictionary/types';
 
 export async function fetchArticles(slugsAndLayouts: { slug: string; layout: string }[], lang: Lang, sort: string = 'desc'): Promise<ArticleCardType[]> {
   try {

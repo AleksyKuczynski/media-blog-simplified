@@ -1,7 +1,7 @@
 // src/main/lib/directus/fetchAllRubrics.ts
 
+import { Lang } from '../dictionary/types';
 import { DIRECTUS_URL, Rubric, fetchRubricDetails } from './index';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 
 export async function fetchAllRubrics(lang: Lang): Promise<Rubric[]> {
   try {

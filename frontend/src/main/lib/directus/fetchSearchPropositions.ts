@@ -1,7 +1,7 @@
 // src/main/lib/directus/fetchSearchPropositions.ts
 
 import { DIRECTUS_URL, MAX_SEARCH_PROPOSITIONS } from "./directusConstants";
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang } from '../dictionary/types';
 import { SearchProposition } from "./directusInterfaces";
 
 export async function fetchSearchPropositions(search: string, lang: Lang): Promise<SearchProposition[]> {

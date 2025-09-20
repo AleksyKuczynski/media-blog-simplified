@@ -1,7 +1,7 @@
 // src/main/lib/directus/fetchAuthorBySlug.ts
 
 import { AuthorDetails, DIRECTUS_URL } from "./index";
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang } from '../dictionary/types';
 
 export async function fetchAuthorBySlug(slug: string, lang: Lang): Promise<AuthorDetails | null> {
   try {

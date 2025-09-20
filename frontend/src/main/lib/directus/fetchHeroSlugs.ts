@@ -1,7 +1,7 @@
 // src/main/lib/directus/fetchHeroSlugs.ts
 
 import { DIRECTUS_URL, HERO_LATEST_ARTICLES_COUNT } from "./index";
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang } from '../dictionary/types';
 
 interface FilterType {
   status: { _eq: string };

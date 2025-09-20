@@ -2,7 +2,7 @@
 
 import { DIRECTUS_URL } from './directusConstants';
 import { RubricBasic } from './directusInterfaces';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang } from '../dictionary/types';
 
 export async function fetchRubricBasics(lang: Lang, includeSEO: boolean = false): Promise<RubricBasic[]> {
   try {
