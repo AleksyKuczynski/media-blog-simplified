@@ -1,11 +1,11 @@
 // src/app/ru/authors/page.tsx - FIXED WITH H1
 import { Suspense } from 'react';
-import { getDictionary } from '@/main/lib/dictionaries/dictionaries';
 import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus';
 import AuthorCard from '@/main/components/Main/AuthorCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
+import getDictionary from '@/main/lib/dictionary/getDictionary';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +31,7 @@ export default async function AllAuthorsPage({
         rubrics={rubricBasics}
         lang="ru"
         translations={{
-          home: dict.navigation.home,
+          home: dict.navigation.labels.home,
           allRubrics: dict.sections.rubrics.allRubrics,
           allAuthors: dict.sections.authors.ourAuthors,
         }}
@@ -45,7 +45,7 @@ export default async function AllAuthorsPage({
         
         <Suspense fallback={
           <div className="text-center py-8">
-            <div className="text-lg">{dict.common.loading}</div>
+            <div className="text-lg">{dict.common.status.loading}</div>
           </div>
         }>
           {authors.length > 0 ? (
