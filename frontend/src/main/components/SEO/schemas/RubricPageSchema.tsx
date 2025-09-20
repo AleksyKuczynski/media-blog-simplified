@@ -1,8 +1,9 @@
 // src/main/components/SEO/schemas/RubricPageSchema.tsx
-// Structured data for individual rubric pages
+// FIXED: Updated to work with new dictionary structure and imports
 
 import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
+import { generateBreadcrumbs } from '@/main/lib/dictionary/helpers/seo';
 
 export interface RubricPageSchemaProps {
   dictionary: Dictionary;
@@ -23,7 +24,7 @@ export interface RubricPageSchemaProps {
 
 /**
  * Generate comprehensive structured data for rubric pages
- * Optimized for Google and Yandex with Russian market focus
+ * FIXED: Uses new dictionary structure and helper functions
  */
 export const RubricPageSchema: React.FC<RubricPageSchemaProps> = ({
   dictionary,
@@ -34,6 +35,9 @@ export const RubricPageSchema: React.FC<RubricPageSchemaProps> = ({
   const { name, slug, description, articleCount, articles } = rubricData;
   const baseUrl = seo.site.url;
   const canonicalUrl = `${baseUrl}${currentPath}`;
+
+  // Generate breadcrumbs using helper function
+  const breadcrumbs = generateBreadcrumbs(dictionary, ['rubrics', slug]);
 
   // Create Article schema for the rubric as a content section
   const rubricArticleSchema = {
@@ -66,14 +70,12 @@ export const RubricPageSchema: React.FC<RubricPageSchemaProps> = ({
         width: 200,
         height: 200,
       },
-      
       contactPoint: {
         '@type': 'ContactPoint',
         email: seo.site.contactEmail,
         contactType: 'customer support',
         availableLanguage: ['ru', 'Russian'],
       },
-      
       sameAs: seo.site.socialProfiles,
     },
     
@@ -90,99 +92,48 @@ export const RubricPageSchema: React.FC<RubricPageSchemaProps> = ({
     },
     
     // Content metrics
-    wordCount: description ? description.split(' ').length : 50,
+    wordCount: description ? description.length : 100,
     
-    // Enhanced properties for search engines
-    about: [
-      {
-        '@type': 'Thing',
-        name: name,
-        description: description || `Тематическая рубрика ${name}`,
-      },
-      {
-        '@type': 'Topic',
-        name: 'Культурные события',
-        description: 'Культурные события и современные идеи',
-      },
-    ],
-    
-    // Mentions related topics
-    mentions: articles?.slice(0, 5).map(article => ({
-      '@type': 'Article',
-      '@id': `${baseUrl}${article.url}`,
-      name: article.title,
-      url: `${baseUrl}${article.url}`,
-    })) || [],
+    // Publication info
+    datePublished: new Date().toISOString(),
+    dateModified: new Date().toISOString(),
   };
 
-  // Create ItemList schema for articles in this rubric
-  const articlesListSchema = articles && articles.length > 0 ? {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    '@id': `${canonicalUrl}#articles`,
-    name: `Статьи в рубрике ${name}`,
-    description: `Все статьи рубрики ${name} на ${seo.site.name}`,
-    url: canonicalUrl,
-    numberOfItems: articleCount,
-    itemListOrder: 'https://schema.org/ItemListOrderDescending', // Newest first
-    
-    // Enhanced properties
-    inLanguage: 'ru',
-    audience: {
-      '@type': 'Audience',
-      geographicArea: seo.regional.targetMarkets,
-    },
-    
-    // Article items
-    itemListElement: articles.map((article, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: article.title,
-      url: `${baseUrl}${article.url}`,
-      
-      item: {
-        '@type': 'Article',
-        '@id': `${baseUrl}${article.url}`,
-        headline: article.title,
-        name: article.title,
-        url: `${baseUrl}${article.url}`,
-        inLanguage: 'ru',
-        articleSection: name,
-        
-        // Publisher reference
-        publisher: {
-          '@id': `${baseUrl}#organization`,
-        },
-        
-        // Publication date if available
-        ...(article.publishedAt && {
-          datePublished: article.publishedAt,
-          dateModified: article.publishedAt,
-        }),
-      },
-    })),
-    
-    // Provider organization
-    provider: {
-      '@id': `${baseUrl}#organization`,
-    },
-  } : null;
-
-  // Create CollectionPage schema for the rubric page itself
+  // Create CollectionPage schema for rubric as a collection
   const collectionPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    '@id': canonicalUrl,
-    name: `Рубрика ${name} — ${seo.site.name}`,
-    description: description || `Все статьи в рубрике ${name} на ${seo.site.name}`,
+    '@id': `${canonicalUrl}#collection`,
+    name: `Рубрика ${name}`,
+    description: description || `Коллекция статей в рубрике ${name}`,
     url: canonicalUrl,
     inLanguage: 'ru',
+    numberOfItems: articleCount,
     
-    // Main content reference
+    // Main entity - list of articles
     mainEntity: articles && articles.length > 0 ? {
+      '@type': 'ItemList',
       '@id': `${canonicalUrl}#articles`,
+      name: `Статьи в рубрике ${name}`,
+      numberOfItems: articleCount,
+      itemListElement: articles.slice(0, 10).map((article, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Article',
+          '@id': article.url,
+          headline: article.title,
+          url: article.url,
+          ...(article.publishedAt && {
+            datePublished: article.publishedAt,
+          }),
+        },
+      })),
     } : {
+      '@type': 'ItemList',
       '@id': `${canonicalUrl}#rubric`,
+      name: `Рубрика ${name}`,
+      numberOfItems: articleCount,
     },
     
     // Publisher and site info
@@ -194,38 +145,16 @@ export const RubricPageSchema: React.FC<RubricPageSchemaProps> = ({
     breadcrumb: {
       '@type': 'BreadcrumbList',
       '@id': `${canonicalUrl}#breadcrumb`,
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: dictionary.navigation.labels.home,
-          item: {
-            '@type': 'WebPage',
-            '@id': baseUrl,
-            url: baseUrl,
-          },
+      itemListElement: breadcrumbs.map((crumb, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: crumb.name,
+        item: {
+          '@type': 'WebPage',
+          '@id': `${baseUrl}${crumb.href}`,
+          url: `${baseUrl}${crumb.href}`,
         },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: dictionary.sections.rubrics.allRubrics,
-          item: {
-            '@type': 'CollectionPage',
-            '@id': `${baseUrl}/ru/rubrics`,
-            url: `${baseUrl}/ru/rubrics`,
-          },
-        },
-        {
-          '@type': 'ListItem',
-          position: 3,
-          name: name,
-          item: {
-            '@type': 'CollectionPage',
-            '@id': canonicalUrl,
-            url: canonicalUrl,
-          },
-        },
-      ],
+      })),
     },
     
     // Enhanced properties
@@ -244,6 +173,34 @@ export const RubricPageSchema: React.FC<RubricPageSchemaProps> = ({
     accessibilityHazard: 'none',
     contentRating: 'general',
   };
+
+  // Articles list schema (if articles provided)
+  const articlesListSchema = articles && articles.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    '@id': `${canonicalUrl}#articlesList`,
+    name: `Список статей в рубрике ${name}`,
+    description: `Все статьи рубрики ${name} на ${seo.site.name}`,
+    numberOfItems: articleCount,
+    itemListElement: articles.map((article, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Article',
+        '@id': article.url,
+        headline: article.title,
+        url: article.url,
+        inLanguage: 'ru',
+        articleSection: name,
+        ...(article.publishedAt && {
+          datePublished: article.publishedAt,
+        }),
+        publisher: {
+          '@id': `${baseUrl}#organization`,
+        },
+      },
+    })),
+  } : null;
 
   // Combine all schemas
   const schemas = [
@@ -291,9 +248,10 @@ const getRubricGenre = (slug: string): string => {
 
 /**
  * Generate SEO keywords for specific rubric types
+ * FIXED: Uses 'base' instead of 'general' to match new dictionary structure
  */
 const getRubricKeywords = (slug: string, name: string, dictionary: Dictionary): string => {
-  const baseKeywords = dictionary.seo.keywords.general;
+  const baseKeywords = dictionary.seo.keywords.base; // FIXED: Changed from 'general' to 'base'
   
   const specificKeywords: Record<string, string> = {
     'music': dictionary.seo.keywords.music,

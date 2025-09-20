@@ -1,5 +1,5 @@
 // src/main/lib/dictionary/helpers/validation.ts
-// Validation utilities for dictionary and content validation
+// COMPLETE: Validation utilities for dictionary and content validation
 
 import { Dictionary } from '../types';
 
@@ -328,11 +328,12 @@ export const validateCompleteDictionary = (dictionary: any): {
 };
 
 // ===================================================================
-// CONTENT VALIDATION
+// CONTENT VALIDATION - COMPLETE
 // ===================================================================
 
 /**
  * Validate content for SEO requirements
+ * COMPLETE: This is the function used by RubricMetadata
  */
 export const validateSEOContent = (content: {
   title: string;

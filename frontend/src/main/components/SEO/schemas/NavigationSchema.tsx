@@ -1,10 +1,8 @@
 // src/main/components/SEO/schemas/NavigationSchema.tsx
-// DRY: Uses existing helpers instead of self-contained functions
+// FIXED: Updated to work with new dictionary structure and correct imports
 
 import React from 'react';
-import { SchemaBuilder } from '../core/SchemaBuilder';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { ExtendedSchemaData } from '../core/types';
 import { generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
 import { generateNavigationElements } from '@/main/lib/dictionary/helpers/navigation';
 
@@ -23,12 +21,12 @@ export interface BreadcrumbNavigationSchemaProps {
 }
 
 // ===================================================================
-// MAIN NAVIGATION SCHEMA COMPONENT - DRY
+// MAIN NAVIGATION SCHEMA COMPONENT
 // ===================================================================
 
 /**
  * Generate structured data for site navigation
- * NO DUPLICATION - uses existing helper functions
+ * FIXED: Uses correct helper functions and dictionary structure
  */
 export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
   dictionary,
@@ -43,11 +41,11 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
       return null;
     }
     
-    // Use existing helper function - NO DUPLICATION
+    // Use existing helper function
     const navigationElements = generateNavigationElements(dictionary);
 
     // Create individual navigation schemas
-    const navigationSchemas: ExtendedSchemaData[] = navigationElements.map((element, index) => ({
+    const navigationSchemas = navigationElements.map((element, index) => ({
       '@context': 'https://schema.org',
       '@type': 'SiteNavigationElement',
       '@id': `${element.url}#navigation-${index}`,
@@ -62,11 +60,11 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
       },
     }));
 
-    // Create website schema with search functionality - using existing helper
+    // Create website schema with search functionality
     const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
     const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
     
-    const websiteSchema: ExtendedSchemaData = {
+    const websiteSchema = {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       '@id': `${baseUrl}#website`,
@@ -90,7 +88,7 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
           '@type': 'PropertyValueSpecification',
           valueName: 'search_term_string',
           valueRequired: true,
-          valueMinLength: 3,
+          valueMinLength: 2,
           valueMaxLength: 100,
         },
       },
@@ -99,7 +97,20 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
     // Combine all schemas
     const allSchemas = [websiteSchema, ...navigationSchemas];
 
-    return <SchemaBuilder schema={allSchemas} priority="high" />;
+    // Create combined schema with @graph
+    const combinedSchema = {
+      '@context': 'https://schema.org',
+      '@graph': allSchemas,
+    };
+
+    return (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(combinedSchema, null, 2),
+        }}
+      />
+    );
     
   } catch (error) {
     console.error('NavigationSchema: Error generating schema', error);
@@ -108,7 +119,7 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
 };
 
 // ===================================================================
-// MAIN NAVIGATION SCHEMA - DRY
+// MAIN NAVIGATION SCHEMA - Simplified version
 // ===================================================================
 
 export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
@@ -120,10 +131,9 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
       return null;
     }
 
-    // Use existing helper - NO DUPLICATION
     const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
 
-    const mainNavigationSchema: ExtendedSchemaData = {
+    const mainNavigationSchema = {
       '@context': 'https://schema.org',
       '@type': 'SiteNavigationElement',
       '@id': `${baseUrl}#main-navigation`,
@@ -136,21 +146,18 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
         '@type': 'Audience',
         name: `Аудитория ${seoDict.site.name}`,
         geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
+        audienceType: 'Русскоязычная аудитория',
       },
-      
-      isPartOf: {
-        '@type': 'WebSite',
-        '@id': `${baseUrl}#website`,
-        name: seoDict.site.name,
-        url: baseUrl,
-      },
-      
-      accessibilityControl: ['fullKeyboardControl', 'fullMouseControl'],
-      accessibilityFeature: ['structuralNavigation', 'ARIA'],
-      accessibilityHazard: ['none'],
     };
 
-    return <SchemaBuilder schema={mainNavigationSchema} priority="high" />;
+    return (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(mainNavigationSchema, null, 2),
+        }}
+      />
+    );
     
   } catch (error) {
     console.error('MainNavigationSchema: Error generating schema', error);
@@ -159,42 +166,49 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
 };
 
 // ===================================================================
-// MOBILE NAVIGATION SCHEMA - DRY
+// MOBILE NAVIGATION SCHEMA
 // ===================================================================
 
 export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
   try {
     const seoDict = dictionary.seo;
+    const navDict = dictionary.navigation;
     
-    if (!seoDict?.site) {
+    if (!seoDict?.site || !navDict?.accessibility) {
       console.error('MobileNavigationSchema: Invalid dictionary structure');
       return null;
     }
 
-    // Use existing helper - NO DUPLICATION
     const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
 
-    const mobileNavigationSchema: ExtendedSchemaData = {
+    const mobileNavigationSchema = {
       '@context': 'https://schema.org',
-      '@type': 'SiteNavigationElement',
+      '@type': 'MobileApplication',
       '@id': `${baseUrl}#mobile-navigation`,
-      name: `${seoDict.site.name} (мобильная навигация)`,
-      description: `Мобильная навигация по сайту ${seoDict.site.name}`,
-      url: baseUrl,
-      inLanguage: 'ru',
+      name: `${seoDict.site.name} Mobile Navigation`,
+      applicationCategory: 'WebApplication',
+      operatingSystem: ['iOS', 'Android', 'Windows'],
+      
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'RUB',
+      },
       
       audience: {
         '@type': 'Audience',
-        name: 'Пользователи мобильных устройств',
         geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
       },
-      
-      accessibilityControl: ['fullTouchControl', 'fullKeyboardControl'],
-      accessibilityFeature: ['touchNavigation', 'mobileOptimized', 'ARIA'],
-      accessibilityHazard: ['none'],
     };
 
-    return <SchemaBuilder schema={mobileNavigationSchema} priority="normal" />;
+    return (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(mobileNavigationSchema, null, 2),
+        }}
+      />
+    );
     
   } catch (error) {
     console.error('MobileNavigationSchema: Error generating schema', error);
@@ -203,7 +217,7 @@ export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
 };
 
 // ===================================================================
-// SEARCH NAVIGATION SCHEMA - DRY
+// SEARCH NAVIGATION SCHEMA
 // ===================================================================
 
 export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
@@ -215,11 +229,10 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
       return null;
     }
 
-    // Use existing helper - NO DUPLICATION
     const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
     const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
 
-    const searchSchema: ExtendedSchemaData = {
+    const searchSchema = {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       '@id': `${baseUrl}#search`,
@@ -250,7 +263,14 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
       },
     };
 
-    return <SchemaBuilder schema={searchSchema} priority="high" />;
+    return (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(searchSchema, null, 2),
+        }}
+      />
+    );
     
   } catch (error) {
     console.error('SearchNavigationSchema: Error generating schema', error);
@@ -259,7 +279,7 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
 };
 
 // ===================================================================
-// BREADCRUMB NAVIGATION SCHEMA - DRY
+// BREADCRUMB NAVIGATION SCHEMA
 // ===================================================================
 
 export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProps> = ({
@@ -267,50 +287,38 @@ export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProp
   breadcrumbs,
 }) => {
   try {
-    if (!breadcrumbs || breadcrumbs.length === 0) {
+    const seoDict = dictionary.seo;
+    
+    if (!seoDict?.site || !breadcrumbs.length) {
       return null;
     }
 
-    // Validate breadcrumbs structure
-    const validBreadcrumbs = breadcrumbs.filter(crumb => 
-      crumb.name && crumb.href && typeof crumb.name === 'string'
-    );
+    const baseUrl = seoDict.site.url;
 
-    if (validBreadcrumbs.length === 0) {
-      return null;
-    }
-
-    // Use existing helper for URL generation - NO DUPLICATION
-    const baseUrl = dictionary.seo.site.url;
-    const lastCrumbUrl = generateCanonicalUrl(
-      validBreadcrumbs[validBreadcrumbs.length - 1]?.href || '/', 
-      baseUrl
-    );
-
-    const breadcrumbSchema: ExtendedSchemaData = {
+    const breadcrumbSchema = {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
-      '@id': `${lastCrumbUrl}#breadcrumb`,
-      
-      itemListElement: validBreadcrumbs.map((crumb, index) => ({
+      '@id': `${baseUrl}#breadcrumb`,
+      itemListElement: breadcrumbs.map((crumb, index) => ({
         '@type': 'ListItem',
         position: index + 1,
         name: crumb.name,
         item: {
           '@type': 'WebPage',
-          '@id': generateCanonicalUrl(crumb.href, baseUrl),
-          name: crumb.name,
-          url: generateCanonicalUrl(crumb.href, baseUrl),
-          inLanguage: 'ru',
+          '@id': `${baseUrl}${crumb.href}`,
+          url: `${baseUrl}${crumb.href}`,
         },
       })),
-      
-      numberOfItems: validBreadcrumbs.length,
-      name: 'Навигационная цепочка',
-      description: `Путь навигации: ${validBreadcrumbs.map(b => b.name).join(' > ')}`,
     };
 
-    return <SchemaBuilder schema={breadcrumbSchema} priority="normal" />;
+    return (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema, null, 2),
+        }}
+      />
+    );
     
   } catch (error) {
     console.error('BreadcrumbNavigationSchema: Error generating schema', error);
@@ -319,38 +327,23 @@ export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProp
 };
 
 // ===================================================================
-// UTILITY COMPONENTS - DRY
+// CONVENIENCE COMPONENTS
 // ===================================================================
 
 /**
- * Complete navigation schema bundle - NO DUPLICATION
+ * Complete navigation schema with all components
  */
 export const CompleteNavigationSchema: React.FC<{
   dictionary: Dictionary;
   currentPath?: string;
   breadcrumbs?: Array<{ name: string; href: string }>;
-  includeMobile?: boolean;
-}> = ({
-  dictionary,
-  currentPath,
-  breadcrumbs = [],
-  includeMobile = true,
-}) => {
+}> = ({ dictionary, currentPath, breadcrumbs }) => {
   try {
     return (
       <>
         <NavigationSchema dictionary={dictionary} currentPath={currentPath} />
-        <MainNavigationSchema dictionary={dictionary} />
         <SearchNavigationSchema dictionary={dictionary} />
-        
-        {includeMobile && <MobileNavigationSchema dictionary={dictionary} />}
-        
-        {breadcrumbs.length > 0 && (
-          <BreadcrumbNavigationSchema 
-            dictionary={dictionary} 
-            breadcrumbs={breadcrumbs} 
-          />
-        )}
+        {breadcrumbs && <BreadcrumbNavigationSchema dictionary={dictionary} breadcrumbs={breadcrumbs} />}
       </>
     );
   } catch (error) {
@@ -360,9 +353,9 @@ export const CompleteNavigationSchema: React.FC<{
 };
 
 /**
- * Minimal navigation schema - NO DUPLICATION
+ * Minimal navigation schema for basic pages
  */
-export const MinimalNavigationSchema: React.FC<{ 
+export const MinimalNavigationSchema: React.FC<{
   dictionary: Dictionary;
   currentPath?: string;
 }> = ({ dictionary, currentPath }) => {
@@ -378,3 +371,5 @@ export const MinimalNavigationSchema: React.FC<{
     return null;
   }
 };
+
+export default NavigationSchema;

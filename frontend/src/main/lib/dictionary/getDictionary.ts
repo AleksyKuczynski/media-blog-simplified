@@ -1,12 +1,8 @@
 // src/main/lib/dictionary/getDictionary.ts
-// Dictionary getter functions
+// Dictionary getter function that works with the new dictionary structure
 
-// Import the actual dictionary data
-const dictionary = {
-  // This would be imported from the complete dictionary we created earlier
-  // For now, referencing the complete dictionary structure
-} as any; // Temporary - should import the actual dictionary
 import { Dictionary, Lang } from './types';
+import dictionary from './dictionary'; // Import the actual dictionary
 
 /**
  * Get dictionary for specified language
@@ -46,9 +42,6 @@ export const getDictionarySection = <K extends keyof Dictionary>(
   const dict = getDictionarySync(lang);
   return dict[section];
 };
-
-// Named export of the complete dictionary
-export { dictionary };
 
 // Default export for convenience
 export default getDictionary;
