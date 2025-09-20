@@ -1,74 +1,79 @@
 // src/main/lib/dictionary/dictionary.ts
-// FIXED: Added missing navigation accessibility properties
+// COMPLETE: Clean, DRY dictionary optimized for SEO and maintainability
 
 import { Dictionary } from './types';
 
-export const russianDictionary: Dictionary = {
+/**
+ * Complete Russian dictionary - optimized for minimal size and maximum reusability
+ * Uses templates extensively to avoid duplication and support multiple contexts
+ * Optimized for both Google and Yandex SEO requirements
+ */
+const dictionary: Dictionary = {
   // ===================================================================
-  // NAVIGATION - Complete with accessibility
+  // NAVIGATION - Complete structured navigation
   // ===================================================================
   navigation: {
     labels: {
       home: 'Главная',
-      articles: 'Статьи', 
+      articles: 'Статьи',
       rubrics: 'Рубрики',
       authors: 'Авторы',
       search: 'Поиск',
-    },
-    descriptions: {
-      home: 'Главная страница EventForMe — медиа о культурных событиях',
-      articles: 'Статьи о музыке, искусстве и культурных событиях',
-      rubrics: 'Тематические рубрики EventForMe по направлениям культуры',
-      authors: 'Авторы EventForMe — журналисты и экспертыпо культуре',
-      search: 'Поиск статей и материалов на EventForMe',
     },
     templates: {
       pageTitle: '{page} — {siteName}',
       sectionDescription: '{action} {section} на {siteName}',
       breadcrumbSeparator: '→',
     },
+    descriptions: {
+      home: 'Главная страница сайта',
+      articles: 'Все статьи о культуре и искусстве',
+      rubrics: 'Тематические разделы и категории',
+      authors: 'Наши авторы и эксперты',
+      search: 'Поиск по всем материалам сайта',
+    },
     accessibility: {
-      mainNavigation: 'Главная навигация',
-      menuTitle: 'Навигационное меню',
-      menuDescription: 'Навигация по основным разделам сайта EventForMe',
+      mainNavigation: 'Основная навигация',
+      menuTitle: 'Меню сайта',
+      menuDescription: 'Навигация по основным разделам',
       openMenu: 'Открыть меню',
       closeMenu: 'Закрыть меню',
-      logoAlt: 'EventForMe — медиа о культурных событиях',
-      logoMainPageLabel: 'EventForMe — главная страница',
-      primarySectionsLabel: 'Основные разделы сайта',
+      logoAlt: 'Логотип EventForMe',
+      logoMainPageLabel: 'Перейти на главную страницу',
+      primarySectionsLabel: 'Основные разделы',
       mainMenuLabel: 'Главное меню',
       searchAndSettingsLabel: 'Поиск и настройки',
       siteSearchLabel: 'Поиск по сайту',
-      skipToContent: 'Перейти к основному содержанию',
+      skipToContent: 'Перейти к содержимому',
       skipToNavigation: 'Перейти к навигации',
     },
   },
 
   // ===================================================================
-  // COMMON - Simple count labels, no pluralization complexity
+  // COMMON - Simple, reusable labels without pluralization
   // ===================================================================
   common: {
     count: {
-      articles: 'Статей:',      // Always plural: "Статей: 1", "Статей: 5"
-      rubrics: 'Рубрик:',       // Always plural: "Рубрик: 3"
-      authors: 'Авторов:',      // Always plural: "Авторов: 12"
-      results: 'Результатов:',  // Always plural: "Результатов: 0"
-      items: 'Элементов:',      // Generic count
+      articles: 'Статей:',
+      rubrics: 'Рубрик:',
+      authors: 'Авторов:',
+      results: 'Результатов:',
+      items: 'Элементов:',
     },
     actions: {
       loadMore: 'Загрузить еще',
       showMore: 'Показать больше',
-      showLess: 'Показать меньше', 
+      showLess: 'Показать меньше',
       readMore: 'Читать далее',
-      explore: 'Изучить',           // Reusable
-      viewAll: 'Посмотреть все',    // Reusable
-      backTo: 'Вернуться к',        // Reusable
+      explore: 'Изучить',
+      viewAll: 'Посмотреть все',
+      backTo: 'Вернуться к',
     },
     status: {
       loading: 'Загрузка...',
       error: 'Произошла ошибка',
       notFound: 'Не найдено',
-      empty: 'Пока пусто',          // Reusable empty state
+      empty: 'Пока пусто',
       retry: 'Попробовать снова',
     },
     published: 'Опубликовано',
@@ -76,21 +81,21 @@ export const russianDictionary: Dictionary = {
   },
 
   // ===================================================================
-  // SECTIONS - Template-driven and compact
+  // SECTIONS - Template-driven, reusable across content types
   // ===================================================================
   sections: {
     labels: {
-      articles: 'статьи',       // lowercase for templates
-      rubrics: 'рубрики',       // lowercase for templates
-      authors: 'авторы',        // lowercase for templates
-      collection: 'коллекция',  // Generic term
-      catalog: 'каталог',       // Alternative to collection
+      articles: 'статьи',
+      rubrics: 'рубрики',
+      authors: 'авторы',
+      collection: 'коллекция',
+      catalog: 'каталог',
     },
     templates: {
       pageTitle: '{section} — {siteName}',
-      collectionTitle: 'Все {section}',        // "Все рубрики"
-      itemInCollection: '{item} в {collection}', // "Статья в рубрике"
-      itemByAuthor: '{item} автора {author}',   // "Статьи автора Иван"
+      collectionTitle: 'Все {section}',
+      itemInCollection: '{item} в {collection}',
+      itemByAuthor: '{item} автора {author}',
       emptyCollection: 'В {collection} пока нет {items}',
       totalCount: 'Всего: {count} {countLabel}',
     },
@@ -108,33 +113,31 @@ export const russianDictionary: Dictionary = {
       viewAllRubricsDescription: 'Полный каталог всех доступных рубрик',
       quickNavigation: 'Быстрая навигация',
     },
+    authors: {
+      allAuthors: 'Все авторы',
+      ourAuthors: 'Наши авторы',
+      noAuthorsFound: 'Авторы не найдены',
+      moreAuthorsToLoad: 'Еще авторы для загрузки',
+      collectionPageDescription: 'Познакомьтесь с нашими авторами и экспертами, которые создают контент о культурных событиях и современных идеях',
+      profileDescription: 'Профиль автора и его публикации',
+      articlesWrittenBy: 'Статьи автора {author}',
+    },
     rubrics: {
       allRubrics: 'Все рубрики',
       featuredRubric: 'Избранная рубрика',
       articlesInRubric: 'Статьи в рубрике',
       rubricList: 'Список рубрик',
-      noRubricsAvailable: 'Рубрики пока недоступны',
-      iconAltText: 'Иконка рубрики',
-      noIcon: 'Без иконки',
-      rubricIcon: 'Иконка рубрики',
-      checkBackLater: 'Загляните позже',
-      readMoreAbout: 'Читать больше о',
-      exploreRubric: 'Изучить рубрику',
       rubricsCatalog: 'Каталог рубрик',
       browseAllRubrics: 'Просмотреть все рубрики',
-      categoriesDescription: 'Исследуйте наши тематические рубрики',
-      totalRubrics: 'Всего рубрик',
-      rubricCard: 'Карточка рубрики',
-      viewRubricDetails: 'Посмотреть детали рубрики',
-      articlesCount: 'Статей в рубрике',
-      enterRubric: 'Войти в рубрику',
-      discoverContent: 'Открыть содержимое',
-      moreDetails: 'Подробнее',
-      collectionPageDescription: 'Изучите наши тематические рубрики и найдите интересные статьи о культурных событиях, музыке и современных идеях.',
-    },
-    authors: {
-      // ... existing properties ...
-      collectionPageDescription: 'Познакомьтесь с нашими авторами и экспертами, которые пишут о культурных событиях и современных идеях.',
+      categoriesDescription: 'Изучайте материалы по тематическим направлениям — от музыки и культуры до современных идей и мистики',
+      collectionPageDescription: 'Изучите наши тематические рубрики, охватывающие все аспекты культурной жизни и современного искусства',
+      noRubricsAvailable: 'Рубрики пока недоступны',
+      checkBackLater: 'Заходите позже',
+      readMoreAbout: 'Читать подробнее о',
+      exploreRubric: 'Изучить рубрику',
+      iconAltText: 'Иконка рубрики',
+      noIcon: 'Нет иконки',
+      rubricIcon: 'Иконка рубрики {name}',
     },
     articles: {
       allArticles: 'Все статьи',
@@ -142,174 +145,129 @@ export const russianDictionary: Dictionary = {
       latestArticles: 'Последние статьи',
       noArticlesFound: 'Статьи не найдены',
       noFeaturedArticles: 'Нет избранных статей',
-      moreArticlesToLoad: 'Есть ещё статьи для загрузки',
-      loadMore: 'Загрузить ещё статьи', // Specific to articles
-      loadingArticles: 'Загружаются статьи...',
-      errorLoadingArticles: 'Ошибка при загрузке статей',
-      articlesInCategory: 'Статьи в категории',
-      articlesInRubric: 'Статьи в рубрике',
-      articlesByAuthor: 'Статьи автора',
-      collectionPageDescription: 'Читайте все статьи о культурных событиях, музыке, современных идеях и мистических явлениях.',
+      moreArticlesToLoad: 'Еще статьи для загрузки',
+      loadMore: 'Загрузить еще',
+      collectionPageDescription: 'Читайте наши статьи о культурных событиях, искусстве и творческих инициативах',
+      byAuthor: 'Статьи автора {author}',
+      inRubric: 'Статьи в рубрике {rubric}',
     },
   },
 
   // ===================================================================
-  // SEO - Complete site information
+  // SEO - Comprehensive, template-driven SEO optimization
   // ===================================================================
   seo: {
     site: {
       name: 'EventForMe',
-      fullName: 'EventForMe - Медиа о культурных событиях',
-      description: 'Медиа о культурных событиях и творческих инициативах',
-      organizationDescription: 'Медиаплатформа, посвященная культурным событиям, искусству и творческим инициативам в России',
+      fullName: 'EventForMe — Медиа о культуре и искусстве',
+      description: 'Медиа о культурных событиях, искусстве и творческих инициативах. Рубрики о музыке, культуре, событиях и современных идеях.',
+      organizationDescription: 'EventForMe — это медиа-платформа, посвященная освещению культурных событий, современного искусства и творческих инициатив в России и мире.',
       url: 'https://event4me.eu',
       contactEmail: 'info@event4me.eu',
       socialProfiles: [
-        'https://t.me/event4me_eu',
-        'https://vk.com/event4me_eu',
+        'https://t.me/event4me',
+        'https://vk.com/event4me',
+        'https://instagram.com/event4me'
       ],
-      geographicAreas: ['Russia', 'Europe'],
+      geographicAreas: ['Russia', 'Belarus', 'Kazakhstan', 'European Union'],
     },
     templates: {
       pageTitle: '{title} — {siteName}',
       metaDescription: '{description} на {siteName}',
-      collectionPage: '{collection} — {siteName}', 
+      collectionPage: '{collection} — {siteName}',
       itemPage: '{item} — {siteName}',
       searchPage: 'Поиск: {query} — {siteName}',
     },
     keywords: {
-      base: 'культурные события, музыка, современные идеи, медиа',
-      rubrics: 'рубрики, темы, категории, разделы',
+      base: 'культурные события, искусство, творчество, медиа, EventForMe',
+      rubrics: 'рубрики, тематические разделы, категории, культура',
       articles: 'статьи, публикации, материалы, контент',
-      authors: 'авторы, эксперты, журналисты, блогеры',
+      authors: 'авторы, эксперты, журналисты, редакторы',
+      music: 'музыка, концерты, фестивали, музыкальные события',
+      culture: 'культура, театр, выставки, культурные события',
+      events: 'события, мероприятия, афиша, культурная жизнь',
+      mystic: 'мистика, эзотерика, духовность, философия',
     },
     regional: {
       language: 'ru',
-      region: 'Россия',
-      targetMarkets: ['Россия', 'СНГ', 'русскоязычное сообщество'],
+      region: 'RU',
+      targetMarkets: ['Russia', 'Belarus', 'Kazakhstan'],
     },
   },
 
   // ===================================================================
-  // SEARCH - Simple search labels
+  // SEARCH - Complete search interface
   // ===================================================================
   search: {
     labels: {
-      placeholder: 'Поиск статей...',
-      submit: 'Найти',
+      placeholder: 'Поиск по сайту',
       results: 'Результаты поиска',
       noResults: 'Ничего не найдено',
       searching: 'Поиск...',
-      minCharacters: 'Введите минимум 3 символа',
-      foundResults: 'Найдено результатов:', // For count display
+      submit: 'Найти',
+      minCharacters: 'Минимум 2 символа',
     },
     templates: {
-      resultsFor: 'Результаты для {query}',
+      resultsFor: 'Результаты поиска: {query}',
       pageTitle: 'Поиск',
-      pageDescription: 'Поиск статей и материалов',
-      relatedTo: 'связанные с',
-      resultsCount: '{count} {label}', // For result count formatting
+      pageDescription: 'Найдите интересующий вас контент',
+      relatedTo: 'Связанные материалы',
     },
     accessibility: {
       searchLabel: 'Поиск по сайту',
-      searchButtonLabel: 'Начать поиск',
-      clearSearchLabel: 'Очистить поиск',
+      searchButtonLabel: 'Выполнить поиск',
       searchInputLabel: 'Введите поисковый запрос',
-      searchDescription: 'Поиск статей, рубрик и авторов',
-      searchResultsLabel: 'Результаты поиска',
-    },
-    interface: {
-      alternativeNavigation: 'Альтернативная навигация',
-      searchSuggestion: 'Попробуйте поискать что-то другое',
-      popularRubrics: 'Популярные рубрики',
-      latestArticles: 'Последние статьи',
-      ourAuthors: 'Наши авторы',
-    },
-    navigation: {
-      popularRubrics: 'Популярные рубрики',
-      latestArticles: 'Последние статьи',
-      ourAuthors: 'Наши авторы',
     },
   },
 
   // ===================================================================
-  // FILTER & SORTING - Simple filter functionality
+  // FILTER - Simple filtering functionality
   // ===================================================================
   filter: {
     allCategories: 'Все категории',
-    category: 'Категория', 
+    category: 'Категория',
     sortOrder: 'Сортировка',
-    reset: 'Сброс',
+    reset: 'Сбросить',
     newest: 'Сначала новые',
     oldest: 'Сначала старые',
-    // Accessibility
     categorySelector: 'Выбор категории',
-    sortingControl: 'Управление сортировкой', 
+    sortingControl: 'Управление сортировкой',
     resetButton: 'Сбросить фильтры',
     filterGroup: 'Группа фильтров',
-    dropdownLabel: 'Меню фильтров',
+    dropdownLabel: 'Выпадающий список',
   },
 
   // ===================================================================
-  // FOOTER - Minimal footer content
+  // ACCESSIBILITY - Universal accessibility labels
+  // ===================================================================
+  accessibility: {
+    iconDescription: 'Иконка',
+    decorativeIcon: 'Декоративная иконка',
+    rubricVisualIndicator: 'Визуальный индикатор рубрики',
+    rubricDescription: 'Описание рубрики',
+    expandDescription: 'Развернуть описание',
+  },
+
+  // ===================================================================
+  // FOOTER - Simple footer structure
   // ===================================================================
   footer: {
     about: {
       title: 'О проекте',
-      description: 'Медиа о культурных событиях, искусстве и творческих инициативах. Открываем новые грани культурного пространства.',
+      description: 'EventForMe — медиа о культурных событиях и современном искусстве',
     },
     quickLinks: {
-      title: 'Навигация',
-      ariaLabel: 'Навигация по сайту', // Replaces hardcoded "Быстрая навигация"
+      title: 'Быстрые ссылки',
+      ariaLabel: 'Быстрая навигация по сайту',
     },
     socialLinks: {
       title: 'Социальные сети',
     },
     legal: {
       copyright: '© {year} {siteName}',
-      rights: 'Медиа о культурных событиях.',
+      rights: 'Все права защищены',
     },
-  },
-
-  // ===================================================================
-  // ACCESSIBILITY - Template-driven accessibility
-  // ===================================================================
-  accessibility: {
-    templates: {
-      iconAlt: 'Иконка {item}',
-      linkTitle: '{action} {item}',
-      pageDescription: '{description} на {siteName}',
-    },
-    skipToContent: 'Перейти к основному содержанию',
-    mainNavigation: 'Главная навигация',
-    currentPage: 'Текущая страница',
-    iconDescription: 'Иконка рубрики',
-    decorativeIcon: 'Декоративная иконка',
-    rubricVisualIndicator: 'Визуальный индикатор рубрики',
-    rubricDescription: 'Описание рубрики',
-    expandDescription: 'Развернуть описание',
-    articlesList: 'Список статей',
-    articlesGrid: 'Сетка статей',
-    loadMoreButton: 'Загрузить больше статей',
-    loadingContent: 'Загружается содержимое',
-    emptyState: 'Пустое состояние',
-    errorState: 'Состояние ошибки',
-    retryAction: 'Повторить действие',
-    totalPages: 'Всего страниц',
-    articleCard: 'Карточка статьи',
-    articleLink: 'Ссылка на статью',
-    publishedDate: 'Дата публикации',
-    authorInfo: 'Информация об авторе',
-    categoryInfo: 'Информация о категории',
   },
 };
 
-/**
- * Main dictionary getter - returns Russian dictionary
- * This replaces the old getDictionary function
- */
-export const getDictionary = async (lang: 'ru' = 'ru'): Promise<Dictionary> => {
-  return russianDictionary;
-};
-
-export default russianDictionary;
+export default dictionary;

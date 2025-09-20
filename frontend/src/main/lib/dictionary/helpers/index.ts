@@ -24,7 +24,6 @@ export {
   getKeywords,
   generateCanonicalUrl, // MAIN URL function - use everywhere
   validateSEOContent,
-  generateSEOMetadata,
 } from './seo';
 
 // Create alias for consistency

@@ -1,8 +1,9 @@
 // src/main/components/SEO/schemas/CollectionPageSchema.tsx
-// FIXED: Structured data with correct dictionary access and type safety
+// Clean collection schema using new dictionary structure directly
 
 import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
+import { generateBreadcrumbs } from '@/main/lib/dictionary/helpers/seo';
 
 export interface CollectionPageSchemaProps {
   dictionary: Dictionary;
@@ -10,8 +11,8 @@ export interface CollectionPageSchemaProps {
   items: Array<{
     name: string;
     slug: string;
+    url: string;
     description?: string;
-    url?: string;
     articleCount?: number;
   }>;
   totalCount: number;
@@ -20,7 +21,8 @@ export interface CollectionPageSchemaProps {
 }
 
 /**
- * FIXED: Generate comprehensive structured data with safe dictionary access
+ * Generate comprehensive structured data for collection pages
+ * Optimized for Google and Yandex with Russian market focus
  */
 export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
   dictionary,
@@ -33,90 +35,116 @@ export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
   const { seo } = dictionary;
   const baseUrl = seo.site.url;
   const canonicalUrl = `${baseUrl}${currentPath}`;
-  
-  // FIXED: Safe collection name access with proper typing
-  const getCollectionName = (type: typeof collectionType): string => {
-    switch (type) {
+
+  // Get collection-specific data from dictionary
+  const getCollectionData = () => {
+    switch (collectionType) {
       case 'rubrics':
-        return dictionary.sections.rubrics.allRubrics;
+        return {
+          name: dictionary.sections.rubrics.allRubrics,
+          description: dictionary.sections.rubrics.collectionPageDescription,
+          genre: 'content-classification',
+        };
       case 'authors':
-        return dictionary.sections.authors.allAuthors;
+        return {
+          name: dictionary.sections.authors.allAuthors,
+          description: dictionary.sections.authors.collectionPageDescription,
+          genre: 'person-profiles',
+        };
       case 'articles':
-        return dictionary.sections.articles.allArticles;
+        return {
+          name: dictionary.sections.articles.allArticles,
+          description: dictionary.sections.articles.collectionPageDescription,
+          genre: 'editorial-content',
+        };
       default:
-        return 'Коллекция';
-    }
-  };
-  
-  // FIXED: Safe collection description access
-  const getCollectionDescription = (type: typeof collectionType): string => {
-    switch (type) {
-      case 'rubrics':
-        return dictionary.sections.rubrics.collectionPageDescription;
-      case 'authors':
-        return dictionary.sections.authors.collectionPageDescription;
-      case 'articles':
-        return dictionary.sections.articles.collectionPageDescription;
-      default:
-        return `Все ${type} на ${seo.site.name}`;
+        return {
+          name: 'Коллекция',
+          description: `Коллекция материалов на ${seo.site.name}`,
+          genre: 'general-collection',
+        };
     }
   };
 
-  const collectionName = getCollectionName(collectionType);
-  const collectionDescription = getCollectionDescription(collectionType);
+  const collectionData = getCollectionData();
+  
+  // Generate breadcrumbs
+  const breadcrumbs = generateBreadcrumbs(dictionary, [collectionType]);
 
-  // Main CollectionPage schema
+  // Create main CollectionPage schema
   const collectionPageSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     '@id': `${canonicalUrl}#collection`,
-    name: `${collectionName} — ${seo.site.name}`,
-    description: collectionDescription,
+    name: collectionData.name,
+    description: collectionData.description,
     url: canonicalUrl,
     inLanguage: 'ru',
     
-    // Main entity - the collection itself
+    // Collection metadata
+    numberOfItems: totalCount,
+    
+    // Publisher and site info
+    isPartOf: {
+      '@type': 'WebSite',
+      '@id': `${baseUrl}#website`,
+      name: seo.site.name,
+      url: baseUrl,
+      description: seo.site.description,
+      inLanguage: 'ru',
+      
+      // Search functionality
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${baseUrl}/search?q={search_term_string}`,
+        },
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    
+    // Breadcrumb navigation
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      '@id': `${canonicalUrl}#breadcrumb`,
+      itemListElement: breadcrumbs.map((crumb, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: crumb.name,
+        item: {
+          '@type': 'WebPage',
+          '@id': `${baseUrl}${crumb.href}`,
+          url: `${baseUrl}${crumb.href}`,
+        },
+      })),
+    },
+    
+    // Main entity list (limited to first 10 for performance)
     mainEntity: {
       '@type': 'ItemList',
       '@id': `${canonicalUrl}#itemlist`,
-      name: collectionName,
-      description: collectionDescription,
+      name: collectionData.name,
+      description: collectionData.description,
       numberOfItems: totalCount,
-      itemListOrder: 'https://schema.org/ItemListOrderDescending',
       
-      // Generate list items with safe access
-      itemListElement: items.map((item, index) => {
-        const itemUrl = item.url || `${baseUrl}/ru/${collectionType === 'rubrics' ? item.slug : `${collectionType.slice(0, -1)}/${item.slug}`}`;
-        
-        return {
-          '@type': 'ListItem',
-          position: index + 1,
-          name: item.name,
-          description: item.description,
-          url: itemUrl,
-          item: {
-            '@type': getItemType(collectionType),
-            '@id': `${itemUrl}#${collectionType.slice(0, -1)}`,
-            name: item.name,
-            description: item.description,
-            url: itemUrl,
-            ...(item.articleCount && { 
-              mainEntityOfPage: {
-                '@type': 'WebPage',
-                url: itemUrl,
-              },
-              aggregateRating: {
-                '@type': 'AggregateRating',
-                ratingValue: Math.min(5, Math.max(3, 3 + (item.articleCount / 10))),
-                reviewCount: item.articleCount,
-              }
-            }),
+      itemListElement: items.slice(0, 10).map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        description: item.description,
+        url: item.url,
+        ...(collectionType === 'rubrics' && item.articleCount && {
+          additionalProperty: {
+            '@type': 'PropertyValue',
+            name: 'articleCount',
+            value: item.articleCount,
           },
-        };
-      }),
+        }),
+      })),
     },
-
-    // Publisher info
+    
+    // Publisher organization
     publisher: {
       '@type': 'Organization',
       '@id': `${baseUrl}#organization`,
@@ -136,44 +164,17 @@ export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
         availableLanguage: ['ru', 'Russian'],
       },
       sameAs: seo.site.socialProfiles,
+      areaServed: seo.site.geographicAreas,
     },
     
-    // Breadcrumb navigation with safe access
-    breadcrumb: {
-      '@type': 'BreadcrumbList',
-      '@id': `${canonicalUrl}#breadcrumb`,
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: dictionary.navigation.labels?.home || 'Главная',
-          item: {
-            '@type': 'WebPage',
-            '@id': baseUrl,
-            url: baseUrl,
-          },
-        },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: collectionName,
-          item: {
-            '@type': 'CollectionPage',
-            '@id': canonicalUrl,
-            url: canonicalUrl,
-          },
-        },
-      ],
-    },
-    
-    // Enhanced properties
-    genre: getCollectionGenre(collectionType),
+    // Content classification
+    genre: collectionData.genre,
     keywords: getCollectionKeywords(collectionType, dictionary),
     
-    // Audience and geographic targeting
+    // Audience targeting for Russian market
     audience: {
       '@type': 'Audience',
-      geographicArea: seo.regional?.targetMarkets || ['Russia'],
+      geographicArea: seo.regional.targetMarkets,
       audienceType: 'Русскоязычная аудитория',
     },
     
@@ -182,46 +183,25 @@ export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
     accessibilityHazard: 'none',
     contentRating: 'general',
     
-    // Additional collection metadata
-    ...(featured && { isPartOf: `${baseUrl}#website` }),
-    significantLink: items.slice(0, 3).map(item => 
-      item.url || `${baseUrl}/ru/${collectionType === 'rubrics' ? item.slug : `${collectionType.slice(0, -1)}/${item.slug}`}`
-    ),
-  };
-
-  // Website schema for context
-  const websiteSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    '@id': `${baseUrl}#website`,
-    name: seo.site.name,
-    url: baseUrl,
-    description: seo.site.description,
-    inLanguage: 'ru',
-    publisher: {
-      '@id': `${baseUrl}#organization`,
-    },
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${baseUrl}/search?search={search_term_string}`,
+    // Publication info
+    datePublished: new Date().toISOString(),
+    dateModified: new Date().toISOString(),
+    
+    // Featured flag if applicable
+    ...(featured && {
+      additionalProperty: {
+        '@type': 'PropertyValue',
+        name: 'featured',
+        value: true,
       },
-      'query-input': 'required name=search_term_string',
-    },
-  };
-
-  // Combine all schemas
-  const combinedSchema = {
-    '@context': 'https://schema.org',
-    '@graph': [websiteSchema, collectionPageSchema],
+    }),
   };
 
   return (
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(combinedSchema, null, 2),
+        __html: JSON.stringify(collectionPageSchema, null, 2),
       }}
     />
   );
@@ -230,51 +210,18 @@ export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
 // Helper functions
 
 /**
- * Get appropriate schema.org type for collection items
- */
-const getItemType = (collectionType: string): string => {
-  const typeMap: Record<string, string> = {
-    'rubrics': 'Thing',
-    'authors': 'Person',
-    'articles': 'Article',
-  };
-  
-  return typeMap[collectionType] || 'Thing';
-};
-
-/**
- * Get genre classification for different collection types
- */
-const getCollectionGenre = (collectionType: string): string => {
-  const genreMap: Record<string, string> = {
-    'rubrics': 'directory',
-    'authors': 'biography',
-    'articles': 'journalism',
-  };
-  
-  return genreMap[collectionType] || 'general';
-};
-
-/**
- * FIXED: Generate SEO keywords with safe dictionary access
+ * Generate SEO keywords for specific collection types using dictionary
  */
 const getCollectionKeywords = (collectionType: string, dictionary: Dictionary): string => {
-  const baseKeywords = dictionary.seo.keywords?.base || 'культурные события, музыка, искусство';
+  const baseKeywords = dictionary.seo.keywords.base;
   
-  const getSpecificKeywords = (type: string): string => {
-    switch (type) {
-      case 'rubrics':
-        return dictionary.seo.keywords?.rubrics || 'рубрики, категории, темы';
-      case 'authors':
-        return dictionary.seo.keywords?.authors || 'авторы, эксперты, писатели';
-      case 'articles':
-        return dictionary.seo.keywords?.articles || 'статьи, публикации, материалы';
-      default:
-        return '';
-    }
+  const specificKeywords: Record<string, string> = {
+    'rubrics': dictionary.seo.keywords.rubrics,
+    'authors': dictionary.seo.keywords.authors,
+    'articles': dictionary.seo.keywords.articles,
   };
   
-  const collectionSpecific = getSpecificKeywords(collectionType);
+  const collectionSpecific = specificKeywords[collectionType] || '';
   return collectionSpecific ? `${collectionSpecific}, ${baseKeywords}` : baseKeywords;
 };
 

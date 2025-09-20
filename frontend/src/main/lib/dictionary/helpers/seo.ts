@@ -1,12 +1,11 @@
 // src/main/lib/dictionary/helpers/seo.ts
-// SEO utilities - updated for simplified dictionary structure
+// Clean SEO utilities using the new dictionary structure
 
-import { Dictionary } from '../types';
-import { processTemplate, createSEOVariables } from './templates';
+import { Dictionary, TemplateVariables } from '../types';
+import { processTemplate, createSEOVariables, createCollectionVariables } from './templates';
 
 /**
- * Generate page title using simplified templates
- * @example getPageTitle(dictionary, 'Музыка') => "Музыка — EventForMe"
+ * Generate page title using dictionary templates
  */
 export const getPageTitle = (dictionary: Dictionary, title: string): string => {
   return processTemplate(dictionary.seo.templates.pageTitle, {
@@ -17,12 +16,16 @@ export const getPageTitle = (dictionary: Dictionary, title: string): string => {
 
 /**
  * Generate collection page title
- * @example getCollectionTitle(dictionary, 'рубрики') => "Все рубрики — EventForMe"  
  */
-export const getCollectionTitle = (dictionary: Dictionary, collection: string): string => {
+export const getCollectionTitle = (
+  dictionary: Dictionary, 
+  collectionType: 'rubrics' | 'authors' | 'articles'
+): string => {
+  const sectionLabel = dictionary.sections.labels[collectionType];
   const collectionTitle = processTemplate(dictionary.sections.templates.collectionTitle, {
-    section: collection,
+    section: sectionLabel,
   });
+  
   return processTemplate(dictionary.seo.templates.collectionPage, {
     collection: collectionTitle,
     siteName: dictionary.seo.site.name,
@@ -31,9 +34,11 @@ export const getCollectionTitle = (dictionary: Dictionary, collection: string): 
 
 /**
  * Generate meta description using templates
- * @example getMetaDescription(dictionary, 'Статьи о музыке') => "Статьи о музыке на EventForMe"
  */
-export const getMetaDescription = (dictionary: Dictionary, description: string): string => {
+export const getMetaDescription = (
+  dictionary: Dictionary, 
+  description: string
+): string => {
   return processTemplate(dictionary.seo.templates.metaDescription, {
     description,
     siteName: dictionary.seo.site.name,
@@ -41,39 +46,26 @@ export const getMetaDescription = (dictionary: Dictionary, description: string):
 };
 
 /**
- * Generate keywords for page type using simplified structure
+ * Generate keywords for page type
  */
-export const getKeywords = (dictionary: Dictionary, pageType: string, customKeywords?: string): string => {
+export const getKeywords = (
+  dictionary: Dictionary, 
+  pageType: keyof typeof dictionary.seo.keywords | 'collection',
+  customKeywords?: string
+): string => {
   const baseKeywords = dictionary.seo.keywords.base;
   
-  // Map page types to keyword categories
   let typeKeywords = '';
-  switch (pageType) {
-    case 'rubrics':
-    case 'rubric':
-      typeKeywords = dictionary.seo.keywords.rubrics;
-      break;
-    case 'articles':
-    case 'article':
-      typeKeywords = dictionary.seo.keywords.articles;
-      break;
-    case 'authors':
-    case 'author':
-      typeKeywords = dictionary.seo.keywords.authors;
-      break;
-    default:
-      typeKeywords = '';
+  if (pageType !== 'collection' && pageType in dictionary.seo.keywords) {
+    typeKeywords = dictionary.seo.keywords[pageType];
   }
   
-  if (customKeywords) {
-    return `${customKeywords}, ${baseKeywords}`;
-  }
-  
-  return typeKeywords ? `${typeKeywords}, ${baseKeywords}` : baseKeywords;
+  const parts = [customKeywords, typeKeywords, baseKeywords].filter(Boolean);
+  return parts.join(', ');
 };
 
 /**
- * Generate canonical URL - simple construction
+ * Generate canonical URL
  */
 export const generateCanonicalUrl = (path: string, baseUrl?: string): string => {
   const url = baseUrl || 'https://event4me.eu';
@@ -82,7 +74,82 @@ export const generateCanonicalUrl = (path: string, baseUrl?: string): string => 
 };
 
 /**
- * Basic SEO validation - check for Russian content and length
+ * Get collection page description
+ */
+export const getCollectionDescription = (
+  dictionary: Dictionary,
+  collectionType: 'rubrics' | 'authors' | 'articles'
+): string => {
+  return dictionary.sections[collectionType].collectionPageDescription;
+};
+
+/**
+ * Generate complete SEO metadata for collection pages
+ */
+export const generateCollectionSEO = (
+  dictionary: Dictionary,
+  collectionType: 'rubrics' | 'authors' | 'articles',
+  totalCount: number,
+  currentPath: string,
+  customItems?: string[]
+) => {
+  const title = getCollectionTitle(dictionary, collectionType);
+  const description = getCollectionDescription(dictionary, collectionType);
+  const enhancedDescription = getMetaDescription(dictionary, description);
+  
+  // Add count and custom items to keywords
+  const customKeywords = customItems ? customItems.join(', ') : '';
+  const keywords = getKeywords(dictionary, collectionType, customKeywords);
+  
+  const canonicalUrl = generateCanonicalUrl(currentPath, dictionary.seo.site.url);
+  const imageUrl = `${dictionary.seo.site.url}/og-${collectionType}.jpg`;
+  
+  return {
+    title,
+    description: enhancedDescription,
+    keywords,
+    canonicalUrl,
+    imageUrl,
+    totalCount,
+    collectionType,
+  };
+};
+
+/**
+ * Generate breadcrumb data
+ */
+export const generateBreadcrumbs = (
+  dictionary: Dictionary,
+  path: string[]
+): Array<{ name: string; href: string }> => {
+  const breadcrumbs = [
+    {
+      name: dictionary.navigation.labels.home,
+      href: '/ru',
+    },
+  ];
+  
+  path.forEach((segment, index) => {
+    const href = `/ru/${path.slice(0, index + 1).join('/')}`;
+    
+    // Map path segments to dictionary labels
+    let name = segment;
+    if (segment === 'rubrics') {
+      name = dictionary.navigation.labels.rubrics;
+    } else if (segment === 'authors') {
+      name = dictionary.navigation.labels.authors;
+    } else if (segment === 'articles') {
+      name = dictionary.navigation.labels.articles;
+    }
+    
+    breadcrumbs.push({ name, href });
+  });
+  
+  return breadcrumbs;
+};
+
+/**
+ * Validate SEO content for Russian content and length
  */
 export const validateSEOContent = (content: {
   title: string;
@@ -91,39 +158,20 @@ export const validateSEOContent = (content: {
 }): { isValid: boolean; warnings: string[] } => {
   const warnings: string[] = [];
   
-  // Title validation
+  // Check title length
   if (content.title.length > 60) {
-    warnings.push('Title may be too long for search results');
+    warnings.push(`Title too long: ${content.title.length} chars (recommended: ≤60)`);
   }
   
-  if (content.title.length < 10) {
-    warnings.push('Title is too short');
-  }
-  
-  // Description validation
+  // Check description length
   if (content.description.length > 160) {
-    warnings.push('Description may be too long for search results');
+    warnings.push(`Description too long: ${content.description.length} chars (recommended: ≤160)`);
   }
   
-  if (content.description.length < 50) {
-    warnings.push('Description is too short');
-  }
-  
-  // Russian content validation
-  if (!content.title.match(/[а-яё]/i)) {
-    warnings.push('Title should contain Russian text');
-  }
-  
-  if (!content.description.match(/[а-яё]/i)) {
-    warnings.push('Description should contain Russian text');
-  }
-  
-  // Keywords validation
-  if (content.keywords) {
-    const keywordArray = content.keywords.split(',').map(k => k.trim());
-    if (keywordArray.length > 10) {
-      warnings.push('Consider using fewer keywords for better focus');
-    }
+  // Check for Russian content
+  const hasRussian = /[а-яё]/i.test(content.title + content.description);
+  if (!hasRussian) {
+    warnings.push('No Russian text detected in title or description');
   }
   
   return {
@@ -133,85 +181,13 @@ export const validateSEOContent = (content: {
 };
 
 /**
- * Generate complete SEO metadata object
- * Simplified version that works with new dictionary structure
+ * Get localized count with proper label
  */
-export const generateSEOMetadata = (dictionary: Dictionary, options: {
-  type: 'page' | 'collection';
-  title: string;
-  description: string;
-  path: string;
-  keywords?: string;
-  imageUrl?: string;
-}) => {
-  const { type, title, description, path, keywords, imageUrl } = options;
-  
-  const seoTitle = type === 'collection' 
-    ? getCollectionTitle(dictionary, title)
-    : getPageTitle(dictionary, title);
-    
-  const seoDescription = getMetaDescription(dictionary, description);
-  const seoKeywords = getKeywords(dictionary, type, keywords);
-  const canonicalUrl = generateCanonicalUrl(path, dictionary.seo.site.url);
-  
-  return {
-    title: seoTitle,
-    description: seoDescription,
-    keywords: seoKeywords,
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        'ru': canonicalUrl,
-        'ru-RU': canonicalUrl,
-      },
-    },
-    openGraph: {
-      title: seoTitle,
-      description: seoDescription,
-      url: canonicalUrl,
-      siteName: dictionary.seo.site.name,
-      locale: 'ru_RU',
-      type: 'website',
-      ...(imageUrl && {
-        images: [{
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: seoTitle,
-        }],
-      }),
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: seoTitle,
-      description: seoDescription,
-      ...(imageUrl && { images: [imageUrl] }),
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
-  };
+export const getLocalizedCount = (
+  dictionary: Dictionary,
+  count: number,
+  type: 'articles' | 'rubrics' | 'authors'
+): string => {
+  const label = dictionary.common.count[type];
+  return `${label} ${count}`;
 };
-
-// Fix default export - assign to variable first
-const seoHelpers = {
-  getPageTitle,
-  getCollectionTitle,
-  getMetaDescription,
-  getKeywords,
-  generateCanonicalUrl,
-  validateSEOContent,
-  generateSEOMetadata,
-};
-
-export default seoHelpers;
-
-export { generateCanonicalUrl as getCanonicalURL };

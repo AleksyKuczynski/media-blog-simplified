@@ -1,167 +1,106 @@
 // src/main/lib/dictionary/helpers/templates.ts
-// Template processing utilities - works with simplified dictionary structure
+// Clean template processing functions for the new dictionary structure
 
-import { TemplateVariables } from '../types';
+import { TemplateVariables, TemplateProcessor } from '../types';
 
 /**
- * Process template with variables - simple and reliable
- * @example processTemplate('Все {section}', { section: 'рубрики' }) => "Все рубрики"
+ * Process template strings with variable substitution
+ * @example processTemplate("{title} — {siteName}", { title: "Музыка", siteName: "EventForMe" })
+ * @returns "Музыка — EventForMe"
  */
-export const processTemplate = (template: string, variables: TemplateVariables): string => {
+export const processTemplate: TemplateProcessor = (template: string, variables: TemplateVariables): string => {
   if (!template || typeof template !== 'string') {
     return '';
   }
 
   let result = template;
   
-  // Replace all variable placeholders
+  // Replace all template variables
   Object.entries(variables).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
-      const patterns = [
-        new RegExp(`\\{${key}\\}`, 'gi'),
-        new RegExp(`\\{${key.toUpperCase()}\\}`, 'gi'),
-        new RegExp(`\\{${key.toLowerCase()}\\}`, 'gi'),
-      ];
-
-      patterns.forEach(pattern => {
-        result = result.replace(pattern, String(value));
-      });
+      const regex = new RegExp(`\\{${key}\\}`, 'g');
+      result = result.replace(regex, String(value));
     }
   });
-
-  // Clean up any remaining unreplaced placeholders
-  result = result.replace(/\{[^}]+\}/g, '').trim();
-  
-  // Clean up multiple spaces and normalize punctuation
-  result = result
-    .replace(/\s+/g, ' ')
-    .replace(/\s*—\s*/g, ' — ')
-    .replace(/\s*\|\s*/g, ' | ')
-    .replace(/\s*-\s*/g, ' - ')
-    .trim();
 
   return result;
 };
 
 /**
- * Create template variables object from various data sources
- * Normalizes data for consistent template processing
+ * Create standardized SEO variables object
  */
-export const createSEOVariables = (data: Record<string, any>): TemplateVariables => {
-  return {
-    siteName: data.siteName || 'EventForMe',
-    title: data.title || '',
-    page: data.page || '',
-    section: data.section || '',
-    collection: data.collection || '',
-    item: data.item || '',
-    author: data.author || '',
-    query: data.query || '',
-    count: data.count?.toString() || '0',
-    countLabel: data.countLabel || '',
-    action: data.action || '',
-    description: data.description || '',
-  };
+export const createSEOVariables = (overrides: Partial<TemplateVariables> = {}): TemplateVariables => ({
+  siteName: 'EventForMe',
+  year: new Date().getFullYear().toString(),
+  ...overrides,
+});
+
+/**
+ * Validate template for required variables
+ */
+export const validateTemplate = (template: string, requiredVars: string[]): boolean => {
+  return requiredVars.every(varName => template.includes(`{${varName}}`));
 };
 
 /**
- * Validate template for common issues
- * Helps catch template errors during development
+ * Extract variables from template string
  */
-export const validateTemplate = (template: string): {
-  isValid: boolean;
-  warnings: string[];
-  variables: string[];
-} => {
-  const warnings: string[] = [];
-  const variables: string[] = [];
-
-  if (!template || typeof template !== 'string') {
-    return {
-      isValid: false,
-      warnings: ['Template is empty or invalid'],
-      variables: [],
-    };
-  }
-
-  // Extract all variable placeholders
-  const variableMatches = template.match(/\{([^}]+)\}/g);
-  if (variableMatches) {
-    variableMatches.forEach(match => {
-      const variable = match.slice(1, -1); // Remove { }
-      variables.push(variable);
-    });
-  }
-
-  // Check for common issues
-  if (template.length > 200) {
-    warnings.push('Template is very long and may produce excessive metadata');
-  }
-
-  if (template.includes('{{') || template.includes('}}')) {
-    warnings.push('Template contains double braces which may cause issues');
-  }
-
-  if (variables.length === 0) {
-    warnings.push('Template has no variables - consider if this is intentional');
-  }
-
-  if (variables.length > 10) {
-    warnings.push('Template has many variables - ensure all are needed');
-  }
-
-  // Check for Russian content
-  const hasRussianText = template.match(/[а-яё]/i);
-  if (!hasRussianText && template.length > 10) {
-    warnings.push('Template appears to lack Russian content');
-  }
-
-  return {
-    isValid: warnings.length === 0,
-    warnings,
-    variables: [...new Set(variables)], // Remove duplicates
-  };
+export const extractTemplateVariables = (template: string): string[] => {
+  const matches = template.match(/\{([^}]+)\}/g);
+  return matches ? matches.map(match => match.slice(1, -1)) : [];
 };
 
 /**
- * Truncate text at word boundaries
- * Respects Russian text patterns
+ * Safe template processing with fallbacks
  */
-export const smartTruncate = (
-  text: string, 
-  maxLength: number = 120
+export const processTemplateSafe = (
+  template: string, 
+  variables: TemplateVariables, 
+  fallback: string = ''
 ): string => {
-  if (!text || text.length <= maxLength) {
-    return text;
-  }
-  
-  const truncated = text.substring(0, maxLength);
-  
-  // Find last space or punctuation for clean break
-  const lastSpace = truncated.lastIndexOf(' ');
-  const lastPunct = Math.max(
-    truncated.lastIndexOf('.'),
-    truncated.lastIndexOf(','),
-    truncated.lastIndexOf(';'),
-    truncated.lastIndexOf(':')
-  );
-  
-  const breakPoint = Math.max(lastSpace, lastPunct);
-  
-  // Only break at word/sentence boundary if it's not too short
-  if (breakPoint > maxLength * 0.7) {
-    return truncated.substring(0, breakPoint).trim() + '...';
-  } else {
-    return truncated.trim() + '...';
+  try {
+    const result = processTemplate(template, variables);
+    return result || fallback;
+  } catch (error) {
+    console.warn('Template processing failed:', error);
+    return fallback;
   }
 };
 
-// Fix default export - assign to variable first
-const templateHelpers = {
-  processTemplate,
-  createSEOVariables,
-  validateTemplate,
-  smartTruncate,
+/**
+ * Create template variables for collection pages
+ */
+export const createCollectionVariables = (
+  collectionType: 'rubrics' | 'authors' | 'articles',
+  count: number,
+  siteName: string = 'EventForMe'
+): TemplateVariables => {
+  const countLabels = {
+    rubrics: 'рубрик',
+    authors: 'авторов', 
+    articles: 'статей',
+  };
+
+  return createSEOVariables({
+    section: collectionType,
+    collection: collectionType,
+    count: count.toString(),
+    countLabel: countLabels[collectionType],
+    siteName,
+  });
 };
 
-export default templateHelpers;
+/**
+ * Create template variables for item pages
+ */
+export const createItemVariables = (
+  itemName: string,
+  itemType: 'article' | 'rubric' | 'author',
+  siteName: string = 'EventForMe'
+): TemplateVariables => {
+  return createSEOVariables({
+    item: itemName,
+    title: itemName,
+    siteName,
+  });
+};

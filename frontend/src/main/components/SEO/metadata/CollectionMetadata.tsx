@@ -1,10 +1,9 @@
 // src/main/components/SEO/metadata/CollectionMetadata.tsx
-// FIXED: Collection metadata with correct dictionary structure and types
+// Clean collection metadata using new dictionary structure directly
 
 import { Metadata } from 'next';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { buildMetadata, createCollectionSEOData } from '../core/MetadataBuilder';
-import { getPageTitle, getMetaDescription, getKeywords, generateCanonicalUrl } from '@/main/lib/dictionary/helpers';
+import { generateCollectionSEO, validateSEOContent } from '@/main/lib/dictionary/helpers/seo';
 
 export interface CollectionMetadataProps {
   dictionary: Dictionary;
@@ -20,99 +19,109 @@ export interface CollectionMetadataProps {
 }
 
 /**
- * FIXED: Generate metadata for collection pages with correct dictionary access
+ * Generate clean metadata for collection pages using new dictionary structure
  */
-export const generateCollectionMetadata = async (props: CollectionMetadataProps): Promise<Metadata> => {
+export const generateCollectionMetadata = async (
+  props: CollectionMetadataProps
+): Promise<Metadata> => {
   const { dictionary, collectionType, items, totalCount, currentPath, featured = false } = props;
   
-  // FIXED: Use correct dictionary structure
-  let title: string;
-  let description: string;
-  let keywords: string;
-
-  switch (collectionType) {
-    case 'rubrics':
-      title = getPageTitle(dictionary, dictionary.sections.rubrics.allRubrics);
-      description = dictionary.sections.rubrics.collectionPageDescription;
-      keywords = getKeywords(dictionary, 'rubrics', items.map(item => item.name).join(', '));
-      break;
-
-    case 'authors':
-      title = getPageTitle(dictionary, dictionary.sections.authors.allAuthors);
-      description = dictionary.sections.authors.collectionPageDescription;
-      keywords = getKeywords(dictionary, 'authors', items.map(item => item.name).join(', '));
-      break;
-
-    case 'articles':
-      title = getPageTitle(dictionary, dictionary.sections.articles.allArticles);
-      description = dictionary.sections.articles.collectionPageDescription;
-      keywords = getKeywords(dictionary, 'articles', items.map(item => item.name).join(', '));
-      break;
-
-    default:
-      title = dictionary.seo.site.name;
-      description = dictionary.seo.site.description;
-      keywords = dictionary.seo.keywords.base;
-  }
+  // Extract item names for keywords
+  const itemNames = items.slice(0, 5).map(item => item.name);
   
-  // Add count information to description
-  const enhancedDescription = `${description} Найдите среди ${totalCount} ${collectionType === 'rubrics' ? 'рубрик' : collectionType === 'authors' ? 'авторов' : 'статей'} то, что вам интересно.`;
-  
-  // Generate canonical URL
-  const canonicalUrl = generateCanonicalUrl(currentPath, dictionary.seo.site.url);
-  
-  // Generate image URL
-  const imageUrl = `${dictionary.seo.site.url}/og-${collectionType}.jpg`;
-  
-  // Create SEO data structure
-  const seoData = createCollectionSEOData(
-    title,
-    enhancedDescription,
-    keywords,
-    canonicalUrl,
+  // Generate SEO data using dictionary helpers
+  const seoData = generateCollectionSEO(
+    dictionary,
     collectionType,
     totalCount,
-    imageUrl
+    currentPath,
+    itemNames
   );
   
-  // Build final metadata using core builder
-  const metadata = buildMetadata(seoData);
+  // Validate SEO content
+  const validation = validateSEOContent({
+    title: seoData.title,
+    description: seoData.description,
+    keywords: seoData.keywords,
+  });
   
-  // FIXED: Add collection-specific enhancements with correct types
-  return {
-    ...metadata,
-    category: collectionType,
+  if (!validation.isValid) {
+    console.warn('Collection SEO validation warnings:', validation.warnings);
+  }
+  
+  // Build metadata object with proper types
+  const metadata: Metadata = {
+    title: seoData.title,
+    description: seoData.description,
+    keywords: seoData.keywords,
     
-    // Enhanced Open Graph for collections
+    alternates: {
+      canonical: seoData.canonicalUrl,
+      languages: {
+        'ru': seoData.canonicalUrl,
+        'ru-RU': seoData.canonicalUrl,
+      },
+    },
+
     openGraph: {
-      ...metadata.openGraph,
-      type: 'website', // FIXED: Use correct literal type
+      title: seoData.title,
+      description: seoData.description,
+      url: seoData.canonicalUrl,
+      siteName: dictionary.seo.site.name,
+      locale: 'ru_RU',
+      type: 'website',
       images: [
         {
-          url: imageUrl,
+          url: seoData.imageUrl,
           width: 1200,
           height: 630,
-          alt: title,
+          alt: seoData.title,
         },
       ],
     },
-    
-    // FIXED: Ensure other field has correct types (no undefined values)
+
+    twitter: {
+      card: 'summary_large_image',
+      title: seoData.title,
+      description: seoData.description,
+      images: [seoData.imageUrl],
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+
+    // Additional metadata with proper types
     other: {
-      ...metadata.other,
       'collection:type': collectionType,
       'collection:itemCount': totalCount.toString(),
       'collection:featured': featured.toString(),
       'DC.type': 'Text.Collection',
-      'DC.subject': collectionType === 'rubrics' ? 'рубрики' : collectionType === 'authors' ? 'авторы' : 'статьи',
+      'DC.language': 'ru',
+      'DC.coverage': dictionary.seo.regional.region,
+      'geo.region': dictionary.seo.regional.region,
+      'geo.placename': dictionary.seo.regional.targetMarkets.join(', '),
     },
   };
+
+  return metadata;
 };
 
 /**
  * Validation helper for collection metadata
  */
-export const validateCollectionMetadata = (metadata: Metadata, props: CollectionMetadataProps): {
+export const validateCollectionMetadata = (
+  metadata: Metadata, 
+  props: CollectionMetadataProps
+): {
   isValid: boolean;
   warnings: string[];
   errors: string[];
@@ -130,14 +139,14 @@ export const validateCollectionMetadata = (metadata: Metadata, props: Collection
     warnings.push('Item count mismatch: totalCount > 0 but no items provided');
   }
   
-  // SEO length validation
-  if (metadata.title && typeof metadata.title === 'string' && metadata.title.length > 60) {
-    warnings.push(`Title too long: ${metadata.title.length} chars (recommended: ≤60)`);
-  }
+  // Content validation
+  const contentValidation = validateSEOContent({
+    title: metadata.title as string,
+    description: metadata.description as string,
+    keywords: metadata.keywords as string,
+  });
   
-  if (metadata.description && metadata.description.length > 160) {
-    warnings.push(`Description too long: ${metadata.description.length} chars (recommended: ≤160)`);
-  }
+  warnings.push(...contentValidation.warnings);
   
   return {
     isValid: errors.length === 0,
