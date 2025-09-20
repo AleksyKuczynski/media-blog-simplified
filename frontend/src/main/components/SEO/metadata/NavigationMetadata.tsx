@@ -8,10 +8,7 @@ import {
   createWebsiteSEOData,
   validateSEOData 
 } from '../core/MetadataBuilder';
-import {
-  generateNavigationSEOData,
-  getBreadcrumbText,
-} from '@/main/lib/dictionary/helpers';
+import { generateNavigationSEOData, getBreadcrumbText } from '@/main/lib/dictionary/helpers/navigation';
 
 // ===================================================================
 // TYPES - Clean and focused
@@ -97,17 +94,7 @@ export const generateNavigationMetadata = async ({
   };
 
   // Use existing MetadataBuilder - NO DUPLICATION
-  const metadata = buildMetadata(
-    websiteSEOData,
-    {
-      baseUrl: dictionary.seo.site.url,
-      defaultImageUrl: `${dictionary.seo.site.url}/og-navigation.jpg`,
-      siteName: dictionary.seo.site.name,
-      locale: 'ru_RU',
-      region: dictionary.seo.regional.region,
-    },
-    additionalMeta
-  );
+  const metadata = buildMetadata(websiteSEOData);
 
   return metadata;
 };

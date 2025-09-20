@@ -5,10 +5,8 @@ import React from 'react';
 import { SchemaBuilder } from '../core/SchemaBuilder';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { ExtendedSchemaData } from '../core/types';
-import {
-  generateCanonicalUrl,
-  generateNavigationElements,
-} from '@/main/lib/dictionary/helpers';
+import { generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
+import { generateNavigationElements } from '@/main/lib/dictionary/helpers/navigation';
 
 // ===================================================================
 // NAVIGATION SCHEMA TYPES
