@@ -33,7 +33,7 @@ export interface RubricCardProps {
  * Generate rubric URL from slug and language
  */
 const generateRubricUrl = (slug: string, lang: string = 'ru'): string => {
-  return `/${lang}/rubrics/${slug}`;
+  return `/${lang}/${slug}`;
 };
 
 /**

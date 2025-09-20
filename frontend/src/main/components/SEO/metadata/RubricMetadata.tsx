@@ -1,11 +1,16 @@
 // src/main/components/SEO/metadata/RubricMetadata.tsx
-// FIXED: Updated imports and dictionary structure compatibility
+// FIXED: Updated imports and ensured dictionary compatibility
 
 import { Metadata } from 'next';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { processTemplate, createSEOVariables } from '@/main/lib/dictionary/helpers/templates';
+import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { validateSEOContent } from '@/main/lib/dictionary/helpers/validation';
-import { getPageTitle, getMetaDescription, getKeywords, generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
+import { 
+  getPageTitle, 
+  getMetaDescription, 
+  getKeywords, 
+  generateCanonicalUrl 
+} from '@/main/lib/dictionary/helpers/seo';
 
 export interface RubricMetadataProps {
   dictionary: Dictionary;
@@ -22,7 +27,7 @@ export interface RubricMetadataProps {
 
 /**
  * Generate comprehensive metadata for individual rubric pages
- * FIXED: Uses new dictionary structure and helper imports
+ * FIXED: Uses consistent dictionary structure and helper imports
  */
 export const generateRubricMetadata = async ({
   dictionary,
@@ -30,30 +35,30 @@ export const generateRubricMetadata = async ({
 }: RubricMetadataProps): Promise<Metadata> => {
   const { name, slug, description, articleCount, path, customKeywords, featured } = rubricData;
 
-  // FIXED: Use helper functions from seo.ts instead of direct template access
+  // Generate title using SEO helper function
   const title = getPageTitle(dictionary, name);
 
-  // Generate description using dictionary structure
+  // Generate description with fallback
   let metaDescription: string;
   if (description) {
     // Use rubric description if available
     metaDescription = `${description} Читайте статьи в рубрике ${name} на ${dictionary.seo.site.name}.`;
   } else {
-    // FIXED: Use sections description as fallback
-    metaDescription = `${dictionary.sections.rubrics.categoriesDescription} Изучите рубрику ${name} на ${dictionary.seo.site.name}.`;
+    // Use fallback description from dictionary
+    metaDescription = `Изучите рубрику ${name} на ${dictionary.seo.site.name}. Статей: ${articleCount}.`;
   }
 
-  // Use helper to get final meta description
+  // Ensure description length is appropriate
   const finalDescription = getMetaDescription(dictionary, metaDescription);
 
-  // FIXED: Generate keywords using helper function
+  // Generate keywords using helper function
   const rubricKeywords = customKeywords || name;
   const keywords = getKeywords(dictionary, 'rubrics', rubricKeywords);
 
-  // FIXED: Generate canonical URL using helper
+  // Generate canonical URL using helper
   const canonicalUrl = generateCanonicalUrl(path, dictionary.seo.site.url);
 
-  // Standard metadata structure
+  // Generate Open Graph image URL
   const imageUrl = `${dictionary.seo.site.url}/og-rubric-${slug}.jpg`;
   
   // Validate SEO content
@@ -124,8 +129,7 @@ export const generateRubricMetadata = async ({
       'rubric:featured': featured?.toString() || 'false',
       'DC.type': 'Text.Rubric',
       'DC.language': 'ru',
-      'DC.coverage': dictionary.seo.regional.region,
-      'geo.region': dictionary.seo.regional.region,
+      'geo.region': 'RU',
     },
 
     category: slug,
