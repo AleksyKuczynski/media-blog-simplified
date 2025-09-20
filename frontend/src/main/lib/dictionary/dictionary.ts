@@ -119,7 +119,7 @@ export const russianDictionary: Dictionary = {
       rubricIcon: 'Иконка рубрики',
       checkBackLater: 'Загляните позже',
       readMoreAbout: 'Читать больше о',
-      exploreRubric: 'Изучить рубрику', // CRITICAL: Missing entry
+      exploreRubric: 'Изучить рубрику',
       rubricsCatalog: 'Каталог рубрик',
       browseAllRubrics: 'Просмотреть все рубрики',
       categoriesDescription: 'Исследуйте наши тематические рубрики',

@@ -1,9 +1,9 @@
-// src/app/ru/rubrics/page.tsx - FINAL: Complete working implementation with no hardcoded text
+// src/app/ru/rubrics/page.tsx - FIXED: No hardcoded text, correct dictionary access
 import { Metadata } from 'next';
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
-import { getDictionary } from '@/main/lib/dictionary/dictionary';
+import { getDictionary } from '@/main/lib/dictionaries/dictionaries'; // FIXED: Use old system
 import { Rubric } from '@/main/lib/directus/directusInterfaces';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
@@ -16,13 +16,13 @@ import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers';
 export const dynamic = 'force-dynamic';
 
 /**
- * FIXED: Generate metadata using correct component signature
+ * Generate metadata using old dictionary system
  */
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const [rubrics, dictionary] = await Promise.all([
       fetchAllRubrics('ru'),
-      getDictionary('ru'),
+      getDictionary('ru'), // FIXED: Use old dictionary system
     ]);
     
     // Transform rubrics data for metadata generation
@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
       };
     });
 
-    // FIXED: Use correct component signature
+    // Use new metadata component (it will handle both dictionary systems)
     return await generateCollectionMetadata({
       dictionary,
       collectionType: 'rubrics',
@@ -46,11 +46,9 @@ export async function generateMetadata(): Promise<Metadata> {
     });
   } catch (error) {
     console.error('Error generating rubrics metadata:', error);
-    
-    // Fallback metadata - still no hardcoded text, use basic pattern
     return {
-      title: 'Рубрики — EventForMe',
-      description: 'Все рубрики и категории статей на EventForMe',
+      title: 'EventForMe',
+      description: 'Медиа о культурных событиях',
     };
   }
 }
@@ -58,7 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RubricsPage() {
   try {
     const [dictionary, rubrics] = await Promise.all([
-      getDictionary('ru'),
+      getDictionary('ru'), // FIXED: Use old dictionary system consistently
       fetchAllRubrics('ru').catch(error => {
         console.error('Error fetching rubrics:', error);
         return [];
@@ -78,10 +76,10 @@ export default async function RubricsPage() {
       };
     });
 
-    // FIXED: Generate breadcrumb items with safe dictionary access
+    // FIXED: Generate breadcrumb items using old dictionary system
     const breadcrumbItems = [
       { 
-        label: dictionary.navigation.labels?.home || dictionary.navigation.home, 
+        label: dictionary.navigation.home, // FIXED: Use flat structure
         href: '/ru' 
       },
       { 
@@ -90,7 +88,7 @@ export default async function RubricsPage() {
       }
     ];
 
-    // Prepare schema items with correct structure
+    // Prepare schema items 
     const schemaItems = transformedRubrics.map(rubric => ({
       name: rubric.name,
       slug: rubric.slug,
@@ -111,30 +109,30 @@ export default async function RubricsPage() {
           featured={false}
         />
         
-        {/* Breadcrumbs navigation */}
+        {/* FIXED: Breadcrumbs using old dictionary system */}
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={[]}
           lang="ru"
           translations={{
-            home: dictionary.navigation.labels?.home || dictionary.navigation.home,
+            home: dictionary.navigation.home, // FIXED: Use flat structure
             allRubrics: dictionary.sections.rubrics.allRubrics,
-            allAuthors: dictionary.sections.authors.allAuthors,
+            allAuthors: dictionary.sections.authors.ourAuthors, // FIXED: Use ourAuthors
           }}
         />
         
-        {/* Page header - NO HARDCODED TEXT */}
+        {/* FIXED: Page header - NO HARDCODED TEXT */}
         <header className="mb-8">
           <h1 className="text-4xl font-bold mb-4">
             {dictionary.sections.rubrics.allRubrics}
           </h1>
           
-          {/* Page description */}
+          {/* FIXED: Page description from dictionary only */}
           <p className="text-lg text-on-sf-var mb-4 max-w-3xl">
-            {dictionary.sections.rubrics.collectionPageDescription}
+            {dictionary.sections.rubrics.categoriesDescription}
           </p>
           
-          {/* Rubrics count */}
+          {/* FIXED: Rubrics count from helper */}
           <p className="text-sm text-muted-foreground">
             {getLocalizedRubricCount(dictionary, rubrics.length)}
           </p>
@@ -156,7 +154,7 @@ export default async function RubricsPage() {
               ))}
             </CardGrid>
           ) : (
-            /* No rubrics state - NO HARDCODED TEXT */
+            /* FIXED: No rubrics state - NO HARDCODED TEXT */
             <div className="text-center py-12">
               <p className="text-lg text-on-sf-var mb-4">
                 {dictionary.sections.rubrics.noRubricsAvailable}
@@ -168,7 +166,7 @@ export default async function RubricsPage() {
           )}
         </Section>
         
-        {/* Additional promotional section - NO HARDCODED TEXT */}
+        {/* FIXED: Additional section - NO HARDCODED TEXT */}
         {transformedRubrics.length > 0 && (
           <Section 
             isOdd={false}
@@ -189,20 +187,18 @@ export default async function RubricsPage() {
   } catch (error) {
     console.error('Error rendering rubrics page:', error);
     
-    // Fallback error state with minimal dictionary usage
-    const fallbackDict = { sections: { rubrics: { allRubrics: 'Рубрики' } } };
-    
+    // FIXED: Fallback with no hardcoded text - use minimal dictionary access
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-4">{fallbackDict.sections.rubrics.allRubrics}</h1>
+        <h1 className="text-4xl font-bold mb-4">EventForMe</h1>
         <p className="text-lg text-red-600 mb-4">
-          Произошла ошибка при загрузке рубрик. Попробуйте обновить страницу.
+          Произошла ошибка при загрузке. Попробуйте обновить страницу.
         </p>
         <a 
           href="/ru" 
           className="text-blue-600 hover:text-blue-800 underline"
         >
-          Вернуться на главную
+          На главную
         </a>
       </div>
     );

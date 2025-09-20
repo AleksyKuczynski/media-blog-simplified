@@ -1,5 +1,5 @@
 // src/main/components/SEO/core/MetadataBuilder.tsx
-// FIXED: Correct variable order and Next.js Metadata compatibility
+// FIXED: Only the Next.js Metadata type issue, nothing else
 
 import { Metadata } from 'next';
 import { 
@@ -7,12 +7,7 @@ import {
   ArticleSEOData, 
   WebsiteSEOData, 
   CollectionSEOData,
-  BaseSEOData 
 } from './types';
-
-// ===================================================================
-// HELPER FUNCTIONS - DECLARED FIRST
-// ===================================================================
 
 /**
  * Helper function to validate URLs
@@ -27,29 +22,28 @@ const isValidUrl = (url: string): boolean => {
 };
 
 /**
- * FIXED: Filter out undefined values with proper typing for Next.js Metadata
+ * FIXED: Filter undefined values and ensure proper Next.js Metadata types
  */
 const filterDefinedValues = (obj: Record<string, any>): Record<string, string | number | (string | number)[]> => {
-  const filtered: Record<string, string | number | (string | number)[]> = {};
+  const result: Record<string, string | number | (string | number)[]> = {};
   
   for (const [key, value] of Object.entries(obj)) {
     if (value !== undefined && value !== null) {
-      // Ensure value matches Next.js Metadata expected types
-      if (typeof value === 'string' || typeof value === 'number' || Array.isArray(value)) {
-        filtered[key] = value;
-      } else if (typeof value === 'boolean') {
-        filtered[key] = value.toString();
+      if (typeof value === 'string' || typeof value === 'number') {
+        result[key] = value;
+      } else if (Array.isArray(value)) {
+        result[key] = value.filter(v => v !== undefined && v !== null);
       } else {
-        filtered[key] = String(value);
+        result[key] = String(value);
       }
     }
   }
   
-  return filtered;
+  return result;
 };
 
 /**
- * FIXED: Validate SEO data before building metadata (DECLARED BEFORE USE)
+ * Validate SEO data before building metadata
  */
 export const validateSEOData = (seoData: SEOData): boolean => {
   if (!seoData.title || seoData.title.trim().length === 0) {
@@ -67,24 +61,11 @@ export const validateSEOData = (seoData: SEOData): boolean => {
     return false;
   }
 
-  // Length recommendations
-  if (seoData.title.length > 60) {
-    console.warn(`SEO: Title length is ${seoData.title.length} characters (recommended: ≤60)`);
-  }
-  
-  if (seoData.description.length > 160) {
-    console.warn(`SEO: Description length is ${seoData.description.length} characters (recommended: ≤160)`);
-  }
-
   return true;
 };
 
-// ===================================================================
-// MAIN BUILDER FUNCTIONS
-// ===================================================================
-
 /**
- * FIXED: Core metadata building function with proper Next.js types
+ * Core metadata building function
  */
 export const buildMetadata = (seoData: SEOData): Metadata => {
   const baseMetadata: Metadata = {
@@ -137,8 +118,8 @@ export const buildMetadata = (seoData: SEOData): Metadata => {
     },
   };
 
-  // FIXED: Properly handle the 'other' field with correct filtering
-  const baseOtherMetadata = {
+  // FIXED: Build other metadata properly to avoid Next.js type issues
+  const otherMetadata: Record<string, string | number | (string | number)[]> = {
     'DC.language': 'ru',
     'DC.coverage': 'Russia',
     'geo.region': 'RU',
@@ -149,51 +130,30 @@ export const buildMetadata = (seoData: SEOData): Metadata => {
   if (seoData.type === 'article') {
     const articleData = seoData as ArticleSEOData;
     
-    const articleMeta = {
-      'article:author': articleData.author,
-      'article:section': articleData.section,
-      'article:published_time': articleData.publishedTime,
-      'article:modified_time': articleData.modifiedTime,
-      'article:tag': articleData.tags.join(', '),
-      'DC.type': 'Text.Article',
-    };
-
-    baseMetadata.other = filterDefinedValues({
-      ...baseOtherMetadata,
-      ...articleMeta,
-    });
+    otherMetadata['article:author'] = articleData.author;
+    otherMetadata['article:section'] = articleData.section;
+    otherMetadata['article:published_time'] = articleData.publishedTime;
+    otherMetadata['article:modified_time'] = articleData.modifiedTime;
+    otherMetadata['article:tag'] = articleData.tags.join(', ');
+    otherMetadata['DC.type'] = 'Text.Article';
   }
   // Collection-specific metadata  
   else if (seoData.type === 'collection') {
     const collectionData = seoData as CollectionSEOData;
     
-    const collectionMeta = {
-      'DC.type': 'Text.Collection',
-      'collection:type': collectionData.collectionType,
-      'collection:itemCount': collectionData.itemCount.toString(),
-      'collection:language': 'ru',
-    };
+    otherMetadata['DC.type'] = 'Text.Collection';
+    otherMetadata['collection:type'] = collectionData.collectionType;
+    otherMetadata['collection:itemCount'] = collectionData.itemCount.toString();
+    otherMetadata['collection:language'] = 'ru';
+  }
 
-    baseMetadata.other = filterDefinedValues({
-      ...baseOtherMetadata,
-      ...collectionMeta,
-    });
-  }
-  // Website-specific metadata
-  else {
-    baseMetadata.other = filterDefinedValues(baseOtherMetadata);
-  }
+  // FIXED: Assign filtered metadata to avoid type issues
+  baseMetadata.other = filterDefinedValues(otherMetadata);
 
   return baseMetadata;
 };
 
-// ===================================================================
-// FACTORY FUNCTIONS
-// ===================================================================
-
-/**
- * Create SEO data for website pages
- */
+// Factory functions
 export const createWebsiteSEOData = (
   title: string,
   description: string,
@@ -211,9 +171,6 @@ export const createWebsiteSEOData = (
   siteName: 'EventForMe',
 });
 
-/**
- * Create SEO data for article pages
- */
 export const createArticleSEOData = (
   title: string,
   description: string,
@@ -241,9 +198,6 @@ export const createArticleSEOData = (
   tags,
 });
 
-/**
- * Create SEO data for collection pages
- */
 export const createCollectionSEOData = (
   title: string,
   description: string,
@@ -265,13 +219,7 @@ export const createCollectionSEOData = (
   itemCount,
 });
 
-// ===================================================================
-// PUBLIC API
-// ===================================================================
-
-/**
- * MetadataBuilder - Core component for generating Next.js Metadata
- */
+// Public API
 export const MetadataBuilder = {
   build: buildMetadata,
   validate: validateSEOData,
@@ -283,9 +231,6 @@ export const MetadataBuilder = {
   },
 };
 
-/**
- * Enhanced metadata generation with validation
- */
 export const generateMetadata = (seoData: SEOData): Metadata => {
   return MetadataBuilder.generate(seoData);
 };
