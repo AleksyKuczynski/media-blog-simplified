@@ -6,11 +6,11 @@ import { Metadata } from 'next';
 import Section from '@/main/components/Main/Section';
 import SearchBarClient from '@/main/components/Search/SearchBarClient';
 import SearchResultsClient from '@/main/components/Search/SearchResultsClient';
-import { russianDictionary } from '@/main/lib/dictionary/dictionary';
 import { fetchArticleSlugs } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { generateSearchMetadataSimple } from '@/main/components/SEO/metadata/SearchMetadata';
 import { SearchSchema } from '@/main/components/SEO/schemas/SearchSchema';
+import dictionary from '@/main/lib/dictionary/dictionary';
 
 // Force dynamic for search functionality
 export const dynamic = 'force-dynamic';
@@ -26,19 +26,19 @@ interface SearchPageProps {
 // Static metadata generation - NO QUERY HANDLING
 export function generateMetadata(): Metadata {
   try {
-    return generateSearchMetadataSimple(russianDictionary);
+    return generateSearchMetadataSimple(dictionary);
   } catch (error) {
     console.error('Search page metadata generation failed:', error);
     // Fallback metadata using dictionary only
     return {
-      title: `${russianDictionary.search.templates.pageTitle} — ${russianDictionary.seo.site.name}`,
-      description: `${russianDictionary.search.templates.pageDescription} на ${russianDictionary.seo.site.name}`,
+      title: `${dictionary.search.templates.pageTitle} — ${dictionary.seo.site.name}`,
+      description: `${dictionary.search.templates.pageDescription} на ${dictionary.seo.site.name}`,
     };
   }
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const dict = russianDictionary;
+  const dict = dictionary;
   
   const currentPage = Number(searchParams.page) || 1;
   const currentSort = searchParams.sort || 'desc';

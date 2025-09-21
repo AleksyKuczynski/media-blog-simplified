@@ -1,5 +1,5 @@
 // src/main/components/SEO/schemas/NavigationSchema.tsx
-// CLEANED: Removed hardcoded text from SearchNavigationSchema
+// FIXED: Compatible with existing dictionary.ts structure
 
 import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
@@ -26,7 +26,7 @@ export interface BreadcrumbNavigationSchemaProps {
 
 /**
  * Generate structured data for site navigation
- * FIXED: Uses correct helper functions and dictionary structure
+ * FIXED: Uses existing dictionary structure only
  */
 export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
   dictionary,
@@ -73,7 +73,7 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
       url: baseUrl,
       inLanguage: 'ru',
       
-      // Add search capability
+      // Add search capability using existing dictionary entries
       potentialAction: {
         '@type': 'SearchAction',
         target: {
@@ -207,7 +207,7 @@ export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
 };
 
 // ===================================================================
-// SEARCH NAVIGATION SCHEMA - CLEANED VERSION
+// SEARCH NAVIGATION SCHEMA - FIXED to use existing dictionary
 // ===================================================================
 
 export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
@@ -232,8 +232,9 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
       
       potentialAction: {
         '@type': 'SearchAction',
-        name: dictionary.search.labels.searchAction,  // FIXED: No more hardcoded 'Поиск по сайту'
-        description: `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`,  // FIXED: Using template
+        // FIXED: Use existing dictionary.search.templates.pageTitle instead of non-existent searchAction
+        name: dictionary.search.templates.pageTitle,
+        description: `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`,
         target: {
           '@type': 'EntryPoint',
           urlTemplate: `${searchUrl}?search={search_term_string}`,
@@ -245,7 +246,8 @@ export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
         'query-input': {
           '@type': 'PropertyValueSpecification',
           valueName: 'search_term_string',
-          description: dictionary.search.labels.queryTerm,  // FIXED: Unified terminology
+          // FIXED: Use existing dictionary.search.labels.placeholder instead of non-existent queryTerm
+          description: dictionary.search.labels.placeholder,
           valueRequired: true,
           valueMinLength: 2,
           valueMaxLength: 100,
@@ -277,27 +279,22 @@ export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProp
   breadcrumbs,
 }) => {
   try {
-    const seoDict = dictionary.seo;
-    
-    if (!seoDict?.site || !breadcrumbs.length) {
+    if (!breadcrumbs.length || !dictionary.seo?.site) {
       return null;
     }
 
-    const baseUrl = seoDict.site.url;
+    const baseUrl = dictionary.seo.site.url;
+    const currentUrl = breadcrumbs[breadcrumbs.length - 1]?.href;
 
     const breadcrumbSchema = {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
-      '@id': `${baseUrl}#breadcrumb`,
+      '@id': `${baseUrl}${currentUrl}#breadcrumb`,
       itemListElement: breadcrumbs.map((crumb, index) => ({
         '@type': 'ListItem',
         position: index + 1,
         name: crumb.name,
-        item: {
-          '@type': 'WebPage',
-          '@id': `${baseUrl}${crumb.href}`,
-          url: `${baseUrl}${crumb.href}`,
-        },
+        item: `${baseUrl}${crumb.href}`,
       })),
     };
 
@@ -323,43 +320,20 @@ export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProp
 /**
  * Complete navigation schema with all components
  */
-export const CompleteNavigationSchema: React.FC<{
-  dictionary: Dictionary;
-  currentPath?: string;
-  breadcrumbs?: Array<{ name: string; href: string }>;
-}> = ({ dictionary, currentPath, breadcrumbs }) => {
-  try {
-    return (
-      <>
-        <NavigationSchema dictionary={dictionary} currentPath={currentPath} />
-        <SearchNavigationSchema dictionary={dictionary} />
-        {breadcrumbs && <BreadcrumbNavigationSchema dictionary={dictionary} breadcrumbs={breadcrumbs} />}
-      </>
-    );
-  } catch (error) {
-    console.error('CompleteNavigationSchema: Error rendering navigation schemas', error);
-    return null;
-  }
+export const CompleteNavigationSchema: React.FC<NavigationSchemaProps> = (props) => {
+  return (
+    <>
+      <NavigationSchema {...props} />
+      <SearchNavigationSchema dictionary={props.dictionary} />
+    </>
+  );
 };
 
 /**
- * Minimal navigation schema for basic pages
+ * Minimal navigation schema for performance-critical pages
  */
-export const MinimalNavigationSchema: React.FC<{
-  dictionary: Dictionary;
-  currentPath?: string;
-}> = ({ dictionary, currentPath }) => {
-  try {
-    return (
-      <>
-        <NavigationSchema dictionary={dictionary} currentPath={currentPath} />
-        <SearchNavigationSchema dictionary={dictionary} />
-      </>
-    );
-  } catch (error) {
-    console.error('MinimalNavigationSchema: Error rendering minimal navigation schemas', error);
-    return null;
-  }
+export const MinimalNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
+  return <MainNavigationSchema dictionary={dictionary} />;
 };
 
 export default NavigationSchema;
