@@ -1,5 +1,5 @@
 // src/main/lib/dictionary/types.ts
-// COMPLETE: Clean TypeScript types matching the optimized dictionary structure
+// ENHANCED: Added missing interfaces for metadata, errors, and content
 
 export type Lang = 'ru';
 
@@ -91,6 +91,73 @@ export interface CommonDictionary {
 }
 
 // ===================================================================
+// METADATA - NEW: Structured metadata fallbacks
+// ===================================================================
+
+export interface NotFoundMetadata {
+  readonly title: string;
+  readonly description: string;
+}
+
+export interface MetadataFallbacks {
+  readonly article: NotFoundMetadata;
+  readonly rubric: NotFoundMetadata;
+  readonly author: NotFoundMetadata;
+  readonly page: NotFoundMetadata;
+}
+
+export interface MetadataDictionary {
+  readonly notFound: MetadataFallbacks;
+}
+
+// ===================================================================
+// ERRORS - NEW: Template-driven error handling
+// ===================================================================
+
+export interface ErrorTemplates {
+  readonly loadingError: string;        // "Ошибка загрузки {contentType}"
+  readonly loadingDescription: string;  // "Произошла ошибка при загрузке {contentType}. Попробуйте обновить страницу."
+  readonly retryAction: string;         // "Попробовать снова"
+  readonly backToHome: string;          // "Вернуться на главную"
+}
+
+export interface ErrorContentTypes {
+  readonly article: string;
+  readonly rubric: string;
+  readonly author: string;
+  readonly page: string;
+  readonly content: string;
+}
+
+export interface ErrorDictionary {
+  readonly templates: ErrorTemplates;
+  readonly types: ErrorContentTypes;
+}
+
+// ===================================================================
+// CONTENT - NEW: Content-specific labels and templates
+// ===================================================================
+
+export interface ContentLabels {
+  readonly tableOfContents: string;
+  readonly editorial: string;           // "Редакция {siteName}"
+  readonly readingTime: string;         // "Время чтения: {minutes} мин"
+  readonly wordsCount: string;          // "Слов: {count}"
+}
+
+export interface ContentTemplates {
+  readonly emptyRubric: string;         // "В рубрике {name} пока нет статей"
+  readonly moreAbout: string;           // "Больше о {contentType} {name}"
+  readonly writtenBy: string;           // "Автор: {author}"
+  readonly publishedIn: string;         // "Опубликовано в {rubric}"
+}
+
+export interface ContentDictionary {
+  readonly labels: ContentLabels;
+  readonly templates: ContentTemplates;
+}
+
+// ===================================================================
 // SECTIONS - Template-driven content structure
 // ===================================================================
 
@@ -102,7 +169,7 @@ export interface SectionLabels {
   readonly catalog: string;
 }
 
-export interface ContentTemplates {
+export interface SectionTemplates {
   readonly pageTitle: string;           // "{section} — {siteName}"
   readonly collectionTitle: string;     // "Все {section}"
   readonly itemInCollection: string;    // "{item} в {collection}"
@@ -169,7 +236,7 @@ export interface ArticlesLabels {
 
 export interface SectionsTranslations {
   readonly labels: SectionLabels;
-  readonly templates: ContentTemplates;
+  readonly templates: SectionTemplates;
   readonly home: HomeSectionLabels;
   readonly authors: AuthorsTranslations;
   readonly rubrics: RubricsSectionLabels;
@@ -201,26 +268,21 @@ export interface SEOTemplates {
   readonly pageTitle: string;           // "{title} — {siteName}"
   readonly metaDescription: string;     // "{description} на {siteName}"
   readonly collectionPage: string;      // "{collection} — {siteName}"
-  readonly itemPage: string;            // "{item} — {siteName}"
-  readonly searchPage: string;          // "Поиск: {query} — {siteName}"
+  readonly notFoundDescription: string; // "Запрашиваемая страница не найдена на {siteName}"
 }
 
 export interface SEOKeywords {
   readonly base: string;
-  readonly rubrics: string;
   readonly articles: string;
+  readonly rubrics: string;
   readonly authors: string;
-  readonly music: string;
-  readonly culture: string;
-  readonly events: string;
-  readonly mystic: string;
 }
 
 export interface SEODictionary {
   readonly site: SEOSiteInfo;
+  readonly regional: SEORegional;
   readonly templates: SEOTemplates;
   readonly keywords: SEOKeywords;
-  readonly regional: SEORegional;
 }
 
 // ===================================================================
@@ -234,15 +296,13 @@ export interface SearchLabels {
   readonly searching: string;
   readonly submit: string;
   readonly minCharacters: string;
-  readonly queryTerm: string;        // For unified "Поисковый запрос" usage
-  readonly searchAction: string;
 }
 
 export interface SearchTemplates {
-  readonly resultsFor: string;          // "Результаты поиска: {query}"
-  readonly pageTitle: string;           // "Поиск"
-  readonly pageDescription: string;     // "Найдите интересующий вас контент"
-  readonly relatedTo: string;           // "Связанные материалы"
+  readonly resultsFor: string;
+  readonly pageTitle: string;
+  readonly pageDescription: string;
+  readonly relatedTo: string;
 }
 
 export interface SearchAccessibility {
@@ -258,21 +318,30 @@ export interface SearchDictionary {
 }
 
 // ===================================================================
-// FILTER - Simple filtering functionality
+// FILTER - Filter and sorting interface
 // ===================================================================
 
-export interface FilterDictionary {
-  readonly allCategories: string;
+export interface FilterLabels {
+  readonly sortBy: string;
   readonly category: string;
-  readonly sortOrder: string;
-  readonly reset: string;
+  readonly allCategories: string;
   readonly newest: string;
   readonly oldest: string;
-  readonly categorySelector: string;
+  readonly alphabetical: string;
+  readonly reset: string;
+  readonly apply: string;
+}
+
+export interface FilterAccessibility {
   readonly sortingControl: string;
   readonly resetButton: string;
   readonly filterGroup: string;
   readonly dropdownLabel: string;
+}
+
+export interface FilterDictionary {
+  readonly labels: FilterLabels;
+  readonly accessibility: FilterAccessibility;
 }
 
 // ===================================================================
@@ -318,12 +387,15 @@ export interface FooterDictionary {
 }
 
 // ===================================================================
-// MAIN DICTIONARY - Complete and clean
+// MAIN DICTIONARY - Complete and enhanced
 // ===================================================================
 
 export interface Dictionary {
   readonly navigation: NavigationDictionary;
   readonly common: CommonDictionary;
+  readonly metadata: MetadataDictionary;      // NEW
+  readonly errors: ErrorDictionary;          // NEW
+  readonly content: ContentDictionary;       // NEW
   readonly sections: SectionsTranslations;
   readonly seo: SEODictionary;
   readonly search: SearchDictionary;
@@ -353,7 +425,10 @@ export interface TemplateVariables {
   readonly action?: string;
   readonly description?: string;
   readonly year?: string;
-  readonly name?: string; 
+  readonly name?: string;
+  readonly contentType?: string;        // NEW
+  readonly minutes?: string;            // NEW
+  readonly rubric?: string;             // NEW
 }
 
 export type TemplateProcessor = (template: string, variables: TemplateVariables) => string;

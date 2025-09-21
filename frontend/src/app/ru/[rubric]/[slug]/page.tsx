@@ -16,6 +16,8 @@ import {
   validateSEOData 
 } from '@/main/components/SEO/core/MetadataBuilder';
 import { processContent } from '@/main/lib/markdown/processContent';
+import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import ErrorFallback, { generateNotFoundMetadata } from '@/main/components/Common/ErrorFallback';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,25 +29,21 @@ export async function generateMetadata({
 }: { 
   params: { rubric: string, slug: string } 
 }): Promise<Metadata> {
+  let dictionary;
+  
   try {
-    const [dictionary, article] = await Promise.all([
-      getDictionary('ru'),
-      fetchFullArticle(params.slug, 'ru'),
-    ]);
+    dictionary = await getDictionary('ru');
+    const article = await fetchFullArticle(params.slug, 'ru');
 
     if (!article) {
-      return {
-        title: 'Статья не найдена — EventForMe',
-        description: 'Запрашиваемая статья не найдена.',
-      };
+      // ✅ FIXED: Use helper function for not found metadata
+      return generateNotFoundMetadata(dictionary, 'article');
     }
 
     const translation = article.translations[0];
     if (!translation) {
-      return {
-        title: 'Статья не найдена — EventForMe',
-        description: 'Запрашиваемая статья не найдена.',
-      };
+      // ✅ FIXED: Use helper function for not found metadata  
+      return generateNotFoundMetadata(dictionary, 'article');
     }
 
     // Handle dates safely
@@ -86,10 +84,23 @@ export async function generateMetadata({
   } catch (error) {
     console.error('Error generating article metadata:', error);
     
-    // Fallback metadata
+    // ✅ FIXED: Use dictionary for error fallback metadata if available
+    if (dictionary) {
+      return {
+        title: processTemplate(dictionary.seo.templates.pageTitle, {
+          title: dictionary.common.status.error,
+          siteName: dictionary.seo.site.name
+        }),
+        description: processTemplate(dictionary.seo.templates.notFoundDescription, {
+          siteName: dictionary.seo.site.name
+        }),
+      };
+    }
+    
+    // Ultimate fallback if dictionary is not available
     return {
-      title: 'Статья — EventForMe',
-      description: 'Читайте интересные статьи о культуре и искусстве на EventForMe.',
+      title: 'Ошибка — EventForMe',
+      description: 'Произошла ошибка при загрузке страницы.',
     };
   }
 }
@@ -99,7 +110,6 @@ export async function generateMetadata({
  */
 export default async function ArticlePage({ 
   params,
-  searchParams 
 }: { 
   params: { rubric: string, slug: string },
   searchParams: { author?: string }
@@ -259,14 +269,16 @@ export default async function ArticlePage({
                   authors={authorsWithDetails}
                   publishedDate={formattedDate}
                   lang="ru"
-                  editorialText={`Редакция ${dictionary.seo.site.name}`}
+                  editorialText={processTemplate(dictionary.content.labels.editorial, {
+                    siteName: dictionary.seo.site.name
+                  })}
                 />
 
                 {/* Table of Contents */}
                 {tocItems.length > 0 && (
                   <TableOfContents
                     items={tocItems}
-                    title="Содержание"
+                    title={dictionary.content.labels.tableOfContents}
                   />
                 )}
 
@@ -291,24 +303,7 @@ export default async function ArticlePage({
   } catch (error) {
     console.error('Error in ArticlePage:', error);
     
-    // Error fallback
-    return (
-      <Section className="py-8">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-2xl font-bold mb-4">
-            Ошибка загрузки статьи
-          </h1>
-          <p className="text-gray-600 mb-4">
-            Произошла ошибка при загрузке статьи. Попробуйте обновить страницу.
-          </p>
-          <a 
-            href="/ru" 
-            className="text-blue-600 hover:text-blue-800"
-          >
-            Вернуться на главную
-          </a>
-        </div>
-      </Section>
-    );
+    // ✅ FIXED: Use reusable ErrorFallback component
+    return <ErrorFallback dictionary={dictionary} contentType="article" />;
   }
 }
