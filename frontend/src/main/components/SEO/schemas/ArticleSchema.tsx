@@ -3,7 +3,6 @@
 
 import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { getSafeArticleDates } from '@/main/lib/utils/seoDateUtils';
 
 export interface ArticleSchemaProps {
