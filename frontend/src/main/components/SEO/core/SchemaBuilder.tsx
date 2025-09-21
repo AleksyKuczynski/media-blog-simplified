@@ -1,25 +1,530 @@
 // src/main/components/SEO/core/SchemaBuilder.tsx
-// Fixed schema logic for JSON-LD structured data generation
+// SchemaBuilder that consolidates common schema patterns
 
 import React from 'react';
+import { Dictionary } from '@/main/lib/dictionary/types';
+import { generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
 import { 
   BaseSchemaData,
   ExtendedSchemaData,
-  SchemaBuilderProps,
-  NavigationElementSchema,
-  WebsiteSchema,
-  OrganizationSchema,
-  BreadcrumbSchema 
+  SchemaBuilderProps
 } from './types';
 
 // ===================================================================
-// SCHEMA VALIDATION - FIXED
+// SCHEMA FACTORIES - Russian Market Optimized
 // ===================================================================
 
 /**
- * Validate schema data structure - more flexible validation
+ * Create standardized Organization schema from dictionary
  */
-const validateSchema = (schema: BaseSchemaData | ExtendedSchemaData): boolean => {
+export const createStandardOrganizationSchema = (
+  dictionary: Dictionary,
+  contactType: 'editorial' | 'customer support' = 'editorial'
+): ExtendedSchemaData => {
+  const { seo } = dictionary;
+  const baseUrl = seo.site.url.replace(/\/$/, '');
+  
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${baseUrl}#organization`,
+    name: seo.site.name,
+    url: baseUrl,
+    description: seo.site.organizationDescription,
+    inLanguage: 'ru',
+    
+    // Standard logo configuration
+    logo: {
+      '@type': 'ImageObject',
+      url: `${baseUrl}/logo.png`,
+      width: 200,
+      height: 80,
+      caption: seo.site.name,
+    },
+    
+    // Contact information
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: seo.site.contactEmail,
+      contactType,
+      availableLanguage: ['ru', 'Russian'],
+      areaServed: {
+        '@type': 'Country',
+        name: 'Россия',
+      },
+    },
+    
+    // Social profiles
+    ...(seo.site.socialProfiles.length > 0 && {
+      sameAs: seo.site.socialProfiles,
+    }),
+    
+    // Geographic targeting
+    areaServed: seo.site.geographicAreas.map(area => ({
+      '@type': 'Country',
+      name: area,
+    })),
+    
+    // Founding information
+    foundingDate: '2023',
+    foundingLocation: {
+      '@type': 'Country',
+      name: 'Россия',
+    },
+  };
+};
+
+/**
+ * Create standardized Website schema with search functionality
+ */
+export const createStandardWebsiteSchema = (
+  dictionary: Dictionary,
+  currentPath?: string
+): ExtendedSchemaData => {
+  const { seo } = dictionary;
+  const baseUrl = generateCanonicalUrl('/', seo.site.url);
+  const searchUrl = generateCanonicalUrl('/search', seo.site.url);
+  
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${baseUrl}#website`,
+    name: seo.site.name,
+    url: baseUrl,
+    description: seo.site.description,
+    inLanguage: 'ru',
+    
+    // Publisher reference
+    publisher: {
+      '@id': `${baseUrl}#organization`,
+    },
+    
+    // Search functionality
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${searchUrl}?q={search_term_string}`,
+        actionPlatform: [
+          'https://schema.org/DesktopWebPlatform',
+          'https://schema.org/MobileWebPlatform',
+        ],
+      },
+      'query-input': {
+        '@type': 'PropertyValueSpecification',
+        valueName: 'search_term_string',
+        description: dictionary.search.labels.placeholder,
+        valueRequired: true,
+        valueMinLength: 2,
+        valueMaxLength: 100,
+      },
+    },
+    
+    // Geographic targeting
+    audience: createRussianAudienceSchema(dictionary),
+  };
+};
+
+/**
+ * Create standardized Breadcrumb schema from dictionary
+ */
+export const createStandardBreadcrumbSchema = (
+  breadcrumbs: Array<{ name: string; href?: string }>,
+  canonicalUrl: string,
+  baseUrl: string
+): ExtendedSchemaData => {
+  if (!breadcrumbs.length) return null;
+  
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    '@id': `${canonicalUrl}#breadcrumb`,
+    numberOfItems: breadcrumbs.length,
+    
+    itemListElement: breadcrumbs.map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.name,
+      item: {
+        '@type': 'WebPage',
+        '@id': index === breadcrumbs.length - 1 
+          ? canonicalUrl 
+          : crumb.href 
+            ? `${baseUrl}${crumb.href}`
+            : canonicalUrl,
+        url: index === breadcrumbs.length - 1 
+          ? canonicalUrl 
+          : crumb.href 
+            ? `${baseUrl}${crumb.href}`
+            : canonicalUrl,
+      },
+    })),
+  };
+};
+
+/**
+ * Create Russian audience targeting schema
+ */
+export const createRussianAudienceSchema = (dictionary: Dictionary) => ({
+  '@type': 'Audience',
+  geographicArea: dictionary.seo.regional.targetMarkets.map(market => ({
+    '@type': 'Country',
+    name: market,
+  })),
+  audienceType: 'Русскоязычная аудитория',
+  suggestedMinAge: 16,
+  suggestedMaxAge: 65,
+});
+
+/**
+ * Create standard ItemList schema for collections
+ */
+export const createStandardItemListSchema = (
+  id: string,
+  name: string,
+  description: string,
+  items: Array<{
+    name: string;
+    url: string;
+    description?: string;
+    type?: string;
+    additionalData?: Record<string, any>;
+  }>
+): ExtendedSchemaData => ({
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  '@id': id,
+  name,
+  description,
+  numberOfItems: items.length,
+  inLanguage: 'ru',
+  
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name,
+    description: item.description,
+    item: {
+      '@type': item.type || 'Thing',
+      '@id': item.url,
+      name: item.name,
+      url: item.url,
+      ...(item.description && { description: item.description }),
+      ...item.additionalData,
+    },
+  })),
+});
+
+// ===================================================================
+// SCHEMA COMPOSER CLASS - Fluent API for Complex Schemas
+// ===================================================================
+
+export class SchemaComposer {
+  private schemas: ExtendedSchemaData[] = [];
+  private dictionary: Dictionary;
+  private baseUrl: string;
+  private canonicalUrl: string;
+
+  constructor(dictionary: Dictionary, canonicalUrl: string) {
+    this.dictionary = dictionary;
+    this.baseUrl = dictionary.seo.site.url.replace(/\/$/, '');
+    this.canonicalUrl = canonicalUrl;
+  }
+
+  /**
+   * Add standard organization schema
+   */
+  addOrganization(contactType?: 'editorial' | 'customer support'): this {
+    this.schemas.push(createStandardOrganizationSchema(this.dictionary, contactType));
+    return this;
+  }
+
+  /**
+   * Add standard website schema
+   */
+  addWebsite(): this {
+    this.schemas.push(createStandardWebsiteSchema(this.dictionary));
+    return this;
+  }
+
+  /**
+   * Add breadcrumb schema
+   */
+  addBreadcrumbs(breadcrumbs: Array<{ name: string; href?: string }>): this {
+    const breadcrumbSchema = createStandardBreadcrumbSchema(
+      breadcrumbs, 
+      this.canonicalUrl, 
+      this.baseUrl
+    );
+    if (breadcrumbSchema) {
+      this.schemas.push(breadcrumbSchema);
+    }
+    return this;
+  }
+
+  /**
+   * Add custom schema with automatic common properties injection
+   */
+  addCustomSchema(schema: Partial<ExtendedSchemaData>): this {
+    const Schema: ExtendedSchemaData = {
+      '@context': 'https://schema.org',
+      inLanguage: 'ru',
+      audience: createRussianAudienceSchema(this.dictionary),
+      isPartOf: {
+        '@type': 'WebSite',
+        '@id': `${this.baseUrl}#website`,
+      },
+      publisher: {
+        '@id': `${this.baseUrl}#organization`,
+      },
+      ...schema,
+    };
+    
+    this.schemas.push(Schema);
+    return this;
+  }
+
+  /**
+   * Add Article schema with standard properties
+   */
+  addArticle(data: {
+    title: string;
+    description: string;
+    author: { name: string; slug?: string };
+    publishedAt: string;
+    modifiedAt: string;
+    imageUrl?: string;
+    section?: string;
+    tags?: string[];
+    wordCount?: number;
+    readingTime?: number;
+  }): this {
+    this.addCustomSchema({
+      '@type': 'Article',
+      '@id': `${this.canonicalUrl}#article`,
+      headline: data.title,
+      name: data.title,
+      description: data.description,
+      url: this.canonicalUrl,
+      datePublished: data.publishedAt,
+      dateModified: data.modifiedAt,
+      
+      // Author information
+      author: {
+        '@type': 'Person',
+        '@id': data.author.slug 
+          ? `${this.baseUrl}/ru/authors/${data.author.slug}#person`
+          : undefined,
+        name: data.author.name,
+        ...(data.author.slug && {
+          url: `${this.baseUrl}/ru/authors/${data.author.slug}`,
+        }),
+      },
+      
+      // Image information
+      ...(data.imageUrl && {
+        image: {
+          '@type': 'ImageObject',
+          url: data.imageUrl,
+          width: 1200,
+          height: 630,
+          caption: data.title,
+        },
+      }),
+      
+      // Content metadata
+      ...(data.section && { articleSection: data.section }),
+      ...(data.tags && data.tags.length > 0 && { keywords: data.tags.join(', ') }),
+      ...(data.wordCount && { wordCount: data.wordCount }),
+      ...(data.readingTime && { timeRequired: `PT${data.readingTime}M` }),
+      
+      // Content location
+      contentLocation: {
+        '@type': 'Country',
+        name: 'Россия',
+      },
+      
+      // Main entity reference
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `${this.canonicalUrl}#webpage`,
+      },
+    });
+
+    return this;
+  }
+
+  /**
+   * Add CollectionPage schema
+   */
+  addCollectionPage(data: {
+    name: string;
+    description: string;
+    itemCount: number;
+    collectionType: string;
+    items?: Array<{ name: string; url: string; description?: string }>;
+  }): this {
+    this.addCustomSchema({
+      '@type': 'CollectionPage',
+      '@id': `${this.canonicalUrl}#collection`,
+      name: data.name,
+      description: data.description,
+      url: this.canonicalUrl,
+      
+      // Main entity list
+      mainEntity: data.items 
+        ? createStandardItemListSchema(
+            `${this.canonicalUrl}#itemlist`,
+            data.name,
+            data.description,
+            data.items.map(item => ({ ...item, type: 'Article' }))
+          )
+        : {
+            '@type': 'ItemList',
+            name: data.name,
+            numberOfItems: data.itemCount,
+            description: data.description,
+          },
+          
+      // Collection metadata
+      additionalProperty: [
+        {
+          '@type': 'PropertyValue',
+          name: 'collectionType',
+          value: data.collectionType,
+        },
+        {
+          '@type': 'PropertyValue',
+          name: 'totalItems',
+          value: data.itemCount,
+        },
+      ],
+    });
+
+    return this;
+  }
+
+  /**
+   * Build and combine all schemas
+   */
+  build(): ExtendedSchemaData {
+    if (this.schemas.length === 0) {
+      throw new Error('No schemas added to compose');
+    }
+
+    if (this.schemas.length === 1) {
+      return this.schemas[0];
+    }
+
+    return {
+      '@context': 'https://schema.org',
+      '@graph': this.schemas,
+    };
+  }
+
+  /**
+   * Get individual schemas array
+   */
+  getSchemas(): ExtendedSchemaData[] {
+    return [...this.schemas];
+  }
+
+  /**
+   * Clear all schemas
+   */
+  clear(): this {
+    this.schemas = [];
+    return this;
+  }
+}
+
+// ===================================================================
+//  SCHEMA BUILDER COMPONENT
+// ===================================================================
+
+/**
+ *  SchemaBuilder with better error handling and optimization
+ */
+export const SchemaBuilder: React.FC<SchemaBuilderProps & {
+  dictionary?: Dictionary;
+  enableValidation?: boolean;
+  enableOptimization?: boolean;
+}> = ({ 
+  schema, 
+  priority = 'normal',
+  dictionary,
+  enableValidation = true,
+  enableOptimization = true,
+}) => {
+  try {
+    const schemas = Array.isArray(schema) ? schema : [schema];
+    
+    // Validate schemas in development
+    if (process.env.NODE_ENV === 'development' && enableValidation) {
+      schemas.forEach((s, index) => {
+        if (!validateSchema(s, dictionary)) {
+          console.warn(` schema validation failed for schema at index ${index}:`, s);
+        }
+      });
+    }
+
+    // Optimize schemas for production
+    const optimizedSchemas = enableOptimization 
+      ? schemas.map(optimizeSchema)
+      : schemas;
+
+    // Determine formatting based on environment
+    const indent = process.env.NODE_ENV === 'development' ? 2 : 0;
+
+    return (
+      <>
+        {optimizedSchemas.map((schemaData, index) => (
+          <script
+            key={`-schema-${schemaData['@type']}-${index}`}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(schemaData, null, indent)
+            }}
+            {...(priority === 'high' && { 'data-priority': 'high' })}
+            data-schema-type={schemaData['@type']}
+          />
+        ))}
+      </>
+    );
+    
+  } catch (error) {
+    console.error('SchemaBuilder: Error rendering schemas', error);
+    
+    // Return minimal fallback schema in production
+    if (process.env.NODE_ENV === 'production' && dictionary) {
+      const fallbackSchema = createStandardWebsiteSchema(dictionary);
+      return (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(fallbackSchema, null, 0)
+          }}
+          data-schema-fallback="true"
+        />
+      );
+    }
+    
+    return null;
+  }
+};
+
+// ===================================================================
+// UTILITY FUNCTIONS
+// ===================================================================
+
+/**
+ *  schema validation with Russian market checks
+ */
+const validateSchema = (
+  schema: ExtendedSchemaData, 
+  dictionary?: Dictionary
+): boolean => {
+  // Basic validation
   if (!schema['@context'] || schema['@context'] !== 'https://schema.org') {
     console.warn('Schema: @context must be "https://schema.org"');
     return false;
@@ -29,15 +534,15 @@ const validateSchema = (schema: BaseSchemaData | ExtendedSchemaData): boolean =>
     console.warn('Schema: @type is required and must be a string');
     return false;
   }
-  
-  // Only validate required fields if they exist in the schema type
-  if ('name' in schema && (!schema.name || typeof schema.name !== 'string')) {
-    console.warn('Schema: name is required and must be a string');
-    return false;
+
+  // Russian market validation
+  if (dictionary && schema.inLanguage !== 'ru') {
+    console.warn('Schema: inLanguage should be "ru" for Russian market');
   }
-  
-  if ('url' in schema && schema.url && !isValidUrl(schema.url)) {
-    console.warn('Schema: url must be a valid URL if provided');
+
+  // URL validation
+  if (schema.url && !isValidUrl(schema.url)) {
+    console.warn('Schema: Invalid URL format:', schema.url);
     return false;
   }
 
@@ -45,7 +550,26 @@ const validateSchema = (schema: BaseSchemaData | ExtendedSchemaData): boolean =>
 };
 
 /**
- * Helper function to validate URLs
+ * Optimize schema for production
+ */
+const optimizeSchema = (schema: ExtendedSchemaData): ExtendedSchemaData => {
+  // Remove empty properties
+  const optimized: any = {};
+  
+  Object.entries(schema).forEach(([key, value]) => {
+    if (value !== null && value !== undefined && value !== '') {
+      if (Array.isArray(value) && value.length === 0) {
+        return; // Skip empty arrays
+      }
+      optimized[key] = value;
+    }
+  });
+  
+  return optimized;
+};
+
+/**
+ * URL validation helper
  */
 const isValidUrl = (url: string): boolean => {
   try {
@@ -57,249 +581,37 @@ const isValidUrl = (url: string): boolean => {
 };
 
 // ===================================================================
-// SCHEMA BUILDER COMPONENT - FIXED
+// CONVENIENCE EXPORTS
 // ===================================================================
 
 /**
- * Renders JSON-LD structured data script tags
+ * Quick schema generation for common page types
  */
-export const SchemaBuilder: React.FC<SchemaBuilderProps> = ({ 
-  schema, 
-  priority = 'normal' 
-}) => {
-  const schemas = Array.isArray(schema) ? schema : [schema];
-  
-  // Validate all schemas in development
-  if (process.env.NODE_ENV === 'development') {
-    schemas.forEach((s, index) => {
-      if (!validateSchema(s)) {
-        console.warn(`Schema validation failed for schema at index ${index}:`, s);
-      }
-    });
-  }
-
-  return (
-    <>
-      {schemas.map((schemaData, index) => (
-        <script
-          key={`schema-${schemaData['@type']}-${index}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(schemaData, null, process.env.NODE_ENV === 'development' ? 2 : 0)
-          }}
-          {...(priority === 'high' && { 'data-priority': 'high' })}
-        />
-      ))}
-    </>
-  );
+export const createQuickSchema = {
+  article: (dictionary: Dictionary, canonicalUrl: string, data: any) => 
+    new SchemaComposer(dictionary, canonicalUrl)
+      .addOrganization()
+      .addWebsite()
+      .addArticle(data)
+      .build(),
+      
+  collection: (dictionary: Dictionary, canonicalUrl: string, data: any) =>
+    new SchemaComposer(dictionary, canonicalUrl)
+      .addOrganization()
+      .addWebsite()
+      .addCollectionPage(data)
+      .build(),
+      
+  authorProfile: (dictionary: Dictionary, canonicalUrl: string, data: any) =>
+    new SchemaComposer(dictionary, canonicalUrl)
+      .addOrganization()
+      .addWebsite()
+      .addCustomSchema({
+        '@type': 'ProfilePage',
+        '@id': `${canonicalUrl}#profile`,
+        ...data,
+      })
+      .build(),
 };
 
-// ===================================================================
-// SCHEMA FACTORY FUNCTIONS - FIXED
-// ===================================================================
-
-/**
- * Create navigation element schema
- */
-export const createNavigationElementSchema = (
-  name: string,
-  url: string,
-  description: string,
-  position: number,
-  geographicAreas: readonly string[] = ['Russia']
-): NavigationElementSchema => ({
-  '@context': 'https://schema.org',
-  '@type': 'SiteNavigationElement',
-  '@id': `${url}#navigation-${position}`,
-  name,
-  description,
-  url,
-  inLanguage: 'ru',
-  position,
-  audience: {
-    '@type': 'Audience',
-    geographicArea: geographicAreas as string[],
-  },
-});
-
-/**
- * Create website schema with search functionality - FIXED
- */
-export const createWebsiteSchema = (
-  name: string,
-  url: string,
-  description?: string,
-  searchUrl?: string
-): WebsiteSchema => {
-  // Create schema with all properties upfront to avoid readonly issues
-  const schema: WebsiteSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    '@id': `${url}#website`,
-    name,
-    url,
-    inLanguage: 'ru',
-    description,
-    // Add potentialAction conditionally during creation
-    ...(searchUrl && {
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${searchUrl}?search={search_term_string}`,
-        },
-        'query-input': 'required name=search_term_string',
-      }
-    }),
-  };
-
-  return schema;
-};
-
-/**
- * Create organization schema
- */
-export const createOrganizationSchema = (
-  name: string,
-  url: string,
-  description: string,
-  email?: string,
-  socialProfiles?: readonly string[],
-  areaServed?: readonly string[]
-): OrganizationSchema => ({
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': `${url}#organization`,
-  name,
-  description,
-  url,
-  inLanguage: 'ru',
-  email,
-  sameAs: socialProfiles as string[],
-  areaServed: areaServed as string[],
-});
-
-/**
- * Create breadcrumb schema - FIXED to use ExtendedSchemaData
- */
-export const createBreadcrumbSchema = (
-  items: Array<{ name: string; url: string }>
-): BreadcrumbSchema => ({
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  '@id': `${items[items.length - 1]?.url || '/'}#breadcrumb`,
-  itemListElement: items.map((item, index) => ({
-    '@type': 'ListItem',
-    position: index + 1,
-    name: item.name,
-    item: item.url, // Simplified - just use URL string
-  })),
-  numberOfItems: items.length,
-});
-
-/**
- * Create collection page schema - FIXED
- */
-export const createCollectionPageSchema = (
-  name: string,
-  url: string,
-  description: string,
-  itemCount: number,
-  collectionType: string,
-  items?: Array<{ name: string; url: string }>
-): ExtendedSchemaData => ({
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  '@id': `${url}#collection`,
-  name,
-  description,
-  url,
-  inLanguage: 'ru',
-  mainEntity: {
-    '@type': 'ItemList',
-    name,
-    description,
-    numberOfItems: itemCount,
-    itemListElement: items?.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      url: item.url,
-    })) || [],
-  },
-  additionalProperty: [
-    {
-      '@type': 'PropertyValue',
-      name: 'collectionType',
-      value: collectionType,
-    },
-    {
-      '@type': 'PropertyValue',
-      name: 'language',
-      value: 'ru',
-    },
-  ],
-});
-
-// ===================================================================
-// UTILITY FUNCTIONS - FIXED
-// ===================================================================
-
-/**
- * Combine multiple schemas into a single array
- */
-export const combineSchemas = (...schemas: (BaseSchemaData | ExtendedSchemaData | (BaseSchemaData | ExtendedSchemaData)[])[]): (BaseSchemaData | ExtendedSchemaData)[] => {
-  return schemas.flat().filter(Boolean);
-};
-
-/**
- * Get schema script content as string (for server-side rendering)
- */
-export const getSchemaScript = (schema: BaseSchemaData | ExtendedSchemaData): string => {
-  return JSON.stringify(schema, null, 0);
-};
-
-/**
- * Validate and sanitize schema data - FIXED
- */
-export const sanitizeSchema = (schema: BaseSchemaData | ExtendedSchemaData): BaseSchemaData | ExtendedSchemaData => {
-  // Create a new object with validated properties
-  const sanitized: any = { ...schema };
-  
-  // Ensure required properties
-  if (!sanitized['@context']) {
-    sanitized['@context'] = 'https://schema.org';
-  }
-  
-  // Validate URLs - only remove if invalid and optional
-  if (sanitized.url && !isValidUrl(sanitized.url)) {
-    console.warn('Invalid URL in schema, removing:', sanitized.url);
-    // Create new object without url instead of using delete
-    const { url, ...rest } = sanitized;
-    return rest as BaseSchemaData | ExtendedSchemaData;
-  }
-  
-  return sanitized;
-};
-
-/**
- * Create navigation schema for multiple elements
- */
-export const createNavigationSchema = (
-  elements: Array<{
-    name: string;
-    url: string;
-    description: string;
-  }>,
-  geographicAreas: readonly string[] = ['Russia']
-): NavigationElementSchema[] => {
-  return elements.map((element, index) =>
-    createNavigationElementSchema(
-      element.name,
-      element.url,
-      element.description,
-      index + 1,
-      geographicAreas
-    )
-  );
-};
+export default SchemaBuilder;
