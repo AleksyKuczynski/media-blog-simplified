@@ -1,8 +1,8 @@
 // src/app/ru/(with-filter)/layout.tsx
 // MIGRATED: Updated to use new dictionary system completely
 import FilterGroup from '@/main/components/Navigation/FilterGroup';
+import getDictionary from '@/main/lib/dictionary/getDictionary';
 import { fetchAllCategories } from '@/main/lib/directus';
-import { getDictionary } from '@/main/lib/dictionary/dictionary'; // MIGRATED: Use new dictionary
 
 export default async function WithFilterLayout({
   children,

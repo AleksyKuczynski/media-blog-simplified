@@ -1,174 +1,192 @@
-// src/app/ru/(with-filter)/articles/page.tsx
-// EXAMPLE: How to properly use enhanced ArticleList and LoadMoreButton with dictionary
+// src/app/ru/authors/page.tsx
+// FIXED: Added SEO metadata generation and structured data
 
-import { Suspense } from 'react';
 import { Metadata } from 'next';
-import ArticleList from '@/main/components/Main/ArticleList';
-import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
+import { Suspense } from 'react';
+import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus';
+import AuthorCard from '@/main/components/Main/AuthorCard';
+import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
-import HeroArticles from '@/main/components/Main/HeroArticles';
-import { getDictionary } from '@/main/lib/dictionary/dictionary';
-import { fetchArticleSlugs } from '@/main/lib/directus';
-import { generatePageMetadata } from '@/main/components/SEO/metadata/PageMetadata';
-import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
+import CardGrid from '@/main/components/Main/CardGrid';
+import getDictionary from '@/main/lib/dictionary/getDictionary';
 
-interface ArticlesPageProps {
-  searchParams: { 
-    page?: string; 
-    sort?: string;
-    category?: string;
-  };
-}
+// FIXED: Import SEO components
+import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
+import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
+import { getLocalizedAuthorCount } from '@/main/lib/dictionary/helpers/content';
 
-// Generate metadata using new SEO system
+export const dynamic = 'force-dynamic';
+
+/**
+ * FIXED: Generate metadata using new SEO system
+ */
 export async function generateMetadata(): Promise<Metadata> {
-  const dictionary = await getDictionary('ru');
-  
-  return await generatePageMetadata({
-    dictionary,
-    pageType: 'articles',
-    pageData: {
-      title: dictionary.sections.articles.allArticles,
-      description: 'Все статьи о культурных событиях, музыке и современных идеях',
-      path: '/ru/articles',
-    },
-  });
+  try {
+    const [authors, dictionary] = await Promise.all([
+      fetchAllAuthors('ru'),
+      getDictionary('ru'),
+    ]);
+    
+    // Transform authors data for metadata generation
+    const authorsData = authors.map(author => ({
+      name: author.name,
+      slug: author.slug,
+      description: author.bio,
+    }));
+
+    // Generate collection metadata
+    return await generateCollectionMetadata({
+      dictionary,
+      collectionType: 'authors',
+      items: authorsData,
+      totalCount: authors.length,
+      currentPath: '/ru/authors',
+      featured: false,
+    });
+    
+  } catch (error) {
+    console.error('Error generating authors metadata:', error);
+    
+    // Fallback metadata
+    return {
+      title: 'Авторы — EventForMe',
+      description: 'Познакомьтесь с нашими авторами и узнайте больше о их работах.',
+    };
+  }
 }
 
-export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
-  // Get dictionary first
-  const dictionary = await getDictionary('ru');
-  
-  // Parse parameters
-  const currentPage = Number(searchParams.page) || 1;
-  const currentSort = searchParams.sort || 'desc';
-  const categoryFilter = searchParams.category;
-  
-  // Default view logic
-  const isDefaultView = currentPage === 1 && !categoryFilter && currentSort === 'desc';
-  
-  // Fetch articles for all pages up to current
-  let allSlugs: ArticleSlugInfo[] = [];
-  let hasMore = false;
-  let heroSlugs: ArticleSlugInfo[] = [];
-  
+export default async function AllAuthorsPage({
+  searchParams
+}: {
+  searchParams: { page?: string }
+}) {
   try {
-    // Get hero articles for default view
-    if (isDefaultView) {
-      const heroResponse = await fetchArticleSlugs(1, 'desc', categoryFilter, undefined, ['featured']);
-      heroSlugs = heroResponse.slugs.slice(0, 3);
-    }
+    const [dictionary, rubricBasics, authors] = await Promise.all([
+      getDictionary('ru'),
+      fetchRubricBasics('ru'),
+      fetchAllAuthors('ru'),
+    ]);
 
-    // Get regular articles
-    for (let page = 1; page <= currentPage; page++) {
-      const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
-        page,
-        currentSort,
-        categoryFilter
-      );
-      
-      // Filter out hero articles from regular list on default view
-      const filteredSlugs = isDefaultView && page === 1 
-        ? slugs.filter(slug => !heroSlugs.some(hero => hero.slug === slug.slug))
-        : slugs;
+    const currentPage = Number(searchParams.page) || 1;
+
+    // FIXED: Breadcrumb items using correct interface
+    const breadcrumbItems = [
+      {
+        label: dictionary.navigation.labels.home,
+        href: '/ru',
+      },
+      {
+        label: dictionary.navigation.labels.authors,
+        href: '/ru/authors',
+      },
+    ];
+
+    // Transform authors for schema
+    const authorsForSchema = authors.map(author => ({
+      name: author.name,
+      slug: author.slug,
+      description: author.bio,
+      url: `${dictionary.seo.site.url}/ru/authors/${author.slug}`,
+    }));
+
+    // Get author count text using helper
+    const authorCountText = getLocalizedAuthorCount(dictionary, authors.length);
+
+    return (
+      <>
+        {/* FIXED: Add structured data schema with correct props */}
+        <CollectionPageSchema
+          dictionary={dictionary}
+          collectionType="authors"
+          items={authorsForSchema}
+          totalCount={authors.length}
+          currentPath="/ru/authors"
+          featured={false}
+        />
         
-      allSlugs = [...allSlugs, ...filteredSlugs];
-      hasMore = pageHasMore;
-      
-      if (!pageHasMore) break;
-    }
-  } catch (error) {
-    console.error('Error fetching articles:', error);
-    // Handle error state gracefully
-  }
-
-  return (
-    <>
-      {/* Hero Section for Default View */}
-      {isDefaultView && heroSlugs.length > 0 && (
-        <Section
-          title={dictionary.sections.articles.featuredArticles}
-          className="py-8"
-          ariaLabel={dictionary.sections.articles.featuredArticles}
-        >
-          <Suspense fallback={
-            <div className="text-center py-8" role="status">
-              {dictionary.common.status.loading}
-            </div>
-          }>
-            {heroSlugs.length > 0 ? (
-              <HeroArticles 
-                heroSlugs={heroSlugs} 
-                lang="ru"
-                dictionary={dictionary}
-              />
-            ) : (
-              <div className="text-center py-4 text-gray-600">
-                {dictionary.sections.articles.noFeaturedArticles}
-              </div>
-            )}
-          </Suspense>
-        </Section>
-      )}
-
-      {/* Main Articles Section */}
-      <Section 
-        isOdd={!isDefaultView || heroSlugs.length === 0}
-        title={isDefaultView 
-          ? dictionary.sections.articles.latestArticles 
-          : dictionary.sections.articles.allArticles
-        }
-        ariaLabel={isDefaultView 
-          ? dictionary.sections.articles.latestArticles 
-          : dictionary.sections.articles.allArticles
-        }
-      >
-        {allSlugs.length > 0 ? (
-          <>
-            {/* Enhanced ArticleList with proper dictionary usage */}
-            <ArticleList 
-              slugInfos={allSlugs} 
-              lang="ru" 
-              dictionary={dictionary}
-              categorySlug={categoryFilter}
-              showCount={true}
-              ariaLabel={`${dictionary.sections.articles.allArticles}. Показано статей: ${allSlugs.length}`}
-            />
+        {/* FIXED: Breadcrumbs using correct interface */}
+        <Breadcrumbs 
+          items={breadcrumbItems} 
+          rubrics={rubricBasics}
+          lang="ru"
+          translations={{
+            home: dictionary.navigation.labels.home,
+            allRubrics: dictionary.navigation.labels.rubrics,
+            allAuthors: dictionary.navigation.labels.authors,
+          }}
+        />
+        
+        {/* Main content section */}
+        <Section className="py-8">
+          <div className="container mx-auto px-4">
+            {/* Page header */}
+            <header className="mb-8 text-center">
+              <h1 className="text-3xl sm:text-4xl font-bold mb-4">
+                {dictionary.navigation.labels.authors}
+              </h1>
+              <p className="text-lg text-gray-600 mb-4">
+                {dictionary.sections.authors.allAuthors}
+              </p>
+              <p className="text-sm text-gray-500">
+                {authorCountText}
+              </p>
+            </header>
             
-            {/* Enhanced LoadMoreButton with dictionary */}
-            {hasMore && (
-              <div className="mt-12">
-                <Suspense fallback={
-                  <div className="text-center">
-                    <div className="bg-gray-200 dark:bg-gray-700 rounded-lg px-6 py-3 animate-pulse">
-                      {dictionary.common.status.loading}
-                    </div>
-                  </div>
-                }>
-                  <LoadMoreButton 
-                    currentPage={currentPage}
-                    dictionary={dictionary}
-                    disabled={false}
-                  />
-                </Suspense>
+            {/* Authors grid */}
+            <Suspense fallback={
+              <div className="text-center py-8">
+                <div className="text-lg">{dictionary.common.status.loading}</div>
               </div>
-            )}
-          </>
-        ) : (
-          <div 
-            className="text-center py-12"
-            role="status"
-            aria-label={dictionary.accessibility.emptyState}
-          >
-            <p className="text-gray-600 dark:text-gray-400">
-              {categoryFilter 
-                ? `${dictionary.sections.articles.noArticlesFound} в этой категории`
-                : dictionary.sections.articles.noArticlesFound
-              }
-            </p>
+            }>
+              {authors.length > 0 ? (
+                <CardGrid>
+                  {authors.map((author) => (
+                    <AuthorCard 
+                      key={author.slug}
+                      author={author}
+                      lang="ru"
+                    />
+                  ))}
+                </CardGrid>
+              ) : (
+                <div className="text-center py-12">
+                  <p className="text-gray-600 mb-4">
+                    {dictionary.sections.authors.noAuthorsFound}
+                  </p>
+                  <a 
+                    href="/ru" 
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    {dictionary.navigation.labels.home}
+                  </a>
+                </div>
+              )}
+            </Suspense>
           </div>
-        )}
+        </Section>
+      </>
+    );
+  } catch (error) {
+    console.error('Error rendering authors page:', error);
+    
+    // Error fallback
+    return (
+      <Section className="py-8">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-2xl font-bold mb-4">
+            Ошибка загрузки авторов
+          </h1>
+          <p className="text-gray-600 mb-4">
+            Произошла ошибка при загрузке страницы авторов. Попробуйте обновить страницу.
+          </p>
+          <a 
+            href="/ru" 
+            className="text-blue-600 hover:text-blue-800"
+          >
+            Вернуться на главную
+          </a>
+        </div>
       </Section>
-    </>
-  );
+    );
+  }
 }
