@@ -1,112 +1,86 @@
 // src/app/ru/[rubric]/[slug]/page.tsx
-// FIXED: Complete article page with proper imports and compatibility
+// ENHANCED: Added SEO-optimized related links for better internal linking
 
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { fetchFullArticle, fetchRubricBasics, FullArticle } from '@/main/lib/directus';
+import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
 import { Header, Content, ScrollToTopButton, TableOfContents } from '@/main/components/Article';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import getDictionary from '@/main/lib/dictionary/getDictionary';
-import { getSafeArticleDates } from '@/main/lib/utils/seoDateUtils';
-import { 
-  buildMetadata, 
-  createArticleSEOData,
-  validateSEOData 
-} from '@/main/components/SEO/core/MetadataBuilder';
 import { processContent } from '@/main/lib/markdown/processContent';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import ErrorFallback, { generateNotFoundMetadata } from '@/main/components/Common/ErrorFallback';
+import ErrorFallback from '@/main/components/Common/ErrorFallback';
+
+// SEO Components
+import { generateArticleMetadata, generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';
+import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
+
+// NEW: Related Links for SEO enhancement
+import RelatedLinks, { RelatedLinksSchema } from '@/main/components/Article/RelatedLinks';
 
 export const dynamic = 'force-dynamic';
 
-/**
- * Generate metadata for article pages using established SEO pattern
- */
 export async function generateMetadata({ 
   params 
 }: { 
   params: { rubric: string, slug: string } 
 }): Promise<Metadata> {
-  let dictionary;
-  
   try {
-    dictionary = await getDictionary('ru');
-    const article = await fetchFullArticle(params.slug, 'ru');
+    const [dictionary, article] = await Promise.all([
+      getDictionary('ru'),
+      fetchFullArticle(params.slug, 'ru'),
+    ]);
 
     if (!article) {
-      // ✅ FIXED: Use helper function for not found metadata
-      return generateNotFoundMetadata(dictionary, 'article');
+      return generateArticleNotFoundMetadata(dictionary, params.rubric);
     }
 
     const translation = article.translations[0];
     if (!translation) {
-      // ✅ FIXED: Use helper function for not found metadata  
-      return generateNotFoundMetadata(dictionary, 'article');
+      return generateArticleNotFoundMetadata(dictionary, params.rubric);
     }
 
-    // Handle dates safely
-    const safeDates = getSafeArticleDates(
-      article.published_at, 
-      article.updated_at
-    );
+    const articleData = {
+      title: translation.title,
+      seoTitle: translation.seo_title,
+      description: translation.description,
+      seoDescription: translation.seo_description,
+      lead: translation.lead,
+      slug: params.slug,
+      rubricSlug: params.rubric,
+      author: article.authors[0]?.name || 'EventForMe Editorial',
+      publishedAt: article.published_at,
+      updatedAt: article.updated_at,
+      imageUrl: article.article_heading_img 
+        ? `${dictionary.seo.site.url.replace(/\/$/, '')}/assets/${article.article_heading_img}`
+        : undefined,
+      tags: [params.rubric, ...translation.title.split(' ').slice(0, 3)],
+    };
 
-    // Generate image URL
-    const imageUrl = article.article_heading_img 
-      ? `${dictionary.seo.site.url.replace(/\/$/, '')}/assets/${article.article_heading_img}`
-      : `${dictionary.seo.site.url}/og-default.jpg`;
-
-    // Create canonical URL
-    const canonicalUrl = `${dictionary.seo.site.url}/ru/${params.rubric}/${params.slug}`;
-
-    // Create SEO data using established pattern - FIXED parameter order
-    const seoData = createArticleSEOData(
-      translation.seo_title || translation.title,
-      translation.seo_description || translation.description || translation.lead || '',
-      dictionary.seo.keywords.articles,
-      canonicalUrl,
-      safeDates.publishedTime,
-      safeDates.modifiedTime,
-      article.authors[0]?.name || 'EventForMe Editorial',
-      params.rubric,
-      [params.rubric],
-      imageUrl
-    );
-
-    // Validate and build metadata
-    if (!validateSEOData(seoData)) {
-      console.warn('SEO data validation failed for article:', params.slug);
-    }
-
-    return buildMetadata(seoData);
+    return await generateArticleMetadata({
+      dictionary,
+      articleData,
+    });
 
   } catch (error) {
     console.error('Error generating article metadata:', error);
     
-    // ✅ FIXED: Use dictionary for error fallback metadata if available
-    if (dictionary) {
+    try {
+      const dictionary = await getDictionary('ru');
+      return generateArticleNotFoundMetadata(dictionary, params.rubric);
+    } catch (dictError) {
       return {
-        title: processTemplate(dictionary.seo.templates.pageTitle, {
-          title: dictionary.common.status.error,
-          siteName: dictionary.seo.site.name
-        }),
-        description: processTemplate(dictionary.seo.templates.notFoundDescription, {
-          siteName: dictionary.seo.site.name
-        }),
+        title: 'Ошибка — EventForMe',
+        description: 'Произошла ошибка при загрузке страницы.',
       };
     }
-    
-    // Ultimate fallback if dictionary is not available
-    return {
-      title: 'Ошибка — EventForMe',
-      description: 'Произошла ошибка при загрузке страницы.',
-    };
   }
 }
 
 /**
- * Article page component
+ * ENHANCED: Article page with SEO-optimized related links
  */
 export default async function ArticlePage({ 
   params,
@@ -114,9 +88,17 @@ export default async function ArticlePage({
   params: { rubric: string, slug: string },
   searchParams: { author?: string }
 }) {
+  let dictionary;
+  
   try {
-    const [dictionary, article, rubricBasics] = await Promise.all([
-      getDictionary('ru'),
+    dictionary = await getDictionary('ru');
+  } catch (dictionaryError) {
+    console.error('Critical error: Failed to load dictionary:', dictionaryError);
+    return <ErrorFallback dictionary={{} as any} contentType="article" />;
+  }
+
+  try {
+    const [article, rubricBasics] = await Promise.all([
       fetchFullArticle(params.slug, 'ru'),
       fetchRubricBasics('ru'),
     ]);
@@ -130,13 +112,7 @@ export default async function ArticlePage({
       notFound();
     }
 
-    // Handle dates safely
-    const safeDates = getSafeArticleDates(
-      article.published_at, 
-      article.updated_at
-    );
-
-    // Format publication date for display
+    // Format publication date
     const publishedDate = new Date(article.published_at);
     const formattedDate = publishedDate.toLocaleDateString('ru-RU', {
       year: 'numeric',
@@ -144,34 +120,31 @@ export default async function ArticlePage({
       day: 'numeric',
     });
 
-    // Process article content properly using the existing markdown processing system
+    // Process content
     const rawContent = translation.article_body
       ? translation.article_body.map(block => block.item.content).join('\n\n')
       : '';
 
-    // Use the project's sophisticated markdown processing
     const processedContent = await processContent(rawContent);
     const { chunks: contentChunks, toc: tocItems } = processedContent;
 
-    // Convert article authors to proper AuthorDetails format
+    // EXPLANATION: Transform basic author data to AuthorDetails interface
+    // The Header component needs full AuthorDetails for creating author profile links
     const authorsWithDetails = article.authors.map(author => ({
-      ...author,
-      bio: '', // FullArticle doesn't include bio, so provide empty default
-      avatar: '', // FullArticle doesn't include avatar, so provide empty default
+      name: author.name || 'EventForMe Editorial',
+      slug: author.slug || '',
+      avatar: '', // Default for missing avatar
+      bio: '',    // Required by AuthorDetails interface
     }));
 
-    // Build breadcrumb items
+    // Build breadcrumbs
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
         href: '/ru',
       },
       {
-        label: dictionary.navigation.labels.rubrics,
-        href: '/ru/rubrics',
-      },
-      {
-        label: article.rubric_slug || params.rubric,
+        label: params.rubric,
         href: `/ru/${params.rubric}`,
       },
       {
@@ -180,64 +153,60 @@ export default async function ArticlePage({
       },
     ];
 
-    // Generate structured data
-    const canonicalUrl = `${dictionary.seo.site.url}/ru/${params.rubric}/${params.slug}`;
-    const imageUrl = article.article_heading_img 
-      ? `${dictionary.seo.site.url.replace(/\/$/, '')}/assets/${article.article_heading_img}`
-      : undefined;
-
-    const articleSchema = {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "@id": canonicalUrl,
-      "headline": translation.title,
-      "description": translation.description || translation.lead || '',
-      "url": canonicalUrl,
-      "datePublished": safeDates.publishedTime,
-      "dateModified": safeDates.modifiedTime,
-      "inLanguage": "ru",
-      "author": {
-        "@type": "Person",
-        "name": article.authors[0]?.name || 'EventForMe Editorial',
-        ...(article.authors[0]?.slug && {
-          "url": `${dictionary.seo.site.url}/ru/authors/${article.authors[0].slug}`,
-        }),
+    // Schema data
+    const articleSchemaData = {
+      title: translation.title,
+      description: translation.description || undefined,
+      lead: translation.lead || undefined,
+      slug: params.slug,
+      rubricSlug: params.rubric,
+      rubricName: params.rubric,
+      author: {
+        name: article.authors[0]?.name || 'EventForMe Editorial',
+        slug: article.authors[0]?.slug || undefined,
       },
-      "publisher": {
-        "@type": "Organization",
-        "name": dictionary.seo.site.name,
-        "url": dictionary.seo.site.url,
-        "logo": {
-          "@type": "ImageObject",
-          "url": `${dictionary.seo.site.url}/logo.png`,
-          "width": 200,
-          "height": 80,
-        },
-      },
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": canonicalUrl,
-      },
-      ...(imageUrl && {
-        "image": {
-          "@type": "ImageObject",
-          "url": imageUrl,
-          "width": 1200,
-          "height": 630,
-        },
-      }),
-      "articleSection": params.rubric,
-      "keywords": [params.rubric, ...(translation.title.split(' ').slice(0, 3))],
+      publishedAt: article.published_at,
+      updatedAt: article.updated_at,
+      imageUrl: article.article_heading_img 
+        ? `${dictionary.seo.site.url.replace(/\/$/, '')}/assets/${article.article_heading_img}`
+        : undefined,
+      tags: [params.rubric, ...translation.title.split(' ').slice(0, 3)],
     };
+
+    const breadcrumbSchemaData = breadcrumbItems.map(item => ({
+      name: item.label,
+      href: item.href || undefined,
+    }));
+
+    // NEW: Prepare related links data for SEO enhancement
+    const rubricData = {
+      slug: params.rubric,
+      name: params.rubric, // Could be enhanced with translated name from rubricBasics
+      // FIXED: Removed articleCount since RubricBasic doesn't have this property
+    };
+
+    const categoriesData = article.categories?.map(cat => ({
+      slug: cat.slug,
+      name: cat.name,
+    })) || [];
+
+    const currentArticleUrl = `${dictionary.seo.site.url}/ru/${params.rubric}/${params.slug}`;
 
     return (
       <>
         {/* Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(articleSchema, null, 0)
-          }}
+        <ArticleSchema
+          dictionary={dictionary}
+          articleData={articleSchemaData}
+          breadcrumbs={breadcrumbSchemaData}
+        />
+
+        {/* NEW: Related Links Schema for enhanced SEO */}
+        <RelatedLinksSchema
+          dictionary={dictionary}
+          rubric={rubricData}
+          categories={categoriesData}
+          currentArticleUrl={currentArticleUrl}
         />
 
         {/* Breadcrumbs */}
@@ -261,12 +230,12 @@ export default async function ArticlePage({
                   <div className="text-lg">{dictionary.common.status.loading}</div>
                 </div>
               }>
-                {/* Article Header */}
+                {/* Article Header with Author Links */}
                 <Header
                   title={translation.title}
                   lead={translation.lead}
                   imagePath={article.article_heading_img}
-                  authors={authorsWithDetails}
+                  authors={authorsWithDetails} // Creates clickable author profile links
                   publishedDate={formattedDate}
                   lang="ru"
                   editorialText={processTemplate(dictionary.content.labels.editorial, {
@@ -288,7 +257,15 @@ export default async function ArticlePage({
                   toc={tocItems}
                   title={translation.title}
                   author={article.authors[0]?.name || 'EventForMe Editorial'}
-                  datePublished={safeDates.publishedTime}
+                  datePublished={article.published_at}
+                />
+
+                {/* NEW: Related Links for SEO Enhancement */}
+                <RelatedLinks
+                  dictionary={dictionary}
+                  rubric={rubricData}
+                  categories={categoriesData}
+                  className="mt-12 pt-8 border-t border-gray-200"
                 />
 
                 {/* Scroll to Top Button */}
@@ -302,8 +279,6 @@ export default async function ArticlePage({
 
   } catch (error) {
     console.error('Error in ArticlePage:', error);
-    
-    // ✅ FIXED: Use reusable ErrorFallback component
     return <ErrorFallback dictionary={dictionary} contentType="article" />;
   }
 }
