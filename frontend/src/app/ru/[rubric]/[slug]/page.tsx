@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
-import { Header, Content, ScrollToTopButton, TableOfContents } from '@/main/components/Article';
+import { Header, Content, ScrollToTopButton, TableOfContents, RelatedLinksSchema, RelatedLinks } from '@/main/components/Article';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import getDictionary from '@/main/lib/dictionary/getDictionary';
@@ -18,7 +18,6 @@ import { generateArticleMetadata, generateArticleNotFoundMetadata } from '@/main
 import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
 
 // NEW: Related Links for SEO enhancement
-import RelatedLinks, { RelatedLinksSchema } from '@/main/components/Article/RelatedLinks';
 
 export const dynamic = 'force-dynamic';
 
