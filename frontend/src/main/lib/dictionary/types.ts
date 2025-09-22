@@ -174,6 +174,9 @@ export interface SectionTemplates {
   readonly collectionTitle: string;     // "Все {section}"
   readonly itemInCollection: string;    // "{item} в {collection}"
   readonly itemByAuthor: string;        // "{item} автора {author}"
+  readonly collectionOf: string;     // 'Коллекция {items}'
+  readonly itemsInCollectionDescription: string;     // '{items} в коллекции {collection} на {siteName}'
+  readonly authorWorksDescription: string;     // 'Работы автора {author} на {siteName}'
   readonly emptyCollection: string;     // "В {collection} пока нет {items}"
   readonly totalCount: string;          // "Всего: {count} {countLabel}"
 }
