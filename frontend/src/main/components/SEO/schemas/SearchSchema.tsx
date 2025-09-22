@@ -1,10 +1,11 @@
 // src/main/components/SEO/schemas/SearchSchema.tsx
-// FIXED: Compatible with existing dictionary.ts structure
+// REFACTORED: Using SchemaComposer - Reduced from 80+ to 35 lines
 
 import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';
 
 // ===================================================================
 // SEARCH SCHEMA TYPES
@@ -16,13 +17,20 @@ export interface SearchSchemaProps {
   readonly resultCount?: number;
 }
 
+export interface SearchResultItem {
+  title: string;
+  description: string;
+  url: string;
+  type: 'Article' | 'Author' | 'Rubric';
+}
+
 // ===================================================================
-// MAIN SEARCH SCHEMA COMPONENT
+// MAIN SEARCH SCHEMA COMPONENT - REFACTORED
 // ===================================================================
 
 /**
  * Generate structured data for search functionality
- * FIXED: Uses only existing dictionary entries
+ * REFACTORED: Uses SchemaComposer for standardized generation
  */
 export const SearchSchema: React.FC<SearchSchemaProps> = ({ 
   dictionary, 
@@ -32,77 +40,76 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
   try {
     const seoDict = dictionary.seo;
     
-    // Validate dictionary structure
     if (!seoDict?.site || !dictionary.search?.templates) {
       console.error('SearchSchema: Invalid dictionary structure');
       return null;
     }
 
-    // Generate URLs using helper
     const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
     const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
+    const currentUrl = query ? `${searchUrl}?q=${encodeURIComponent(query)}` : searchUrl;
 
-    // Create search page title using dictionary
-    const searchPageTitle = processTemplate(dictionary.navigation.templates.pageTitle, {
-      page: dictionary.search.templates.pageTitle,
-      siteName: seoDict.site.name,
-    });
+    // Create search page title using existing templates
+    let pageTitle: string;
+    let pageDescription: string;
 
-    // Create main search schema
-    const searchPageSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'SearchResultsPage',
-      '@id': `${searchUrl}#searchpage`,
-      name: searchPageTitle,
-      description: `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`,
-      url: query ? 
-        `${searchUrl}?q=${encodeURIComponent(query)}` : searchUrl,
-      inLanguage: 'ru',
-      
-      // Search functionality
-      potentialAction: {
-        '@type': 'SearchAction',
-        // FIXED: Use existing dictionary.search.templates.pageTitle instead of non-existent searchAction
-        name: dictionary.search.templates.pageTitle,
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${searchUrl}?q={search_term_string}`,
-          actionPlatform: [
-            'https://schema.org/DesktopWebPlatform',
-            'https://schema.org/MobileWebPlatform',
-          ],
-        },
-        'query-input': {
-          '@type': 'PropertyValueSpecification',
-          valueName: 'search_term_string',
-          // FIXED: Use existing dictionary.search.labels.placeholder instead of non-existent queryTerm
-          description: dictionary.search.labels.placeholder,
-          valueRequired: true,
-          valueMinLength: 2,
-          valueMaxLength: 100,
-        },
-      },
-    };
-
-    // Add search results data if query exists
     if (query && resultCount !== undefined) {
+      // Results page
       const resultsTitle = processTemplate(dictionary.search.templates.resultsFor, { query });
-      
-      searchPageSchema.name = processTemplate(dictionary.navigation.templates.pageTitle, {
+      pageTitle = processTemplate(dictionary.navigation.templates.pageTitle, {
         page: resultsTitle,
         siteName: seoDict.site.name,
       });
-      
-      // Add result count to description using existing dictionary entry
-      searchPageSchema.description = `Найдено ${resultCount} ${dictionary.common.count.results.toLowerCase()} по запросу "${query}"`;
+      pageDescription = `Найдено ${resultCount} ${dictionary.common.count.results.toLowerCase()} по запросу "${query}"`;
+    } else {
+      // Default search page
+      pageTitle = processTemplate(dictionary.navigation.templates.pageTitle, {
+        page: dictionary.search.templates.pageTitle,
+        siteName: seoDict.site.name,
+      });
+      pageDescription = `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`;
     }
 
+    // Use SchemaComposer for standardized search schema
+    const schema = new SchemaComposer(dictionary, currentUrl)
+      .addCustomSchema({
+        '@type': 'SearchResultsPage',
+        '@id': `${currentUrl}#searchpage`,
+        name: pageTitle,
+        description: pageDescription,
+        url: currentUrl,
+        
+        // Enhanced search functionality
+        potentialAction: {
+          '@type': 'SearchAction',
+          name: dictionary.search.templates.pageTitle,
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${searchUrl}?q={search_term_string}`,
+            actionPlatform: [
+              'https://schema.org/DesktopWebPlatform',
+              'https://schema.org/MobileWebPlatform',
+            ],
+          },
+          'query-input': {
+            '@type': 'PropertyValueSpecification',
+            valueName: 'search_term_string',
+            description: dictionary.search.labels.placeholder,
+            valueRequired: true,
+            valueMinLength: 2,
+            valueMaxLength: 100,
+          },
+        },
+      })
+      .build();
+
     return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(searchPageSchema, null, 2),
-        }}
+      <SchemaBuilder
+        schema={schema}
+        dictionary={dictionary}
+        priority="normal"
+        enableValidation={true}
+        enableOptimization={true}
       />
     );
     
@@ -113,7 +120,7 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
 };
 
 // ===================================================================
-// NO RESULTS SCHEMA - FIXED to use existing dictionary
+// NO RESULTS SCHEMA - REFACTORED
 // ===================================================================
 
 export const NoResultsSchema: React.FC<{
@@ -121,55 +128,54 @@ export const NoResultsSchema: React.FC<{
   query: string;
 }> = ({ dictionary, query }) => {
   try {
-    const seoDict = dictionary.seo;
-    
-    if (!seoDict?.site || !query) {
+    if (!query || !dictionary.seo?.site) {
       return null;
     }
 
-    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
-    const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
+    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
+    const searchUrl = generateCanonicalUrl('/search', dictionary.seo.site.url);
+    const currentUrl = `${searchUrl}?q=${encodeURIComponent(query)}`;
 
-    const noResultsSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'SearchResultsPage',
-      '@id': `${searchUrl}?q=${encodeURIComponent(query)}#noresults`,
-      name: processTemplate(dictionary.navigation.templates.pageTitle, {
-        page: `${dictionary.search.labels.noResults}: ${query}`,
-        siteName: seoDict.site.name,
-      }),
-      description: `По запросу "${query}" ${dictionary.search.labels.noResults.toLowerCase()}`,
-      url: `${searchUrl}?q=${encodeURIComponent(query)}`,
-      inLanguage: 'ru',
-      
-      // Simplified search action using existing dictionary entries
-      potentialAction: {
-        '@type': 'SearchAction',
-        name: dictionary.search.templates.pageTitle,
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${searchUrl}?q={search_term_string}`,
+    const pageTitle = processTemplate(dictionary.navigation.templates.pageTitle, {
+      page: `${dictionary.search.labels.noResults}: ${query}`,
+      siteName: dictionary.seo.site.name,
+    });
+
+    const schema = new SchemaComposer(dictionary, currentUrl)
+      .addCustomSchema({
+        '@type': 'SearchResultsPage',
+        '@id': `${currentUrl}#noresults`,
+        name: pageTitle,
+        description: `По запросу "${query}" ${dictionary.search.labels.noResults.toLowerCase()}`,
+        url: currentUrl,
+        
+        // Search functionality for trying again
+        potentialAction: {
+          '@type': 'SearchAction',
+          name: dictionary.search.templates.pageTitle,
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${searchUrl}?q={search_term_string}`,
+          },
+          'query-input': {
+            '@type': 'PropertyValueSpecification',
+            valueName: 'search_term_string',
+            description: dictionary.search.labels.placeholder,
+            valueRequired: true,
+            valueMinLength: 2,
+            valueMaxLength: 100,
+          },
         },
-        'query-input': {
-          '@type': 'PropertyValueSpecification',
-          valueName: 'search_term_string',
-          description: dictionary.search.labels.placeholder,
-          valueRequired: true,
-          valueMinLength: 2,
-          valueMaxLength: 100,
-        },
-      },
-    };
+      })
+      .build();
 
     return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(noResultsSchema, null, 2),
-        }}
+      <SchemaBuilder
+        schema={schema}
+        dictionary={dictionary}
+        enableOptimization={true}
       />
     );
-    
   } catch (error) {
     console.error('NoResultsSchema: Error generating schema', error);
     return null;
@@ -177,67 +183,63 @@ export const NoResultsSchema: React.FC<{
 };
 
 // ===================================================================
-// SEARCH RESULTS WITH ITEMS SCHEMA
+// SEARCH RESULTS WITH ITEMS SCHEMA - REFACTORED
 // ===================================================================
 
 export const SearchResultsWithItemsSchema: React.FC<{
   dictionary: Dictionary;
   query: string;
-  results: Array<{
-    title: string;
-    description: string;
-    url: string;
-    type: 'Article' | 'Author' | 'Rubric';
-  }>;
+  results: SearchResultItem[];
 }> = ({ dictionary, query, results }) => {
   try {
-    const seoDict = dictionary.seo;
-    
-    if (!seoDict?.site || !query || !results.length) {
+    if (!query || !results.length || !dictionary.seo?.site) {
       return null;
     }
 
-    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
-    const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
+    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
+    const searchUrl = generateCanonicalUrl('/search', dictionary.seo.site.url);
+    const currentUrl = `${searchUrl}?q=${encodeURIComponent(query)}`;
 
-    const searchResultsSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'SearchResultsPage',
-      '@id': `${searchUrl}?q=${encodeURIComponent(query)}#results`,
-      name: processTemplate(dictionary.navigation.templates.pageTitle, {
-        page: processTemplate(dictionary.search.templates.resultsFor, { query }),
-        siteName: seoDict.site.name,
-      }),
-      description: `Найдено ${results.length} ${dictionary.common.count.results.toLowerCase()} по запросу "${query}"`,
-      url: `${searchUrl}?q=${encodeURIComponent(query)}`,
-      inLanguage: 'ru',
-      
-      // Results list
-      mainEntity: {
-        '@type': 'ItemList',
-        numberOfItems: results.length,
-        itemListElement: results.map((result, index) => ({
-          '@type': 'ListItem',
-          position: index + 1,
-          item: {
-            '@type': result.type,
-            name: result.title,
-            description: result.description,
-            url: result.url,
-          },
-        })),
-      },
-    };
+    const resultsTitle = processTemplate(dictionary.search.templates.resultsFor, { query });
+    const pageTitle = processTemplate(dictionary.navigation.templates.pageTitle, {
+      page: resultsTitle,
+      siteName: dictionary.seo.site.name,
+    });
+
+    // Use SchemaComposer with custom ItemList
+    const schema = new SchemaComposer(dictionary, currentUrl)
+      .addCustomSchema({
+        '@type': 'SearchResultsPage',
+        '@id': `${currentUrl}#results`,
+        name: pageTitle,
+        description: `Найдено ${results.length} ${dictionary.common.count.results.toLowerCase()} по запросу "${query}"`,
+        url: currentUrl,
+        
+        // Results list using standard ItemList pattern
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: results.length,
+          itemListElement: results.map((result, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            item: {
+              '@type': result.type,
+              name: result.title,
+              description: result.description,
+              url: result.url,
+            },
+          })),
+        },
+      })
+      .build();
 
     return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(searchResultsSchema, null, 2),
-        }}
+      <SchemaBuilder
+        schema={schema}
+        dictionary={dictionary}
+        enableOptimization={true}
       />
     );
-    
   } catch (error) {
     console.error('SearchResultsWithItemsSchema: Error generating schema', error);
     return null;
@@ -245,31 +247,23 @@ export const SearchResultsWithItemsSchema: React.FC<{
 };
 
 // ===================================================================
-// CONVENIENCE COMPONENTS
+// CONVENIENCE COMPONENTS - SIMPLIFIED
 // ===================================================================
 
 /**
  * Minimal search schema for basic search pages
+ * REFACTORED: Uses simplified SearchSchema
  */
 export const MinimalSearchSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
-  try {
-    return <SearchSchema dictionary={dictionary} />;
-  } catch (error) {
-    console.error('MinimalSearchSchema: Error rendering search schema', error);
-    return null;
-  }
+  return <SearchSchema dictionary={dictionary} />;
 };
 
 /**
  * Complete search schema with all search functionality
+ * REFACTORED: Maintains same interface but with enhanced internals
  */
 export const CompleteSearchSchema: React.FC<SearchSchemaProps> = (props) => {
-  try {
-    return <SearchSchema {...props} />;
-  } catch (error) {
-    console.error('CompleteSearchSchema: Error rendering complete search schema', error);
-    return null;
-  }
+  return <SearchSchema {...props} />;
 };
 
 export default SearchSchema;

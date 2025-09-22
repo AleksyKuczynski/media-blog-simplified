@@ -5,7 +5,7 @@ import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { getSafeArticleDates } from '@/main/lib/utils/seoDateUtils';
 import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';
-import { ArticleSchemaData, BreadcrumbItem } from '../core/types';
+import { BreadcrumbItem } from '../core/types';
 
 // ===================================================================
 // SIMPLIFIED ARTICLE SCHEMA COMPONENT

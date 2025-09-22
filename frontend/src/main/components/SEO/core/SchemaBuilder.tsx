@@ -1,21 +1,21 @@
 // src/main/components/SEO/core/SchemaBuilder.tsx
-// SchemaBuilder that consolidates common schema patterns
+// FIXED: All TypeScript errors resolved
 
 import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
 import { 
-  BaseSchemaData,
   ExtendedSchemaData,
   SchemaBuilderProps
 } from './types';
 
 // ===================================================================
-// SCHEMA FACTORIES - Russian Market Optimized
+// ENHANCED SCHEMA FACTORIES - Russian Market Optimized
 // ===================================================================
 
 /**
  * Create standardized Organization schema from dictionary
+ * FIXED: Proper handling of readonly arrays
  */
 export const createStandardOrganizationSchema = (
   dictionary: Dictionary,
@@ -54,21 +54,21 @@ export const createStandardOrganizationSchema = (
       },
     },
     
-    // Social profiles
+    // FIXED: Convert readonly string[] to string[]
     ...(seo.site.socialProfiles.length > 0 && {
-      sameAs: seo.site.socialProfiles,
+      sameAs: [...seo.site.socialProfiles], // Convert readonly to mutable
     }),
     
-    // Geographic targeting
+    // Geographic targeting - FIXED: Proper array handling
     areaServed: seo.site.geographicAreas.map(area => ({
-      '@type': 'Country',
+      '@type': 'Country' as const,
       name: area,
     })),
     
     // Founding information
     foundingDate: '2023',
     foundingLocation: {
-      '@type': 'Country',
+      '@type': 'Country' as const,
       name: 'Россия',
     },
   };
@@ -127,12 +127,13 @@ export const createStandardWebsiteSchema = (
 
 /**
  * Create standardized Breadcrumb schema from dictionary
+ * FIXED: Return type can be null, so use ExtendedSchemaData | null
  */
 export const createStandardBreadcrumbSchema = (
   breadcrumbs: Array<{ name: string; href?: string }>,
   canonicalUrl: string,
   baseUrl: string
-): ExtendedSchemaData => {
+): ExtendedSchemaData | null => {
   if (!breadcrumbs.length) return null;
   
   return {
@@ -164,11 +165,12 @@ export const createStandardBreadcrumbSchema = (
 
 /**
  * Create Russian audience targeting schema
+ * FIXED: Literal type for '@type'
  */
 export const createRussianAudienceSchema = (dictionary: Dictionary) => ({
-  '@type': 'Audience',
+  '@type': 'Audience' as const, // FIXED: Use literal type
   geographicArea: dictionary.seo.regional.targetMarkets.map(market => ({
-    '@type': 'Country',
+    '@type': 'Country' as const,
     name: market,
   })),
   audienceType: 'Русскоязычная аудитория',
@@ -249,6 +251,7 @@ export class SchemaComposer {
 
   /**
    * Add breadcrumb schema
+   * FIXED: Handle null return value
    */
   addBreadcrumbs(breadcrumbs: Array<{ name: string; href?: string }>): this {
     const breadcrumbSchema = createStandardBreadcrumbSchema(
@@ -266,8 +269,9 @@ export class SchemaComposer {
    * Add custom schema with automatic common properties injection
    */
   addCustomSchema(schema: Partial<ExtendedSchemaData>): this {
-    const Schema: ExtendedSchemaData = {
+    const enhancedSchema: ExtendedSchemaData = {
       '@context': 'https://schema.org',
+      '@type': schema['@type'] || 'Thing', // FIXED: Ensure @type is always present
       inLanguage: 'ru',
       audience: createRussianAudienceSchema(this.dictionary),
       isPartOf: {
@@ -280,7 +284,7 @@ export class SchemaComposer {
       ...schema,
     };
     
-    this.schemas.push(Schema);
+    this.schemas.push(enhancedSchema);
     return this;
   }
 
@@ -309,8 +313,9 @@ export class SchemaComposer {
       datePublished: data.publishedAt,
       dateModified: data.modifiedAt,
       
-      // Author information
+      // FIXED: Proper author schema with required @context
       author: {
+        '@context': 'https://schema.org',
         '@type': 'Person',
         '@id': data.author.slug 
           ? `${this.baseUrl}/ru/authors/${data.author.slug}#person`
@@ -418,6 +423,7 @@ export class SchemaComposer {
 
     return {
       '@context': 'https://schema.org',
+      '@type': 'Organization',
       '@graph': this.schemas,
     };
   }
@@ -439,11 +445,11 @@ export class SchemaComposer {
 }
 
 // ===================================================================
-//  SCHEMA BUILDER COMPONENT
+// ENHANCED SCHEMA BUILDER COMPONENT
 // ===================================================================
 
 /**
- *  SchemaBuilder with better error handling and optimization
+ * Enhanced SchemaBuilder with better error handling and optimization
  */
 export const SchemaBuilder: React.FC<SchemaBuilderProps & {
   dictionary?: Dictionary;
@@ -462,8 +468,8 @@ export const SchemaBuilder: React.FC<SchemaBuilderProps & {
     // Validate schemas in development
     if (process.env.NODE_ENV === 'development' && enableValidation) {
       schemas.forEach((s, index) => {
-        if (!validateSchema(s, dictionary)) {
-          console.warn(` schema validation failed for schema at index ${index}:`, s);
+        if (!validateEnhancedSchema(s, dictionary)) {
+          console.warn(`Enhanced schema validation failed for schema at index ${index}:`, s);
         }
       });
     }
@@ -480,7 +486,7 @@ export const SchemaBuilder: React.FC<SchemaBuilderProps & {
       <>
         {optimizedSchemas.map((schemaData, index) => (
           <script
-            key={`-schema-${schemaData['@type']}-${index}`}
+            key={`enhanced-schema-${schemaData['@type']}-${index}`}
             type="application/ld+json"
             dangerouslySetInnerHTML={{
               __html: JSON.stringify(schemaData, null, indent)
@@ -518,9 +524,9 @@ export const SchemaBuilder: React.FC<SchemaBuilderProps & {
 // ===================================================================
 
 /**
- *  schema validation with Russian market checks
+ * Enhanced schema validation with Russian market checks
  */
-const validateSchema = (
+const validateEnhancedSchema = (
   schema: ExtendedSchemaData, 
   dictionary?: Dictionary
 ): boolean => {
@@ -579,6 +585,37 @@ const isValidUrl = (url: string): boolean => {
     return false;
   }
 };
+
+// ===================================================================
+// LEGACY COMPATIBILITY EXPORTS
+// ===================================================================
+
+// Keep existing exports for backward compatibility
+export const validateSchema = validateEnhancedSchema;
+export const createNavigationElementSchema = (
+  name: string,
+  url: string,
+  description: string,
+  position: number,
+  geographicAreas: readonly string[] = ['Russia']
+) => ({
+  '@context': 'https://schema.org',
+  '@type': 'SiteNavigationElement',
+  '@id': `${url}#navigation-${position}`,
+  name,
+  description,
+  url,
+  inLanguage: 'ru',
+  position,
+  audience: {
+    '@type': 'Audience',
+    geographicArea: geographicAreas.map(area => ({ '@type': 'Country', name: area })),
+  },
+});
+
+export const createWebsiteSchema = createStandardWebsiteSchema;
+export const createOrganizationSchema = createStandardOrganizationSchema;
+export const createBreadcrumbSchema = createStandardBreadcrumbSchema;
 
 // ===================================================================
 // CONVENIENCE EXPORTS

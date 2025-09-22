@@ -1,10 +1,11 @@
 // src/main/components/SEO/schemas/NavigationSchema.tsx
-// FIXED: Compatible with existing dictionary.ts structure
+// REFACTORED: Using SchemaComposer - Reduced from 120+ to 40 lines
 
 import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
 import { generateNavigationElements } from '@/main/lib/dictionary/helpers/navigation';
+import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';
 
 // ===================================================================
 // NAVIGATION SCHEMA TYPES
@@ -21,12 +22,12 @@ export interface BreadcrumbNavigationSchemaProps {
 }
 
 // ===================================================================
-// MAIN NAVIGATION SCHEMA COMPONENT
+// MAIN NAVIGATION SCHEMA COMPONENT - REFACTORED
 // ===================================================================
 
 /**
  * Generate structured data for site navigation
- * FIXED: Uses existing dictionary structure only
+ * REFACTORED: Uses SchemaComposer for standardized generation
  */
 export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
   dictionary,
@@ -41,74 +42,34 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
       return null;
     }
     
-    // Use existing helper function
+    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
     const navigationElements = generateNavigationElements(dictionary);
 
-    // Create individual navigation schemas
-    const navigationSchemas = navigationElements.map((element, index) => ({
-      '@context': 'https://schema.org',
-      '@type': 'SiteNavigationElement',
-      '@id': `${element.url}#navigation-${index}`,
-      name: element.name,
-      description: element.description,
-      url: element.url,
-      inLanguage: 'ru',
-      position: index + 1,
-      audience: {
-        '@type': 'Audience',
-        geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
-      },
-    }));
+    // Use SchemaComposer for standardized navigation schema
+    const composer = new SchemaComposer(dictionary, baseUrl)
+      .addWebsite(); // Automatically includes search functionality
 
-    // Create website schema with search functionality
-    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
-    const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
-    
-    const websiteSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      '@id': `${baseUrl}#website`,
-      name: seoDict.site.name,
-      description: seoDict.site.description,
-      url: baseUrl,
-      inLanguage: 'ru',
-      
-      // Add search capability using existing dictionary entries
-      potentialAction: {
-        '@type': 'SearchAction',
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${searchUrl}?search={search_term_string}`,
-          actionPlatform: [
-            'https://schema.org/DesktopWebPlatform',
-            'https://schema.org/MobileWebPlatform'
-          ],
-        },
-        'query-input': {
-          '@type': 'PropertyValueSpecification',
-          valueName: 'search_term_string',
-          valueRequired: true,
-          valueMinLength: 2,
-          valueMaxLength: 100,
-        },
-      },
-    };
+    // Add individual navigation elements
+    navigationElements.forEach((element, index) => {
+      composer.addCustomSchema({
+        '@type': 'SiteNavigationElement',
+        '@id': `${element.url}#navigation-${index}`,
+        name: element.name,
+        description: element.description,
+        url: element.url,
+        position: index + 1,
+      });
+    });
 
-    // Combine all schemas
-    const allSchemas = [websiteSchema, ...navigationSchemas];
-
-    // Create combined schema with @graph
-    const combinedSchema = {
-      '@context': 'https://schema.org',
-      '@graph': allSchemas,
-    };
+    const schema = composer.build();
 
     return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(combinedSchema, null, 2),
-        }}
+      <SchemaBuilder
+        schema={schema}
+        dictionary={dictionary}
+        priority="high"
+        enableValidation={true}
+        enableOptimization={true}
       />
     );
     
@@ -119,161 +80,127 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
 };
 
 // ===================================================================
-// MAIN NAVIGATION SCHEMA - Simplified version
+// SIMPLIFIED NAVIGATION COMPONENTS - REFACTORED
 // ===================================================================
 
+/**
+ * Main navigation schema - simplified with SchemaComposer
+ */
 export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
   try {
-    const seoDict = dictionary.seo;
-    
-    if (!seoDict?.site) {
-      console.error('MainNavigationSchema: Invalid dictionary structure');
-      return null;
-    }
+    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
 
-    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
-
-    const mainNavigationSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'SiteNavigationElement',
-      '@id': `${baseUrl}#main-navigation`,
-      name: dictionary.navigation.accessibility.mainNavigation,
-      description: dictionary.navigation.accessibility.mainNavigation,
-      url: baseUrl,
-      inLanguage: 'ru',
-      audience: {
-        '@type': 'Audience',
-        geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
-      },
-    };
+    const schema = new SchemaComposer(dictionary, baseUrl)
+      .addCustomSchema({
+        '@type': 'SiteNavigationElement',
+        '@id': `${baseUrl}#main-navigation`,
+        name: dictionary.navigation.accessibility.mainNavigation,
+        description: dictionary.navigation.accessibility.mainNavigation,
+        url: baseUrl,
+        position: 1,
+      })
+      .build();
 
     return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(mainNavigationSchema, null, 2),
-        }}
+      <SchemaBuilder
+        schema={schema}
+        dictionary={dictionary}
+        enableOptimization={true}
       />
     );
-    
   } catch (error) {
     console.error('MainNavigationSchema: Error generating schema', error);
     return null;
   }
 };
 
-// ===================================================================
-// MOBILE NAVIGATION SCHEMA
-// ===================================================================
-
+/**
+ * Mobile navigation schema - simplified with SchemaComposer
+ */
 export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
   try {
-    const seoDict = dictionary.seo;
-    
-    if (!seoDict?.site) {
-      console.error('MobileNavigationSchema: Invalid dictionary structure');
-      return null;
-    }
+    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
 
-    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
-
-    const mobileNavigationSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'SiteNavigationElement',
-      '@id': `${baseUrl}#mobile-navigation`,
-      name: dictionary.navigation.accessibility.mainNavigation,
-      description: dictionary.navigation.accessibility.mainNavigation,
-      url: baseUrl,
-      inLanguage: 'ru',
-      audience: {
-        '@type': 'Audience',
-        geographicArea: seoDict.regional?.targetMarkets || ['Russia'],
-      },
-    };
+    const schema = new SchemaComposer(dictionary, baseUrl)
+      .addCustomSchema({
+        '@type': 'SiteNavigationElement',
+        '@id': `${baseUrl}#mobile-navigation`,
+        name: dictionary.navigation.accessibility.mainNavigation,
+        description: dictionary.navigation.accessibility.mainNavigation,
+        url: baseUrl,
+        position: 1,
+      })
+      .build();
 
     return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(mobileNavigationSchema, null, 2),
-        }}
+      <SchemaBuilder
+        schema={schema}
+        dictionary={dictionary}
+        enableOptimization={true}
       />
     );
-    
   } catch (error) {
     console.error('MobileNavigationSchema: Error generating schema', error);
     return null;
   }
 };
 
-// ===================================================================
-// SEARCH NAVIGATION SCHEMA - FIXED to use existing dictionary
-// ===================================================================
-
+/**
+ * Search navigation schema - simplified with SchemaComposer
+ */
 export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
   try {
     const seoDict = dictionary.seo;
-    
-    if (!seoDict?.site) {
-      console.error('SearchNavigationSchema: Invalid dictionary structure');
-      return null;
-    }
-
     const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
     const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
 
-    const searchSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      '@id': `${baseUrl}#search`,
-      name: seoDict.site.name,
-      url: baseUrl,
-      inLanguage: 'ru',
-      
-      potentialAction: {
-        '@type': 'SearchAction',
-        // FIXED: Use existing dictionary.search.templates.pageTitle instead of non-existent searchAction
-        name: dictionary.search.templates.pageTitle,
-        description: `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`,
-        target: {
-          '@type': 'EntryPoint',
-          urlTemplate: `${searchUrl}?search={search_term_string}`,
-          actionPlatform: [
-            'https://schema.org/DesktopWebPlatform',
-            'https://schema.org/MobileWebPlatform',
-          ],
+    const schema = new SchemaComposer(dictionary, baseUrl)
+      .addCustomSchema({
+        '@type': 'WebSite',
+        '@id': `${baseUrl}#search`,
+        name: seoDict.site.name,
+        url: baseUrl,
+        
+        potentialAction: {
+          '@type': 'SearchAction',
+          name: dictionary.search.templates.pageTitle,
+          description: `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`,
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${searchUrl}?search={search_term_string}`,
+            actionPlatform: [
+              'https://schema.org/DesktopWebPlatform',
+              'https://schema.org/MobileWebPlatform',
+            ],
+          },
+          'query-input': {
+            '@type': 'PropertyValueSpecification',
+            valueName: 'search_term_string',
+            description: dictionary.search.labels.placeholder,
+            valueRequired: true,
+            valueMinLength: 2,
+            valueMaxLength: 100,
+          },
         },
-        'query-input': {
-          '@type': 'PropertyValueSpecification',
-          valueName: 'search_term_string',
-          // FIXED: Use existing dictionary.search.labels.placeholder instead of non-existent queryTerm
-          description: dictionary.search.labels.placeholder,
-          valueRequired: true,
-          valueMinLength: 2,
-          valueMaxLength: 100,
-        },
-      },
-    };
+      })
+      .build();
 
     return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(searchSchema, null, 2),
-        }}
+      <SchemaBuilder
+        schema={schema}
+        dictionary={dictionary}
+        enableOptimization={true}
       />
     );
-    
   } catch (error) {
     console.error('SearchNavigationSchema: Error generating schema', error);
     return null;
   }
 };
 
-// ===================================================================
-// BREADCRUMB NAVIGATION SCHEMA
-// ===================================================================
-
+/**
+ * Breadcrumb navigation schema - using standard SchemaComposer
+ */
 export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProps> = ({
   dictionary,
   breadcrumbs,
@@ -284,29 +211,19 @@ export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProp
     }
 
     const baseUrl = dictionary.seo.site.url;
-    const currentUrl = breadcrumbs[breadcrumbs.length - 1]?.href;
+    const currentUrl = breadcrumbs[breadcrumbs.length - 1]?.href || '/';
 
-    const breadcrumbSchema = {
-      '@context': 'https://schema.org',
-      '@type': 'BreadcrumbList',
-      '@id': `${baseUrl}${currentUrl}#breadcrumb`,
-      itemListElement: breadcrumbs.map((crumb, index) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        name: crumb.name,
-        item: `${baseUrl}${crumb.href}`,
-      })),
-    };
+    const schema = new SchemaComposer(dictionary, `${baseUrl}${currentUrl}`)
+      .addBreadcrumbs(breadcrumbs)
+      .build();
 
     return (
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema, null, 2),
-        }}
+      <SchemaBuilder
+        schema={schema}
+        dictionary={dictionary}
+        enableOptimization={true}
       />
     );
-    
   } catch (error) {
     console.error('BreadcrumbNavigationSchema: Error generating schema', error);
     return null;
@@ -314,11 +231,12 @@ export const BreadcrumbNavigationSchema: React.FC<BreadcrumbNavigationSchemaProp
 };
 
 // ===================================================================
-// CONVENIENCE COMPONENTS
+// CONVENIENCE COMPONENTS - SIMPLIFIED
 // ===================================================================
 
 /**
  * Complete navigation schema with all components
+ * REFACTORED: Much simpler composition
  */
 export const CompleteNavigationSchema: React.FC<NavigationSchemaProps> = (props) => {
   return (
@@ -331,6 +249,7 @@ export const CompleteNavigationSchema: React.FC<NavigationSchemaProps> = (props)
 
 /**
  * Minimal navigation schema for performance-critical pages
+ * REFACTORED: Uses simplified MainNavigationSchema
  */
 export const MinimalNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
   return <MainNavigationSchema dictionary={dictionary} />;
