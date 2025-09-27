@@ -1,7 +1,7 @@
 // src/main/components/Article/Metadata.tsx - ADD SAFETY CHECK
 import Link from 'next/link';
 import { AuthorDetails } from '@/main/lib/directus/directusInterfaces';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
+import { Lang } from '@/main/lib/dictionary/types';
 
 interface MetadataProps {
   publishedDate: string;

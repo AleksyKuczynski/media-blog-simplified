@@ -3,8 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { DIRECTUS_URL } from '@/main/lib/directus/directusConstants';
 import { AuthorDetails } from '@/main/lib/directus/directusInterfaces';
-import { Lang } from '@/main/lib/dictionaries/dictionariesTypes';
 import { IMAGE_RATIO_STRING } from '../mainConstants';
+import { Lang } from '@/main/lib/dictionary/types';
 
 interface HeaderProps {
   title: string;

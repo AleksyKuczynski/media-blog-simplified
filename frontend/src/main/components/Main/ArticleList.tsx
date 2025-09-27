@@ -1,5 +1,5 @@
 // src/main/components/Main/ArticleList.tsx
-// ENHANCED: Better error handling, accessibility, and dictionary usage
+// FIXED: Use only existing dictionary entries, no hardcoded text
 
 import { Suspense } from 'react';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
@@ -22,7 +22,7 @@ interface ArticleListProps {
 }
 
 /**
- * Enhanced ArticleList - Improved accessibility, error handling, and dictionary usage
+ * Enhanced ArticleList - FIXED to use only existing dictionary entries
  * NO HARDCODED TEXT - comprehensive dictionary integration
  */
 export default function ArticleList({ 
@@ -39,6 +39,29 @@ export default function ArticleList({
   errorMessage
 }: ArticleListProps) {
   
+  // Context-aware empty message generator - FIXED to use existing dictionary entries
+  function getContextualEmptyMessage(): string {
+    if (categorySlug) {
+      // Use existing emptyCollection template with collection label
+      return processTemplate(dictionary.sections.templates.emptyCollection, {
+        collection: dictionary.sections.labels.collection,
+        items: dictionary.sections.labels.articles
+      });
+    }
+    if (rubricSlug) {
+      // Use existing content.templates.emptyRubric which is specifically for this use case
+      return processTemplate(dictionary.content.templates.emptyRubric, {
+        name: dictionary.sections.labels.collection // Generic term to avoid specific rubric name
+      });
+    }
+    if (authorSlug) {
+      // Use base noArticlesFound message - keep it simple to avoid complex template construction
+      return dictionary.sections.articles.noArticlesFound;
+    }
+    // Fallback to base dictionary entry
+    return dictionary.sections.articles.noArticlesFound;
+  }
+  
   // Enhanced empty state with context-aware messages
   if (slugInfos.length === 0) {
     const contextualMessage = getContextualEmptyMessage();
@@ -47,7 +70,7 @@ export default function ArticleList({
       <div 
         className="text-center py-12"
         role="status"
-        aria-label={dictionary.accessibility.emptyState}
+        aria-label={dictionary.common.status.empty}
       >
         <div className="text-gray-600 dark:text-gray-400">
           <svg 
@@ -68,7 +91,10 @@ export default function ArticleList({
             {errorMessage || contextualMessage}
           </p>
           <p className="text-sm opacity-75">
-            {dictionary.sections.templates.emptyCollection}
+            {processTemplate(dictionary.sections.templates.emptyCollection, {
+              collection: dictionary.sections.labels.collection,
+              items: dictionary.sections.labels.articles
+            })}
           </p>
         </div>
       </div>
@@ -80,14 +106,12 @@ export default function ArticleList({
     <div 
       className="text-center py-8"
       role="status" 
-      aria-label={dictionary.accessibility.loadingContent}
+      aria-label={dictionary.common.status.loading}
     >
       <div className="flex flex-col items-center gap-3">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-prcolor" aria-hidden="true" />
         <p className="text-gray-600 dark:text-gray-400">
-          {processTemplate(dictionary.sections.articles.loadingArticles, {
-            items: dictionary.sections.labels.articles
-          })}
+          {dictionary.common.status.loading}
         </p>
       </div>
     </div>
@@ -108,30 +132,10 @@ export default function ArticleList({
     ? 'grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-2 gap-6 lg:gap-8'
     : 'flex flex-col gap-4';
 
-  // Context-aware empty message generator
-  function getContextualEmptyMessage(): string {
-    if (categorySlug) {
-      return processTemplate(dictionary.sections.templates.emptyCollection, {
-        collection: dictionary.sections.templates.itemInCollection.replace('{item}', '').replace('{collection}', 'категории'),
-        items: dictionary.sections.labels.articles
-      });
-    }
-    if (rubricSlug) {
-      return processTemplate(dictionary.sections.templates.emptyCollection, {
-        collection: 'рубрике',
-        items: dictionary.sections.labels.articles
-      });
-    }
-    if (authorSlug) {
-      return dictionary.sections.articles.noArticlesFound + ' этого автора';
-    }
-    return dictionary.sections.articles.noArticlesFound;
-  }
-
   return (
     <section
       className={`article-list ${className}`}
-      aria-label={ariaLabel || dictionary.accessibility.articlesList}
+      aria-label={ariaLabel || dictionary.sections.labels.articles}
       role="region"
     >
       <ArticleCount />
