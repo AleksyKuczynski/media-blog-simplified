@@ -48,11 +48,6 @@ export {
   createWebsiteSchema,
   createOrganizationSchema,
   createBreadcrumbSchema,
-  createCollectionPageSchema,
-  createNavigationSchema,
-  combineSchemas,
-  getSchemaScript,
-  sanitizeSchema,
 } from './core/SchemaBuilder';
 
 // ===================================================================
@@ -164,7 +159,6 @@ export const NavigationSEOBundle: React.FC<NavigationSEOBundleProps> = ({
     <SchemaComponent
       dictionary={dictionary}
       currentPath={currentPath}
-      breadcrumbs={breadcrumbs}
     />
   );
 };
