@@ -60,7 +60,7 @@ export default function ExpandableSearch({
           onFocus={handlers.handleFocus}
           inputRef={refs.inputRef}
           ariaLabel={dictionary.search.accessibility.searchInputLabel}
-          ariaDescription={dictionary.search.accessibility.searchDescription}
+          ariaDescription={dictionary.search.accessibility.searchLabel}
         />
         
         <NavButton

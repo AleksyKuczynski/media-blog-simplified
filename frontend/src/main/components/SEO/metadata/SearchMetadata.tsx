@@ -9,7 +9,6 @@ import {
 } from '../core/MetadataBuilder';
 import {
   generateSearchSEOData,
-  validateSearchDictionary,
 } from '@/main/lib/dictionary/helpers/search';
 
 // ===================================================================
@@ -23,11 +22,6 @@ import {
  */
 export const generateSearchMetadataSimple = (dictionary: Dictionary): Metadata => {
   try {
-    // Validate dictionary first
-    if (!validateSearchDictionary(dictionary)) {
-      console.error('SearchMetadata: Invalid dictionary structure');
-    }
-
     // Use existing search helper - STATIC ONLY
     const searchSEOData = generateSearchSEOData(dictionary);
     
