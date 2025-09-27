@@ -1,16 +1,15 @@
 // src/main/components/SEO/metadata/RubricMetadata.tsx
-// FIXED: Updated imports and ensured dictionary compatibility
+// Rubric-specific metadata generation following established patterns
 
 import { Metadata } from 'next';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { validateSEOContent } from '@/main/lib/dictionary/helpers/validation';
 import { 
-  getPageTitle, 
-  getMetaDescription, 
-  getKeywords, 
-  generateCanonicalUrl 
-} from '@/main/lib/dictionary/helpers/seo';
+  buildMetadata, 
+  createWebsiteSEOData,
+  validateSEOData 
+} from '../core/MetadataBuilder';
 
 export interface RubricMetadataProps {
   dictionary: Dictionary;
@@ -27,7 +26,6 @@ export interface RubricMetadataProps {
 
 /**
  * Generate comprehensive metadata for individual rubric pages
- * FIXED: Uses consistent dictionary structure and helper imports
  */
 export const generateRubricMetadata = async ({
   dictionary,
@@ -35,111 +33,99 @@ export const generateRubricMetadata = async ({
 }: RubricMetadataProps): Promise<Metadata> => {
   const { name, slug, description, articleCount, path, customKeywords, featured } = rubricData;
 
-  // Generate title using SEO helper function
-  const title = getPageTitle(dictionary, name);
+  // Use SEO template for consistent title formatting
+  const finalTitle = processTemplate(dictionary.seo.templates.pageTitle, {
+    title: name,
+    siteName: dictionary.seo.site.name,
+  });
 
-  // Generate description with fallback
+  // Generate description with fallback using dictionary templates
   let metaDescription: string;
   if (description) {
-    // Use rubric description if available
+    // Use rubric description if available with site context
     metaDescription = `${description} Читайте статьи в рубрике ${name} на ${dictionary.seo.site.name}.`;
   } else {
-    // Use fallback description from dictionary
-    metaDescription = `Изучите рубрику ${name} на ${dictionary.seo.site.name}. Статей: ${articleCount}.`;
+    // Use fallback description from dictionary templates
+    const rubricInfo = `Изучите рубрику ${name} на ${dictionary.seo.site.name}`;
+    const countInfo = processTemplate(dictionary.sections.templates.totalCount, {
+      count: articleCount.toString(),
+      countLabel: dictionary.common.count.articles,
+    });
+    metaDescription = `${rubricInfo}. ${countInfo}.`;
   }
 
-  // Ensure description length is appropriate
-  const finalDescription = getMetaDescription(dictionary, metaDescription);
+  // Ensure description length is appropriate using template
+  const finalDescription = processTemplate(dictionary.seo.templates.metaDescription, {
+    description: metaDescription,
+    siteName: dictionary.seo.site.name,
+  });
 
-  // Generate keywords using helper function
+  // Generate keywords using established pattern
   const rubricKeywords = customKeywords || name;
-  const keywords = getKeywords(dictionary, 'rubrics', rubricKeywords);
+  const keywords = [
+    rubricKeywords,
+    dictionary.seo.keywords.rubrics,
+    dictionary.seo.keywords.base
+  ].filter(Boolean).join(', ');
 
-  // Generate canonical URL using helper
-  const canonicalUrl = generateCanonicalUrl(path, dictionary.seo.site.url);
+  // Generate canonical URL using established pattern
+  const canonicalUrl = `${dictionary.seo.site.url}${path}`;
 
   // Generate Open Graph image URL
-  const imageUrl = `${dictionary.seo.site.url}/og-rubric-${slug}.jpg`;
-  
-  // Validate SEO content
-  const validation = validateSEOContent({
-    title,
+  const finalImageUrl = `${dictionary.seo.site.url}/og-rubric-${slug}.jpg`;
+
+  // Create SEO data using established pattern
+  const seoData = createWebsiteSEOData(
+    finalTitle,
+    finalDescription,
+    keywords,
+    canonicalUrl,
+    finalImageUrl
+  );
+
+  // Validate SEO data
+  if (!validateSEOData(seoData)) {
+    console.warn('SEO data validation failed for rubric:', slug);
+  }
+
+  // Validate content for SEO requirements
+  const contentValidation = validateSEOContent({
+    title: finalTitle,
     description: finalDescription,
     keywords,
   });
 
-  if (!validation.isValid) {
-    console.warn('Rubric SEO validation warnings:', validation.warnings);
+  if (!contentValidation.isValid) {
+    console.warn('Rubric SEO content validation warnings:', contentValidation.warnings);
   }
 
-  const metadata: Metadata = {
-    title,
-    description: finalDescription,
-    keywords,
-    
-    alternates: {
-      canonical: canonicalUrl,
-      languages: {
-        'ru': canonicalUrl,
-        'ru-RU': canonicalUrl,
-      },
-    },
-
-    openGraph: {
-      title,
-      description: finalDescription,
-      url: canonicalUrl,
-      siteName: dictionary.seo.site.name,
-      locale: 'ru_RU',
-      type: 'website',
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
-    },
-
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description: finalDescription,
-      images: [imageUrl],
-    },
-
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
-
-    // Additional metadata with proper types
-    other: {
-      'rubric:name': name,
-      'rubric:slug': slug,
-      'rubric:articleCount': articleCount.toString(),
-      'rubric:featured': featured?.toString() || 'false',
-      'DC.type': 'Text.Rubric',
-      'DC.language': 'ru',
-      'geo.region': 'RU',
-    },
-
-    category: slug,
-  };
-
-  return metadata;
+  return buildMetadata(seoData);
 };
 
 /**
- * Validation helper for rubric metadata
+ * Generate metadata for rubric not found cases
+ */
+export const generateRubricNotFoundMetadata = (
+  dictionary: Dictionary,
+  rubricSlug?: string
+): Metadata => {
+  const notFoundMeta = dictionary.metadata.notFound.rubric;
+  
+  return {
+    title: processTemplate(dictionary.seo.templates.pageTitle, {
+      title: notFoundMeta.title,
+      siteName: dictionary.seo.site.name
+    }),
+    description: notFoundMeta.description,
+    robots: {
+      index: false,
+      follow: true,
+    },
+  };
+};
+
+/**
+ * Validation helper for rubric metadata following established pattern
  */
 export const validateRubricMetadata = (
   metadata: Metadata, 
@@ -161,7 +147,7 @@ export const validateRubricMetadata = (
   if (!rubricData.name.trim()) errors.push('Rubric name cannot be empty');
   if (!rubricData.slug.trim()) errors.push('Rubric slug cannot be empty');
   
-  // Content validation
+  // Content validation using established pattern
   const contentValidation = validateSEOContent({
     title: metadata.title as string,
     description: metadata.description as string,

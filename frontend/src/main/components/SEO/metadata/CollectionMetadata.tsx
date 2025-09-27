@@ -1,9 +1,15 @@
 // src/main/components/SEO/metadata/CollectionMetadata.tsx
-// Clean collection metadata using new dictionary structure directly
+// Collection metadata generation following established patterns
 
 import { Metadata } from 'next';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { generateCollectionSEO, validateSEOContent } from '@/main/lib/dictionary/helpers/seo';
+import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import { validateSEOContent } from '@/main/lib/dictionary/helpers/validation';
+import { 
+  buildMetadata, 
+  createCollectionSEOData,
+  validateSEOData 
+} from '../core/MetadataBuilder';
 
 export interface CollectionMetadataProps {
   dictionary: Dictionary;
@@ -19,135 +25,145 @@ export interface CollectionMetadataProps {
 }
 
 /**
- * Generate clean metadata for collection pages using new dictionary structure
+ * Generate comprehensive metadata for collection pages following established patterns
  */
 export const generateCollectionMetadata = async (
   props: CollectionMetadataProps
 ): Promise<Metadata> => {
   const { dictionary, collectionType, items, totalCount, currentPath, featured = false } = props;
   
-  // Extract item names for keywords
-  const itemNames = items.slice(0, 5).map(item => item.name);
-  
-  // Generate SEO data using dictionary helpers
-  const seoData = generateCollectionSEO(
-    dictionary,
-    collectionType,
-    totalCount,
-    currentPath,
-    itemNames
-  );
-  
-  // Validate SEO content
-  const validation = validateSEOContent({
-    title: seoData.title,
-    description: seoData.description,
-    keywords: seoData.keywords,
+  // Generate title using dictionary templates and established pattern
+  const sectionLabel = dictionary.sections.labels[collectionType];
+  const collectionTitle = processTemplate(dictionary.sections.templates.collectionTitle, {
+    section: sectionLabel,
   });
   
-  if (!validation.isValid) {
-    console.warn('Collection SEO validation warnings:', validation.warnings);
-  }
+  const finalTitle = processTemplate(dictionary.seo.templates.collectionPage, {
+    collection: collectionTitle,
+    siteName: dictionary.seo.site.name,
+  });
+
+  // Generate description using dictionary templates
+  const baseDescription = dictionary.sections[collectionType].collectionPageDescription;
+  const countInfo = processTemplate(dictionary.sections.templates.totalCount, {
+    count: totalCount.toString(),
+    countLabel: dictionary.common.count[collectionType],
+  });
   
-  // Build metadata object with proper types
-  const metadata: Metadata = {
-    title: seoData.title,
-    description: seoData.description,
-    keywords: seoData.keywords,
-    
-    alternates: {
-      canonical: seoData.canonicalUrl,
-      languages: {
-        'ru': seoData.canonicalUrl,
-        'ru-RU': seoData.canonicalUrl,
-      },
-    },
+  const metaDescription = `${baseDescription} ${countInfo}`;
+  const finalDescription = processTemplate(dictionary.seo.templates.metaDescription, {
+    description: metaDescription,
+    siteName: dictionary.seo.site.name,
+  });
 
-    openGraph: {
-      title: seoData.title,
-      description: seoData.description,
-      url: seoData.canonicalUrl,
-      siteName: dictionary.seo.site.name,
-      locale: 'ru_RU',
-      type: 'website',
-      images: [
-        {
-          url: seoData.imageUrl,
-          width: 1200,
-          height: 630,
-          alt: seoData.title,
-        },
-      ],
-    },
+  // Generate keywords using established pattern
+  const itemNames = items.slice(0, 5).map(item => item.name);
+  const customKeywords = itemNames.length > 0 ? itemNames.join(', ') : '';
+  
+  const keywords = [
+    customKeywords,
+    dictionary.seo.keywords[collectionType],
+    dictionary.seo.keywords.base
+  ].filter(Boolean).join(', ');
 
-    twitter: {
-      card: 'summary_large_image',
-      title: seoData.title,
-      description: seoData.description,
-      images: [seoData.imageUrl],
-    },
+  // Generate canonical URL using established pattern
+  const canonicalUrl = `${dictionary.seo.site.url}${currentPath}`;
 
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
+  // Generate Open Graph image URL
+  const finalImageUrl = `${dictionary.seo.site.url}/og-${collectionType}-collection.jpg`;
 
-    // Additional metadata with proper types
-    other: {
-      'collection:type': collectionType,
-      'collection:itemCount': totalCount.toString(),
-      'collection:featured': featured.toString(),
-      'DC.type': 'Text.Collection',
-      'DC.language': 'ru',
-      'DC.coverage': dictionary.seo.regional.region,
-      'geo.region': dictionary.seo.regional.region,
-      'geo.placename': dictionary.seo.regional.targetMarkets.join(', '),
-    },
-  };
+  // Create SEO data using established pattern
+  const seoData = createCollectionSEOData(
+    finalTitle,
+    finalDescription,
+    keywords,
+    canonicalUrl,
+    collectionType,
+    totalCount,
+    finalImageUrl
+  );
 
-  return metadata;
+  // Validate SEO data
+  if (!validateSEOData(seoData)) {
+    console.warn('SEO data validation failed for collection:', collectionType);
+  }
+
+  // Validate content for SEO requirements
+  const contentValidation = validateSEOContent({
+    title: finalTitle,
+    description: finalDescription,
+    keywords,
+  });
+
+  if (!contentValidation.isValid) {
+    console.warn('Collection SEO content validation warnings:', contentValidation.warnings);
+  }
+
+  return buildMetadata(seoData);
 };
 
 /**
- * Validation helper for collection metadata
+ * Generate metadata for collection not found cases
+ */
+export const generateCollectionNotFoundMetadata = (
+  dictionary: Dictionary,
+  collectionType: 'rubrics' | 'authors' | 'articles'
+): Metadata => {
+  const notFoundMeta = dictionary.metadata.notFound.page;
+  
+  const collectionName = dictionary.sections.labels[collectionType];
+  const title = `${collectionName} не найдены`;
+  
+  return {
+    title: processTemplate(dictionary.seo.templates.pageTitle, {
+      title,
+      siteName: dictionary.seo.site.name
+    }),
+    description: notFoundMeta.description,
+    robots: {
+      index: false,
+      follow: true,
+    },
+  };
+};
+
+/**
+ * Validation helper for collection metadata following established pattern
  */
 export const validateCollectionMetadata = (
-  metadata: Metadata, 
+  metadata: Metadata,
   props: CollectionMetadataProps
 ): {
   isValid: boolean;
   warnings: string[];
   errors: string[];
 } => {
+  const { collectionType, totalCount, items } = props;
   const warnings: string[] = [];
   const errors: string[] = [];
-  
+
   // Basic validation
   if (!metadata.title) errors.push('Collection title is required');
   if (!metadata.description) errors.push('Collection description is required');
-  
+
   // Collection-specific validation
-  if (props.totalCount < 0) errors.push('Total count cannot be negative');
-  if (props.items.length === 0 && props.totalCount > 0) {
-    warnings.push('Item count mismatch: totalCount > 0 but no items provided');
+  if (totalCount < 0) errors.push('Total count cannot be negative');
+  if (!['rubrics', 'authors', 'articles'].includes(collectionType)) {
+    errors.push('Invalid collection type');
   }
-  
-  // Content validation
+  if (items.some(item => !item.name || !item.slug)) {
+    errors.push('All collection items must have name and slug');
+  }
+
+  // Content validation using established pattern
   const contentValidation = validateSEOContent({
     title: metadata.title as string,
     description: metadata.description as string,
     keywords: metadata.keywords as string,
   });
-  
+
   warnings.push(...contentValidation.warnings);
-  
+
   return {
     isValid: errors.length === 0,
     warnings,
