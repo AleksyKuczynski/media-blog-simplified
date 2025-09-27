@@ -16,6 +16,7 @@ import Section from '@/main/components/Main/Section';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
 import generateAuthorMetadata from '@/main/components/SEO/metadata/AuthorMetadata';
 import AuthorSchema from '@/main/components/SEO/schemas/AuthorSchema';
+import Link from 'next/link';
 
 export async function generateMetadata({ 
   params 
@@ -221,12 +222,12 @@ export default async function AuthorPage({
                   <p className="text-gray-600 mb-4">
                     {dictionary.common.status.empty}
                   </p>
-                  <a 
+                  <Link 
                     href="/ru/authors"
                     className="text-blue-600 hover:text-blue-800"
                   >
                     {dictionary.navigation.labels.authors}
-                  </a>
+                  </Link>
                 </div>
               )}
             </Suspense>
@@ -247,12 +248,12 @@ export default async function AuthorPage({
           <p className="text-gray-600 mb-4">
             Произошла ошибка при загрузке страницы автора. Попробуйте обновить страницу.
           </p>
-          <a 
+          <Link 
             href="/ru" 
             className="text-blue-600 hover:text-blue-800"
           >
             Вернуться на главную
-          </a>
+          </Link>
         </div>
       </Section>
     );

@@ -14,6 +14,7 @@ import Section from '@/main/components/Main/Section';
 import { generateRubricMetadata } from '@/main/components/SEO/metadata/RubricMetadata';
 import { RubricPageSchema } from '@/main/components/SEO/schemas/RubricPageSchema';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -208,12 +209,12 @@ export default async function RubricPage({
                 <p className="text-gray-600 mb-6">
                   В рубрике {rubricName} пока нет статей
                 </p>
-                <a 
+                <Link 
                   href="/ru/rubrics"
                   className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   {dictionary.navigation.labels.rubrics}
-                </a>
+                </Link>
               </div>
             )}
           </div>
@@ -230,18 +231,18 @@ export default async function RubricPage({
                   {dictionary.sections.rubrics.categoriesDescription}
                 </p>
                 <div className="flex flex-wrap gap-4 justify-center">
-                  <a 
+                  <Link 
                     href="/ru/rubrics"
                     className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     {dictionary.sections.rubrics.allRubrics}
-                  </a>
-                  <a 
+                  </Link>
+                  <Link 
                     href="/ru/articles"
                     className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     {dictionary.sections.articles.allArticles}
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -262,12 +263,12 @@ export default async function RubricPage({
           <p className="text-gray-600 mb-4">
             Произошла ошибка при загрузке страницы рубрики. Попробуйте обновить страницу.
           </p>
-          <a 
+          <Link 
             href="/ru" 
             className="text-blue-600 hover:text-blue-800"
           >
             Вернуться на главную
-          </a>
+          </Link>
         </div>
       </Section>
     );

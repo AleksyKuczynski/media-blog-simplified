@@ -16,6 +16,7 @@ import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 // FIXED: Use existing SEO components
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
+import Link from 'next/link';
 
 // Generate SEO-optimized metadata using existing CollectionMetadata component
 export async function generateMetadata({ 
@@ -246,18 +247,18 @@ export default async function CategoryPage({
                       
                       {/* Navigation links for better UX */}
                       <div className="mt-6 flex flex-wrap gap-4 justify-center">
-                        <a 
+                        <Link 
                           href="/ru/articles"
                           className="inline-flex items-center px-4 py-2 bg-prcolor text-white rounded-lg hover:bg-pr-fix transition-colors"
                         >
                           {dictionary.sections.articles.allArticles}
-                        </a>
-                        <a 
+                        </Link>
+                        <Link 
                           href="/ru/rubrics"
                           className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                           {dictionary.sections.rubrics.allRubrics}
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>

@@ -14,6 +14,7 @@ import getDictionary from '@/main/lib/dictionary/getDictionary';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import { getLocalizedAuthorCount } from '@/main/lib/dictionary/helpers/content';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -153,12 +154,12 @@ export default async function AllAuthorsPage({
                   <p className="text-gray-600 mb-4">
                     {dictionary.sections.authors.noAuthorsFound}
                   </p>
-                  <a 
+                  <Link 
                     href="/ru" 
                     className="text-blue-600 hover:text-blue-800"
                   >
                     {dictionary.navigation.labels.home}
-                  </a>
+                  </Link>
                 </div>
               )}
             </Suspense>
@@ -179,12 +180,12 @@ export default async function AllAuthorsPage({
           <p className="text-gray-600 mb-4">
             Произошла ошибка при загрузке страницы авторов. Попробуйте обновить страницу.
           </p>
-          <a 
+          <Link 
             href="/ru" 
             className="text-blue-600 hover:text-blue-800"
           >
             Вернуться на главную
-          </a>
+          </Link>
         </div>
       </Section>
     );

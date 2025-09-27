@@ -4,6 +4,7 @@
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import Section from '@/main/components/Main/Section';
+import Link from 'next/link';
 
 interface ErrorFallbackProps {
   dictionary: Dictionary;
@@ -102,13 +103,13 @@ export default function ErrorFallback({
             </button>
           )}
           
-          <a 
+          <Link 
             href="/ru" 
             className="px-6 py-3 text-blue-600 hover:text-blue-800 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
             aria-label={backToHomeText}
           >
             {backToHomeText}
-          </a>
+          </Link>
         </div>
       </div>
     </Section>
