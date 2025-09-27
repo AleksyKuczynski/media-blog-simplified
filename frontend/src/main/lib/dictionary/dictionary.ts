@@ -334,6 +334,10 @@ const dictionary: Dictionary = {
       copyright: '© {year} {siteName}. Все права защищены.',
       rights: 'Все права защищены',
     },
+    accessibility: { // ADD THIS SECTION
+      skipToFooter: 'Перейти к подвалу сайта',
+      footerNavigation: 'Навигация в подвале сайта',
+    },
   },
 };
 

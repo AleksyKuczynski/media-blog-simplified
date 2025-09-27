@@ -1,13 +1,125 @@
 // src/main/lib/dictionary/helpers/navigation.ts
-// OPTIMIZED: Kept only functions used by NavigationMetadata and components
+// Enhanced navigation helpers with missing functions for NavLinks and SkipLinks
 
 import { Dictionary } from '../types';
-import { processTemplate } from './templates';
 import { getPageTitle, getMetaDescription, getKeywords, generateCanonicalUrl } from './seo';
+
+// ===================================================================
+// TYPES - Navigation helper interfaces
+// ===================================================================
+
+export interface NavigationLink {
+  key: string;
+  href: string;
+  label: string;
+  title: string;
+  ariaLabel: string;
+  priority: number;
+  description: string;
+}
+
+export interface SkipLink {
+  href: string;
+  label: string;
+}
+
+export interface SkipLinksData {
+  skipToContent: SkipLink;
+  skipToNavigation: SkipLink;
+  skipToSearch: SkipLink;
+  skipToFooter: SkipLink;
+}
+
+export interface SkipLinksAccessibility {
+  keyboardNavigationLabel: string;
+  skipLinksDescription: string;
+}
+
+// ===================================================================
+// MISSING HELPER FUNCTIONS - Now implemented
+// ===================================================================
+
+/**
+ * Get navigation links configuration for NavLinks component
+ * FIXED: This function was missing - now properly implemented
+ */
+export const getNavigationLinksConfig = (dictionary: Dictionary): NavigationLink[] => {
+  const { labels, descriptions } = dictionary.navigation;
+
+  return [
+    {
+      key: 'articles',
+      href: '/articles',
+      label: labels.articles,
+      title: descriptions.articles,
+      ariaLabel: `${labels.articles} - ${descriptions.articles}`,
+      priority: 1,
+      description: descriptions.articles,
+    },
+    {
+      key: 'rubrics', 
+      href: '/rubrics',
+      label: labels.rubrics,
+      title: descriptions.rubrics,
+      ariaLabel: `${labels.rubrics} - ${descriptions.rubrics}`,
+      priority: 2,
+      description: descriptions.rubrics,
+    },
+    {
+      key: 'authors',
+      href: '/authors', 
+      label: labels.authors,
+      title: descriptions.authors,
+      ariaLabel: `${labels.authors} - ${descriptions.authors}`,
+      priority: 3,
+      description: descriptions.authors,
+    },
+  ];
+};
+
+/**
+ * Get skip links data for SkipLinks component  
+ * FIXED: This function was missing - now properly implemented
+ */
+export const getSkipLinksData = (dictionary: Dictionary): SkipLinksData => {
+  return {
+    skipToContent: {
+      href: '#main-content',
+      label: dictionary.navigation.accessibility.skipToContent,
+    },
+    skipToNavigation: {
+      href: '#main-navigation', 
+      label: dictionary.navigation.accessibility.skipToNavigation,
+    },
+    skipToSearch: {
+      href: '#site-search',
+      label: dictionary.search.accessibility.searchLabel,
+    },
+    skipToFooter: {
+      href: '#site-footer',
+      label: 'Перейти к подвалу сайта', // This could be added to dictionary.footer.accessibility if needed
+    },
+  };
+};
+
+/**
+ * Get skip links accessibility data
+ * FIXED: This function was missing - now properly implemented  
+ */
+export const getSkipLinksAccessibility = (dictionary: Dictionary): SkipLinksAccessibility => {
+  return {
+    keyboardNavigationLabel: 'Быстрая навигация с клавиатуры',
+    skipLinksDescription: 'Ссылки для быстрого перехода к основным разделам страницы',
+  };
+};
+
+// ===================================================================
+// EXISTING FUNCTIONS - Preserved for compatibility
+// ===================================================================
 
 /**
  * Generate navigation elements data for components
- * KEEP: Used by navigation components
+ * KEEP: Used by navigation components and SEO schemas
  */
 export const generateNavigationElements = (dictionary: Dictionary) => {
   const { labels, descriptions } = dictionary.navigation;

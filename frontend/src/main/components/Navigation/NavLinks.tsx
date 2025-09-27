@@ -1,12 +1,13 @@
 // src/main/components/Navigation/NavLinks.tsx
-// FIXED: Aligned with actual helper function return values
+// FIXED: Now uses actual helper functions with proper imports and error handling
 
 import Link from 'next/link';
 import NavLinksClient from './NavLinksClient';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { getNavigationLinksConfig } from '@/main/lib/dictionary/helpers/navigation';
 
 // ===================================================================
-// TYPES - Simple and clean
+// TYPES - Clean and focused
 // ===================================================================
 
 interface NavLinksProps {
@@ -16,22 +17,23 @@ interface NavLinksProps {
 }
 
 // ===================================================================
-// MAIN NAVLINKS COMPONENT - FIXED
+// MAIN NAVLINKS COMPONENT - FIXED AND ENHANCED
 // ===================================================================
 
 /**
- * NavLinks component - FIXED to work with actual helper returns
+ * NavLinks component - Enhanced with proper helper usage and SEO optimization
+ * Uses semantic HTML markup for accessibility and SEO (Google + Yandex)
  */
 export default function NavLinks({ dictionary, lang, className }: NavLinksProps) {
   try {
-    // FIXED: Helper now returns array directly for main navigation
+    // FIXED: Now uses the correct helper function
     const navigationLinks = getNavigationLinksConfig(dictionary);
 
     return (
       <>
-        {navigationLinks.map((link, index) => (
+        {navigationLinks.map((link) => (
           <li 
-            key={link.href || `nav-${index}`} // FIXED: Fallback key if href is undefined
+            key={link.key}
             className={`nav-link-item list-none ${className || ''}`}
             role="menuitem"
           >
@@ -40,11 +42,24 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
               className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200"
               aria-label={link.ariaLabel}
               title={link.title}
-              data-href={link.href} // FIXED: Add data-href attribute for NavLinksClient
+              data-href={link.href}
               data-nav-section={link.key}
               data-nav-priority={link.priority}
+              // Enhanced SEO attributes for Russian market
+              itemProp="url"
+              itemScope
+              itemType="https://schema.org/SiteNavigationElement"
             >
-              {link.label}
+              <span 
+                itemProp="name"
+                className="font-medium"
+              >
+                {link.label}
+              </span>
+              {/* Hidden description for screen readers and SEO */}
+              <span className="sr-only" itemProp="description">
+                {link.description}
+              </span>
             </Link>
           </li>
         ))}
@@ -60,22 +75,55 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
   } catch (error) {
     console.error('NavLinks: Error rendering navigation links', error);
     
-    // Fallback navigation using basic dictionary properties
+    // Enhanced fallback navigation with semantic markup
     return (
       <>
         <li role="menuitem">
-          <Link href="/ru/articles" className="nav-link px-4 py-2" data-href="/articles">
-            {dictionary.navigation.labels.articles}
+          <Link 
+            href="/ru/articles" 
+            className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200" 
+            data-href="/articles"
+            data-nav-section="articles"
+            itemProp="url"
+            itemScope
+            itemType="https://schema.org/SiteNavigationElement"
+          >
+            <span itemProp="name">{dictionary.navigation.labels.articles}</span>
+            <span className="sr-only" itemProp="description">
+              {dictionary.navigation.descriptions.articles}
+            </span>
           </Link>
         </li>
         <li role="menuitem">
-          <Link href="/ru/rubrics" className="nav-link px-4 py-2" data-href="/rubrics">
-            {dictionary.navigation.labels.rubrics}
+          <Link 
+            href="/ru/rubrics" 
+            className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200" 
+            data-href="/rubrics"
+            data-nav-section="rubrics"
+            itemProp="url"
+            itemScope
+            itemType="https://schema.org/SiteNavigationElement"
+          >
+            <span itemProp="name">{dictionary.navigation.labels.rubrics}</span>
+            <span className="sr-only" itemProp="description">
+              {dictionary.navigation.descriptions.rubrics}
+            </span>
           </Link>
         </li>
         <li role="menuitem">
-          <Link href="/ru/authors" className="nav-link px-4 py-2" data-href="/authors">
-            {dictionary.navigation.labels.authors}
+          <Link 
+            href="/ru/authors" 
+            className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200" 
+            data-href="/authors"
+            data-nav-section="authors"
+            itemProp="url"
+            itemScope
+            itemType="https://schema.org/SiteNavigationElement"
+          >
+            <span itemProp="name">{dictionary.navigation.labels.authors}</span>
+            <span className="sr-only" itemProp="description">
+              {dictionary.navigation.descriptions.authors}
+            </span>
           </Link>
         </li>
         

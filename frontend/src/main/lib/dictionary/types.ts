@@ -385,11 +385,17 @@ export interface FooterLegal {
   readonly rights: string;
 }
 
+export interface FooterAccessibility {
+  readonly skipToFooter: string;
+  readonly footerNavigation: string;
+}
+
 export interface FooterDictionary {
   readonly about: FooterAbout;
   readonly quickLinks: FooterQuickLinks;
   readonly socialLinks: FooterSocialLinks;
   readonly legal: FooterLegal;
+  readonly accessibility: FooterAccessibility;
 }
 
 // ===================================================================
