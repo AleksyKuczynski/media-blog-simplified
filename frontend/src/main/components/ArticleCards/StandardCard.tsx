@@ -97,7 +97,7 @@ export function StandardCard({
           )}
           
           <div className="text-xs lg:text-sm font-medium transition-colors duration-200 flex justify-end items-end text-pr-cont hover:text-pr-fix">
-            <span>{dictionary.common.readMore}</span> {/* MIGRATED: Use dictionary.common */}
+            <span>{dictionary.common.actions.readMore}</span> {/* MIGRATED: Use dictionary.common */}
             <ChevronRightIcon className="ml-1 w-3 h-3" />
           </div>
         </div>

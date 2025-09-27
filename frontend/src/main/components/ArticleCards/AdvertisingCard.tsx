@@ -48,7 +48,7 @@ export function AdvertisingCard({
               hover:bg-on-pr-cont/90
               transition-colors duration-200
             ">
-              {dictionary.common.readMore} {/* MIGRATED: Use dictionary.common */}
+              {dictionary.common.actions.readMore} {/* MIGRATED: Use dictionary.common */}
             </span>
           </div>
         </div>

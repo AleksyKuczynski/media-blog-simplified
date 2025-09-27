@@ -42,7 +42,7 @@ export function NewsCard({
             text-pr-cont hover:text-pr-fix
             transition-colors duration-200
           ">
-            {dictionary.common.readMore} {/* MIGRATED: Use dictionary.common */}
+            {dictionary.common.actions.readMore} {/* MIGRATED: Use dictionary.common */}
           </span>
         </div>
       </Link>

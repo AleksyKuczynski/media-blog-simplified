@@ -48,7 +48,7 @@ export default async function ArticleCard({
   return (
     <Suspense fallback={
       <div className="p-4 animate-pulse bg-sf-hi rounded-xl">
-        {dictionary.common.loading}
+        {dictionary.common.status.loading}
       </div>
     }>
       <ArticleCardVariant
