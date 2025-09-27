@@ -333,12 +333,12 @@ export interface FilterLabels {
   readonly allCategories: string;
   readonly newest: string;
   readonly oldest: string;
-  readonly alphabetical: string;
   readonly reset: string;
   readonly apply: string;
 }
 
 export interface FilterAccessibility {
+  readonly categorySelector: string;
   readonly sortingControl: string;
   readonly resetButton: string;
   readonly filterGroup: string;

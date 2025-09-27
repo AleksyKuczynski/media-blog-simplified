@@ -292,11 +292,11 @@ const dictionary: Dictionary = {
       allCategories: 'Все категории',
       newest: 'Сначала новые',
       oldest: 'Сначала старые',
-      alphabetical: 'По алфавиту',
       reset: 'Сбросить',
       apply: 'Применить',
     },
     accessibility: {
+      categorySelector: 'Выбор категории',
       sortingControl: 'Управление сортировкой',
       resetButton: 'Сбросить фильтры',
       filterGroup: 'Группа фильтров',

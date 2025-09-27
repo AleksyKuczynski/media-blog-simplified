@@ -88,6 +88,3 @@ export const getCollectionDescription = (
 ): string => {
   return dictionary.sections[collectionType].collectionPageDescription;
 };
-
-// REMOVED: generateCollectionSEO, generateBreadcrumbs, validateSEOContent, getLocalizedCount
-// These are either duplicated in other files or not used by components

@@ -161,8 +161,3 @@ export const getNavigationOpenGraphData = (
     type: 'website' as const,
   };
 };
-
-// REMOVED: getSkipLinksData, getSkipLinksAccessibility, getNavigationAccessibilityLabels,
-// getNavigationLinkData, getNavigationLinksConfig, getCompleteNavigationConfig,
-// getNavigationPageTitle, getNavigationSectionDescription, validateNavigationDictionary
-// These functions are not used by actual components

@@ -4,7 +4,6 @@
 import Link from 'next/link';
 import NavLinksClient from './NavLinksClient';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
-import { getNavigationLinksConfig } from '@/main/lib/dictionary/helpers/navigation';
 
 // ===================================================================
 // TYPES - Simple and clean

@@ -15,12 +15,12 @@ import { generateCanonicalUrl } from './seo';
  */
 export const getFilterLabels = (dictionary: Dictionary) => {
   return {
-    allCategories: dictionary.filter.allCategories,
-    reset: dictionary.filter.reset,
-    sortOrder: dictionary.filter.sortOrder,
-    category: dictionary.filter.category,
-    newest: dictionary.filter.newest,
-    oldest: dictionary.filter.oldest,
+    allCategories: dictionary.filter.labels.allCategories,
+    reset: dictionary.filter.labels.reset,
+    sortOrder: dictionary.filter.labels.sortBy,
+    category: dictionary.filter.labels.category,
+    newest: dictionary.filter.labels.newest,
+    oldest: dictionary.filter.labels.oldest,
   };
 };
 
@@ -30,9 +30,9 @@ export const getFilterLabels = (dictionary: Dictionary) => {
  */
 export const getSortingOptions = (dictionary: Dictionary) => {
   return {
-    newest: dictionary.filter.newest,
-    oldest: dictionary.filter.oldest,
-    label: dictionary.filter.sortOrder,
+    newest: dictionary.filter.labels.newest,
+    oldest: dictionary.filter.labels.oldest,
+    label: dictionary.filter.labels.sortBy,
   };
 };
 
@@ -147,10 +147,10 @@ export const validateFilterDictionary = (dictionary: Dictionary): boolean => {
     // Check for filter section
     const hasFilter = !!dictionary.filter;
     const hasFilterLabels = !!(
-      dictionary.filter?.allCategories &&
-      dictionary.filter?.category &&
-      dictionary.filter?.reset &&
-      dictionary.filter?.sortOrder
+      dictionary.filter?.labels.allCategories &&
+      dictionary.filter?.labels.category &&
+      dictionary.filter?.labels.reset &&
+      dictionary.filter?.labels.sortBy
     );
     
     return hasFilter && hasFilterLabels;
@@ -165,10 +165,10 @@ export const validateFilterDictionary = (dictionary: Dictionary): boolean => {
  */
 export const getFilterAccessibilityData = (dictionary: Dictionary) => {
   return {
-    categorySelector: dictionary.filter.categorySelector,
-    sortingControl: dictionary.filter.sortingControl,
-    resetButton: dictionary.filter.resetButton,
-    filterGroup: dictionary.filter.filterGroup,
-    dropdownLabel: dictionary.filter.dropdownLabel,
+    categorySelector: dictionary.filter.accessibility.categorySelector,
+    sortingControl: dictionary.filter.accessibility.sortingControl,
+    resetButton: dictionary.filter.accessibility.resetButton,
+    filterGroup: dictionary.filter.accessibility.filterGroup,
+    dropdownLabel: dictionary.filter.accessibility.dropdownLabel,
   };
 };

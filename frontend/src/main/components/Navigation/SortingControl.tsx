@@ -32,8 +32,8 @@ export default function SortingControl({
   const sorting = dictionary.filter;
 
   const sortItems: DropdownItemType[] = [
-    { id: 'desc', label: sorting.newest, value: 'desc' },
-    { id: 'asc', label: sorting.oldest, value: 'asc' }
+    { id: 'desc', label: sorting.labels.newest, value: 'desc' },
+    { id: 'asc', label: sorting.labels.oldest, value: 'asc' }
   ];
 
   const items = sortItems.map(item => ({
@@ -50,7 +50,7 @@ export default function SortingControl({
   return (
     <div className="flex flex-col gap-2">
       <span className="text-sm font-medium text-prcolor">
-        {sorting.sortOrder}
+        {sorting.labels.sortBy}
       </span>
       <Dropdown
         items={items}
@@ -62,7 +62,7 @@ export default function SortingControl({
           <NavButton
             context="desktop"
             className="flex items-center justify-between w-full px-4 py-2 border-2 border-prcolor rounded-md"
-            aria-label={sorting.sortOrder}
+            aria-label={sorting.labels.sortBy}
           >
             <span className="truncate">
               {sortItems.find(item => item.value === currentSort)?.label}

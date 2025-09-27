@@ -52,7 +52,6 @@ export default function Navigation({
       <CompleteNavigationSchema 
         dictionary={dictionary}
         currentPath={currentPath || pathname.replace('/ru', '') || '/'}
-        breadcrumbs={breadcrumbs}
       />
       
       {/* Enhanced navigation wrapper with better semantic markup */}

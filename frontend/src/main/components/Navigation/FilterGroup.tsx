@@ -270,7 +270,7 @@ export function CategoryOnlyFilter({
     return (
       <div className="mb-6 flex justify-center">
         <div className="w-64 px-4 py-2 border-2 border-prcolor rounded-md text-center">
-          {filterLabels.allCategories}
+          {filterLabels.labels.allCategories}
         </div>
       </div>
     );

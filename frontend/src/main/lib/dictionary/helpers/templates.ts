@@ -34,6 +34,3 @@ export const createSEOVariables = (overrides: Partial<TemplateVariables> = {}): 
   year: new Date().getFullYear().toString(),
   ...overrides,
 });
-
-// REMOVED: validateTemplate, extractTemplateVariables, processTemplateSafe, 
-// createCollectionVariables, createItemVariables - not used in components
