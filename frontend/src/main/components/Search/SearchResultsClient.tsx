@@ -8,6 +8,7 @@ import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import SortingControl from '@/main/components/Navigation/SortingControl';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
+import { getLocalizedCount } from '@/main/lib/dictionary/helpers/content';
 
 interface SearchResultsClientProps {
   readonly dictionary: Dictionary;
@@ -35,6 +36,8 @@ export default function SearchResultsClient({
   if (allSlugs.length === 0) {
     return null;
   }
+
+  const resultsCountText = getLocalizedCount(dictionary, allSlugs.length, 'results');
 
   return (
     <section 

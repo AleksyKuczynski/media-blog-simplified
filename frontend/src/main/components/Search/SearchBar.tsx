@@ -86,18 +86,7 @@ export default function SearchBar({
 
       <SearchDropdown
         state={state}
-        dict={{
-          placeholder: dictionary.search.labels.placeholder,
-          submit: dictionary.search.labels.submit,
-          results: dictionary.search.labels.results,
-          noResults: dictionary.search.labels.noResults,
-          searching: dictionary.search.labels.searching,
-          minCharacters: dictionary.search.labels.minCharacters,
-          resultsFor: dictionary.search.templates.resultsFor,
-          pageTitle: dictionary.search.templates.pageTitle,
-          pageDescription: dictionary.search.templates.pageDescription,
-          relatedTo: dictionary.search.templates.relatedTo,
-        }}
+        dict={dictionary.search}
         onItemSelect={handlers.handleSelect}
         className="rounded-lg shadow-lg"
         ariaLabel={dictionary.search.accessibility.searchResultsLabel}
