@@ -1,5 +1,5 @@
 // src/main/components/Search/ExpandableSearch.tsx
-// Clean implementation - No backward compatibility, dictionary required
+// SEO-OPTIMIZED: Enhanced semantic markup and accessibility
 'use client'
 
 import React from 'react';
@@ -10,14 +10,14 @@ import { useSearchLogic } from './useSearchLogic';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 
 interface ExpandableSearchProps {
-  readonly dictionary: Dictionary; // REQUIRED - no backward compatibility
+  readonly dictionary: Dictionary;
   readonly lang: Lang;
   readonly className?: string;
 }
 
 /**
- * ExpandableSearch - Expandable search component with clean dictionary integration
- * Removes all backward compatibility code for cleaner implementation
+ * ExpandableSearch - SEO-optimized expandable search component
+ * SEMANTIC: Enhanced with structured markup for better SEO
  */
 export default function ExpandableSearch({
   dictionary,
@@ -37,12 +37,17 @@ export default function ExpandableSearch({
   const isExpanded = state.input.visibility !== 'hidden';
 
   return (
-    <div 
+    <search 
       ref={refs.containerRef}
       className={`relative ${className}`}
       role="search"
       aria-label={dictionary.search.accessibility.searchLabel}
+      itemScope
+      itemType="https://schema.org/SearchAction"
     >
+      <meta itemProp="target" content="https://event4me.eu/ru/search?q={search_term_string}" />
+      <meta itemProp="query-input" content="required name=search_term_string" />
+      
       <div className={`
         relative flex items-center gap-2
         transition-all duration-200 ease-in-out
@@ -60,7 +65,7 @@ export default function ExpandableSearch({
           onFocus={handlers.handleFocus}
           inputRef={refs.inputRef}
           ariaLabel={dictionary.search.accessibility.searchInputLabel}
-          ariaDescription={dictionary.search.accessibility.searchLabel}
+          ariaDescription={dictionary.search.accessibility.searchDescription}
         />
         
         <NavButton
@@ -78,7 +83,7 @@ export default function ExpandableSearch({
 
       <SearchDropdown
         state={state}
-        translations={{
+        dict={{
           placeholder: dictionary.search.labels.placeholder,
           submit: dictionary.search.labels.submit,
           results: dictionary.search.labels.results,
@@ -94,6 +99,6 @@ export default function ExpandableSearch({
         className="rounded-lg shadow-lg"
         ariaLabel={dictionary.search.accessibility.searchResultsLabel}
       />
-    </div>
+    </search>
   );
 }

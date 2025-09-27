@@ -312,6 +312,9 @@ export interface SearchAccessibility {
   readonly searchLabel: string;
   readonly searchButtonLabel: string;
   readonly searchInputLabel: string;
+  readonly searchDescription: string;
+  readonly searchResultsLabel: string;
+  readonly clearSearchLabel: string;
 }
 
 export interface SearchDictionary {

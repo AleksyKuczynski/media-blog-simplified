@@ -264,7 +264,7 @@ const dictionary: Dictionary = {
       noResults: 'Ничего не найдено',
       searching: 'Поиск...',
       submit: 'Найти',
-      minCharacters: 'Введите минимум 2 символа',
+      minCharacters: 'Введите минимум 3 символа',
     },
     templates: {
       resultsFor: 'Результаты поиска для "{query}"',
@@ -276,6 +276,9 @@ const dictionary: Dictionary = {
       searchLabel: 'Поиск по сайту',
       searchButtonLabel: 'Выполнить поиск',
       searchInputLabel: 'Введите поисковый запрос',
+      searchDescription: 'Поиск по всем материалам сайта',
+      searchResultsLabel: 'Результаты поиска',
+      clearSearchLabel: 'Очистить поиск',
     },
   },
 

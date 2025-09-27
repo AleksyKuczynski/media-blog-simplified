@@ -1,6 +1,5 @@
 // src/main/components/Search/SearchBar.tsx
-// OPTIMIZED: Removed compatibility layer, direct dictionary usage, no hardcoded text
-
+// SEO-OPTIMIZED: Enhanced semantic markup for better search engine visibility
 'use client'
 
 import React from 'react';
@@ -11,15 +10,15 @@ import { useSearchLogic } from './useSearchLogic';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 
 interface SearchBarProps {
-  dictionary: Dictionary;
-  lang: Lang;
-  className?: string;
-  onSearchComplete?: () => void;
+  readonly dictionary: Dictionary;
+  readonly lang: Lang;
+  readonly className?: string;
+  readonly onSearchComplete?: () => void;
 }
 
 /**
- * SearchBar - Optimized search component with direct dictionary usage
- * NO HARDCODED TEXT - uses dictionary entries exclusively
+ * SearchBar - SEO-optimized search component with semantic HTML5
+ * SEMANTIC: Uses <search> element and structured data for better SEO
  */
 export default function SearchBar({
   dictionary,
@@ -39,12 +38,17 @@ export default function SearchBar({
   });
 
   return (
-    <div 
+    <search 
       ref={refs.containerRef}
       className={`relative ${className}`}
       role="search"
       aria-label={dictionary.search.accessibility.searchLabel}
+      itemScope
+      itemType="https://schema.org/SearchAction"
     >
+      <meta itemProp="target" content="https://event4me.eu/ru/search?q={search_term_string}" />
+      <meta itemProp="query-input" content="required name=search_term_string" />
+      
       <div className="
         relative flex gap-2 items-center
         bg-sf-hi rounded-lg shadow-md
@@ -82,8 +86,7 @@ export default function SearchBar({
 
       <SearchDropdown
         state={state}
-        // Direct dictionary usage - NO COMPATIBILITY LAYER
-        translations={{
+        dict={{
           placeholder: dictionary.search.labels.placeholder,
           submit: dictionary.search.labels.submit,
           results: dictionary.search.labels.results,
@@ -99,6 +102,6 @@ export default function SearchBar({
         className="rounded-lg shadow-lg"
         ariaLabel={dictionary.search.accessibility.searchResultsLabel}
       />
-    </div>
+    </search>
   );
 }
