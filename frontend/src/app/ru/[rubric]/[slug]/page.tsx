@@ -24,21 +24,22 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ 
   params 
 }: { 
-  params: { rubric: string, slug: string } 
+  params: Promise<{ rubric: string, slug: string }> 
 }): Promise<Metadata> {
   try {
+    const resolvedParams = await params;
     const [dictionary, article] = await Promise.all([
       getDictionary('ru'),
-      fetchFullArticle(params.slug, 'ru'),
+      fetchFullArticle(resolvedParams.slug, 'ru'),
     ]);
 
     if (!article) {
-      return generateArticleNotFoundMetadata(dictionary, params.rubric);
+      return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
     }
 
     const translation = article.translations[0];
     if (!translation) {
-      return generateArticleNotFoundMetadata(dictionary, params.rubric);
+      return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
     }
 
     const articleData = {
@@ -47,15 +48,15 @@ export async function generateMetadata({
       description: translation.description,
       seoDescription: translation.seo_description,
       lead: translation.lead,
-      slug: params.slug,
-      rubricSlug: params.rubric,
+      slug: resolvedParams.slug,
+      rubricSlug: resolvedParams.rubric,
       author: article.authors[0]?.name || 'EventForMe Editorial',
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageUrl: article.article_heading_img 
         ? `${dictionary.seo.site.url.replace(/\/$/, '')}/assets/${article.article_heading_img}`
         : undefined,
-      tags: [params.rubric, ...translation.title.split(' ').slice(0, 3)],
+      tags: [resolvedParams.rubric, ...translation.title.split(' ').slice(0, 3)],
     };
 
     return await generateArticleMetadata({
@@ -68,7 +69,8 @@ export async function generateMetadata({
     
     try {
       const dictionary = await getDictionary('ru');
-      return generateArticleNotFoundMetadata(dictionary, params.rubric);
+      const resolvedParams = await params;
+      return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
     } catch (dictError) {
       return {
         title: 'Ошибка — EventForMe',
@@ -84,8 +86,8 @@ export async function generateMetadata({
 export default async function ArticlePage({ 
   params,
 }: { 
-  params: { rubric: string, slug: string },
-  searchParams: { author?: string }
+  params: Promise<{ rubric: string, slug: string }>,
+  searchParams: Promise<{ author?: string }>
 }) {
   let dictionary;
   
@@ -97,8 +99,10 @@ export default async function ArticlePage({
   }
 
   try {
+        const resolvedParams = await params;
+
     const [article, rubricBasics] = await Promise.all([
-      fetchFullArticle(params.slug, 'ru'),
+      fetchFullArticle(resolvedParams.slug, 'ru'),
       fetchRubricBasics('ru'),
     ]);
 
@@ -143,12 +147,12 @@ export default async function ArticlePage({
         href: '/ru',
       },
       {
-        label: params.rubric,
-        href: `/ru/${params.rubric}`,
+        label: resolvedParams.rubric,
+        href: `/ru/${resolvedParams.rubric}`,
       },
       {
         label: translation.title,
-        href: `/ru/${params.rubric}/${params.slug}`,
+        href: `/ru/${resolvedParams.rubric}/${resolvedParams.slug}`,
       },
     ];
 
@@ -157,9 +161,9 @@ export default async function ArticlePage({
       title: translation.title,
       description: translation.description || undefined,
       lead: translation.lead || undefined,
-      slug: params.slug,
-      rubricSlug: params.rubric,
-      rubricName: params.rubric,
+      slug: resolvedParams.slug,
+      rubricSlug: resolvedParams.rubric,
+      rubricName: resolvedParams.rubric,
       author: {
         name: article.authors[0]?.name || 'EventForMe Editorial',
         slug: article.authors[0]?.slug || undefined,
@@ -169,7 +173,7 @@ export default async function ArticlePage({
       imageUrl: article.article_heading_img 
         ? `${dictionary.seo.site.url.replace(/\/$/, '')}/assets/${article.article_heading_img}`
         : undefined,
-      tags: [params.rubric, ...translation.title.split(' ').slice(0, 3)],
+      tags: [resolvedParams.rubric, ...translation.title.split(' ').slice(0, 3)],
     };
 
     const breadcrumbSchemaData = breadcrumbItems.map(item => ({
@@ -179,8 +183,8 @@ export default async function ArticlePage({
 
     // NEW: Prepare related links data for SEO enhancement
     const rubricData = {
-      slug: params.rubric,
-      name: params.rubric, // Could be enhanced with translated name from rubricBasics
+      slug: resolvedParams.rubric,
+      name: resolvedParams.rubric, // Could be enhanced with translated name from rubricBasics
       // FIXED: Removed articleCount since RubricBasic doesn't have this property
     };
 
@@ -189,7 +193,7 @@ export default async function ArticlePage({
       name: cat.name,
     })) || [];
 
-    const currentArticleUrl = `${dictionary.seo.site.url}/ru/${params.rubric}/${params.slug}`;
+    const currentArticleUrl = `${dictionary.seo.site.url}/ru/${resolvedParams.rubric}/${resolvedParams.slug}`;
 
     return (
       <>

@@ -12,8 +12,6 @@ import getDictionary from '@/main/lib/dictionary/getDictionary';
 import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics } from '@/main/lib/directus';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-
-// FIXED: Use existing SEO components
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import Link from 'next/link';
@@ -22,12 +20,12 @@ import Link from 'next/link';
 export async function generateMetadata({ 
   params 
 }: { 
-  params: { categorySlug: string } 
+  params: Promise<{ categorySlug: string }> 
 }): Promise<Metadata> {
-  const dictionary = await getDictionary('ru'); // No try-catch needed for local file
+  const dictionary = await getDictionary('ru');
   const categories = await fetchAllCategories('ru');
-  
-  const category = categories.find(cat => cat.slug === params.categorySlug);
+  const resolvedParams = await params;
+  const category = categories.find(cat => cat.slug === resolvedParams.categorySlug);
   
   if (!category) {
     return {
@@ -37,7 +35,7 @@ export async function generateMetadata({
   }
 
   // Get article count for this category
-  const { slugs } = await fetchArticleSlugs(1, 'desc', params.categorySlug);
+  const { slugs } = await fetchArticleSlugs(1, 'desc', resolvedParams.categorySlug);
 
   // Transform category data for the collection metadata generator
   const categoryData = [{
@@ -52,7 +50,7 @@ export async function generateMetadata({
     collectionType: 'articles', // Category pages show articles
     items: categoryData,
     totalCount: slugs.length,
-    currentPath: `/ru/category/${params.categorySlug}`,
+    currentPath: `/ru/category/${resolvedParams.categorySlug}`,
     featured: false,
   });
 }
@@ -61,21 +59,23 @@ export default async function CategoryPage({
   params,
   searchParams 
 }: { 
-  params: { categorySlug: string },
-  searchParams: { page?: string, sort?: string }
+  params: Promise<{ categorySlug: string }>,
+  searchParams: Promise<{ page?: string, sort?: string }>
 }) {
+  const resolvedParams = await params;
   const dictionary = await getDictionary('ru'); // No try-catch needed for local file
   const categories = await fetchAllCategories('ru');
   const rubricBasics = await fetchRubricBasics('ru');
   
-  const category = categories.find(cat => cat.slug === params.categorySlug);
+  const category = categories.find(cat => cat.slug === resolvedParams.categorySlug);
   
   if (!category) {
     notFound();
   }
 
-  const currentPage = Number(searchParams.page) || 1;
-  const currentSort = searchParams.sort || 'desc';
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Number(resolvedSearchParams.page) || 1;
+  const currentSort = resolvedSearchParams.sort || 'desc';
 
   // Fetch articles for all pages up to current page
   let allSlugs: ArticleSlugInfo[] = [];
@@ -85,7 +85,7 @@ export default async function CategoryPage({
     const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
       page,
       currentSort,
-      params.categorySlug
+      resolvedParams.categorySlug
     );
     allSlugs = [...allSlugs, ...slugs];
     hasMore = pageHasMore;
@@ -104,7 +104,7 @@ export default async function CategoryPage({
     },
     {
       label: category.name,
-      href: `/ru/category/${params.categorySlug}`,
+      href: `/ru/category/${resolvedParams.categorySlug}`,
     },
   ];
 
@@ -124,7 +124,7 @@ export default async function CategoryPage({
         collectionType="articles"
         items={articleItems}
         totalCount={allSlugs.length}
-        currentPath={`/ru/category/${params.categorySlug}`}
+        currentPath={`/ru/category/${resolvedParams.categorySlug}`}
         featured={false}
       />
 
@@ -199,7 +199,7 @@ export default async function CategoryPage({
                       slugInfos={allSlugs}
                       lang="ru"
                       dictionary={dictionary}
-                      categorySlug={params.categorySlug}
+                      categorySlug={resolvedParams.categorySlug}
                       showCount={false}
                       ariaLabel={`Статьи в категории ${category.name}`}
                     />

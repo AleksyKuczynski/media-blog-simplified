@@ -21,12 +21,13 @@ import Link from 'next/link';
 export async function generateMetadata({ 
   params 
 }: { 
-  params: { slug: string } 
+  params: Promise<{ slug: string }> 
 }): Promise<Metadata> {
   try {
+    const resolvedParams = await params;
     const [dictionary, author] = await Promise.all([
       getDictionary('ru'), // FIXED: Use new dictionary
-      fetchAuthorBySlug(params.slug, 'ru'),
+      fetchAuthorBySlug(resolvedParams.slug, 'ru'),
     ]);
     
     if (!author) {
@@ -37,7 +38,7 @@ export async function generateMetadata({
     }
 
     // Get article count for this author
-    const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], params.slug);
+    const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], resolvedParams.slug);
     const articleCount = slugs.length;
 
     // FIXED: Use new AuthorMetadata component
@@ -45,11 +46,11 @@ export async function generateMetadata({
       dictionary,
       authorData: {
         name: author.name,
-        slug: params.slug,
+        slug: resolvedParams.slug,
         bio: author.bio,
         avatar: author.avatar,
         articleCount,
-        path: `/ru/authors/${params.slug}`,
+        path: `/ru/authors/${resolvedParams.slug}`,
         featured: false,
       },
     });
@@ -68,13 +69,14 @@ export default async function AuthorPage({
   params, 
   searchParams 
 }: { 
-  params: { slug: string }, 
-  searchParams: { page?: string, sort?: string }
+  params: Promise<{ slug: string }>, 
+  searchParams: Promise<{ page?: string, sort?: string }>
 }) {
   try {
+    const resolvedParams = await params;
     const [dictionary, author, rubricBasics] = await Promise.all([
       getDictionary('ru'), // FIXED: Use new dictionary
-      fetchAuthorBySlug(params.slug, 'ru'),
+      fetchAuthorBySlug(resolvedParams.slug, 'ru'),
       fetchRubricBasics('ru'),
     ]);
     
@@ -82,8 +84,9 @@ export default async function AuthorPage({
       notFound();
     }
     
-    const currentPage = Number(searchParams.page) || 1;
-    const currentSort = searchParams.sort || 'desc';
+    const resolvedSearchParams = await searchParams;
+    const currentPage = Number(resolvedSearchParams.page) || 1;
+    const currentSort = resolvedSearchParams.sort || 'desc';
 
     // Fetch articles for all pages up to current page
     let allSlugInfos: ArticleSlugInfo[] = [];
@@ -96,7 +99,7 @@ export default async function AuthorPage({
         undefined,
         undefined,
         [],
-        params.slug
+        resolvedParams.slug
       );
       allSlugInfos = [...allSlugInfos, ...slugs];
       hasMore = pageHasMore;
@@ -115,7 +118,7 @@ export default async function AuthorPage({
       },
       {
         label: author.name,
-        href: `/ru/authors/${params.slug}`,
+        href: `/ru/authors/${resolvedParams.slug}`,
       },
     ];
 
@@ -137,13 +140,13 @@ export default async function AuthorPage({
           dictionary={dictionary}
           authorData={{
             name: author.name,
-            slug: params.slug,
+            slug: resolvedParams.slug,
             bio: author.bio,
             avatar: author.avatar,
             articleCount: allSlugInfos.length,
             articles: articlesForSchema,
           }}
-          currentPath={`/ru/authors/${params.slug}`}
+          currentPath={`/ru/authors/${resolvedParams.slug}`}
         />
         
         {/* FIXED: Breadcrumbs using correct interface */}
@@ -203,7 +206,7 @@ export default async function AuthorPage({
                     slugInfos={allSlugInfos}
                     lang="ru"
                     dictionary={dictionary}
-                    authorSlug={params.slug}
+                    authorSlug={resolvedParams.slug}
                     showCount={false}
                   />
                   

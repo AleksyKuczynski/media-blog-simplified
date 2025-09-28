@@ -10,8 +10,7 @@ interface SearchInputProps {
   onChange: (value: string) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onFocus: () => void;
-  inputRef: React.RefObject<HTMLInputElement>;
-  // NEW: Enhanced accessibility props
+  inputRef: React.RefObject<HTMLInputElement | null>;
   ariaLabel?: string;
   ariaDescription?: string;
 }
@@ -76,7 +75,7 @@ export default function SearchInput({
       
       <input
         id={inputId}
-        ref={inputRef}
+        ref={inputRef as React.RefObject<HTMLInputElement>}
         type="text"
         className={styles.input.base}
         placeholder={placeholder}

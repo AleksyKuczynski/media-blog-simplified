@@ -39,7 +39,7 @@ export default function SearchBar({
 
   return (
     <search 
-      ref={refs.containerRef}
+      ref={refs.containerRef as React.RefObject<HTMLElement>}
       className={`relative ${className}`}
       role="search"
       aria-label={dictionary.search.accessibility.searchLabel}

@@ -24,12 +24,13 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ 
   params 
 }: { 
-  params: { rubric: string } 
+  params: Promise<{ rubric: string }> 
 }): Promise<Metadata> {
   try {
+    const resolvedParams = await params;
     const [dictionary, rubricDetails] = await Promise.all([
       getDictionary('ru'),
-      fetchRubricDetails(params.rubric, 'ru'),
+      fetchRubricDetails(resolvedParams.rubric, 'ru'),
     ]);
     
     if (!rubricDetails) {
@@ -40,21 +41,21 @@ export async function generateMetadata({
     }
 
     const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === 'ru');
-    const rubricName = rubricTranslation?.name || params.rubric;
+    const rubricName = rubricTranslation?.name || resolvedParams.rubric;
     const rubricDescription = rubricTranslation?.description;
 
     // Get article count for this rubric
-    const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], undefined, params.rubric);
+    const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], undefined, resolvedParams.rubric);
     const articleCount = slugs.length;
 
     return await generateRubricMetadata({
       dictionary,
       rubricData: {
         name: rubricName,
-        slug: params.rubric,
+        slug: resolvedParams.rubric,
         description: rubricDescription,
         articleCount,
-        path: `/ru/${params.rubric}`,
+        path: `/ru/${resolvedParams.rubric}`,
         featured: false,
       },
     });
@@ -73,15 +74,17 @@ export default async function RubricPage({
   params,
   searchParams 
 }: { 
-  params: { rubric: string },
-  searchParams: { page?: string }
+  params: Promise<{ rubric: string }>,
+  searchParams: Promise<{ page?: string }>
 }) {
   try {
-    const currentPage = Number(searchParams?.page) || 1;
+    const resolvedParams = await params;
+    const resolvedSearchParams = await searchParams;
+    const currentPage = Number(resolvedSearchParams.page) || 1;
     
     const [dictionary, rubricDetails, rubricBasics] = await Promise.all([
       getDictionary('ru'),
-      fetchRubricDetails(params.rubric, 'ru'),
+      fetchRubricDetails(resolvedParams.rubric, 'ru'),
       fetchRubricBasics('ru'),
     ]);
 
@@ -90,7 +93,7 @@ export default async function RubricPage({
     }
 
     const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === 'ru');
-    const rubricName = rubricTranslation?.name || params.rubric;
+    const rubricName = rubricTranslation?.name || resolvedParams.rubric;
     const rubricDescription = rubricTranslation?.description;
 
     // Fetch article slugs for all pages up to current page
@@ -105,7 +108,7 @@ export default async function RubricPage({
         undefined,
         [],
         undefined,
-        params.rubric
+        resolvedParams.rubric
       );
       allSlugInfos = [...allSlugInfos, ...slugs];
       hasMore = pageHasMore;
@@ -124,7 +127,7 @@ export default async function RubricPage({
       },
       {
         label: rubricName,
-        href: `/ru/${params.rubric}`,
+        href: `/ru/${resolvedParams.rubric}`,
       },
     ];
 
@@ -132,7 +135,7 @@ export default async function RubricPage({
     const articlesForSchema = allSlugInfos.slice(0, 10).map(slugInfo => ({
       title: slugInfo.slug, // Use slug as title fallback since title is not available
       slug: slugInfo.slug,
-      url: `${dictionary.seo.site.url}/ru/${params.rubric}/${slugInfo.slug}`,
+      url: `${dictionary.seo.site.url}/ru/${resolvedParams.rubric}/${slugInfo.slug}`,
       // publishedAt is not available in ArticleSlugInfo, so we omit it
     }));
 
@@ -145,12 +148,12 @@ export default async function RubricPage({
           dictionary={dictionary}
           rubricData={{
             name: rubricName,
-            slug: params.rubric,
+            slug: resolvedParams.rubric,
             description: rubricDescription,
             articleCount: allSlugInfos.length,
             articles: articlesForSchema,
           }}
-          currentPath={`/ru/${params.rubric}`}
+          currentPath={`/ru/${resolvedParams.rubric}`}
         />
         
         <Breadcrumbs 
@@ -188,7 +191,7 @@ export default async function RubricPage({
                   slugInfos={allSlugInfos} 
                   lang="ru"
                   dictionary={dictionary}
-                  rubricSlug={params.rubric}
+                  rubricSlug={resolvedParams.rubric}
                   showCount={false}
                 />
                 

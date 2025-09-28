@@ -16,8 +16,8 @@ export interface DropdownContextType {
   setSelectedIndex: (index: number) => void;
   toggle: () => void;
   close: () => void;
-  triggerRef: RefObject<HTMLButtonElement>;
-  dropdownRef: RefObject<HTMLDivElement>;
+  triggerRef: RefObject<HTMLButtonElement | null>;
+  dropdownRef: RefObject<HTMLDivElement | null>;
   itemRefs: RefObject<(HTMLLIElement | null)[]>;
   items: DropdownItemType[];
   onSelect: (item: DropdownItemType) => void;

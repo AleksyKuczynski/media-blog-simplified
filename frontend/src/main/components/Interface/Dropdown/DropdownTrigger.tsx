@@ -18,7 +18,7 @@ export default function DropdownTrigger({ children }: DropdownTriggerProps) {
     handleKeyDown(e as unknown as KeyboardEvent);
   };
 
-  return React.cloneElement(children, {
+  return React.cloneElement(children as React.ReactElement<{ [key: string]: any }>, {
     ref: triggerRef,
     onClick: handleClick,
     onKeyDown: handleTriggerKeyDown,

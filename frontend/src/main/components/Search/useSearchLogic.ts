@@ -25,8 +25,8 @@ interface UseSearchLogicReturn {
     handleSearchButton: () => void;
   };
   refs: {
-    containerRef: React.RefObject<HTMLDivElement>;
-    inputRef: React.RefObject<HTMLInputElement>;
+    containerRef: React.RefObject<HTMLDivElement | null>; // ✅ FIXED: Add | null
+    inputRef: React.RefObject<HTMLInputElement | null>;   // ✅ FIXED: Add | null
   };
   utils: {
     hasNavigableContent: boolean;
@@ -91,7 +91,7 @@ export function useSearchLogic({
         type: 'SCENARIO_EXPAND_SEARCH',
         dispatch,
         mode,
-        inputRef
+        inputRef: inputRef as React.RefObject<HTMLInputElement>
       });
       return;
     }

@@ -12,11 +12,12 @@ export const dynamic = 'force-dynamic';
 export default async function AllAuthorsPage({
   searchParams
 }: {
-  searchParams: { page?: string }
+  searchParams: Promise<{ page?: string }>
 }) {
   const dict = await getDictionary('ru');
   const rubricBasics = await fetchRubricBasics('ru');
-  const currentPage = Number(searchParams.page) || 1;
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Number(resolvedSearchParams.page) || 1;
   
   const authors = await fetchAllAuthors('ru');
 

@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import type { DropdownProps } from './types';
+import type { DropdownContentProps, DropdownProps } from './types';
 import { DropdownContext } from './DropdownContext';
 import { useOutsideClick } from '@/main/lib/hooks';
 import DropdownContent from './DropdownContent';
@@ -23,19 +23,21 @@ export default function Dropdown({
   const childrenWithProps = React.Children.map(children, child => {
     if (React.isValidElement(child) && 
         child.type === DropdownContent) {
-      return React.cloneElement(child as React.ReactElement<any>, {
-        children: <ul role="menu">{child.props.children}</ul>,
-        width,
-        position
-      });
-    }
+      const typedChild = child as React.ReactElement<DropdownContentProps>;
+  
+    return React.cloneElement(typedChild, {
+      children: <ul role="menu">{typedChild.props.children}</ul>,
+      width,
+      position
+    });
+  }
     return child;
   });
 
   return (
     <DropdownContext.Provider value={dropdownContext}>
       <div 
-        ref={dropdownRef}
+        ref={dropdownRef as React.RefObject<HTMLDivElement>}
         className="relative inline-block"
         role="presentation"
       >

@@ -9,8 +9,6 @@ import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 import getDictionary from '@/main/lib/dictionary/getDictionary';
-
-// FIXED: Import SEO components
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import { getLocalizedAuthorCount } from '@/main/lib/dictionary/helpers/content';
@@ -19,7 +17,7 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 /**
- * FIXED: Generate metadata using new SEO system
+ * Generate metadata using SEO system
  */
 export async function generateMetadata(): Promise<Metadata> {
   try {
@@ -59,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AllAuthorsPage({
   searchParams
 }: {
-  searchParams: { page?: string }
+  searchParams: Promise<{ page?: string }>
 }) {
   try {
     const [dictionary, rubricBasics, authors] = await Promise.all([
@@ -68,7 +66,8 @@ export default async function AllAuthorsPage({
       fetchAllAuthors('ru'),
     ]);
 
-    const currentPage = Number(searchParams.page) || 1;
+    const resolvedSearchParams = await searchParams;
+    const currentPage = Number(resolvedSearchParams.page) || 1;
 
     // FIXED: Breadcrumb items using correct interface
     const breadcrumbItems = [

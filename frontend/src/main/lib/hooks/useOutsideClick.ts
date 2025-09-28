@@ -3,8 +3,8 @@
 import { RefObject, useEffect } from "react"
 
 export function useOutsideClick<T extends HTMLElement>(
-  ref: RefObject<T>,
-  toggleRef: RefObject<HTMLElement> | null,
+  ref: RefObject<T | null>,
+  toggleRef: RefObject<HTMLElement | null> | null,
   isOpen: boolean,
   onClose: (event?: MouseEvent | TouchEvent) => void
 ): void {

@@ -38,7 +38,7 @@ export default function ExpandableSearch({
 
   return (
     <search 
-      ref={refs.containerRef}
+      ref={refs.containerRef as React.RefObject<HTMLElement>}
       className={`relative ${className}`}
       role="search"
       aria-label={dictionary.search.accessibility.searchLabel}
@@ -63,7 +63,7 @@ export default function ExpandableSearch({
           onChange={handlers.handleInputChange}
           onKeyDown={handlers.handleKeyDown}
           onFocus={handlers.handleFocus}
-          inputRef={refs.inputRef}
+          inputRef={refs.inputRef as React.RefObject<HTMLInputElement>}
           ariaLabel={dictionary.search.accessibility.searchInputLabel}
           ariaDescription={dictionary.search.accessibility.searchDescription}
         />

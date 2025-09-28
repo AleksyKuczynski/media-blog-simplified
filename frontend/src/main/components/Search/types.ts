@@ -1,4 +1,6 @@
 // src/main/components/Search/types.ts
+// FIXED: React 19 compatible nullable ref types
+
 import { SearchProposition } from '@/main/lib/directus';
 
 export type ComponentMode = 'expandable' | 'standard';
@@ -74,7 +76,7 @@ export type SearchScenario =
       type: 'SCENARIO_EXPAND_SEARCH';
       dispatch: (action: SearchStepAction) => void;
       mode: ComponentMode;
-      inputRef: React.RefObject<HTMLInputElement>;
+      inputRef: React.RefObject<HTMLInputElement | null>; // ✅ FIXED: Accept nullable ref
     }
   | { 
       type: 'SCENARIO_COLLAPSE_SEARCH'; 

@@ -8,7 +8,7 @@ interface HeadingProps {
 }
 
 export const ArticleHeading = ({ level, children, id }: HeadingProps) => {
-  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+  const Tag = `h${level}` as keyof React.JSX.IntrinsicElements;
 
   // Direct rounded theme styling for all heading levels
   const getHeadingStyles = (level: number) => {

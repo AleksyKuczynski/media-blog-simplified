@@ -16,11 +16,11 @@ import dictionary from '@/main/lib/dictionary/dictionary';
 export const dynamic = 'force-dynamic';
 
 interface SearchPageProps {
-  searchParams: { 
+  searchParams: Promise<{ 
     search?: string; 
     sort?: string; 
     page?: string;
-  };
+  }>;
 }
 
 // Static metadata generation - NO QUERY HANDLING
@@ -40,9 +40,10 @@ export function generateMetadata(): Metadata {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const dict = dictionary;
   
-  const currentPage = Number(searchParams.page) || 1;
-  const currentSort = searchParams.sort || 'desc';
-  const searchQuery = searchParams.search?.trim() || '';
+  const resolvedSearchParams = await searchParams;
+  const currentPage = Number(resolvedSearchParams.page) || 1;
+  const currentSort = resolvedSearchParams.sort || 'desc';
+  const searchQuery = resolvedSearchParams.search?.trim() || '';
 
   // Determine page state based on requirements
   const hasValidQuery = searchQuery.length >= 3;
