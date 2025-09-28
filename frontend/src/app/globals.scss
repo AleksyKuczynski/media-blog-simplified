@@ -165,3 +165,56 @@ html {
 #mobile-menu-content.-translate-x-full {
   pointer-events: none;
 }
+
+/* Current page navigation link styles - non-hoverable, highlighted */
+.nav-link[data-active="true"],
+.nav-link[aria-current="page"] {
+  /* Disable all pointer interactions for current page */
+  pointer-events: none !important;
+  cursor: default !important;
+  
+  /* Visual highlighting for current page */
+  background-color: var(--color-primary-container) !important;
+  color: var(--color-on-primary-container) !important;
+  
+  /* Remove transitions to prevent flickering */
+  transition: none !important;
+}
+
+/* Override hover states for current page links */
+.nav-link[data-active="true"]:hover,
+.nav-link[aria-current="page"]:hover,
+.nav-link[data-active="true"]:focus,
+.nav-link[aria-current="page"]:focus {
+  /* Prevent any hover/focus state changes */
+  background-color: var(--color-primary-container) !important;
+  color: var(--color-on-primary-container) !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+/* Ensure mobile navigation current page styles */
+#mobile-menu-content .nav-link[data-active="true"],
+#mobile-menu-content .nav-link[aria-current="page"] {
+  pointer-events: none !important;
+  cursor: default !important;
+  background-color: var(--color-primary-container) !important;
+  color: var(--color-on-primary-container) !important;
+}
+
+/* Override mobile hover states for current page */
+#mobile-menu-content .nav-link[data-active="true"]:hover,
+#mobile-menu-content .nav-link[aria-current="page"]:hover {
+  background-color: var(--color-primary-container) !important;
+  color: var(--color-on-primary-container) !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Enhanced current page indicator for better UX */
+.nav-link[data-active="true"] span[itemProp="name"]::before,
+.nav-link[aria-current="page"] span[itemProp="name"]::before {
+  content: "• ";
+  font-weight: bold;
+  margin-right: 0.25rem;
+}

@@ -1,12 +1,10 @@
 // src/main/components/Navigation/NavLinksClient.tsx
-// Fixed to support both dictionaries and maintain compatibility
+// Enhanced to properly disable current page links and add visual highlighting
 
 'use client'
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-
-// NEW: Import new dictionary types
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
 
 interface NavLinksClientProps {
@@ -34,36 +32,64 @@ export default function NavLinksClient({ dictionary, lang }: NavLinksClientProps
       const isCurrentPage = isActive || isExactMatch
       
       if (isCurrentPage) {
-        // Apply active state
+        // Apply active state with enhanced accessibility and SEO
         linkElement.setAttribute('aria-current', 'page')
         linkElement.setAttribute('data-active', 'true')
+        linkElement.setAttribute('data-seo-current', 'true')
+        linkElement.setAttribute('data-nav-status', 'active')
         
-        // Add structured data indicator
+        // Remove interactive attributes for current page
+        linkElement.setAttribute('tabindex', '-1')
+        linkElement.setAttribute('aria-disabled', 'true')
+        
+        // Add visual indicator to span element
         if (spanElement) {
           spanElement.setAttribute('data-current-page', 'true')
         }
         
-        // NEW: Enhanced SEO indicators for current page
-        linkElement.setAttribute('data-seo-current', 'true')
-        linkElement.setAttribute('data-nav-status', 'active')
+        // Override CSS classes to ensure proper styling
+        const originalClasses = linkElement.className
+        const baseClasses = originalClasses
+          .replace(/hover:[^\s]+/g, '') // Remove hover classes
+          .replace(/transition-[^\s]+/g, '') // Remove transition classes
+        
+        linkElement.className = `${baseClasses} nav-link-current`
+        
+        // Store original classes for restoration
+        linkElement.setAttribute('data-original-classes', originalClasses)
         
       } else {
-        // Remove active state
+        // Remove active state and restore interactivity
         linkElement.removeAttribute('aria-current')
         linkElement.setAttribute('data-active', 'false')
+        linkElement.removeAttribute('data-seo-current')
+        linkElement.setAttribute('data-nav-status', 'inactive')
         
-        // Remove structured data indicator
+        // Restore interactive attributes
+        linkElement.removeAttribute('tabindex')
+        linkElement.removeAttribute('aria-disabled')
+        
+        // Remove visual indicator from span element
         if (spanElement) {
           spanElement.removeAttribute('data-current-page')
         }
         
-        // NEW: Remove enhanced SEO indicators
-        linkElement.removeAttribute('data-seo-current')
-        linkElement.setAttribute('data-nav-status', 'inactive')
+        // Restore original CSS classes
+        const originalClasses = linkElement.getAttribute('data-original-classes')
+        if (originalClasses) {
+          linkElement.className = originalClasses
+          linkElement.removeAttribute('data-original-classes')
+        } else {
+          // Fallback: ensure proper interactive classes
+          if (!linkElement.className.includes('hover:')) {
+            linkElement.className = linkElement.className.replace('nav-link-current', '')
+              + ' hover:text-on-sf hover:bg-sf-hi transition-all duration-200'
+          }
+        }
       }
     })
     
-  }, [pathname, lang]) // Include lang in dependencies for compatibility
+  }, [pathname, lang])
 
   return null // This component only manages active states, renders nothing
 }

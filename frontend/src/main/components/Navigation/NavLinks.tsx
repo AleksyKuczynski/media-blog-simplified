@@ -1,14 +1,10 @@
 // src/main/components/Navigation/NavLinks.tsx
-// FIXED: Now uses actual helper functions with proper imports and error handling
+// Enhanced with proper current page link handling for both Mobile and Desktop
 
 import Link from 'next/link';
 import NavLinksClient from './NavLinksClient';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import { getNavigationLinksConfig } from '@/main/lib/dictionary/helpers/navigation';
-
-// ===================================================================
-// TYPES - Clean and focused
-// ===================================================================
 
 interface NavLinksProps {
   dictionary: Dictionary;
@@ -16,17 +12,13 @@ interface NavLinksProps {
   className?: string;
 }
 
-// ===================================================================
-// MAIN NAVLINKS COMPONENT - FIXED AND ENHANCED
-// ===================================================================
-
 /**
- * NavLinks component - Enhanced with proper helper usage and SEO optimization
- * Uses semantic HTML markup for accessibility and SEO (Google + Yandex)
+ * NavLinks component - Enhanced with proper current page link behavior
+ * Current page links are non-hoverable, non-clickable, and visually highlighted
+ * Works consistently across Mobile and Desktop navigation
  */
 export default function NavLinks({ dictionary, lang, className }: NavLinksProps) {
   try {
-    // FIXED: Now uses the correct helper function
     const navigationLinks = getNavigationLinksConfig(dictionary);
 
     return (
@@ -45,7 +37,7 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
               data-href={link.href}
               data-nav-section={link.key}
               data-nav-priority={link.priority}
-              // Enhanced SEO attributes for Russian market
+              // Enhanced SEO attributes for Russian market (Google + Yandex)
               itemProp="url"
               itemScope
               itemType="https://schema.org/SiteNavigationElement"
@@ -64,7 +56,7 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
           </li>
         ))}
         
-        {/* Client-side active state management */}
+        {/* Enhanced client-side active state management */}
         <NavLinksClient 
           dictionary={dictionary} 
           lang={lang}
@@ -78,7 +70,7 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
     // Enhanced fallback navigation with semantic markup
     return (
       <>
-        <li role="menuitem">
+        <li role="menuitem" className={className}>
           <Link 
             href="/ru/articles" 
             className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200" 
@@ -94,7 +86,7 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
             </span>
           </Link>
         </li>
-        <li role="menuitem">
+        <li role="menuitem" className={className}>
           <Link 
             href="/ru/rubrics" 
             className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200" 
@@ -110,7 +102,7 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
             </span>
           </Link>
         </li>
-        <li role="menuitem">
+        <li role="menuitem" className={className}>
           <Link 
             href="/ru/authors" 
             className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200" 
