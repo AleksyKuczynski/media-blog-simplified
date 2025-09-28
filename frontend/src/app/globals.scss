@@ -114,3 +114,54 @@ html {
   --color-outline: #8c8c8c;
   --color-outline-variant: #595959;
 }
+
+
+/* Ensure mobile menu content is always interactive */
+#mobile-menu-content {
+  pointer-events: auto !important;
+}
+
+/* Ensure all interactive elements in mobile menu are clickable */
+#mobile-menu-content a,
+#mobile-menu-content button,
+#mobile-menu-content input,
+#mobile-menu-content textarea,
+#mobile-menu-content [role="button"],
+#mobile-menu-content [role="menuitem"],
+#mobile-menu-content [role="combobox"],
+#mobile-menu-content .search-container,
+#mobile-menu-content [data-interactive] {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* Ensure search input shows text cursor */
+#mobile-menu-content input[type="text"],
+#mobile-menu-content input[type="search"] {
+  cursor: text;
+}
+
+/* Fix for any potential z-index conflicts */
+.mobile-nav-overlay {
+  z-index: 45;
+}
+
+#mobile-menu-content {
+  z-index: 60;
+}
+
+/* Ensure hover states work properly */
+#mobile-menu-content a:hover,
+#mobile-menu-content button:hover {
+  opacity: 1;
+  transform: none;
+}
+
+/* Fix for transformed elements losing pointer events */
+#mobile-menu-content.translate-x-0 {
+  pointer-events: auto;
+}
+
+#mobile-menu-content.-translate-x-full {
+  pointer-events: none;
+}

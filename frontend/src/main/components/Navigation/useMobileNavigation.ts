@@ -1,4 +1,6 @@
-// src/main/components/Navigation/hooks/useMobileNavigation.ts - Simplified Dependencies
+// src/main/components/Navigation/useMobileNavigation.ts
+// FIXED: Improved click handling to prevent premature menu closure
+
 import { useState, useRef, useReducer, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
 import { menuAnimationReducer } from './menuAnimationReducer'
@@ -112,10 +114,35 @@ export function useMobileNavigation() {
     }, 300);
   }, [handleClose]);
 
-  // Fix for click bubbling: Handle clicks on menu panel
+  // FIXED: Proper click handling to allow interactions within menu content
   const handleMenuClick = useCallback((e: React.MouseEvent) => {
-    // Don't call stopPropagation - we want clicks to reach child elements (links, inputs)
-    // Only prevent the click from reaching the overlay behind
+    const target = e.target as HTMLElement
+    
+    // Check if the clicked element is interactive or within an interactive element
+    const isInteractiveElement = 
+      target.tagName === 'A' ||
+      target.tagName === 'BUTTON' ||
+      target.tagName === 'INPUT' ||
+      target.tagName === 'TEXTAREA' ||
+      target.closest('a') ||
+      target.closest('button') ||
+      target.closest('input') ||
+      target.closest('textarea') ||
+      target.closest('[role="button"]') ||
+      target.closest('[role="menuitem"]') ||
+      target.closest('[role="combobox"]') ||
+      target.closest('.search-container') || // Allow search component interactions
+      target.closest('[data-interactive]') // Custom data attribute for interactive elements
+    
+    // Allow clicks on interactive elements to proceed normally
+    if (isInteractiveElement) {
+      // Don't prevent default or stop propagation - let the interaction work
+      console.log('Interactive element clicked:', target)
+      return
+    }
+    
+    // For non-interactive areas, prevent the click from bubbling to overlay
+    e.stopPropagation()
   }, [])
 
   return {
@@ -132,6 +159,6 @@ export function useMobileNavigation() {
     handleClose,
     toggleMenu,
     handleSearchComplete,
-    handleMenuClick
+    handleMenuClick // FIXED: Now properly implemented
   }
 }

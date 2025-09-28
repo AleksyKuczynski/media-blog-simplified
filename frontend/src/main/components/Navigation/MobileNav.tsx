@@ -1,5 +1,5 @@
 // src/main/components/Navigation/MobileNav.tsx
-// Fixed to use correct SearchBar props
+// Fixed to properly handle click events and prevent premature menu closure
 
 'use client'
 
@@ -11,7 +11,7 @@ import { useMobileNavigation } from './useMobileNavigation'
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
 
 interface MobileNavProps {
-  dictionary: Dictionary // NEW: Use new dictionary structure
+  dictionary: Dictionary
   lang: Lang
   isSearchPage: boolean
   currentPageTitle?: string
@@ -20,7 +20,7 @@ interface MobileNavProps {
 
 export default function MobileNavigation({
   dictionary,
-  lang, // KEEP: Lang parameter
+  lang,
   currentPageTitle,
 }: MobileNavProps) {
   const {
@@ -31,6 +31,7 @@ export default function MobileNavigation({
     toggleMenu,
     handleClose,
     handleSearchComplete,
+    handleMenuClick, // NOW USING the handler from the hook
   } = useMobileNavigation()
   
   return (
@@ -97,15 +98,16 @@ export default function MobileNavigation({
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - FIXED: Lower z-index than menu content */}
       {isMenuOpen && <MobileNavOverlay onClose={handleClose} />}
 
-      {/* Slide-out Menu Panel */}
+      {/* Slide-out Menu Panel - FIXED: Added onClick handler and proper z-index + pointer events */}
       <div
         ref={menuRef}
         id="mobile-menu-content"
+        onClick={handleMenuClick} // FIXED: Added missing click handler
         className={`
-          fixed top-16 left-0 right-0 bottom-0 z-40
+          fixed top-16 left-0 right-0 bottom-0 z-[60] pointer-events-auto
           bg-sf-cont/95 backdrop-blur-lg border-b border-ol-var/20
           transform transition-transform duration-300 ease-in-out
           ${menuState === 'FULLY_OPENED' ? 'translate-x-0' : '-translate-x-full'}
@@ -122,7 +124,7 @@ export default function MobileNavigation({
           </div>
 
           {/* Navigation Links */}
-          <div className="flex-1 px-6 py-6">
+          <div className="flex-1 px-6 py-6" data-interactive="true">
             <ul 
               className="space-y-4"
               role="menu"
@@ -136,12 +138,13 @@ export default function MobileNavigation({
             </ul>
           </div>
 
-          {/* Mobile Search - FIXED: Use new dictionary structure */}
-          <div className="px-6 py-4 border-t border-ol-var/20">
+          {/* Mobile Search - FIXED: Added data-interactive to prevent menu closure */}
+          <div className="px-6 py-4 border-t border-ol-var/20" data-interactive="true">
             <SearchBar
-              dictionary={dictionary} // NEW: Use new dictionary structure
+              dictionary={dictionary}
               lang={lang}
               onSearchComplete={handleSearchComplete}
+              className="search-container" // Added class for click handler detection
             />
           </div>
         </div>
