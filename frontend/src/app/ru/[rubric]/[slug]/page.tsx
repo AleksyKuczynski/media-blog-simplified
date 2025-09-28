@@ -6,7 +6,6 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
 import { Header, Content, ScrollToTopButton, TableOfContents, RelatedLinksSchema, RelatedLinks } from '@/main/components/Article';
-import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import getDictionary from '@/main/lib/dictionary/getDictionary';
 import { processContent } from '@/main/lib/markdown/processContent';
@@ -16,6 +15,7 @@ import ErrorFallback from '@/main/components/Common/ErrorFallback';
 // SEO Components
 import { generateArticleMetadata, generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';
 import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
+import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/SmartBreadcrumbs';
 
 // NEW: Related Links for SEO enhancement
 
@@ -141,20 +141,11 @@ export default async function ArticlePage({
     }));
 
     // Build breadcrumbs
-    const breadcrumbItems = [
-      {
-        label: dictionary.navigation.labels.home,
-        href: '/ru',
-      },
-      {
-        label: resolvedParams.rubric,
-        href: `/ru/${resolvedParams.rubric}`,
-      },
-      {
-        label: translation.title,
-        href: `/ru/${resolvedParams.rubric}/${resolvedParams.slug}`,
-      },
-    ];
+    const articleBreadcrumbData = await enhanceArticleForBreadcrumbs(
+      article,
+      rubricBasics,
+      dictionary
+    );
 
     // Schema data
     const articleSchemaData = {
@@ -176,11 +167,6 @@ export default async function ArticlePage({
       tags: [resolvedParams.rubric, ...translation.title.split(' ').slice(0, 3)],
     };
 
-    const breadcrumbSchemaData = breadcrumbItems.map(item => ({
-      name: item.label,
-      href: item.href || undefined,
-    }));
-
     // NEW: Prepare related links data for SEO enhancement
     const rubricData = {
       slug: resolvedParams.rubric,
@@ -201,7 +187,7 @@ export default async function ArticlePage({
         <ArticleSchema
           dictionary={dictionary}
           articleData={articleSchemaData}
-          breadcrumbs={breadcrumbSchemaData}
+          breadcrumbs={[]} 
         />
 
         {/* NEW: Related Links Schema for enhanced SEO */}
@@ -213,15 +199,9 @@ export default async function ArticlePage({
         />
 
         {/* Breadcrumbs */}
-        <Breadcrumbs 
-          items={breadcrumbItems} 
-          rubrics={rubricBasics}
-          lang="ru"
-          translations={{
-            home: dictionary.navigation.labels.home,
-            allRubrics: dictionary.navigation.labels.rubrics,
-            allAuthors: dictionary.navigation.labels.authors,
-          }}
+        <SmartBreadcrumbs 
+          articleData={articleBreadcrumbData}
+          dictionary={dictionary}
         />
 
         {/* Article Content */}

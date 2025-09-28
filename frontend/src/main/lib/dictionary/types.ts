@@ -13,12 +13,20 @@ export interface NavigationLabels {
   readonly rubrics: string;
   readonly authors: string;
   readonly search: string;
+  readonly authorArticles: string;
+  readonly categoryArticles: string;
+  readonly featuredArticles: string;
+  readonly searchResults: string;
 }
 
 export interface NavigationTemplates {
   readonly pageTitle: string;           // "{page} — {siteName}"
   readonly sectionDescription: string; // "{action} {section} на {siteName}"
   readonly breadcrumbSeparator: string; // "→"
+  readonly contextualPath: string;
+  readonly authorContext: string;
+  readonly categoryContext: string;
+  readonly searchContext: string;
 }
 
 export interface NavigationDescriptions {
@@ -27,6 +35,10 @@ export interface NavigationDescriptions {
   readonly rubrics: string;
   readonly authors: string;
   readonly search: string;
+  readonly fromAuthor: string;
+  readonly fromCategory: string;
+  readonly fromFeatured: string;
+  readonly fromSearch: string;
 }
 
 export interface NavigationAccessibility {
@@ -50,6 +62,30 @@ export interface NavigationDictionary {
   readonly templates: NavigationTemplates;
   readonly descriptions: NavigationDescriptions;
   readonly accessibility: NavigationAccessibility;
+}
+
+export interface BreadcrumbContexts {
+  readonly rubric: string; // 'rubric',
+  readonly author: string; // 'author', 
+  readonly category: string; // 'category',
+  readonly featured: string; // 'featured',
+  readonly search: string; // 'search',
+  readonly external: string; // 'external',
+  readonly direct: string; // 'direct',
+}
+
+export interface BreadcrumbContextAria {
+  readonly rubricPath: string; // 'Навигация через рубрику',
+  readonly authorPath: string; // 'Навигация через автора',
+  readonly categoryPath: string; // 'Навигация через категорию',
+  readonly featuredPath: string; // 'Навигация через избранное',
+  readonly searchPath: string; // 'Навигация через поиск',
+  readonly canonicalPath: string; // 'Основная навигация',
+}
+
+export interface BreadcrumbDictionary {
+  readonly contexts: BreadcrumbContexts;
+  readonly contextAria: BreadcrumbContextAria;
 }
 
 // ===================================================================
@@ -404,6 +440,7 @@ export interface FooterDictionary {
 
 export interface Dictionary {
   readonly navigation: NavigationDictionary;
+  readonly breadcrumb: BreadcrumbDictionary;
   readonly common: CommonDictionary;
   readonly metadata: MetadataDictionary;      // NEW
   readonly errors: ErrorDictionary;          // NEW
