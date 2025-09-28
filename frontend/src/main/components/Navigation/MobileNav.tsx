@@ -135,6 +135,8 @@ export default function MobileNavigation({
                 lang={lang}
                 className="mobile-nav-links"
               />
+              {/* Ensure NavLinksClient is included for active state management */}
+              {/* Note: NavLinksClient should already be included in NavLinks component */}
             </ul>
           </div>
 

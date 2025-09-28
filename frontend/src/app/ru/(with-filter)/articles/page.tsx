@@ -6,7 +6,6 @@ import { Metadata } from 'next';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
-import FilterGroup from '@/main/components/Navigation/FilterGroup';
 import { getDictionary } from '@/main/lib/dictionary/getDictionary';
 import { fetchArticleSlugs, fetchAllCategories } from '@/main/lib/directus';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
