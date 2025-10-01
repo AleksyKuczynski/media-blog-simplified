@@ -5,7 +5,6 @@
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/main/components/Interface/Icons';
 import { Dictionary } from '@/main/lib/dictionary/types';
-import { SmartBreadcrumbItem } from './types';
 import { detectBreadcrumbContext, generateContextualBreadcrumbs } from '@/main/lib/utils/breadcrumbContextDetector';
 
 interface SmartBreadcrumbsProps {
@@ -201,14 +200,6 @@ export default async function SmartBreadcrumbs({
             );
           })}
         </ol>
-
-        {/* Context indicator for development/debugging */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-2 text-xs text-gray-500">
-            Контекст: {context.type}
-            {context.referrerPath && ` | Referrer: ${context.referrerPath}`}
-          </div>
-        )}
       </nav>
     </>
   );
