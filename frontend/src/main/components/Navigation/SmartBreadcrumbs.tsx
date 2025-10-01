@@ -15,8 +15,14 @@ interface SmartBreadcrumbsProps {
     rubricSlug: string;
     rubricName: string;
     authorName?: string;
-    authorSlug?: string;
-    categories?: Array<{ name: string; slug: string }>;
+    authors?: Array<{
+      name: string;
+      slug: string;
+    }>;
+    categories?: Array<{ 
+      name: string; 
+      slug: string 
+    }>;
   };
   dictionary: Dictionary;
   className?: string;
@@ -227,7 +233,10 @@ export async function enhanceArticleForBreadcrumbs(
     rubricSlug: article.rubric?.slug || 'общее',
     rubricName: rubric?.name || article.rubric?.slug || 'Общее',
     authorName: article.authors?.[0]?.name,
-    authorSlug: article.authors?.[0]?.slug,
+    authors: article.authors?.map((author: any) => ({
+      name: author.name,
+      slug: author.slug,
+    })) || [],
     categories: article.categories?.map((cat: any) => ({
       name: cat.name,
       slug: cat.slug,

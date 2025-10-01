@@ -1,5 +1,5 @@
 export interface BreadcrumbContext {
-  type: 'rubric' | 'author' | 'category' | 'featured' | 'search' | 'external' | 'direct';
+  type: 'rubric' | 'author' | 'category' | 'featured' | 'search' | 'external' | 'direct' | 'articles';
   referrerPath?: string;
   contextData?: {
     authorName?: string;

@@ -1,5 +1,5 @@
+// Complete updated breadcrumbContextDetector.ts with articles pattern and multi-author fix
 // src/main/lib/utils/breadcrumbContextDetector.ts
-// Context detection utility for smart breadcrumbs
 
 import { headers } from 'next/headers';
 import { Dictionary } from '@/main/lib/dictionary/types';
@@ -8,6 +8,7 @@ import { BreadcrumbContext, SmartBreadcrumbItem } from '@/main/components/Naviga
 /**
  * Detect user's navigation context based on referrer and URL patterns
  * SECURITY: Validates referrer headers to prevent manipulation
+ * FIXED: Handles /ru/articles pattern and multi-author matching
  */
 export async function detectBreadcrumbContext(
   currentPath: string,
@@ -34,16 +35,17 @@ export async function detectBreadcrumbContext(
     // Extract referrer path for pattern matching
     const referrerPath = new URL(referrer).pathname;
     
-    // Pattern matching for different contexts
+    // Pattern matching for different contexts - ORDER MATTERS!
     const patterns = {
-      author: /\/ru\/authors\/([^\/]+)/,
-      category: /\/ru\/category\/([^\/]+)/,
-      search: /\/ru\/search/,
-      rubrics: /\/ru\/rubrics/,
-      featured: /\/ru$/,
+      author: /\/ru\/authors\/([^\/]+)$/,      // Specific author page
+      category: /\/ru\/category\/([^\/]+)$/,   // Specific category page
+      search: /\/ru\/search/,                   // Search results
+      articles: /\/ru\/articles$/,              // FIXED: Articles listing (exact match)
+      rubrics: /\/ru\/rubrics$/,                // Rubrics listing (exact match)
+      featured: /\/ru$/,                        // Main page
     };
 
-    // Author context detection
+    // Author context detection (highest priority for specific pages)
     const authorMatch = referrerPath.match(patterns.author);
     if (authorMatch) {
       return {
@@ -69,7 +71,6 @@ export async function detectBreadcrumbContext(
 
     // Search context detection
     if (patterns.search.test(referrerPath)) {
-      // Extract search query from referrer URL if available
       const searchParams = new URL(referrer).searchParams;
       const searchQuery = searchParams.get('search') || searchParams.get('q');
       
@@ -82,10 +83,10 @@ export async function detectBreadcrumbContext(
       };
     }
 
-    // Featured/hero context (main page)
-    if (patterns.featured.test(referrerPath)) {
+    // FIXED: Articles listing page (before rubrics check)
+    if (patterns.articles.test(referrerPath)) {
       return {
-        type: 'featured',
+        type: 'articles',
         referrerPath,
       };
     }
@@ -94,6 +95,14 @@ export async function detectBreadcrumbContext(
     if (patterns.rubrics.test(referrerPath)) {
       return {
         type: 'rubric',
+        referrerPath,
+      };
+    }
+
+    // Featured/hero context (main page)
+    if (patterns.featured.test(referrerPath)) {
+      return {
+        type: 'featured',
         referrerPath,
       };
     }
@@ -116,7 +125,7 @@ export async function detectBreadcrumbContext(
 
 /**
  * Generate context-aware breadcrumb paths
- * Creates multiple valid navigation paths for SEO while showing contextual path to users
+ * FIXED: Matches authors from context with article's author array for multi-author articles
  */
 export function generateContextualBreadcrumbs(
   context: BreadcrumbContext,
@@ -125,8 +134,10 @@ export function generateContextualBreadcrumbs(
     slug: string;
     rubricSlug: string;
     rubricName: string;
-    authorName?: string;
-    authorSlug?: string;
+    authors?: Array<{
+      name: string;
+      slug: string;
+    }>;
     categories?: Array<{ name: string; slug: string }>;
   },
   dictionary: Dictionary
@@ -162,75 +173,111 @@ export function generateContextualBreadcrumbs(
     },
   ];
 
-  // Generate user-facing contextual path
   let userPath: SmartBreadcrumbItem[];
   const seoAlternatives: SmartBreadcrumbItem[][] = [];
 
   switch (context.type) {
     case 'author':
-      if (context.contextData?.authorSlug && articleData.authorName) {
-        userPath = [
-          baseHome,
-          {
-            label: dictionary.navigation.labels.authors,
-            href: '/ru/authors',
-            context: 'author-collection',
-            ariaLabel: dictionary.navigation.descriptions.authors,
-          },
-          {
-            label: articleData.authorName,
-            href: `/ru/authors/${context.contextData.authorSlug}`,
-            context: 'author-profile',
-            ariaLabel: `Профиль автора ${articleData.authorName}`,
-          },
-          {
-            label: articleData.title,
-            href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
-            context: 'article-from-author',
-            ariaLabel: dictionary.navigation.descriptions.fromAuthor,
-          },
-        ];
+      // FIXED: Match the author from context with the article's authors array
+      if (context.contextData?.authorSlug && articleData.authors && articleData.authors.length > 0) {
+        const matchedAuthor = articleData.authors.find(
+          author => author.slug === context.contextData?.authorSlug
+        );
         
-        // Add author path as SEO alternative
-        seoAlternatives.push(userPath);
+        // Only show author breadcrumb if we found the matching author
+        if (matchedAuthor) {
+          userPath = [
+            baseHome,
+            {
+              label: dictionary.navigation.labels.authors,
+              href: '/ru/authors',
+              context: 'author-collection',
+              ariaLabel: dictionary.navigation.descriptions.authors,
+            },
+            {
+              label: matchedAuthor.name,  // FIXED: Use matched author's name
+              href: `/ru/authors/${matchedAuthor.slug}`,  // FIXED: Use matched author's slug
+              context: 'author-profile',
+              ariaLabel: `Профиль автора ${matchedAuthor.name}`,
+            },
+            {
+              label: articleData.title,
+              href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
+              context: 'article-from-author',
+              ariaLabel: dictionary.navigation.descriptions.fromAuthor,
+            },
+          ];
+          
+          // Add author path as SEO alternative
+          seoAlternatives.push(userPath);
+        } else {
+          // Fallback: If author not found in article's authors, use canonical
+          console.warn(`Author ${context.contextData.authorSlug} not found in article authors`);
+          userPath = canonicalPath;
+        }
       } else {
         userPath = canonicalPath;
       }
       break;
 
     case 'category':
-      if (context.contextData?.categorySlug) {
-        const categoryName = articleData.categories?.find(
+      if (context.contextData?.categorySlug && articleData.categories && articleData.categories.length > 0) {
+        const matchedCategory = articleData.categories.find(
           cat => cat.slug === context.contextData?.categorySlug
-        )?.name || context.contextData.categorySlug;
+        );
         
-        userPath = [
-          baseHome,
-          {
-            label: dictionary.navigation.labels.articles,
-            href: '/ru/articles',
-            context: 'article-collection',
-            ariaLabel: dictionary.navigation.descriptions.articles,
-          },
-          {
-            label: categoryName,
-            href: `/ru/category/${context.contextData.categorySlug}`,
-            context: 'category-filter',
-            ariaLabel: `Категория ${categoryName}`,
-          },
-          {
-            label: articleData.title,
-            href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
-            context: 'article-from-category',
-            ariaLabel: dictionary.navigation.descriptions.fromCategory,
-          },
-        ];
-        
-        // Add category path as SEO alternative
-        seoAlternatives.push(userPath);
+        if (matchedCategory) {
+          userPath = [
+            baseHome,
+            {
+              label: dictionary.navigation.labels.articles,
+              href: '/ru/articles',
+              context: 'article-collection',
+              ariaLabel: dictionary.navigation.descriptions.articles,
+            },
+            {
+              label: matchedCategory.name,
+              href: `/ru/category/${matchedCategory.slug}`,
+              context: 'category-filter',
+              ariaLabel: `Категория ${matchedCategory.name}`,
+            },
+            {
+              label: articleData.title,
+              href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
+              context: 'article-from-category',
+              ariaLabel: dictionary.navigation.descriptions.fromCategory,
+            },
+          ];
+          
+          seoAlternatives.push(userPath);
+        } else {
+          console.warn(`Category ${context.contextData.categorySlug} not found in article categories`);
+          userPath = canonicalPath;
+        }
       } else {
         userPath = canonicalPath;
       }
+      break;
+
+    case 'articles':
+      // NEW: Handle /ru/articles referrer
+      userPath = [
+        baseHome,
+        {
+          label: dictionary.navigation.labels.articles,
+          href: '/ru/articles',
+          context: 'articles-collection',
+          ariaLabel: dictionary.navigation.descriptions.articles,
+        },
+        {
+          label: articleData.title,
+          href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
+          context: 'article-from-articles',
+          ariaLabel: 'Статья из общего списка статей',
+        },
+      ];
+      
+      seoAlternatives.push(userPath);
       break;
 
     case 'featured':
@@ -244,7 +291,6 @@ export function generateContextualBreadcrumbs(
         },
       ];
       
-      // Add shortened featured path as SEO alternative
       seoAlternatives.push(userPath);
       break;
 
