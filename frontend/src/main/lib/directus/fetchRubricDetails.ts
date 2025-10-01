@@ -29,9 +29,13 @@ export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubr
     }));
 
     const url = `${DIRECTUS_URL}/items/rubrics?fields=${fields}&filter=${filter}&deep=${deepFilter}`;
-    
-    const response = await fetch(url, { cache: 'no-store' });
-    
+    const response = await fetch(url, { 
+      next: { 
+        revalidate: 3600,
+        tags: ['rubrics', `rubric-${slug}`]
+      }
+    });
+
     if (!response.ok) {
       throw new Error(`Failed to fetch rubric details. Status: ${response.status}`);
     }

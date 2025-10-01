@@ -6,7 +6,12 @@ import { AuthorDetails, DIRECTUS_URL } from "./index";
 export async function fetchAllAuthors(lang: Lang): Promise<AuthorDetails[]> {
   try {
     const authorsUrl = `${DIRECTUS_URL}/items/authors?fields=slug,avatar&sort=slug`;
-    const authorsResponse = await fetch(authorsUrl, { cache: 'no-store' });
+    const authorsResponse = await fetch(authorsUrl, { 
+      next: { 
+        revalidate: 3600,
+        tags: ['authors', 'structure']
+      }
+    });
     
     if (!authorsResponse.ok) {
       throw new Error(`Failed to fetch authors. Status: ${authorsResponse.status}`);
@@ -17,7 +22,12 @@ export async function fetchAllAuthors(lang: Lang): Promise<AuthorDetails[]> {
 
     const slugs = authors.map((author: any) => author.slug);
     const translationsUrl = `${DIRECTUS_URL}/items/authors_translations?filter[authors_slug][_in]=${slugs.join(',')}&filter[languages_code][_eq]=${lang}&fields=authors_slug,name,bio`;
-    const translationsResponse = await fetch(translationsUrl, { cache: 'no-store' });
+    const translationsResponse = await fetch(translationsUrl, { 
+      next: { 
+        revalidate: 3600,
+        tags: ['authors', 'translations']
+      }
+    });
 
     if (!translationsResponse.ok) {
       throw new Error(`Failed to fetch author translations. Status: ${translationsResponse.status}`);

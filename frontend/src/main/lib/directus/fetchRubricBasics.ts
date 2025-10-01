@@ -23,7 +23,12 @@ export async function fetchRubricBasics(lang: Lang, includeSEO: boolean = false)
     });
     
     const url = `${DIRECTUS_URL}/items/rubrics?fields=${fields}&filter=${encodeURIComponent(filter)}`;
-    const response = await fetch(url, { cache: 'no-store' });
+    const response = await fetch(url, { 
+      next: { 
+        revalidate: 3600,
+        tags: ['rubrics', 'structure']
+      }
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch rubric basics. Status: ${response.status}`);

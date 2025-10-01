@@ -13,6 +13,12 @@ import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPa
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 
+// ISR CONFIGURATION: Revalidate every 5 minutes
+export const revalidate = 300;
+
+// Allow dynamic params (page, sort, category from searchParams)
+export const dynamicParams = true;
+
 interface ArticlesPageProps {
   searchParams: Promise<{ 
     page?: string; 
@@ -21,7 +27,7 @@ interface ArticlesPageProps {
   }>;
 }
 
-// FIXED: Generate metadata using CollectionMetadata following established pattern
+// Generate metadata using CollectionMetadata following established pattern
 export async function generateMetadata(): Promise<Metadata> {
   const dictionary = await getDictionary('ru');
   
@@ -29,19 +35,19 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const { slugs } = await fetchArticleSlugs(1, 'desc');
     
-    // FIXED: Transform article data using only available properties (slug, layout)
+    // Transform article data using only available properties (slug, layout)
     const articleItems = slugs.slice(0, 5).map(slug => ({
       name: slug.slug, // Use slug as name since title is not available
       slug: slug.slug,
       description: `Статья ${slug.slug}`, // Generate description from slug
     }));
 
-    // FIXED: Use proper CollectionMetadata instead of PageMetadata
+    // Use proper CollectionMetadata instead of PageMetadata
     return await generateCollectionMetadata({
       dictionary,
       collectionType: 'articles',
       items: articleItems,
-      totalCount: slugs.length, // FIXED: Use slugs.length, not totalCount property
+      totalCount: slugs.length, // Use slugs.length, not totalCount property
       currentPath: '/ru/articles',
       featured: false,
     });
@@ -72,7 +78,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
     fetchAllCategories('ru')
   ]);
   
-  // FIXED: Await searchParams Promise
+  // Await searchParams Promise
   const resolvedSearchParams = await searchParams;
   
   // Parse parameters (preserve existing logic)
@@ -105,10 +111,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
 
   // ADDED: Prepare data for structured schema using available properties
   const articleItems = allSlugs.slice(0, 10).map(slug => ({
-    name: slug.slug, // FIXED: Use slug as name since title is not available
+    name: slug.slug, // Use slug as name since title is not available
     slug: slug.slug,
     url: `${dictionary.seo.site.url}/ru/articles/${slug.slug}`,
-    description: `Статья ${slug.slug}`, // FIXED: Generate description from slug
+    description: `Статья ${slug.slug}`, // Generate description from slug
   }));
 
   return (

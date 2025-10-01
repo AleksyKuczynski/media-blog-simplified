@@ -61,8 +61,13 @@ export async function fetchArticleSlugs(
       url += `&filter=${encodedFilter}`;
     }
 
-    const response = await fetch(url, { cache: 'no-store' });
-    
+    const response = await fetch(url, { 
+      next: { 
+        revalidate: search ? 0 : 300,
+        tags: ['articles', 'article-list']
+      } 
+    });
+
     if (!response.ok) {
       throw new Error(`Failed to fetch article slugs. Status: ${response.status}`);
     }

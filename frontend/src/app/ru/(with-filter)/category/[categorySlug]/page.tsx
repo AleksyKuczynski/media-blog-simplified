@@ -1,5 +1,4 @@
 // src/app/ru/(with-filter)/category/[categorySlug]/page.tsx
-// OPTIMIZED: Uses existing CollectionMetadata and CollectionPageSchema components
 
 import { Metadata } from 'next';
 import { Suspense } from 'react';
@@ -15,6 +14,10 @@ import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import Link from 'next/link';
+
+// ISR CONFIGURATION: 10 minutes (categories change less frequently)
+export const revalidate = 600;
+export const dynamicParams = true;
 
 // Generate SEO-optimized metadata using existing CollectionMetadata component
 export async function generateMetadata({ 
@@ -44,7 +47,7 @@ export async function generateMetadata({
     description: `Статьи в категории ${category.name}`,
   }];
 
-  // FIXED: Use existing generateCollectionMetadata component
+  // Use existing generateCollectionMetadata component
   return await generateCollectionMetadata({
     dictionary,
     collectionType: 'articles', // Category pages show articles
@@ -118,7 +121,7 @@ export default async function CategoryPage({
 
   return (
     <>
-      {/* FIXED: Use existing CollectionPageSchema component */}
+      {/* Use existing CollectionPageSchema component */}
       <CollectionPageSchema
         dictionary={dictionary}
         collectionType="articles"

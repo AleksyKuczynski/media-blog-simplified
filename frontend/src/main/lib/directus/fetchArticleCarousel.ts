@@ -4,12 +4,12 @@ export async function fetchArticleCarousel(id: string): Promise<ArticleCarousel 
     try {
       const timestamp = Date.now();
       const url = `${DIRECTUS_URL}/items/article_carousel/${id}?timestamp=${timestamp}`;
-      const response = await fetch(url, { 
-        cache: 'no-store',
-        headers: {
-          'Cache-Control': 'no-cache'
-        }
-      });
+    const response = await fetch(url, { 
+      next: { 
+        revalidate: 300,
+        tags: ['carousel', `carousel-${id}`]
+      }
+    });
       
       if (!response.ok) {
         throw new Error(`Failed to fetch article carousel. Status: ${response.status}`);

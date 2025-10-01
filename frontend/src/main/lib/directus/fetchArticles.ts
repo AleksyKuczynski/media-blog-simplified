@@ -19,7 +19,12 @@ export async function fetchArticles(slugsAndLayouts: { slug: string; layout: str
     const sortQuery = sort === 'asc' ? 'published_at' : '-published_at';
     const url = `${DIRECTUS_URL}/items/articles?fields=${fields}&filter=${encodedFilter}&sort=${sortQuery}`;
 
-    const response = await fetch(url, { cache: 'no-store' });
+    const response = await fetch(url, { 
+      next: { 
+        revalidate: 300,
+        tags: ['articles', 'article-data']
+      }
+    });
     
     if (!response.ok) {
       throw new Error(`Failed to fetch articles. Status: ${response.status}`);

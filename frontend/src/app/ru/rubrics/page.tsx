@@ -14,7 +14,8 @@ import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPa
 import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers/content'; // FIXED: Correct import
 import getDictionary from '@/main/lib/dictionary/getDictionary';
 
-export const dynamic = 'force-dynamic';
+// ISR CONFIGURATION: 1 hour (rubrics list is structural)
+export const revalidate = 3600;
 
 /**
  * Generate metadata using clean new dictionary system

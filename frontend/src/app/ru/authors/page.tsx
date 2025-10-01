@@ -7,7 +7,8 @@ import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 import getDictionary from '@/main/lib/dictionary/getDictionary';
 
-export const dynamic = 'force-dynamic';
+// ISR CONFIGURATION: 1 hour (authors list is structural)
+export const revalidate = 3600;
 
 export default async function AllAuthorsPage({
   searchParams

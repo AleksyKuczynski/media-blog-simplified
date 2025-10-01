@@ -16,7 +16,9 @@ import { RubricPageSchema } from '@/main/components/SEO/schemas/RubricPageSchema
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
 import Link from 'next/link';
 
-export const dynamic = 'force-dynamic';
+// ISR CONFIGURATION: 5 minutes
+export const revalidate = 300;
+export const dynamicParams = true;
 
 /**
  * Generate metadata using new RubricMetadata component

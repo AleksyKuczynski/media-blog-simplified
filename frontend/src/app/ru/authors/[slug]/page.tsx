@@ -1,22 +1,23 @@
 // src/app/ru/authors/[slug]/page.tsx
-// FIXED: Updated to use new dictionary and SEO architecture
 
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { fetchAuthorBySlug, fetchRubricBasics, DIRECTUS_URL, fetchArticleSlugs, ArticleSlugInfo } from '@/main/lib/directus/index';
-import getDictionary from '@/main/lib/dictionary/getDictionary'; // FIXED: Use new dictionary import
+import getDictionary from '@/main/lib/dictionary/getDictionary';
 import ArticleList from '@/main/components/Main/ArticleList';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
-
-// FIXED: Import new SEO components
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
 import generateAuthorMetadata from '@/main/components/SEO/metadata/AuthorMetadata';
 import AuthorSchema from '@/main/components/SEO/schemas/AuthorSchema';
 import Link from 'next/link';
+
+// ISR CONFIGURATION: 1 hour (author pages stable)
+export const revalidate = 3600;
+export const dynamicParams = true;
 
 export async function generateMetadata({ 
   params 
@@ -26,7 +27,7 @@ export async function generateMetadata({
   try {
     const resolvedParams = await params;
     const [dictionary, author] = await Promise.all([
-      getDictionary('ru'), // FIXED: Use new dictionary
+      getDictionary('ru'),
       fetchAuthorBySlug(resolvedParams.slug, 'ru'),
     ]);
     
@@ -41,7 +42,7 @@ export async function generateMetadata({
     const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], resolvedParams.slug);
     const articleCount = slugs.length;
 
-    // FIXED: Use new AuthorMetadata component
+    // Use new AuthorMetadata component
     return await generateAuthorMetadata({
       dictionary,
       authorData: {
@@ -75,7 +76,7 @@ export default async function AuthorPage({
   try {
     const resolvedParams = await params;
     const [dictionary, author, rubricBasics] = await Promise.all([
-      getDictionary('ru'), // FIXED: Use new dictionary
+      getDictionary('ru'), // Use new dictionary
       fetchAuthorBySlug(resolvedParams.slug, 'ru'),
       fetchRubricBasics('ru'),
     ]);
@@ -106,7 +107,7 @@ export default async function AuthorPage({
       if (!pageHasMore) break;
     }
 
-    // FIXED: Breadcrumb items using correct interface
+    // Breadcrumb items using correct interface
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
@@ -135,7 +136,7 @@ export default async function AuthorPage({
 
     return (
       <>
-        {/* FIXED: Use new AuthorSchema component */}
+        {/* Use new AuthorSchema component */}
         <AuthorSchema
           dictionary={dictionary}
           authorData={{
@@ -149,7 +150,7 @@ export default async function AuthorPage({
           currentPath={`/ru/authors/${resolvedParams.slug}`}
         />
         
-        {/* FIXED: Breadcrumbs using correct interface */}
+        {/* Breadcrumbs using correct interface */}
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={rubricBasics} 
@@ -201,7 +202,7 @@ export default async function AuthorPage({
             }>
               {allSlugInfos.length > 0 ? (
                 <>
-                  {/* FIXED: ArticleList using correct props */}
+                  {/* ArticleList using correct props */}
                   <ArticleList 
                     slugInfos={allSlugInfos}
                     lang="ru"
@@ -210,7 +211,7 @@ export default async function AuthorPage({
                     showCount={false}
                   />
                   
-                  {/* FIXED: LoadMoreButton using correct props */}
+                  {/* LoadMoreButton using correct props */}
                   {hasMore && (
                     <div className="mt-8 text-center">
                       <LoadMoreButton

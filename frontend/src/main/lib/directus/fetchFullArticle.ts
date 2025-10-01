@@ -30,8 +30,13 @@ export async function fetchFullArticle(slug: string, lang: Lang): Promise<FullAr
     }));
 
     const url = `${DIRECTUS_URL}/items/articles?filter[slug][_eq]=${slug}&fields=${fields}&deep=${deepFilter}`;
-    const response = await fetch(url, { cache: 'no-store' });
-    
+    const response = await fetch(url, { 
+      next: { 
+        revalidate: 3600,
+        tags: ['article', 'stable']
+      }
+    });
+
     if (!response.ok) {
       throw new Error(`Failed to fetch article. Status: ${response.status}`);
     }

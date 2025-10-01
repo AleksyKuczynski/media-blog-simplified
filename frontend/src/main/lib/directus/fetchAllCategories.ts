@@ -7,8 +7,13 @@ export async function fetchAllCategories(lang: Lang): Promise<Category[]> {
   try {
     // Fetch all category slugs
     const categoriesUrl = `${DIRECTUS_URL}/items/categories?fields=slug`;
-    const categoriesResponse = await fetch(categoriesUrl, { cache: 'no-store' });
-    
+    const categoriesResponse = await fetch(categoriesUrl, { 
+      next: { 
+        revalidate: 3600,
+        tags: ['categories', 'structure']
+      }
+    });    
+
     if (!categoriesResponse.ok) {
       throw new Error(`Failed to fetch categories. Status: ${categoriesResponse.status}`);
     }
@@ -19,7 +24,12 @@ export async function fetchAllCategories(lang: Lang): Promise<Category[]> {
     // Fetch translations for the categories
     const slugs = categories.map(category => category.slug);
     const translationsUrl = `${DIRECTUS_URL}/items/categories_translations?filter[categories_slug][_in]=${slugs.join(',')}&filter[languages_code][_eq]=${lang}`;
-    const translationsResponse = await fetch(translationsUrl, { cache: 'no-store' });
+    const translationsResponse = await fetch(translationsUrl, { 
+      next: { 
+        revalidate: 3600,
+        tags: ['categories', 'translations']
+      }
+    });
 
     if (!translationsResponse.ok) {
       throw new Error(`Failed to fetch category translations. Status: ${translationsResponse.status}`);

@@ -11,15 +11,13 @@ import getDictionary from '@/main/lib/dictionary/getDictionary';
 import { processContent } from '@/main/lib/markdown/processContent';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import ErrorFallback from '@/main/components/Common/ErrorFallback';
-
-// SEO Components
 import { generateArticleMetadata, generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';
 import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/SmartBreadcrumbs';
 
-// NEW: Related Links for SEO enhancement
-
-export const dynamic = 'force-dynamic';
+// ISR CONFIGURATION: 1 hour (articles rarely change after publish)
+export const revalidate = 3600;
+export const dynamicParams = true;
 
 export async function generateMetadata({ 
   params 

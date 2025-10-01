@@ -2,7 +2,14 @@ import { DIRECTUS_URL, PromotedArticle } from "./index";
 
 export async function fetchPromotedSlug(): Promise<string | null> {
     try {
-      const response = await fetch(`${DIRECTUS_URL}/items/promoted`);
+      const url = `${DIRECTUS_URL}/items/promoted`;
+      const response = await fetch(url, { 
+        next: { 
+          revalidate: 300,
+          tags: ['promoted']
+        }
+      });      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch promoted article. Status: ${response.status}`);
       }

@@ -36,7 +36,13 @@ export async function fetchHeroSlugs(lang: Lang): Promise<string[]> {
     
     const url = `${DIRECTUS_URL}/items/articles?fields=${fields}&sort=${sort}&filter=${encodedFilter}&limit=${limit}`;
 
-    const response = await fetch(url, { cache: 'no-store' });
+    const response = await fetch(url, { 
+      next: { 
+        revalidate: 300,
+        tags: ['articles', 'hero']
+      }
+    });
+
     if (!response.ok) {
       throw new Error(`Failed to fetch latest article slugs. Status: ${response.status}`);
     }
