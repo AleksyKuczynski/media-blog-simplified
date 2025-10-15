@@ -439,6 +439,7 @@ export interface FooterDictionary {
 // ===================================================================
 
 export interface Dictionary {
+  readonly locale: string;
   readonly navigation: NavigationDictionary;
   readonly breadcrumb: BreadcrumbDictionary;
   readonly common: CommonDictionary;

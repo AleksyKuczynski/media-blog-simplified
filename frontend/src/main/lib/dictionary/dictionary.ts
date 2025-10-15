@@ -9,6 +9,7 @@ import { Dictionary } from './types';
  * Optimized for both Google and Yandex SEO requirements
  */
 const dictionary: Dictionary = {
+  locale: 'ru_RU',
   // ===================================================================
   // NAVIGATION - Complete structured navigation
   // ===================================================================

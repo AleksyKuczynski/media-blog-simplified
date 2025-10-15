@@ -29,7 +29,7 @@ export function Metadata({ publishedDate, authors, lang, editorialText }: Metada
             <span key={author.slug}>
               {index > 0 && ", "}
               <Link 
-                href={`/ru/authors/${author.slug}`} 
+                href={`/${lang}/authors/${author.slug}`} 
                 className="
                   text-pr-cont hover:text-pr-fix 
                   underline underline-offset-4 

@@ -20,13 +20,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: dictionary.seo.site.fullName,
     description: dictionary.seo.site.description,
-    keywords: 'культурные события, музыка, искусство, EventForMe, медиа, Россия',
+    keywords: dictionary.seo.keywords.base,
     openGraph: {
       title: dictionary.seo.site.fullName,
       description: dictionary.seo.site.description,
       url: dictionary.seo.site.url,
       siteName: dictionary.seo.site.name,
-      locale: 'ru_RU',
+      locale: dictionary.locale,
       type: 'website',
       images: [
         {
@@ -116,14 +116,14 @@ export default async function HomePage() {
     },
     "mainEntity": {
       "@type": "ItemList",
-      "name": "Основные разделы",
+      "name": `${dictionary.navigation.accessibility.primarySectionsLabel}`,
       "itemListElement": [
         {
           "@type": "ListItem",
           "position": 1,
           "item": {
             "@type": "CollectionPage",
-            "name": "Статьи",
+            "name": `${dictionary.navigation.labels.articles}`,
             "url": `${dictionary.seo.site.url}/ru/articles`,
           },
         },
@@ -132,7 +132,7 @@ export default async function HomePage() {
           "position": 2,
           "item": {
             "@type": "CollectionPage",
-            "name": "Рубрики",
+            "name": `${dictionary.navigation.labels.rubrics}`,
             "url": `${dictionary.seo.site.url}/ru/rubrics`,
           },
         },
@@ -141,7 +141,7 @@ export default async function HomePage() {
           "position": 3,
           "item": {
             "@type": "CollectionPage",
-            "name": "Авторы",
+            "name": `${dictionary.navigation.labels.authors}`,
             "url": `${dictionary.seo.site.url}/ru/authors`,
           },
         },
