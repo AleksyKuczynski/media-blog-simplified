@@ -11,10 +11,11 @@ import dictionary from '@/main/lib/dictionary/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants';
 import { processContent } from '@/main/lib/markdown/processContent';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import ErrorFallback from '@/main/components/errors/ErrorFallback';
 import { generateArticleMetadata, generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';
 import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/SmartBreadcrumbs';
+import { createErrorHandler } from '@/main/lib/errors/errorUtils';
+import StandardError from '@/main/components/errors/StandardError';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
@@ -32,13 +33,11 @@ export async function generateMetadata({
     ]);
 
     if (!article) {
-      // FIXED: No await needed - synchronous function
       return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
     }
 
     const translation = article.translations[0];
     if (!translation) {
-      // FIXED: No await needed - synchronous function
       return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
     }
 
@@ -59,7 +58,6 @@ export async function generateMetadata({
       tags: [resolvedParams.rubric, ...translation.title.split(' ').slice(0, 3)],
     };
 
-    // FIXED: No await needed - now synchronous function
     return generateArticleMetadata({
       dictionary,
       articleData,
@@ -70,19 +68,18 @@ export async function generateMetadata({
     
     try {
       const resolvedParams = await params;
-      // FIXED: No await needed - synchronous function
       return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
-    } catch (dictError) {
-      return {
-        title: 'Ошибка — EventForMe',
-        description: 'Произошла ошибка при загрузке страницы.',
-      };
+
+    } catch (error) {
+      console.error('Error generating article metadata:', error);
+      const errorHandler = createErrorHandler(dictionary);
+      return errorHandler.generateErrorMetadata('article');
     }
   }
 }
 
 /**
- * ENHANCED: Article page with SEO-optimized related links
+ * Article page with SEO-optimized related links
  */
 export default async function ArticlePage({ 
   params,
@@ -123,7 +120,7 @@ export default async function ArticlePage({
     const processedContent = await processContent(rawContent);
     const { chunks: contentChunks, toc: tocItems } = processedContent;
 
-    // EXPLANATION: Transform basic author data to AuthorDetails interface
+    // Transform basic author data to AuthorDetails interface
     // The Header component needs full AuthorDetails for creating author profile links
     const authorsWithDetails = article.authors.map(author => ({
       name: author.name || 'EventForMe Editorial',
@@ -159,11 +156,10 @@ export default async function ArticlePage({
       tags: [resolvedParams.rubric, ...translation.title.split(' ').slice(0, 3)],
     };
 
-    // NEW: Prepare related links data for SEO enhancement
+    // Prepare related links data for SEO enhancement
     const rubricData = {
       slug: resolvedParams.rubric,
       name: resolvedParams.rubric, // Could be enhanced with translated name from rubricBasics
-      // FIXED: Removed articleCount since RubricBasic doesn't have this property
     };
 
     const categoriesData = article.categories?.map(cat => ({
@@ -182,7 +178,7 @@ export default async function ArticlePage({
           breadcrumbs={[]} 
         />
 
-        {/* NEW: Related Links Schema for enhanced SEO */}
+        {/* Related Links Schema for enhanced SEO */}
         <RelatedLinksSchema
           dictionary={dictionary}
           rubric={rubricData}
@@ -235,7 +231,7 @@ export default async function ArticlePage({
                   datePublished={article.published_at}
                 />
 
-                {/* NEW: Related Links for SEO Enhancement */}
+                {/* Related Links for SEO Enhancement */}
                 <RelatedLinks
                   dictionary={dictionary}
                   rubric={rubricData}
@@ -254,6 +250,12 @@ export default async function ArticlePage({
 
   } catch (error) {
     console.error('Error in ArticlePage:', error);
-    return <ErrorFallback dictionary={dictionary} contentType="article" />;
+    return (
+      <StandardError
+        dictionary={dictionary}
+        contentType="article"
+        showRetry={false}
+      />
+    );
   }
 }

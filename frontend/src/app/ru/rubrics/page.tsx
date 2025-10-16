@@ -1,5 +1,4 @@
 // src/app/ru/rubrics/page.tsx
-// FIXED: Complete rubrics page with correct imports and proper implementation
 
 import { Metadata } from 'next';
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
@@ -7,14 +6,12 @@ import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
-
-// FIXED: Import clean SEO components with correct paths
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers/content'; // FIXED: Correct import
 import dictionary from '@/main/lib/dictionary/dictionary'; // Direct import
-import StandardError from '@/main/components/errors/StandardError';
 import { DEFAULT_LANG } from '@/main/lib/constants';
+import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;
 
@@ -50,11 +47,9 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     console.error('Error generating rubrics metadata:', error);
     
-    // Fallback metadata using basic structure
-    return {
-      title: 'Рубрики — EventForMe',
-      description: 'Изучите наши тематические рубрики о культурных событиях и современном искусстве.',
-    };
+    // Use errorHandler instead of hardcoded fallback
+    const errorHandler = createErrorHandler(dictionary);
+    return errorHandler.generateErrorMetadata('page');
   }
 }
 
@@ -84,7 +79,7 @@ export default async function RubricsPage() {
       articleCount: rubric.articleCount || 0,
     }));
 
-    // Clean breadcrumb generation using dictionary
+    // Breadcrumb generation using dictionary
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
@@ -143,7 +138,7 @@ export default async function RubricsPage() {
                   key={rubric.slug}
                   rubric={rubric}
                   lang="ru"
-                  dictionary={dictionary} // Pass complete dictionary
+                  dictionary={dictionary}
                 />
               ))}
             </CardGrid>
@@ -164,11 +159,6 @@ export default async function RubricsPage() {
   } catch (error) {
     console.error('Error rendering rubrics page:', error);
     
-    return (
-      <StandardError 
-        dictionary={dictionary} 
-        contentType="rubric"
-      />
-    );
+    throw error;
   }
 }

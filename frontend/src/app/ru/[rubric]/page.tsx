@@ -16,6 +16,7 @@ import { generateRubricMetadata } from '@/main/components/SEO/metadata/RubricMet
 import { RubricPageSchema } from '@/main/components/SEO/schemas/RubricPageSchema';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
 import Link from 'next/link';
+import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 
 // ISR CONFIGURATION: 5 minutes
 export const revalidate = 300;
@@ -65,10 +66,8 @@ export async function generateMetadata({
     console.error('Error generating rubric metadata:', error);
     
     // Fallback metadata
-    return {
-      title: 'Рубрика — EventForMe',
-      description: 'Изучите материалы по выбранной рубрике.',
-    };
+    const errorHandler = createErrorHandler(dictionary);
+    return errorHandler.generateErrorMetadata('rubric');
   }
 }
 
@@ -257,24 +256,6 @@ export default async function RubricPage({
   } catch (error) {
     console.error('Error in RubricPage:', error);
     
-    // Error fallback
-    return (
-      <Section className="py-8">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-2xl font-bold mb-4">
-            Ошибка загрузки рубрики
-          </h1>
-          <p className="text-gray-600 mb-4">
-            Произошла ошибка при загрузке страницы рубрики. Попробуйте обновить страницу.
-          </p>
-          <Link 
-            href="/ru" 
-            className="text-blue-600 hover:text-blue-800"
-          >
-            Вернуться на главную
-          </Link>
-        </div>
-      </Section>
-    );
+    throw error;
   }
 }

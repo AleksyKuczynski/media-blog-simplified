@@ -1,5 +1,5 @@
 // src/main/components/Article/RelatedLinks.tsx
-// FINAL: Zero hardcoded content, moved schema to separate file, avoided declinations
+// FIXED: Category URLs use correct route structure /ru/category/ (singular)
 
 import Link from 'next/link';
 import { Dictionary } from '@/main/lib/dictionary/types';
@@ -22,6 +22,7 @@ interface RelatedLinksProps {
  * Related Links component using exclusively dictionary entries
  * Provides contextual internal links to improve site structure and user engagement
  * Optimized for Russian market SEO (Google & Yandex)
+ * FIXED: Category URLs use correct route structure
  */
 export default function RelatedLinks({
   dictionary,
@@ -100,7 +101,7 @@ export default function RelatedLinks({
           </div>
         </section>
 
-        {/* Categories Section - if available */}
+        {/* Categories Section - FIXED: Use correct route structure */}
         {categories.length > 0 && (
           <section>
             <h3 className="text-lg font-semibold mb-3 text-on-sf">
@@ -111,7 +112,7 @@ export default function RelatedLinks({
               {categories.map((category) => (
                 <Link
                   key={category.slug}
-                  href={`/ru/categories/${category.slug}`}
+                  href={`/ru/category/${category.slug}`}
                   className="inline-flex items-center px-3 py-1 bg-green-50 hover:bg-green-100 text-green-700 hover:text-green-800 rounded-full text-sm transition-colors duration-200 border border-green-200"
                   aria-label={categoryLinkAriaLabel(category.name)}
                 >
@@ -134,39 +135,31 @@ export default function RelatedLinks({
             <Link
               href="/ru/articles"
               className="flex items-center p-3 bg-purple-50 hover:bg-purple-100 text-purple-700 hover:text-purple-800 rounded-lg transition-colors duration-200 border border-purple-200"
-              aria-label={dictionary.navigation.descriptions.articles}
             >
-              <span className="mr-2">📰</span>
-              <span className="text-sm font-medium">
-                {dictionary.navigation.labels.articles}
-              </span>
+              <span className="mr-2">📄</span>
+              <span className="text-sm font-medium">{dictionary.sections.articles.allArticles}</span>
             </Link>
-            
+
+            {/* Rubrics link */}
+            <Link
+              href="/ru/rubrics"
+              className="flex items-center p-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 hover:text-indigo-800 rounded-lg transition-colors duration-200 border border-indigo-200"
+            >
+              <span className="mr-2">🗂️</span>
+              <span className="text-sm font-medium">{dictionary.sections.rubrics.allRubrics}</span>
+            </Link>
+
             {/* Authors link */}
             <Link
               href="/ru/authors"
-              className="flex items-center p-3 bg-orange-50 hover:bg-orange-100 text-orange-700 hover:text-orange-800 rounded-lg transition-colors duration-200 border border-orange-200"
-              aria-label={dictionary.navigation.descriptions.authors}
+              className="flex items-center p-3 bg-pink-50 hover:bg-pink-100 text-pink-700 hover:text-pink-800 rounded-lg transition-colors duration-200 border border-pink-200"
             >
               <span className="mr-2">👥</span>
-              <span className="text-sm font-medium">
-                {dictionary.navigation.labels.authors}
-              </span>
-            </Link>
-            
-            {/* Home link */}
-            <Link
-              href="/ru"
-              className="flex items-center p-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 hover:text-indigo-800 rounded-lg transition-colors duration-200 border border-indigo-200"
-              aria-label={dictionary.navigation.descriptions.home}
-            >
-              <span className="mr-2">🏠</span>
-              <span className="text-sm font-medium">
-                {dictionary.navigation.labels.home}
-              </span>
+              <span className="text-sm font-medium">{dictionary.sections.authors.allAuthors}</span>
             </Link>
           </div>
         </section>
+
       </div>
     </nav>
   );

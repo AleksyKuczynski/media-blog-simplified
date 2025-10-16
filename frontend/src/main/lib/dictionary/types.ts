@@ -152,10 +152,12 @@ export interface MetadataDictionary {
 // ===================================================================
 
 export interface ErrorTemplates {
-  readonly loadingError: string;        // "Ошибка загрузки {contentType}"
-  readonly loadingDescription: string;  // "Произошла ошибка при загрузке {contentType}. Попробуйте обновить страницу."
-  readonly retryAction: string;         // "Попробовать снова"
-  readonly backToHome: string;          // "Вернуться на главную"
+  readonly loadingError: string;
+  readonly loadingDescription: string;
+  readonly retryAction: string;
+  readonly backToHome: string;
+  readonly criticalError: string;
+  readonly criticalDescription: string;
 }
 
 export interface ErrorContentTypes {

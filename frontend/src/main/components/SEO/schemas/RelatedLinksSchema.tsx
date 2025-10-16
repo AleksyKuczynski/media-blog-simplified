@@ -1,10 +1,9 @@
 // src/main/components/SEO/schemas/RelatedLinksSchema.tsx
-// REFACTORED: Using SchemaComposer - Reduced from 80+ to 30 lines
+// FIXED: Category URLs use correct route structure /ru/category/ (singular)
 
-import React from 'react';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';
+import { SchemaBuilder, SchemaComposer } from '../core/SchemaBuilder';
 
 interface RelatedLinksSchemaProps {
   dictionary: Dictionary;
@@ -21,7 +20,7 @@ interface RelatedLinksSchemaProps {
 
 /**
  * Structured data schema for RelatedLinks component
- * REFACTORED: Uses SchemaComposer for standardized schema generation
+ * FIXED: Uses correct category route structure
  * Optimized for Google and Yandex SEO with Russian market targeting
  */
 export default function RelatedLinksSchema({
@@ -65,18 +64,18 @@ export default function RelatedLinksSchema({
         collectionType: 'rubrics',
       });
 
-    // Add category schemas if available using custom schema method
+    // FIXED: Add category schemas with correct URL structure
     if (categories.length > 0) {
       categories.forEach(category => {
         composer.addCustomSchema({
           '@type': 'DefinedTerm',
-          '@id': `${baseUrl}/ru/categories/${category.slug}#term`,
+          '@id': `${baseUrl}/ru/category/${category.slug}#term`,
           name: category.name,
-          url: `${baseUrl}/ru/categories/${category.slug}`,
+          url: `${baseUrl}/ru/category/${category.slug}`,
           inDefinedTermSet: {
             '@type': 'DefinedTermSet',
             name: dictionary.sections.rubrics.readMoreAbout,
-            url: `${baseUrl}/ru/categories`,
+            url: `${baseUrl}/ru/articles`, // Point to articles page instead of non-existent /categories
           },
         });
       });

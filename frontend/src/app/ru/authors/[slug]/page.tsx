@@ -16,6 +16,7 @@ import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content'
 import generateAuthorMetadata from '@/main/components/SEO/metadata/AuthorMetadata';
 import AuthorSchema from '@/main/components/SEO/schemas/AuthorSchema';
 import Link from 'next/link';
+import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 
 // ISR CONFIGURATION: 1 hour (author pages stable)
 export const revalidate = 3600;
@@ -59,11 +60,9 @@ export async function generateMetadata({
   } catch (error) {
     console.error('Error generating author metadata:', error);
     
-    // Fallback metadata
-    return {
-      title: 'Автор — EventForMe',
-      description: 'Узнайте больше об авторе на EventForMe.',
-    };
+    // Use errorHandler instead of hardcoded fallback
+    const errorHandler = createErrorHandler(dictionary);
+    return errorHandler.generateErrorMetadata('author');
   }
 }
 
@@ -242,11 +241,6 @@ export default async function AuthorPage({
   } catch (error) {
      console.error('Error in AuthorPage:', error);
     
-    return (
-      <StandardError 
-        dictionary={dictionary} 
-        contentType="author"
-      />
-    );
+    throw error;
   }
 }

@@ -149,6 +149,8 @@ const dictionary: Dictionary = {
       loadingDescription: 'Произошла ошибка при загрузке {contentType}. Попробуйте обновить страницу.',
       retryAction: 'Попробовать снова',
       backToHome: 'Вернуться на главную',
+      criticalError: 'Произошла критическая ошибка',
+      criticalDescription: 'Что-то пошло не так. Попробуйте обновить страницу.',
     },
     types: {
       article: 'статьи',

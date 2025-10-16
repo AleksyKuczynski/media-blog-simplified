@@ -1,5 +1,4 @@
 // src/app/ru/(with-filter)/articles/page.tsx
-// REDESIGNED: Matches RubricPage/AuthorPage design with FilterGroup and SEO text
 
 import { Suspense } from 'react';
 import { Metadata } from 'next';
@@ -107,7 +106,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
     // Handle error state gracefully
   }
 
-  // ADDED: Prepare data for structured schema using available properties
+  // Prepare data for structured schema using available properties
   const articleItems = allSlugs.slice(0, 10).map(slug => ({
     name: slug.slug, // Use slug as name since title is not available
     slug: slug.slug,
@@ -127,7 +126,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
         featured={false}
       />
 
-      {/* REDESIGNED: FilterGroup replaces header section (following RubricPage structure) */}
+      {/* FilterGroup replaces header section (following RubricPage structure) */}
       <div className="mb-8 container mx-auto px-4">
         {/* SEO Text section (replaces description paragraph from RubricPage pattern) */}
         <div className="mt-6">

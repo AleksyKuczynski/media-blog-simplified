@@ -1,4 +1,5 @@
 // next.config.mjs
+
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -8,6 +9,10 @@ const __dirname = path.dirname(__filename);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  
+  // FIXED: Explicitly set the output file tracing root to silence workspace warning
+  outputFileTracingRoot: __dirname,
+  
   images: {
     remotePatterns: [
       {
@@ -18,9 +23,17 @@ const nextConfig = {
       },
     ],
   },
+  
   transpilePackages: ['swiper'],
+  
   sassOptions: {
     includePaths: [path.join(__dirname, 'src', 'app')],
+  },
+  
+  // Optional: Experimental features for better performance
+  experimental: {
+    // Enable optimizePackageImports for better tree shaking
+    optimizePackageImports: ['@tailwindcss/typography'],
   },
 };
 

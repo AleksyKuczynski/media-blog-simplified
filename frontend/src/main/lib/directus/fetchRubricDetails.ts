@@ -54,10 +54,16 @@ export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubr
       iconMetadata = await fetchAssetMetadata(rubric.nav_icon);
     }
 
-    // Count articles for this rubric
+    // FIXED: Use cached fetch for article count instead of no-store
+    // This allows static generation while still getting fresh data
     const articleCountResponse = await fetch(
       `${DIRECTUS_URL}/items/articles?aggregate[count]=*&filter[rubric_slug][_eq]=${slug}&filter[status][_eq]=published`,
-      { cache: 'no-store' }
+      { 
+        next: { 
+          revalidate: 3600, // Cache for 1 hour instead of no-store
+          tags: ['articles', `rubric-${slug}-articles`]
+        }
+      }
     );
     
     let articleCount = 0;
