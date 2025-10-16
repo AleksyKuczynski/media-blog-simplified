@@ -4,18 +4,18 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import dictionary from '@/main/lib/dictionary/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import { RubricCard } from '@/main/components/Main/RubricCard';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
-import getDictionary from '@/main/lib/dictionary/getDictionary';
 
 export const dynamic = 'force-dynamic';
 
 // Enhanced SEO metadata generation
 export async function generateMetadata(): Promise<Metadata> {
-  const dictionary = await getDictionary('ru');
   
   return {
     title: dictionary.seo.site.fullName,
@@ -62,13 +62,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   // Single unified dictionary call with proper error handling
-  const [dictionary, heroSlugs, rubrics] = await Promise.all([
-    getDictionary('ru'),
-    fetchHeroSlugs('ru').catch(error => {
+  const [heroSlugs, rubrics] = await Promise.all([
+    fetchHeroSlugs(DEFAULT_LANG).catch(error => {
       console.error('Error fetching hero articles:', error);
       return [];
     }),
-    fetchAllRubrics('ru').catch(error => {
+    fetchAllRubrics(DEFAULT_LANG).catch(error => {
       console.error('Error fetching rubrics:', error);
       return [];
     })
@@ -76,7 +75,7 @@ export default async function HomePage() {
 
   // COMPLETE: Transform rubrics with proper typing and error handling
   const transformedRubrics = rubrics.map((rubric: Rubric) => {
-    const translation = rubric.translations?.find(t => t.languages_code === 'ru');
+    const translation = rubric.translations?.find(t => t.languages_code === DEFAULT_LANG);
     return {
       ...rubric, // Spread all original Rubric properties (includes any id if present)
       name: translation?.name || rubric.slug,

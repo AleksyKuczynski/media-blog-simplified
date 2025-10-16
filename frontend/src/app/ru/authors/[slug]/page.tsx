@@ -5,7 +5,9 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { fetchAuthorBySlug, fetchRubricBasics, DIRECTUS_URL, fetchArticleSlugs, ArticleSlugInfo } from '@/main/lib/directus/index';
-import getDictionary from '@/main/lib/dictionary/getDictionary';
+import dictionary from '@/main/lib/dictionary/dictionary';
+import StandardError from '@/main/components/errors/StandardError';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 import ArticleList from '@/main/components/Main/ArticleList';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
@@ -26,9 +28,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const resolvedParams = await params;
-    const [dictionary, author] = await Promise.all([
-      getDictionary('ru'),
-      fetchAuthorBySlug(resolvedParams.slug, 'ru'),
+    const [author] = await Promise.all([
+      fetchAuthorBySlug(resolvedParams.slug, DEFAULT_LANG),
     ]);
     
     if (!author) {
@@ -51,7 +52,7 @@ export async function generateMetadata({
         bio: author.bio,
         avatar: author.avatar,
         articleCount,
-        path: `/ru/authors/${resolvedParams.slug}`,
+        path: `/${DEFAULT_LANG}/authors/${resolvedParams.slug}`,
         featured: false,
       },
     });
@@ -75,10 +76,9 @@ export default async function AuthorPage({
 }) {
   try {
     const resolvedParams = await params;
-    const [dictionary, author, rubricBasics] = await Promise.all([
-      getDictionary('ru'), // Use new dictionary
-      fetchAuthorBySlug(resolvedParams.slug, 'ru'),
-      fetchRubricBasics('ru'),
+    const [author, rubricBasics] = await Promise.all([
+      fetchAuthorBySlug(resolvedParams.slug, DEFAULT_LANG),
+      fetchRubricBasics(DEFAULT_LANG),
     ]);
     
     if (!author) {
@@ -111,15 +111,15 @@ export default async function AuthorPage({
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
-        href: '/ru',
+        href: `/${DEFAULT_LANG}`,
       },
       {
         label: dictionary.navigation.labels.authors,
-        href: '/ru/authors',
+        href: `/${DEFAULT_LANG}/authors`,
       },
       {
         label: author.name,
-        href: `/ru/authors/${resolvedParams.slug}`,
+        href: `/${DEFAULT_LANG}/authors/${resolvedParams.slug}`,
       },
     ];
 
@@ -147,7 +147,7 @@ export default async function AuthorPage({
             articleCount: allSlugInfos.length,
             articles: articlesForSchema,
           }}
-          currentPath={`/ru/authors/${resolvedParams.slug}`}
+          currentPath={`/${DEFAULT_LANG}/authors/${resolvedParams.slug}`}
         />
         
         {/* Breadcrumbs using correct interface */}
@@ -205,7 +205,7 @@ export default async function AuthorPage({
                   {/* ArticleList using correct props */}
                   <ArticleList 
                     slugInfos={allSlugInfos}
-                    lang="ru"
+                    lang={DEFAULT_LANG}
                     dictionary={dictionary}
                     authorSlug={resolvedParams.slug}
                     showCount={false}
@@ -227,7 +227,7 @@ export default async function AuthorPage({
                     {dictionary.common.status.empty}
                   </p>
                   <Link 
-                    href="/ru/authors"
+                    href={`/${DEFAULT_LANG}/authors`}
                     className="text-blue-600 hover:text-blue-800"
                   >
                     {dictionary.navigation.labels.authors}
@@ -240,26 +240,13 @@ export default async function AuthorPage({
       </>
     );
   } catch (error) {
-    console.error('Error in AuthorPage:', error);
+     console.error('Error in AuthorPage:', error);
     
-    // Error fallback
     return (
-      <Section className="py-8">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-2xl font-bold mb-4">
-            Ошибка загрузки автора
-          </h1>
-          <p className="text-gray-600 mb-4">
-            Произошла ошибка при загрузке страницы автора. Попробуйте обновить страницу.
-          </p>
-          <Link 
-            href="/ru" 
-            className="text-blue-600 hover:text-blue-800"
-          >
-            Вернуться на главную
-          </Link>
-        </div>
-      </Section>
+      <StandardError 
+        dictionary={dictionary} 
+        contentType="author"
+      />
     );
   }
 }

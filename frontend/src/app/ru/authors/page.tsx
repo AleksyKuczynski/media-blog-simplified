@@ -5,7 +5,8 @@ import AuthorCard from '@/main/components/Main/AuthorCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
-import getDictionary from '@/main/lib/dictionary/getDictionary';
+import dictionary from '@/main/lib/dictionary/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 
 // ISR CONFIGURATION: 1 hour (authors list is structural)
 export const revalidate = 3600;
@@ -15,7 +16,6 @@ export default async function AllAuthorsPage({
 }: {
   searchParams: Promise<{ page?: string }>
 }) {
-  const dict = await getDictionary('ru');
   const rubricBasics = await fetchRubricBasics('ru');
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
@@ -23,7 +23,7 @@ export default async function AllAuthorsPage({
   const authors = await fetchAllAuthors('ru');
 
   const breadcrumbItems = [
-    { label: dict.sections.authors.ourAuthors, href: '/ru/authors' },
+    { label: dictionary.sections.authors.ourAuthors, href: `/${DEFAULT_LANG}/authors` },
   ];
 
   return (
@@ -31,23 +31,23 @@ export default async function AllAuthorsPage({
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricBasics}
-        lang="ru"
+        lang={DEFAULT_LANG}
         translations={{
-          home: dict.navigation.labels.home,
-          allRubrics: dict.sections.rubrics.allRubrics,
-          allAuthors: dict.sections.authors.ourAuthors,
+          home: dictionary.navigation.labels.home,
+          allRubrics: dictionary.sections.rubrics.allRubrics,
+          allAuthors: dictionary.sections.authors.ourAuthors,
         }}
       />
       
       {/* ✅ FIXED: Added proper H1 tag for SEO */}
       <Section>
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-          {dict.sections.authors.ourAuthors}
+          {dictionary.sections.authors.ourAuthors}
         </h1>
         
         <Suspense fallback={
           <div className="text-center py-8">
-            <div className="text-lg">{dict.common.status.loading}</div>
+            <div className="text-lg">{dictionary.common.status.loading}</div>
           </div>
         }>
           {authors.length > 0 ? (
@@ -56,13 +56,13 @@ export default async function AllAuthorsPage({
                 <AuthorCard 
                   key={author.slug}
                   author={author}
-                  lang="ru"
+                  lang={DEFAULT_LANG}
                 />
               ))}
             </CardGrid>
           ) : (
             <p className="text-center text-gray-600 dark:text-gray-400">
-              {dict.sections.authors.noAuthorsFound}
+              {dictionary.sections.authors.noAuthorsFound}
             </p>
           )}
         </Suspense>

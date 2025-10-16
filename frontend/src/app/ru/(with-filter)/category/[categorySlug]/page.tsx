@@ -7,7 +7,8 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
-import getDictionary from '@/main/lib/dictionary/getDictionary';
+import dictionary from '@/main/lib/dictionary/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics } from '@/main/lib/directus';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
@@ -25,8 +26,7 @@ export async function generateMetadata({
 }: { 
   params: Promise<{ categorySlug: string }> 
 }): Promise<Metadata> {
-  const dictionary = await getDictionary('ru');
-  const categories = await fetchAllCategories('ru');
+  const categories = await fetchAllCategories(DEFAULT_LANG);
   const resolvedParams = await params;
   const category = categories.find(cat => cat.slug === resolvedParams.categorySlug);
   
@@ -53,7 +53,7 @@ export async function generateMetadata({
     collectionType: 'articles', // Category pages show articles
     items: categoryData,
     totalCount: slugs.length,
-    currentPath: `/ru/category/${resolvedParams.categorySlug}`,
+    currentPath: `/${DEFAULT_LANG}/category/${resolvedParams.categorySlug}`,
     featured: false,
   });
 }
@@ -66,7 +66,6 @@ export default async function CategoryPage({
   searchParams: Promise<{ page?: string, sort?: string }>
 }) {
   const resolvedParams = await params;
-  const dictionary = await getDictionary('ru'); // No try-catch needed for local file
   const categories = await fetchAllCategories('ru');
   const rubricBasics = await fetchRubricBasics('ru');
   
@@ -99,15 +98,15 @@ export default async function CategoryPage({
   const breadcrumbItems = [
     {
       label: dictionary.navigation.labels.home,
-      href: '/ru',
+      href: `/${DEFAULT_LANG}`,
     },
     {
       label: dictionary.navigation.labels.articles,
-      href: '/ru/articles',
+      href: `/${DEFAULT_LANG}/articles`,
     },
     {
       label: category.name,
-      href: `/ru/category/${resolvedParams.categorySlug}`,
+      href: `/${DEFAULT_LANG}/category/${resolvedParams.categorySlug}`,
     },
   ];
 
@@ -251,13 +250,13 @@ export default async function CategoryPage({
                       {/* Navigation links for better UX */}
                       <div className="mt-6 flex flex-wrap gap-4 justify-center">
                         <Link 
-                          href="/ru/articles"
+                          href={`/${DEFAULT_LANG}/articles`}
                           className="inline-flex items-center px-4 py-2 bg-prcolor text-white rounded-lg hover:bg-pr-fix transition-colors"
                         >
                           {dictionary.sections.articles.allArticles}
                         </Link>
                         <Link 
-                          href="/ru/rubrics"
+                          href={`/${DEFAULT_LANG}/rubrics`}
                           className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                           {dictionary.sections.rubrics.allRubrics}

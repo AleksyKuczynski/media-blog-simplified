@@ -6,7 +6,8 @@ import { Metadata } from 'next';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
-import { getDictionary } from '@/main/lib/dictionary/getDictionary';
+import dictionary from '@/main/lib/dictionary/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 import { fetchArticleSlugs, fetchAllCategories } from '@/main/lib/directus';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
@@ -29,8 +30,6 @@ interface ArticlesPageProps {
 
 // Generate metadata using CollectionMetadata following established pattern
 export async function generateMetadata(): Promise<Metadata> {
-  const dictionary = await getDictionary('ru');
-  
   // Fetch articles to get accurate count and items for metadata
   try {
     const { slugs } = await fetchArticleSlugs(1, 'desc');
@@ -48,7 +47,7 @@ export async function generateMetadata(): Promise<Metadata> {
       collectionType: 'articles',
       items: articleItems,
       totalCount: slugs.length, // Use slugs.length, not totalCount property
-      currentPath: '/ru/articles',
+      currentPath: `/${DEFAULT_LANG}/articles`,
       featured: false,
     });
     
@@ -73,8 +72,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
   // Get dictionary and categories for FilterGroup
-  const [dictionary, categories] = await Promise.all([
-    getDictionary('ru'),
+  const [categories] = await Promise.all([
     fetchAllCategories('ru')
   ]);
   
@@ -160,7 +158,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
               {/* Enhanced ArticleList (preserve existing) */}
               <ArticleList 
                 slugInfos={allSlugs} 
-                lang="ru" 
+                lang={DEFAULT_LANG} 
                 dictionary={dictionary}
                 categorySlug={categoryFilter}
                 showCount={true}

@@ -7,7 +7,8 @@ import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
 import { Header, Content, ScrollToTopButton, TableOfContents, RelatedLinksSchema, RelatedLinks } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
-import getDictionary from '@/main/lib/dictionary/getDictionary';
+import dictionary from '@/main/lib/dictionary/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 import { processContent } from '@/main/lib/markdown/processContent';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import ErrorFallback from '@/main/components/Common/ErrorFallback';
@@ -26,8 +27,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const resolvedParams = await params;
-    const [dictionary, article] = await Promise.all([
-      getDictionary('ru'),
+    const [article] = await Promise.all([
       fetchFullArticle(resolvedParams.slug, 'ru'),
     ]);
 
@@ -66,7 +66,6 @@ export async function generateMetadata({
     console.error('Error generating article metadata:', error);
     
     try {
-      const dictionary = await getDictionary('ru');
       const resolvedParams = await params;
       return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
     } catch (dictError) {
@@ -89,13 +88,6 @@ export default async function ArticlePage({
 }) {
   let dictionary;
   
-  try {
-    dictionary = await getDictionary('ru');
-  } catch (dictionaryError) {
-    console.error('Critical error: Failed to load dictionary:', dictionaryError);
-    return <ErrorFallback dictionary={{} as any} contentType="article" />;
-  }
-
   try {
         const resolvedParams = await params;
 

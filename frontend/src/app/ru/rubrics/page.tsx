@@ -12,8 +12,9 @@ import CardGrid from '@/main/components/Main/CardGrid';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers/content'; // FIXED: Correct import
-import getDictionary from '@/main/lib/dictionary/getDictionary';
-
+import dictionary from '@/main/lib/dictionary/dictionary'; // Direct import
+import StandardError from '@/main/components/errors/StandardError';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;
 
@@ -22,9 +23,8 @@ export const revalidate = 3600;
  */
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const [rubrics, dictionary] = await Promise.all([
-      fetchAllRubrics('ru'),
-      getDictionary('ru'), // FIXED: Consistent dictionary usage
+    const [rubrics] = await Promise.all([
+      fetchAllRubrics(DEFAULT_LANG),
     ]);
     
     // Transform rubrics data for metadata generation
@@ -43,7 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
       collectionType: 'rubrics',
       items: rubricsData,
       totalCount: rubrics.length,
-      currentPath: '/ru/rubrics',
+      currentPath: `/${DEFAULT_LANG}/rubrics`,
       featured: false,
     });
     
@@ -60,9 +60,8 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RubricsPage() {
   try {
-    const [rubrics, dictionary] = await Promise.all([
+    const [rubrics] = await Promise.all([
       fetchAllRubrics('ru'),
-      getDictionary('ru'), // FIXED: Direct dictionary usage
     ]);
 
     // Transform rubrics for rendering
@@ -72,7 +71,7 @@ export default async function RubricsPage() {
         ...rubric,
         name: translation?.name || rubric.slug,
         description: translation?.description,
-        url: `/ru/${rubric.slug}`,
+        url: `/${DEFAULT_LANG}/${rubric.slug}`,
       };
     });
 
@@ -80,7 +79,7 @@ export default async function RubricsPage() {
     const schemaItems = transformedRubrics.map(rubric => ({
       name: rubric.name,
       slug: rubric.slug,
-      url: `${dictionary.seo.site.url}/ru/${rubric.slug}`,
+      url: `${dictionary.seo.site.url}/${DEFAULT_LANG}/${rubric.slug}`,
       description: rubric.description,
       articleCount: rubric.articleCount || 0,
     }));
@@ -89,11 +88,11 @@ export default async function RubricsPage() {
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
-        href: '/ru',
+        href: `/${DEFAULT_LANG}`,
       },
       {
         label: dictionary.navigation.labels.rubrics,
-        href: '/ru/rubrics',
+        href: `/${DEFAULT_LANG}/rubrics`,
       },
     ];
 
@@ -165,15 +164,11 @@ export default async function RubricsPage() {
   } catch (error) {
     console.error('Error rendering rubrics page:', error);
     
-    // FIXED: Clean error fallback using dictionary structure
-    // Note: We can't access dictionary here in catch block, so use basic Russian text
     return (
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-4">Ошибка</h1>
-        <p className="text-lg text-muted-foreground">
-          Произошла ошибка при загрузке рубрик. Попробуйте обновить страницу.
-        </p>
-      </div>
+      <StandardError 
+        dictionary={dictionary} 
+        contentType="rubric"
+      />
     );
   }
 }

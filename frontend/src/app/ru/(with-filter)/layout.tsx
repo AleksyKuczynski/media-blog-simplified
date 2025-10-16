@@ -1,7 +1,8 @@
 // src/app/ru/(with-filter)/layout.tsx
 // MIGRATED: Updated to use new dictionary system completely
 import FilterGroup from '@/main/components/Navigation/FilterGroup';
-import getDictionary from '@/main/lib/dictionary/getDictionary';
+import dictionary from '@/main/lib/dictionary/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 import { fetchAllCategories } from '@/main/lib/directus';
 import { Suspense } from 'react';
 
@@ -10,7 +11,6 @@ export default async function WithFilterLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const dictionary = await getDictionary('ru'); // MIGRATED: New dictionary system
   const categories = await fetchAllCategories('ru');
 
   return (
@@ -46,7 +46,7 @@ export default async function WithFilterLayout({
         <FilterGroup
           categories={categories}
           dictionary={dictionary}
-          lang="ru"
+          lang={DEFAULT_LANG}
         />
       </Suspense>      
       {children}
