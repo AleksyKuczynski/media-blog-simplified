@@ -5,10 +5,10 @@
 
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
-import SearchBar from '../Search/SearchBar'
 import { MobileNavOverlay } from './MobileNavOverlay'
 import { useMobileNavigation } from './useMobileNavigation'
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
+import SearchBarClient from '../Search/SearchBarClient'
 
 interface MobileNavProps {
   dictionary: Dictionary
@@ -140,13 +140,13 @@ export default function MobileNavigation({
             </ul>
           </div>
 
-          {/* Mobile Search - FIXED: Added data-interactive to prevent menu closure */}
+          {/* Mobile Search - FIXED: Use SearchBarClient to prevent hydration issues */}
           <div className="px-6 py-4 border-t border-ol-var/20" data-interactive="true">
-            <SearchBar
+            <SearchBarClient
               dictionary={dictionary}
               lang={lang}
               onSearchComplete={handleSearchComplete}
-              className="search-container" // Added class for click handler detection
+              className="search-container"
             />
           </div>
         </div>
