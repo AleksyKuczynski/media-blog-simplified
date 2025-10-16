@@ -1,15 +1,15 @@
 // src/app/ru/layout.tsx
 // FIXED: Removed problematic React.cloneElement, simplified prop passing, better type safety
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Metadata } from 'next'
 import Footer from '@/main/components/Footer/Footer'
 import Navigation from '@/main/components/Navigation/Navigation'
-import getDictionary from '@/main/lib/dictionary/getDictionary';
+import dictionary from '@/main/lib/dictionary/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 
 // Generate metadata using dictionary
 export async function generateMetadata(): Promise<Metadata> {
-  const dictionary = await getDictionary('ru');
   
   return {
     title: dictionary.seo.site.name,
@@ -37,18 +37,24 @@ export default async function MainLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Single dictionary call for the entire layout
-  const dictionary = await getDictionary('ru');
 
   return (
     <div className="flex flex-col min-h-screen">
       {/* Navigation with unified dictionary system */}
-      <Navigation 
-        dictionary={dictionary}
-        lang="ru"
-        currentPath=""
-        breadcrumbs={[]}
-      />
+      <Suspense fallback={
+        <div className="h-16 xl:h-24 bg-white border-b border-gray-200 flex items-center">
+          <div className="container mx-auto px-4">
+            <div className="h-8 bg-gray-100 rounded animate-pulse w-32" />
+          </div>
+        </div>
+      }>
+        <Navigation 
+          dictionary={dictionary}
+          lang={DEFAULT_LANG}
+          currentPath=""
+          breadcrumbs={[]}
+        />
+      </Suspense>
       
       {/* Main content area with proper semantic structure */}
       <main 
@@ -65,15 +71,14 @@ export default async function MainLayout({
       </main>
       
       {/* Footer with unified dictionary system */}
-      <Footer
-        lang="ru"
-        dictionary={dictionary}
-      />
+      <Suspense fallback={
+        <div className="h-32 bg-gray-50 border-t border-gray-200" />
+      }>
+        <Footer
+          lang={DEFAULT_LANG}
+          dictionary={dictionary}
+        />
+      </Suspense>
     </div>
   );
-}
-
-// Export dictionary for child components to use
-export async function getLayoutDictionary() {
-  return await getDictionary('ru');
 }

@@ -140,6 +140,7 @@ export interface MetadataFallbacks {
   readonly rubric: NotFoundMetadata;
   readonly author: NotFoundMetadata;
   readonly page: NotFoundMetadata;
+  readonly content: NotFoundMetadata;
 }
 
 export interface MetadataDictionary {

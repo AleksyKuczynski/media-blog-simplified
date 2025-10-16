@@ -28,16 +28,20 @@ export default async function AllAuthorsPage({
 
   return (
     <>
-      <Breadcrumbs 
-        items={breadcrumbItems} 
-        rubrics={rubricBasics}
-        lang={DEFAULT_LANG}
-        translations={{
-          home: dictionary.navigation.labels.home,
-          allRubrics: dictionary.sections.rubrics.allRubrics,
-          allAuthors: dictionary.sections.authors.ourAuthors,
-        }}
-      />
+      <Suspense fallback={
+        <div className="h-8 bg-gray-100 rounded animate-pulse mb-4" />
+      }>
+        <Breadcrumbs 
+          items={breadcrumbItems} 
+          rubrics={rubricBasics}
+          lang={DEFAULT_LANG}
+          translations={{
+            home: dictionary.navigation.labels.home,
+            allRubrics: dictionary.sections.rubrics.allRubrics,
+            allAuthors: dictionary.sections.authors.ourAuthors,
+          }}
+        />
+      </Suspense>
       
       {/* ✅ FIXED: Added proper H1 tag for SEO */}
       <Section>
@@ -48,6 +52,11 @@ export default async function AllAuthorsPage({
         <Suspense fallback={
           <div className="text-center py-8">
             <div className="text-lg">{dictionary.common.status.loading}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+              {Array.from({ length: 6 }, (_, i) => (
+                <div key={i} className="h-64 bg-gray-100 rounded-lg animate-pulse" />
+              ))}
+            </div>
           </div>
         }>
           {authors.length > 0 ? (

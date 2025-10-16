@@ -133,6 +133,10 @@ const dictionary: Dictionary = {
         title: 'Страница не найдена',
         description: 'Запрашиваемая страница не найдена',
       },
+      content: {
+      title: 'Контент не найден',
+      description: 'Запрашиваемый контент не найден',
+      },
     },
   },
 

@@ -1,6 +1,4 @@
 // src/main/components/SEO/metadata/ArticleMetadata.tsx
-// Article-specific metadata generation following established patterns
-
 import { Metadata } from 'next';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
@@ -24,19 +22,20 @@ export interface ArticleMetadataProps {
     rubricSlug: string;
     author: string;
     publishedAt: string;
-    updatedAt: string | null; // FIXED: Allow null
+    updatedAt: string | null;
     imageUrl?: string;
     tags?: string[];
   };
 }
 
 /**
+ * FIXED: Made synchronous since dictionary is static
  * Generate comprehensive metadata for individual article pages
  */
-export const generateArticleMetadata = async ({
+export const generateArticleMetadata = ({
   dictionary,
   articleData
-}: ArticleMetadataProps): Promise<Metadata> => {
+}: ArticleMetadataProps): Metadata => {
   const { 
     title, 
     seoTitle, 
@@ -52,7 +51,7 @@ export const generateArticleMetadata = async ({
     tags = [] 
   } = articleData;
 
-  // Handle dates safely - use getSafeArticleDates to handle null updatedAt
+  // Handle dates safely
   const safeDates = getSafeArticleDates(publishedAt, updatedAt);
 
   // Use SEO title or fallback to regular title
@@ -71,7 +70,8 @@ export const generateArticleMetadata = async ({
   const finalImageUrl = imageUrl || `${dictionary.seo.site.url}/og-default.jpg`;
 
   // Generate article tags
-  const articleTags = tags.length > 0 ? tags : [rubricSlug, title.split(' ').slice(0, 3)].flat();
+  const articleTags = tags.length > 0 ? 
+    tags : [rubricSlug, ...title.split(' ').slice(0, 3)];
 
   // Create SEO data using established pattern
   const seoData = createArticleSEOData(
@@ -107,7 +107,7 @@ export const generateArticleMetadata = async ({
 };
 
 /**
- * Generate metadata for article not found cases
+ * Generate metadata for article not found cases (already synchronous)
  */
 export const generateArticleNotFoundMetadata = (
   dictionary: Dictionary,

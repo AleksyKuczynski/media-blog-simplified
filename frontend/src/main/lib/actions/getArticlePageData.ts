@@ -1,15 +1,15 @@
 // src/main/lib/actions/getArticlePageData.ts - ADD SAFETY CHECKS
 'use server'
 
-import getDictionary from "../dictionary/getDictionary";
+import dictionary from '@/main/lib/dictionary/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants';
 import { Lang } from "../dictionary/types";
 import { AuthorDetails, fetchAllRubrics, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails } from "../directus";
 import { processContent } from "../markdown/processContent";
 
 export async function getArticlePageData(params: { rubric: string, slug: string, lang: Lang }, searchParams: { author?: string }) {
-  const [article, dict, rubrics, rubricDetails] = await Promise.all([
+  const [article, rubrics, rubricDetails] = await Promise.all([
     fetchFullArticle(params.slug, params.lang),
-    getDictionary(params.lang),
     fetchAllRubrics(params.lang),
     fetchRubricDetails(params.rubric, params.lang)
   ]);
@@ -29,13 +29,13 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
   if (searchParams.author) {
     const author = await fetchAuthorBySlug(searchParams.author, params.lang);
     breadcrumbItems = [
-      { label: dict.sections.authors.ourAuthors, href: '/ru/authors' },
+      { label: dictionary.sections.authors.ourAuthors, href: '/ru/authors' },
       { label: author?.name || searchParams.author, href: `/ru/authors/${searchParams.author}` },
       { label: translation.title, href: `/ru/${params.rubric}/${params.slug}?context=author&author=${searchParams.author}` },
     ];
   } else {
     breadcrumbItems = [
-      { label: dict.sections.rubrics.allRubrics, href: '/ru/rubrics' },
+      { label: dictionary.sections.rubrics.allRubrics, href: '/ru/rubrics' },
       { label: rubricName, href: `/ru/${params.rubric}` },
       { label: translation.title, href: `/ru/${params.rubric}/${params.slug}` },
     ];
@@ -65,6 +65,6 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
     rubricBasics,
     formattedDate,
     processedContent,
-    dict,
+    dictionary,
   };
 }

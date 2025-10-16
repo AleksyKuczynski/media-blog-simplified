@@ -28,15 +28,17 @@ export async function generateMetadata({
   try {
     const resolvedParams = await params;
     const [article] = await Promise.all([
-      fetchFullArticle(resolvedParams.slug, 'ru'),
+      fetchFullArticle(resolvedParams.slug, DEFAULT_LANG),
     ]);
 
     if (!article) {
+      // FIXED: No await needed - synchronous function
       return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
     }
 
     const translation = article.translations[0];
     if (!translation) {
+      // FIXED: No await needed - synchronous function
       return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
     }
 
@@ -57,7 +59,8 @@ export async function generateMetadata({
       tags: [resolvedParams.rubric, ...translation.title.split(' ').slice(0, 3)],
     };
 
-    return await generateArticleMetadata({
+    // FIXED: No await needed - now synchronous function
+    return generateArticleMetadata({
       dictionary,
       articleData,
     });
@@ -67,6 +70,7 @@ export async function generateMetadata({
     
     try {
       const resolvedParams = await params;
+      // FIXED: No await needed - synchronous function
       return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
     } catch (dictError) {
       return {
@@ -86,8 +90,6 @@ export default async function ArticlePage({
   params: Promise<{ rubric: string, slug: string }>,
   searchParams: Promise<{ author?: string }>
 }) {
-  let dictionary;
-  
   try {
         const resolvedParams = await params;
 
