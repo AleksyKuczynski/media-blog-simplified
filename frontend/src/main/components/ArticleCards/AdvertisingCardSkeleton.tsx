@@ -1,30 +1,33 @@
-// src/main/components/ArticleCards/AdvertisingCardSkeleton.tsx  
+// src/main/components/ArticleCards/AdvertisingCardSkeleton.tsx
 
 import React from 'react';
+import { cn } from '@/main/lib/utils/utils';
+// ✅ Import style constants from parent component
+import { ADVERTISING_CARD_SKELETON_STYLES } from './AdvertisingCard';
 
 export function AdvertisingCardSkeleton() {
   return (
     <article 
-      className="bg-gradient-to-br from-sf-hi to-sf-hst p-6 rounded-2xl shadow-lg animate-pulse"
+      className={ADVERTISING_CARD_SKELETON_STYLES.base}
       role="status"
       aria-label="Loading sponsored content..."
     >
-      <div className="flex flex-col h-full">
-        {/* Title skeleton */}
-        <div className="h-6 bg-on-sf/10 rounded mb-3" />
-        <div className="h-6 w-3/4 bg-on-sf/10 rounded mb-3" />
+      <div className={ADVERTISING_CARD_SKELETON_STYLES.content}>
+        {/* Title skeleton - 2 lines */}
+        <div className={ADVERTISING_CARD_SKELETON_STYLES.title} />
+        <div className={ADVERTISING_CARD_SKELETON_STYLES.titleSecond} />
         
-        {/* Description skeleton */}
+        {/* Description skeleton - 4 lines */}
         <div className="space-y-2 mb-4 flex-grow">
-          <div className="h-4 bg-on-sf/10 rounded" />
-          <div className="h-4 w-5/6 bg-on-sf/10 rounded" />
-          <div className="h-4 w-4/5 bg-on-sf/10 rounded" />
-          <div className="h-4 w-3/5 bg-on-sf/10 rounded" />
+          <div className={ADVERTISING_CARD_SKELETON_STYLES.description} />
+          <div className={cn(ADVERTISING_CARD_SKELETON_STYLES.description, 'w-5/6')} />
+          <div className={cn(ADVERTISING_CARD_SKELETON_STYLES.description, 'w-4/5')} />
+          <div className={cn(ADVERTISING_CARD_SKELETON_STYLES.description, 'w-3/5')} />
         </div>
         
         {/* Button skeleton */}
-        <div className="mt-auto">
-          <div className="h-7 w-20 bg-on-sf/20 rounded-full" />
+        <div className={ADVERTISING_CARD_SKELETON_STYLES.buttonContainer}>
+          <div className={ADVERTISING_CARD_SKELETON_STYLES.button} />
         </div>
       </div>
       
