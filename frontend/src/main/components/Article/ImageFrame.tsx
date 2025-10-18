@@ -1,11 +1,14 @@
 // src/main/components/Article/ImageFrame.tsx
+
 'use client'
 
 import React, { useState, useEffect, memo } from 'react';
 import Image from 'next/image';
+import { cn } from '@/main/lib/utils/utils';
 import { ImageAttributes, ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
 import { calculateImageFrameDimensionsClient } from '@/main/lib/image-utils/calculateImageFrameDimensions';
 import { Caption, createInitialCaptionBehavior } from './Captions';
+import { ImageFrameSkeleton } from './ImageFrameSkeleton';
 
 interface ImageFrameProps {
   imageAttributes: ImageAttributes;
@@ -14,6 +17,27 @@ interface ImageFrameProps {
   maxWidth?: number;
   className?: string;
 }
+
+// ✅ EXTRACT STYLING CONSTANTS FROM IMAGEFRAME
+export const IMAGE_FRAME_STYLES = {
+  figure: 'w-full',
+  container: 'relative mx-auto mb-8 overflow-hidden bg-sf-cont rounded-2xl shadow-lg',
+  image: 'w-full h-full object-cover',
+} as const;
+
+// ✅ ENHANCED SKELETON STYLES WITH SHIMMER EFFECT
+export const IMAGE_FRAME_SKELETON_STYLES = {
+  figure: IMAGE_FRAME_STYLES.figure,
+  container: cn(IMAGE_FRAME_STYLES.container, 'animate-pulse'),
+  
+  // Enhanced loading states
+  shimmer: 'absolute inset-0 bg-gradient-to-r from-sf-hi via-sf-hst to-sf-hi bg-[length:200%_100%] animate-[shimmer_1.5s_infinite]',
+  placeholder: 'absolute inset-0 flex items-center justify-center text-on-sf-var/50',
+  loadingText: 'mt-2 text-sm text-on-sf-var/60',
+  
+  // Icon styling
+  iconContainer: 'w-16 h-16 text-on-sf-var/30 mb-2',
+} as const;
 
 export const ImageFrame = memo(function ImageFrame({ 
   imageAttributes, 
@@ -47,23 +71,14 @@ export const ImageFrame = memo(function ImageFrame({
   }, [imageAttributes, maxWidth]);
 
   if (!dimensions || isLoading) {
-    // Loading skeleton with estimated dimensions
     const estimatedHeight = 400;
     return (
-      <div 
-        className={`
-          relative mx-auto mb-8 bg-sf-cont animate-pulse
-          rounded-2xl ${className || ''}
-        `}
-        style={{ 
-          height: estimatedHeight,
-          maxWidth: maxWidth || '100%'
-        }}
-      >
-        <div className="absolute inset-0 flex items-center justify-center text-on-sf-var/50">
-          Loading image...
-        </div>
-      </div>
+      <ImageFrameSkeleton 
+        width={maxWidth || '100%'}
+        height={estimatedHeight}
+        className={className}
+        showShimmer={true}
+      />
     );
   }
 
@@ -78,13 +93,9 @@ export const ImageFrame = memo(function ImageFrame({
   const captionBehavior = createInitialCaptionBehavior(hasCaption);
 
   return (
-    <figure className="w-full">
+    <figure className={IMAGE_FRAME_STYLES.figure}>
       <div 
-        className={`
-          relative mx-auto mb-8 overflow-hidden bg-sf-cont
-          rounded-2xl shadow-lg
-          ${className || ''}
-        `}
+        className={cn(IMAGE_FRAME_STYLES.container, className)}
         style={containerStyle}
       >
         <Image
@@ -92,7 +103,7 @@ export const ImageFrame = memo(function ImageFrame({
           alt={imageAttributes.alt || 'Image'}
           width={imageAttributes.width || 1200}
           height={imageAttributes.height || 800}
-          className="w-full h-full object-cover"
+          className={IMAGE_FRAME_STYLES.image}
           sizes="(max-width: 768px) 95vw, (max-width: 1024px) 90vw, 85vw"
           priority={false}
           quality={90}

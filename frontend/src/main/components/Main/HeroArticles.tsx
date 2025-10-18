@@ -1,18 +1,46 @@
-// src/main/components/Main/HeroArticles.tsx - MIGRATED: Uses unified dictionary
+// src/main/components/Main/HeroArticles.tsx
+
 import { Suspense } from 'react';
+import { cn } from '@/main/lib/utils/utils';
 import { Dictionary } from '@/main/lib/dictionary/types';
 import ArticleCard from '../ArticleCards/ArticleCard';
+import { HeroArticlesSkeleton } from './HeroArticlesSkeleton';
 
 interface HeroArticlesProps {
-  slugs: string[]; // UPDATED: More descriptive prop name
-  dictionary: Dictionary; // NEW: Unified dictionary instead of separate translations
+  slugs: string[];
+  dictionary: Dictionary;
   rubricSlug?: string;
 }
+
+// ✅ EXTRACT HERO ARTICLES STYLING CONSTANTS
+export const HERO_ARTICLES_STYLES = {
+  container: 'grid grid-cols-1 xl:grid-cols-2 container mx-auto py-6 md:py-8 lg:py-12 sm:px-6 2xl:px-8 gap-6 lg:gap-8',
+  
+  // Promoted article section
+  promoted: {
+    wrapper: 'col-span-full xl:col-span-1 pb-12 md:pb-0',
+  },
+  
+  // Latest articles grid
+  latest: {
+    wrapper: 'grid grid-cols-1 md:max-xl:grid-cols-3 gap-6 lg:gap-8',
+  },
+  
+  // Empty state
+  empty: 'text-center py-8 text-muted-foreground',
+} as const;
+
+// ✅ SKELETON STYLES - Inherit from main component
+export const HERO_ARTICLES_SKELETON_STYLES = {
+  container: HERO_ARTICLES_STYLES.container,
+  promoted: HERO_ARTICLES_STYLES.promoted,
+  latest: HERO_ARTICLES_STYLES.latest,
+} as const;
 
 export default function HeroArticles({ slugs, dictionary, rubricSlug }: HeroArticlesProps) {
   if (slugs.length === 0) {
     return (
-      <div className="text-center py-8 text-muted-foreground">
+      <div className={HERO_ARTICLES_STYLES.empty}>
         {dictionary.sections.articles.noFeaturedArticles}
       </div>
     );
@@ -22,45 +50,30 @@ export default function HeroArticles({ slugs, dictionary, rubricSlug }: HeroArti
 
   return (
     <Suspense fallback={
-      <div className="p-8 text-center">
-        {dictionary.common.status.loading}
-      </div>
+      <HeroArticlesSkeleton latestCount={latestSlugs.length} />
     }>
-      <div className="
-        grid grid-cols-1 xl:grid-cols-2
-        container mx-auto 
-        py-6 md:py-8 lg:py-12
-        sm:px-6 2xl:px-8
-        gap-6 lg:gap-8
-      ">
+      <div className={HERO_ARTICLES_STYLES.container}>
         {/* Promoted Article */}
-        <div className="
-          col-span-full xl:col-span-1
-          pb-12 md:pb-0
-        ">
+        <div className={HERO_ARTICLES_STYLES.promoted.wrapper}>
           <ArticleCard 
             slug={promotedSlug} 
-            lang="ru" // UPDATED: Static lang since we're Russian-only
+            lang="ru"
             rubricSlug={rubricSlug} 
             layout="promoted"
-            dictionary={dictionary} // NEW: Pass unified dictionary
+            dictionary={dictionary}
           />
         </div>
         
         {/* Latest Articles Grid */}
-        <div className="
-          grid 
-          grid-cols-1 md:max-xl:grid-cols-3 
-          gap-6 lg:gap-8
-        ">
+        <div className={HERO_ARTICLES_STYLES.latest.wrapper}>
           {latestSlugs.map((slug) => (
             <ArticleCard 
               key={slug} 
               slug={slug} 
-              lang="ru" // UPDATED: Static lang since we're Russian-only
+              lang="ru"
               rubricSlug={rubricSlug} 
               layout="latest"
-              dictionary={dictionary} // NEW: Pass unified dictionary
+              dictionary={dictionary}
             />
           ))}
         </div>
