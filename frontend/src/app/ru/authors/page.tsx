@@ -7,6 +7,7 @@ import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 import dictionary from '@/main/lib/dictionary/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants';
+import { AuthorCardSkeleton } from '@/main/components/Main/AuthorCardSkeleton';
 
 // ISR CONFIGURATION: 1 hour (authors list is structural)
 export const revalidate = 3600;
@@ -50,14 +51,16 @@ export default async function AllAuthorsPage({
         </h1>
         
         <Suspense fallback={
-          <div className="text-center py-8">
-            <div className="text-lg">{dictionary.common.status.loading}</div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-              {Array.from({ length: 6 }, (_, i) => (
-                <div key={i} className="h-64 bg-gray-100 rounded-lg animate-pulse" />
-              ))}
+          <Section>
+            <div className="mb-8 text-center">
+              <div className="h-8 w-64 bg-on-sf/10 rounded mx-auto animate-pulse" />
             </div>
-          </div>
+            <CardGrid>
+              {Array.from({ length: 6 }, (_, i) => (
+                <AuthorCardSkeleton key={i} />
+              ))}
+            </CardGrid>
+          </Section>
         }>
           {authors.length > 0 ? (
             <CardGrid>

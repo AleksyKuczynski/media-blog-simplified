@@ -1,11 +1,11 @@
 // src/main/components/Main/ArticleList.tsx
-// FIXED: Use only existing dictionary entries, no hardcoded text
 
 import { Suspense } from 'react';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import ArticleCard from '../ArticleCards/ArticleCard';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import { ArticleCardSkeletonVariant } from '../ArticleCards/ArticleCardVariant';
 
 interface ArticleListProps {
   readonly slugInfos: ArticleSlugInfo[];
@@ -103,19 +103,22 @@ export default function ArticleList({
 
   // Enhanced loading component with better UX
   const LoadingFallback = () => (
-    <div 
-      className="text-center py-8"
-      role="status" 
-      aria-label={dictionary.common.status.loading}
-    >
-      <div className="flex flex-col items-center gap-3">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-prcolor" aria-hidden="true" />
-        <p className="text-gray-600 dark:text-gray-400">
-          {dictionary.common.status.loading}
-        </p>
-      </div>
-    </div>
-  );
+  <div 
+    className={`container mx-auto ${gridClasses} py-6 md:py-8 lg:py-12 sm:px-6 2xl:px-8`}
+    role="status" 
+    aria-label={dictionary.common.status.loading}
+  >
+    {/* Show appropriate number of skeleton cards based on layout */}
+    {Array.from({ length: variant === 'grid' ? 6 : 4 }, (_, index) => (
+      <ArticleCardSkeletonVariant 
+        key={index}
+        layout="regular"
+        showImage={true}
+      />
+    ))}
+    <span className="sr-only">{dictionary.common.status.loading}</span>
+  </div>
+);
 
   // Count display for better UX
   const ArticleCount = () => showCount ? (
