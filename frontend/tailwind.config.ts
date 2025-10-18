@@ -94,12 +94,6 @@ const config: Config = {
     },
   },
   plugins: [
-    // Keep only color scheme variants (remove theme variants)
-    function({ addVariant }: PluginAPI) {
-      addVariant('scheme-default', 'html[data-color-scheme="default"] &')
-      addVariant('scheme-1', 'html[data-color-scheme="scheme1"] &')
-      addVariant('scheme-2', 'html[data-color-scheme="scheme2"] &')
-    },
     require('@tailwindcss/typography'),
   ],
 };
