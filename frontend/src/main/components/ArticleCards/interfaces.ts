@@ -48,6 +48,17 @@ export interface StandardCardProps extends BaseArticleCardProps {
   readonly layout: 'regular' | 'latest' | 'promoted';
 }
 
+export interface StandardCardSkeletonProps {
+  layout?: 'regular' | 'promoted' | 'latest';
+  showImage?: boolean;
+  className?: string;
+}
+
+export interface ArticleCardSkeletonVariantProps {
+  layout?: string;
+  showImage?: boolean;
+}
+
 // Utility function to calculate image dimensions
 export function getImageDimensions(imageProps: ImageProps, baseWidth: number = 600): {
   width: number;

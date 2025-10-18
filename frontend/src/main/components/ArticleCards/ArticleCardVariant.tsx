@@ -1,14 +1,35 @@
 // src/main/components/ArticleCards/ArticleCardVariant.tsx
-// MIGRATED: Passes new dictionary structure to child components
+
 import { ArticleCardVariantProps } from './interfaces';
 import { NewsCard } from './NewsCard';
 import { AdvertisingCard } from './AdvertisingCard';
 import { StandardCard } from './StandardCard';
+import { NewsCardSkeleton } from './NewsCardSkeleton';
+import { AdvertisingCardSkeleton } from './AdvertisingCardSkeleton';
+import { StandardCardSkeleton } from './StandardCardSkeleton';
 
-/**
- * ArticleCardVariant - MIGRATED to use new dictionary system
- * Passes full dictionary to child components instead of dict.common
- */
+// Skeleton variant router
+export function ArticleCardSkeletonVariant({ 
+  layout = 'regular',
+  showImage = true 
+}: { 
+  layout?: string;
+  showImage?: boolean;
+}) {
+  switch (layout) {
+    case 'news':
+      return <NewsCardSkeleton />;
+    case 'advertising':
+      return <AdvertisingCardSkeleton />;
+    default:
+      return <StandardCardSkeleton 
+        layout={layout as 'regular' | 'promoted' | 'latest'}
+        showImage={showImage}
+      />;
+  }
+}
+
+// Main component variant router (unchanged)
 export function ArticleCardVariant({
   article,
   articleLink,
@@ -16,34 +37,29 @@ export function ArticleCardVariant({
   imageProps,
   layout = 'regular',
   lang,
-  dictionary // MIGRATED: Now uses full dictionary
+  dictionary
 }: ArticleCardVariantProps) {
-  // Choose component based on layout
-  const getCardComponent = () => {
-    const commonProps = {
-      article,
-      articleLink,
-      dictionary, // MIGRATED: Pass full dictionary
-      lang
-    };
-
-    switch (layout) {
-      case 'news':
-        return <NewsCard 
-          {...commonProps}
-          formattedDate={formattedDate}
-        />;
-      case 'advertising':
-        return <AdvertisingCard {...commonProps} />;
-      default:
-        return <StandardCard
-          {...commonProps}
-          formattedDate={formattedDate}
-          imageProps={imageProps}
-          layout={layout}
-        />;
-    }
+  const commonProps = {
+    article,
+    articleLink,
+    dictionary,
+    lang
   };
 
-  return getCardComponent();
+  switch (layout) {
+    case 'news':
+      return <NewsCard 
+        {...commonProps}
+        formattedDate={formattedDate}
+      />;
+    case 'advertising':
+      return <AdvertisingCard {...commonProps} />;
+    default:
+      return <StandardCard
+        {...commonProps}
+        formattedDate={formattedDate}
+        imageProps={imageProps}
+        layout={layout}
+      />;
+  }
 }

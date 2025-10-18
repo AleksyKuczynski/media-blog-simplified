@@ -1,24 +1,20 @@
-// src/main/components/ArticleCards/ArticleCard.tsx
-// MIGRATED: Uses new dictionary system and accepts dictionary prop
+// src/main/components/ArticleCards/ArticleCard.tsx  
+
 import { Suspense } from 'react';
-import { ArticleCardVariant } from './ArticleCardVariant';
+import { ArticleCardVariant, ArticleCardSkeletonVariant } from './ArticleCardVariant';
 import { getArticleCardData } from '@/main/lib/actions';
 import { generateArticleLink, generateArticleLinkAsync } from '@/main/lib/utils';
 import { ArticleCardProps } from './interfaces';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 import { IMAGE_RATIO } from '../mainConstants';
 
-/**
- * ArticleCard - MIGRATED to new dictionary system
- * Now properly accepts dictionary prop and passes it to child components
- */
 export default async function ArticleCard({ 
   slug, 
   lang, 
   authorSlug, 
   rubricSlug, 
   layout,
-  dictionary // MIGRATED: Now properly used
+  dictionary 
 }: ArticleCardProps) {
   const article = await getArticleCardData(slug, lang);
 
@@ -47,15 +43,16 @@ export default async function ArticleCard({
 
   return (
     <Suspense fallback={
-      <div className="p-4 animate-pulse bg-sf-hi rounded-xl">
-        {dictionary.common.status.loading}
-      </div>
+      <ArticleCardSkeletonVariant 
+        layout={cardLayout}
+        showImage={!!article.article_heading_img}
+      />
     }>
       <ArticleCardVariant
         article={article}
         formattedDate={formattedDate}
         articleLink={articleLink}
-        dictionary={dictionary}  // MIGRATED: Pass full dictionary
+        dictionary={dictionary}
         imageProps={imageProps}
         layout={cardLayout}
         lang={lang}
