@@ -6,7 +6,7 @@ interface PluginAPI {
 }
 
 const config: Config = {
-  darkMode: 'class', // Enable Tailwind dark mode with class strategy
+  darkMode: 'media',
   content: [
     './src/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
