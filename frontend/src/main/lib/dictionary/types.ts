@@ -74,6 +74,17 @@ export interface BreadcrumbContexts {
   readonly direct: string; // 'direct',
 }
 
+export interface BreadcrumbTemplates {
+  readonly rubricLabel: string;
+  readonly articleLabel: string;
+  readonly authorProfile: string;
+  readonly categoryLabel: string;
+  readonly fromRubric: string;
+  readonly fromArticles: string;
+  readonly fromSearch: string;
+  readonly searchWithQuery: string;
+}
+
 export interface BreadcrumbContextAria {
   readonly rubricPath: string; // 'Навигация через рубрику',
   readonly authorPath: string; // 'Навигация через автора',
@@ -86,6 +97,7 @@ export interface BreadcrumbContextAria {
 export interface BreadcrumbDictionary {
   readonly contexts: BreadcrumbContexts;
   readonly contextAria: BreadcrumbContextAria;
+  readonly templates: BreadcrumbTemplates;
 }
 
 // ===================================================================

@@ -1,18 +1,20 @@
-// Complete updated breadcrumbContextDetector.ts with articles pattern and multi-author fix
 // src/main/lib/utils/breadcrumbContextDetector.ts
+// REFACTORED: Removed all hardcoded text and /ru paths, using dictionary and constants
 
 import { headers } from 'next/headers';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import { BreadcrumbContext, SmartBreadcrumbItem } from '@/main/components/Navigation/types';
+import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 
 /**
  * Detect user's navigation context based on referrer and URL patterns
  * SECURITY: Validates referrer headers to prevent manipulation
- * FIXED: Handles /ru/articles pattern and multi-author matching
+ * REFACTORED: Uses lang parameter and dictionary entries, no hardcoded text
  */
 export async function detectBreadcrumbContext(
   currentPath: string,
-  dictionary: Dictionary
+  dictionary: Dictionary,
+  lang: Lang = 'ru'
 ): Promise<BreadcrumbContext> {
   try {
     const headersList = await headers();
@@ -35,14 +37,15 @@ export async function detectBreadcrumbContext(
     // Extract referrer path for pattern matching
     const referrerPath = new URL(referrer).pathname;
     
-    // Pattern matching for different contexts - ORDER MATTERS!
+    // FIXED: Language-agnostic pattern matching using lang parameter
     const patterns = {
-      author: /\/ru\/authors\/([^\/]+)$/,      // Specific author page
-      category: /\/ru\/category\/([^\/]+)$/,   // Specific category page
-      search: /\/ru\/search/,                   // Search results
-      articles: /\/ru\/articles$/,              // FIXED: Articles listing (exact match)
-      rubrics: /\/ru\/rubrics$/,                // Rubrics listing (exact match)
-      featured: /\/ru$/,                        // Main page
+      author: new RegExp(`\\/${lang}\\/authors\\/([^\\/]+)$`),
+      category: new RegExp(`\\/${lang}\\/category\\/([^\\/]+)$`),
+      search: new RegExp(`\\/${lang}\\/search`),
+      articles: new RegExp(`\\/${lang}\\/articles$`),
+      rubrics: new RegExp(`\\/${lang}\\/rubrics$`),
+      specificRubric: new RegExp(`\\/${lang}\\/([^\\/]+)$`),
+      featured: new RegExp(`\\/${lang}$`),
     };
 
     // Author context detection (highest priority for specific pages)
@@ -83,7 +86,7 @@ export async function detectBreadcrumbContext(
       };
     }
 
-    // FIXED: Articles listing page (before rubrics check)
+    // Articles listing page
     if (patterns.articles.test(referrerPath)) {
       return {
         type: 'articles',
@@ -107,9 +110,26 @@ export async function detectBreadcrumbContext(
       };
     }
 
-    // Default fallback - treat as rubric context
+    // Specific rubric page detection (must come after other specific patterns)
+    const rubricMatch = referrerPath.match(patterns.specificRubric);
+    if (rubricMatch) {
+      const rubricSlug = rubricMatch[1];
+      // Exclude known non-rubric paths
+      const excludedPaths = ['authors', 'rubrics', 'articles', 'search', 'category'];
+      if (!excludedPaths.includes(rubricSlug)) {
+        return {
+          type: 'rubric',
+          referrerPath,
+          contextData: {
+            rubricSlug,
+          },
+        };
+      }
+    }
+
+    // Default fallback - direct navigation
     return {
-      type: 'rubric',
+      type: 'direct',
       referrerPath,
     };
 
@@ -125,7 +145,7 @@ export async function detectBreadcrumbContext(
 
 /**
  * Generate context-aware breadcrumb paths
- * FIXED: Matches authors from context with article's author array for multi-author articles
+ * REFACTORED: Uses dictionary templates for all text, lang parameter for paths
  */
 export function generateContextualBreadcrumbs(
   context: BreadcrumbContext,
@@ -140,36 +160,43 @@ export function generateContextualBreadcrumbs(
     }>;
     categories?: Array<{ name: string; slug: string }>;
   },
-  dictionary: Dictionary
+  dictionary: Dictionary,
+  lang: Lang = 'ru'
 ): {
   userPath: SmartBreadcrumbItem[];
   canonicalPath: SmartBreadcrumbItem[];
   seoAlternatives: SmartBreadcrumbItem[][];
 } {
   
+  // FIXED: Use lang parameter instead of hardcoded '/ru'
   const baseHome: SmartBreadcrumbItem = {
     label: dictionary.navigation.labels.home,
-    href: '/ru',
+    href: `/${lang}`,
     ariaLabel: dictionary.navigation.descriptions.home,
   };
 
   // Canonical path (always rubric-based for SEO consistency)
+  // FIXED: All text from dictionary, all paths use lang parameter
   const canonicalPath: SmartBreadcrumbItem[] = [
     baseHome,
     {
       label: dictionary.navigation.labels.rubrics,
-      href: '/ru/rubrics',
+      href: `/${lang}/rubrics`,
       ariaLabel: dictionary.navigation.descriptions.rubrics,
     },
     {
       label: articleData.rubricName,
-      href: `/ru/${articleData.rubricSlug}`,
-      ariaLabel: `Рубрика ${articleData.rubricName}`,
+      href: `/${lang}/${articleData.rubricSlug}`,
+      ariaLabel: processTemplate(dictionary.breadcrumb.templates.rubricLabel, {
+        name: articleData.rubricName
+      }),
     },
     {
       label: articleData.title,
-      href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
-      ariaLabel: `Статья: ${articleData.title}`,
+      href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
+      ariaLabel: processTemplate(dictionary.breadcrumb.templates.articleLabel, {
+        title: articleData.title
+      }),
     },
   ];
 
@@ -177,8 +204,43 @@ export function generateContextualBreadcrumbs(
   const seoAlternatives: SmartBreadcrumbItem[][] = [];
 
   switch (context.type) {
+    case 'rubric':
+      // Handle navigation from rubric pages
+      if (context.contextData?.rubricSlug) {
+        userPath = [
+          baseHome,
+          {
+            label: dictionary.navigation.labels.rubrics,
+            href: `/${lang}/rubrics`,
+            ariaLabel: dictionary.navigation.descriptions.rubrics,
+          },
+          {
+            label: articleData.rubricName,
+            href: `/${lang}/${articleData.rubricSlug}`,
+            context: 'rubric-page',
+            ariaLabel: processTemplate(dictionary.breadcrumb.templates.rubricLabel, {
+              name: articleData.rubricName
+            }),
+          },
+          {
+            label: articleData.title,
+            href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
+            context: 'article-from-rubric',
+            ariaLabel: processTemplate(dictionary.breadcrumb.templates.fromRubric, {
+              rubric: articleData.rubricName
+            }),
+          },
+        ];
+        
+        seoAlternatives.push(userPath);
+      } else {
+        // Came from rubrics listing page, use canonical path
+        userPath = canonicalPath;
+      }
+      break;
+
     case 'author':
-      // FIXED: Match the author from context with the article's authors array
+      // Match the author from context with the article's authors array
       if (context.contextData?.authorSlug && articleData.authors && articleData.authors.length > 0) {
         const matchedAuthor = articleData.authors.find(
           author => author.slug === context.contextData?.authorSlug
@@ -190,28 +252,28 @@ export function generateContextualBreadcrumbs(
             baseHome,
             {
               label: dictionary.navigation.labels.authors,
-              href: '/ru/authors',
+              href: `/${lang}/authors`,
               context: 'author-collection',
               ariaLabel: dictionary.navigation.descriptions.authors,
             },
             {
-              label: matchedAuthor.name,  // FIXED: Use matched author's name
-              href: `/ru/authors/${matchedAuthor.slug}`,  // FIXED: Use matched author's slug
+              label: matchedAuthor.name,
+              href: `/${lang}/authors/${matchedAuthor.slug}`,
               context: 'author-profile',
-              ariaLabel: `Профиль автора ${matchedAuthor.name}`,
+              ariaLabel: processTemplate(dictionary.breadcrumb.templates.authorProfile, {
+                name: matchedAuthor.name
+              }),
             },
             {
               label: articleData.title,
-              href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
+              href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
               context: 'article-from-author',
               ariaLabel: dictionary.navigation.descriptions.fromAuthor,
             },
           ];
           
-          // Add author path as SEO alternative
           seoAlternatives.push(userPath);
         } else {
-          // Fallback: If author not found in article's authors, use canonical
           console.warn(`Author ${context.contextData.authorSlug} not found in article authors`);
           userPath = canonicalPath;
         }
@@ -231,19 +293,21 @@ export function generateContextualBreadcrumbs(
             baseHome,
             {
               label: dictionary.navigation.labels.articles,
-              href: '/ru/articles',
+              href: `/${lang}/articles`,
               context: 'article-collection',
               ariaLabel: dictionary.navigation.descriptions.articles,
             },
             {
               label: matchedCategory.name,
-              href: `/ru/category/${matchedCategory.slug}`,
+              href: `/${lang}/category/${matchedCategory.slug}`,
               context: 'category-filter',
-              ariaLabel: `Категория ${matchedCategory.name}`,
+              ariaLabel: processTemplate(dictionary.breadcrumb.templates.categoryLabel, {
+                name: matchedCategory.name
+              }),
             },
             {
               label: articleData.title,
-              href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
+              href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
               context: 'article-from-category',
               ariaLabel: dictionary.navigation.descriptions.fromCategory,
             },
@@ -260,20 +324,20 @@ export function generateContextualBreadcrumbs(
       break;
 
     case 'articles':
-      // NEW: Handle /ru/articles referrer
+      // Handle /lang/articles referrer
       userPath = [
         baseHome,
         {
           label: dictionary.navigation.labels.articles,
-          href: '/ru/articles',
+          href: `/${lang}/articles`,
           context: 'articles-collection',
           ariaLabel: dictionary.navigation.descriptions.articles,
         },
         {
           label: articleData.title,
-          href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
+          href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
           context: 'article-from-articles',
-          ariaLabel: 'Статья из общего списка статей',
+          ariaLabel: processTemplate(dictionary.breadcrumb.templates.fromArticles, {}),
         },
       ];
       
@@ -285,7 +349,7 @@ export function generateContextualBreadcrumbs(
         baseHome,
         {
           label: articleData.title,
-          href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
+          href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
           context: 'featured-article',
           ariaLabel: dictionary.navigation.descriptions.fromFeatured,
         },
@@ -296,22 +360,26 @@ export function generateContextualBreadcrumbs(
 
     case 'search':
       const searchLabel = context.contextData?.searchQuery 
-        ? `${dictionary.navigation.labels.search}: ${context.contextData.searchQuery}`
+        ? processTemplate(dictionary.breadcrumb.templates.searchWithQuery, {
+            query: context.contextData.searchQuery
+          })
         : dictionary.navigation.labels.search;
         
       userPath = [
         baseHome,
         {
           label: searchLabel,
-          href: '/ru/search',
+          href: `/${lang}/search`,
           context: 'search-results',
           ariaLabel: dictionary.navigation.descriptions.fromSearch,
         },
         {
           label: articleData.title,
-          href: `/ru/${articleData.rubricSlug}/${articleData.slug}`,
+          href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
           context: 'article-from-search',
-          ariaLabel: `Статья из поиска: ${articleData.title}`,
+          ariaLabel: processTemplate(dictionary.breadcrumb.templates.fromSearch, {
+            title: articleData.title
+          }),
         },
       ];
       break;

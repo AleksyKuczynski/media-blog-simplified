@@ -1,5 +1,4 @@
 // src/app/ru/[rubric]/[slug]/page.tsx
-// ENHANCED: Added SEO-optimized related links for better internal linking
 
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';

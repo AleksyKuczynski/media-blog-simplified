@@ -216,13 +216,27 @@ export async function enhanceArticleForBreadcrumbs(
 ): Promise<SmartBreadcrumbsProps['articleData']> {
   
   const translation = article.translations?.[0];
-  const rubric = rubricBasics.find(r => r.slug === article.rubric?.slug);
+  
+  // FIXED: article.rubric_slug is a STRING, not an object
+  // The rubric slug is directly available as article.rubric_slug
+  const articleRubricSlug = article.rubric_slug || 'общее';
+  
+  // FIXED: Find rubric by the string slug
+  const rubric = rubricBasics.find(r => r.slug === articleRubricSlug);
+  
+  // Debug logging to help troubleshoot
+  console.log('[enhanceArticleForBreadcrumbs] Debug:', {
+    articleRubricSlug,
+    rubricBasicsCount: rubricBasics.length,
+    rubricBasicsSlugs: rubricBasics.map(r => r.slug),
+    foundRubric: rubric?.name || 'NOT FOUND'
+  });
   
   return {
     title: translation?.title || article.slug,
     slug: article.slug,
-    rubricSlug: article.rubric?.slug || 'общее',
-    rubricName: rubric?.name || article.rubric?.slug || 'Общее',
+    rubricSlug: articleRubricSlug,
+    rubricName: rubric?.name || articleRubricSlug || 'Общее',
     authorName: article.authors?.[0]?.name,
     authors: article.authors?.map((author: any) => ({
       name: author.name,

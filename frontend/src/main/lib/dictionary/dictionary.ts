@@ -61,7 +61,11 @@ const dictionary: Dictionary = {
       skipToNavigation: 'Перейти к навигации',
     },
   },
-  breadcrumb:{
+  
+  // ===================================================================
+  // BREADCRUMB - reusable labels for breadcrumbs
+  // ===================================================================
+  breadcrumb: {
     contexts: {
       rubric: 'rubric',
       author: 'author', 
@@ -78,6 +82,16 @@ const dictionary: Dictionary = {
       featuredPath: 'Навигация через избранное',
       searchPath: 'Навигация через поиск',
       canonicalPath: 'Основная навигация',
+    },
+    templates: {
+      rubricLabel: 'Рубрика {name}',
+      articleLabel: 'Статья: {title}',
+      authorProfile: 'Профиль автора {name}',
+      categoryLabel: 'Категория {name}',
+      fromRubric: 'Статья из рубрики {rubric}',
+      fromArticles: 'Статья из общего списка статей',
+      fromSearch: 'Статья из поиска: {title}',
+      searchWithQuery: '{search}: {query}',
     },
   },
 
