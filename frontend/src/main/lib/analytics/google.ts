@@ -7,17 +7,6 @@
  * @see https://developers.google.com/analytics/devguides/collection/ga4/events
  */
 
-declare global {
-  interface Window {
-    gtag?: (
-      command: 'config' | 'event' | 'set' | 'get',
-      targetId: string,
-      config?: Record<string, any>
-    ) => void;
-    dataLayer?: any[];
-  }
-}
-
 /**
  * Track custom events in Google Analytics 4
  * 
