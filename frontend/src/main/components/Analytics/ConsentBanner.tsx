@@ -2,6 +2,7 @@
 'use client';
 
 import { useConsent } from '@/main/lib/analytics/useConsent';
+import Link from 'next/link';
 import { useState } from 'react';
 
 interface ConsentBannerProps {
@@ -218,12 +219,12 @@ export default function ConsentBanner({ dictionary }: ConsentBannerProps) {
 
               {/* Privacy policy link */}
               <p className="text-xs text-center text-gray-500 dark:text-gray-400">
-                <a 
+                <Link 
                   href="/ru/privacy-policy" 
                   className="underline hover:text-gray-700 dark:hover:text-gray-300"
                 >
                   {dictionary.privacyPolicy}
-                </a>
+                </Link>
               </p>
             </div>
           )}
