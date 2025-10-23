@@ -1,7 +1,8 @@
 // src/main/components/Navigation/useMobileNavigation.ts
 // FIXED: Improved click handling to prevent premature menu closure
+// FEATURE: Added browser back button interception for mobile menu
 
-import { useState, useRef, useReducer, useCallback } from 'react'
+import { useState, useRef, useReducer, useCallback, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { menuAnimationReducer } from './menuAnimationReducer'
 import { CONTROLS_ANIMATION_DURATION, MENU_ANIMATION_DURATION } from '../Interface/constants'
@@ -14,8 +15,12 @@ export function useMobileNavigation() {
   const pathname = usePathname()
   const lastPathRef = useRef(pathname)
 
+  // Track if we pushed a history state for the menu
+  const historyStatePushed = useRef(false)
+
   // Use refs to avoid circular dependencies
   const keydownHandlerRef = useRef<((e: KeyboardEvent) => void) | null>(null)
+  const popstateHandlerRef = useRef<((e: PopStateEvent) => void) | null>(null)
 
   // Core close function without dependencies
   const handleClose = useCallback(() => {
@@ -25,7 +30,22 @@ export function useMobileNavigation() {
     if (keydownHandlerRef.current) {
       document.removeEventListener('keydown', keydownHandlerRef.current)
     }
+    if (popstateHandlerRef.current) {
+      window.removeEventListener('popstate', popstateHandlerRef.current)
+    }
     document.body.style.overflow = 'unset'
+    
+    // Remove history state if we pushed one
+    if (historyStatePushed.current) {
+      historyStatePushed.current = false
+      // Go back to remove our menu state, but prevent the popstate handler from firing
+      if (popstateHandlerRef.current) {
+        window.removeEventListener('popstate', popstateHandlerRef.current)
+      }
+      if (window.history.state?.mobileMenuOpen) {
+        window.history.back()
+      }
+    }
     
     setTimeout(() => {
       dispatch({ type: 'CLOSE_MENU' });
@@ -67,17 +87,45 @@ export function useMobileNavigation() {
     }
   }, [isMenuOpen, handleClose])
 
-  // Update ref when handler changes
+  // Browser back button handler
+  const handlePopState = useCallback((e: PopStateEvent) => {
+    // Check if this popstate is for our menu
+    if (isMenuOpen && historyStatePushed.current) {
+      // Prevent default navigation
+      e.preventDefault()
+      
+      // Close the menu instead of navigating
+      handleClose()
+    }
+  }, [isMenuOpen, handleClose])
+
+  // Update refs when handlers change
   keydownHandlerRef.current = handleKeyDown
+  popstateHandlerRef.current = handlePopState
 
   const handleOpen = useCallback(() => {
     setIsMenuOpen(true)
     dispatch({ type: 'OPEN_MENU' });
     
-    // Add keyboard event listener when menu opens
+    // Push a history state for the menu
+    // This allows us to intercept the back button
+    if (!historyStatePushed.current) {
+      window.history.pushState(
+        { mobileMenuOpen: true },
+        '',
+        window.location.href
+      )
+      historyStatePushed.current = true
+    }
+    
+    // Add event listeners when menu opens
     if (keydownHandlerRef.current) {
       document.addEventListener('keydown', keydownHandlerRef.current)
     }
+    if (popstateHandlerRef.current) {
+      window.addEventListener('popstate', popstateHandlerRef.current)
+    }
+    
     // Prevent body scroll when menu is open
     document.body.style.overflow = 'hidden'
     
@@ -137,12 +185,32 @@ export function useMobileNavigation() {
     // Allow clicks on interactive elements to proceed normally
     if (isInteractiveElement) {
       // Don't prevent default or stop propagation - let the interaction work
-      console.log('Interactive element clicked:', target)
       return
     }
     
     // For non-interactive areas, prevent the click from bubbling to overlay
     e.stopPropagation()
+  }, [])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      // Remove all event listeners
+      if (keydownHandlerRef.current) {
+        document.removeEventListener('keydown', keydownHandlerRef.current)
+      }
+      if (popstateHandlerRef.current) {
+        window.removeEventListener('popstate', popstateHandlerRef.current)
+      }
+      
+      // Restore scroll
+      document.body.style.overflow = 'unset'
+      
+      // Clean up history state if component unmounts while menu is open
+      if (historyStatePushed.current && window.history.state?.mobileMenuOpen) {
+        window.history.back()
+      }
+    }
   }, [])
 
   return {
@@ -159,6 +227,6 @@ export function useMobileNavigation() {
     handleClose,
     toggleMenu,
     handleSearchComplete,
-    handleMenuClick // FIXED: Now properly implemented
+    handleMenuClick
   }
 }
