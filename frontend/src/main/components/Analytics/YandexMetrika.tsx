@@ -1,35 +1,24 @@
 // src/main/components/Analytics/YandexMetrika.tsx
 
-'use client';
-
-import { useEffect } from 'react';
-import Script from 'next/script';
-
 interface YandexMetrikaProps {
   counterId: string;
 }
 
-// Extend window object for Yandex Metrika
-declare global {
-  interface Window {
-    ym?: (
-      counterId: number,
-      action: string,
-      ...params: any[]
-    ) => void;
-  }
-}
-
 /**
- * Yandex.Metrika Analytics Component
+ * Yandex.Metrika Analytics Component (Server Component)
+ * Optimized for Next.js App Router with immediate loading
+ * 
+ * This component injects the Yandex.Metrika script directly into the HTML
+ * during server-side rendering, ensuring the earliest possible initialization.
  * 
  * Usage:
- * 1. Add NEXT_PUBLIC_YANDEX_METRIKA_ID to .env.local
- * 2. Add this component to your root layout
+ * Add to root layout's <head> or <body>
  */
 export default function YandexMetrika({ counterId }: YandexMetrikaProps) {
   // Validate counter ID
-  if (!counterId || !/^\d+$/.test(counterId)) {
+  const isValidCounterId = counterId && /^\d+$/.test(counterId);
+  
+  if (!isValidCounterId) {
     if (process.env.NODE_ENV === 'development') {
       console.warn('YandexMetrika: Invalid or missing counter ID');
     }
@@ -38,39 +27,28 @@ export default function YandexMetrika({ counterId }: YandexMetrikaProps) {
 
   const counterIdNumber = parseInt(counterId, 10);
 
-  useEffect(() => {
-    // Initialize Yandex Metrika after mount
-    if (typeof window !== 'undefined' && window.ym) {
-      window.ym(counterIdNumber, 'init', {
-        clickmap: true,
-        trackLinks: true,
-        accurateTrackBounce: true,
-        webvisor: true,
-        trackHash: true,
-      });
-    }
-  }, [counterIdNumber]);
-
   return (
     <>
-      {/* Yandex.Metrika counter */}
-      <Script
-        id="yandex-metrika"
-        strategy="afterInteractive"
+      {/* Yandex.Metrika counter - inline for immediate execution */}
+      <script
+        type="text/javascript"
         dangerouslySetInnerHTML={{
           __html: `
-            (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-            m[i].l=1*new Date();
-            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-            ym(${counterIdNumber}, "init", {
-              clickmap:true,
-              trackLinks:true,
-              accurateTrackBounce:true,
-              webvisor:true,
-              trackHash:true
+            (function(m,e,t,r,i,k,a){
+              m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+              m[i].l=1*new Date();
+              for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+              k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+            })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=${counterIdNumber}', 'ym');
+            
+            ym(${counterIdNumber}, 'init', {
+              ssr: true,
+              webvisor: true,
+              clickmap: true,
+              trackLinks: true,
+              accurateTrackBounce: true,
+              trackHash: true,
+              ecommerce: "dataLayer"
             });
           `,
         }}
@@ -79,6 +57,7 @@ export default function YandexMetrika({ counterId }: YandexMetrikaProps) {
       {/* Noscript fallback */}
       <noscript>
         <div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`https://mc.yandex.ru/watch/${counterIdNumber}`}
             style={{ position: 'absolute', left: '-9999px' }}
@@ -88,22 +67,4 @@ export default function YandexMetrika({ counterId }: YandexMetrikaProps) {
       </noscript>
     </>
   );
-}
-
-/**
- * Helper function to track custom events
- * 
- * Usage:
- * import { trackYandexEvent } from '@/main/components/Analytics/YandexMetrika';
- * trackYandexEvent('button_click', { button_name: 'subscribe' });
- */
-export function trackYandexEvent(
-  eventName: string,
-  params?: Record<string, any>
-) {
-  const counterId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
-  
-  if (typeof window !== 'undefined' && window.ym && counterId) {
-    window.ym(parseInt(counterId, 10), 'reachGoal', eventName, params);
-  }
 }
