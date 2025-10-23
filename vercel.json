@@ -3,5 +3,4 @@
   "devCommand": "cd frontend && pnpm dev",
   "installCommand": "cd frontend && pnpm install",
   "framework": "nextjs",
-  "rootDirectory": "frontend"
 }
