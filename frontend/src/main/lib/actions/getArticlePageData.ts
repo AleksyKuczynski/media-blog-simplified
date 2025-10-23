@@ -2,7 +2,7 @@
 'use server'
 
 import dictionary from '@/main/lib/dictionary/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { Lang } from "../dictionary/types";
 import { AuthorDetails, fetchAllRubrics, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails } from "../directus";
 import { processContent } from "../markdown/processContent";

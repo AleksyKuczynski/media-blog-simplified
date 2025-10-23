@@ -2,7 +2,7 @@
 
 'use client';
 
-import { DEFAULT_LANG } from '@/main/lib/constants';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 
 import dictionary from '@/main/lib/dictionary/dictionary';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';

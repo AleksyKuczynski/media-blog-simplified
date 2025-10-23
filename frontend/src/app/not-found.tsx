@@ -2,7 +2,7 @@
 import dictionary from '@/main/lib/dictionary/dictionary';
 import StandardError from '@/main/components/errors/StandardError';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
-import { DEFAULT_LANG } from '@/main/lib/constants';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 
 export default function NotFound() {
   const errorHandler = createErrorHandler(dictionary);

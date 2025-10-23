@@ -8,7 +8,7 @@ import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import dictionary from '@/main/lib/dictionary/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics } from '@/main/lib/directus';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';

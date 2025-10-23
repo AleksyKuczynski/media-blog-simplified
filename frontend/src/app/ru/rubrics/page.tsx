@@ -10,7 +10,7 @@ import { generateCollectionMetadata } from '@/main/components/SEO/metadata/Colle
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers/content'; // FIXED: Correct import
 import dictionary from '@/main/lib/dictionary/dictionary'; // Direct import
-import { DEFAULT_LANG } from '@/main/lib/constants';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;

@@ -1,5 +1,5 @@
 // src/app/page.tsx - Root redirect to Russian version
-import { DEFAULT_LANG } from '@/main/lib/constants'
+import { DEFAULT_LANG } from '@/main/lib/constants/constants'
 import { redirect } from 'next/navigation'
 
 export default function RootPage() {

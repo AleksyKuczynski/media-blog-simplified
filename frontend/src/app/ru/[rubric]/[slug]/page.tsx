@@ -8,7 +8,7 @@ import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
 import { Header, Content, ScrollToTopButton, TableOfContents, RelatedLinksSchema, RelatedLinks } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
 import dictionary from '@/main/lib/dictionary/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { processContent } from '@/main/lib/markdown/processContent';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { generateArticleMetadata, generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';

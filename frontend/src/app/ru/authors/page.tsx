@@ -6,7 +6,7 @@ import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 import dictionary from '@/main/lib/dictionary/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { AuthorCardSkeleton } from '@/main/components/Main/AuthorCardSkeleton';
 
 // ISR CONFIGURATION: 1 hour (authors list is structural)

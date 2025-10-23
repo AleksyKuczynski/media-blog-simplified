@@ -6,7 +6,7 @@ import { Metadata } from 'next'
 import Footer from '@/main/components/Footer/Footer'
 import Navigation from '@/main/components/Navigation/Navigation'
 import dictionary from '@/main/lib/dictionary/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 
 // Generate metadata using dictionary
 export async function generateMetadata(): Promise<Metadata> {
