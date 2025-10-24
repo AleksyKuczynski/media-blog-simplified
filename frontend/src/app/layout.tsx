@@ -1,27 +1,47 @@
 // src/app/layout.tsx
+import { Jost, Literata, Yeseva_One } from 'next/font/google'
+import './globals.scss'
+import { DEFAULT_LANG } from '@/main/lib/constants/constants'
+import ConsentModeScript from '@/main/components/Analytics/ConsentModeScript'
+import YandexMetrikaScript from '@/main/components/Analytics/YandexMetrikaScript'
+import YandexMetrikaNoScript from '@/main/components/Analytics/YandexMetrikaNoScript'
+import GoogleAnalyticsScript from '@/main/components/Analytics/GoogleAnalyticsScript'
+import GoogleAnalyticsNoScript from '@/main/components/Analytics/GoogleAnalyticsNoScript'
+import ConsentBanner from '@/main/components/Analytics/ConsentBanner'
+import ScrollRestoration from '@/main/lib/hooks/useScrollRestoration'
 
-import '@/app/globals.scss';
-import { fontSans, fontSerif, fontDisplay, fontCustom } from '@/app/fonts/fonts';
-import ConsentModeScript from '@/main/components/Analytics/ConsentModeScript';
-import YandexMetrikaScript from '@/main/components/Analytics/YandexMetrikaScript';
-import YandexMetrikaNoScript from '@/main/components/Analytics/YandexMetrikaNoScript';
-import GoogleAnalyticsScript from '@/main/components/Analytics/GoogleAnalyticsScript';
-import GoogleAnalyticsNoScript from '@/main/components/Analytics/GoogleAnalyticsNoScript';
-import ConsentBanner from '@/main/components/Analytics/ConsentBanner';
+const fontSans = Jost({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-sans',
+  display: 'swap',
+})
 
-// Cookie consent dictionary (can be moved to your dictionary file)
+const fontSerif = Literata({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-serif',
+  display: 'swap',
+})
+
+const fontDisplay = Yeseva_One({
+  weight: '400',
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+// FIXED: Comprehensive Russian consent dictionary
 const consentDictionary = {
   title: 'Мы используем файлы cookie',
-  description: 'Мы используем файлы cookie для улучшения работы сайта, анализа трафика и персонализации контента. Вы можете настроить свои предпочтения или принять все файлы cookie.',
+  description: 'Мы используем файлы cookie для улучшения вашего опыта, анализа трафика и персонализации контента. Вы можете принять все или настроить свои предпочтения.',
   acceptAll: 'Принять все',
-  rejectAll: 'Только необходимые',
+  rejectAll: 'Отклонить все',
   customize: 'Настроить',
   save: 'Сохранить настройки',
   necessary: 'Необходимые',
-  analytics: 'Аналитические',
-  marketing: 'Маркетинговые',
-  preferences: 'Функциональные',
-  necessaryDescription: 'Необходимы для работы сайта. Эти файлы cookie обеспечивают базовую функциональность и безопасность.',
+  analytics: 'Аналитика',
+  marketing: 'Маркетинг',
+  preferences: 'Предпочтения',
+  necessaryDescription: 'Эти файлы cookie обеспечивают базовую функциональность и безопасность.',
   analyticsDescription: 'Помогают нам понять, как посетители взаимодействуют с сайтом, собирая анонимную информацию.',
   marketingDescription: 'Используются для показа релевантной рекламы и измерения эффективности рекламных кампаний.',
   preferencesDescription: 'Позволяют сайту запоминать ваши предпочтения, такие как язык или регион.',
@@ -39,8 +59,8 @@ export default async function RootLayout({
 
   return (
     <html 
-      lang="ru" 
-      className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable} ${fontCustom.variable}`}
+      lang={DEFAULT_LANG} 
+      className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable}`}
     >
       <head>
         {/* CRITICAL: Consent Mode must load FIRST, before any analytics */}
@@ -59,6 +79,9 @@ export default async function RootLayout({
         
         {/* Cookie Consent Banner - shows if user hasn't made choice */}
         <ConsentBanner dictionary={consentDictionary} />
+        
+        {/* ADDED: Scroll Restoration - fixes back navigation scroll position issues */}
+        <ScrollRestoration />
         
         {children}
       </body>
