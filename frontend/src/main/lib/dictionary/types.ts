@@ -344,6 +344,7 @@ export interface SEODictionary {
 // ===================================================================
 
 export interface SearchLabels {
+  readonly title: string;
   readonly placeholder: string;
   readonly results: string;
   readonly noResults: string;
@@ -366,6 +367,8 @@ export interface SearchAccessibility {
   readonly searchDescription: string;
   readonly searchResultsLabel: string;
   readonly clearSearchLabel: string;
+  readonly openSearch: string;
+  readonly closeSearch: string;
 }
 
 export interface SearchDictionary {

@@ -311,6 +311,7 @@ const dictionary: Dictionary = {
   // ===================================================================
   search: {
     labels: {
+      title: 'Поиск',
       placeholder: 'Поиск статей, авторов, рубрик...',
       results: 'Результаты',
       noResults: 'Ничего не найдено',
@@ -331,6 +332,9 @@ const dictionary: Dictionary = {
       searchDescription: 'Поиск по всем материалам сайта',
       searchResultsLabel: 'Результаты поиска',
       clearSearchLabel: 'Очистить поиск',
+      openSearch: 'Открыть поиск',
+      closeSearch: 'Закрыть поиск',
+
     },
   },
 

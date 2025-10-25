@@ -1,5 +1,5 @@
 // src/main/components/Navigation/MobileNav.tsx
-// Fixed to properly handle click events and prevent premature menu closure
+// Updated to include separate search overlay and mutual exclusivity
 
 'use client'
 
@@ -7,8 +7,8 @@ import Logo from '../Logo'
 import NavLinks from './NavLinks'
 import { MobileNavOverlay } from './MobileNavOverlay'
 import { useMobileNavigation } from './useMobileNavigation'
+import MobileSearch from './MobileSearch'
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
-import SearchBarClient from '../Search/SearchBarClient'
 
 interface MobileNavProps {
   dictionary: Dictionary
@@ -31,7 +31,7 @@ export default function MobileNavigation({
     toggleMenu,
     handleClose,
     handleSearchComplete,
-    handleMenuClick, // NOW USING the handler from the hook
+    handleMenuClick,
   } = useMobileNavigation()
   
   return (
@@ -44,6 +44,7 @@ export default function MobileNavigation({
         itemType="https://schema.org/SiteNavigationElement"
       >
         <div className="flex items-center justify-between h-16 px-4">        
+          {/* Hamburger Menu Button - Left */}
           <button
             ref={toggleRef}
             onClick={toggleMenu}
@@ -88,11 +89,19 @@ export default function MobileNavigation({
             </div>
           </button>
           
+          {/* Logo - Center */}
           <Logo 
             lang={lang}
             variant="mobile"
             role="img"
             aria-label={dictionary.navigation.accessibility.logoAlt}
+          />
+          
+          {/* Search Component - Right */}
+          <MobileSearch
+            dictionary={dictionary}
+            lang={lang}
+            onMenuClose={handleClose}
           />
         </div>
       </nav>
@@ -123,7 +132,7 @@ export default function MobileNavigation({
           </div>
 
           {/* Navigation Links */}
-          <div className="flex-1 px-6 py-6" data-interactive="true">
+          <div className="flex-1 px-6 py-6 overflow-y-auto" data-interactive="true">
             <ul 
               className="space-y-4"
               role="menu"
@@ -134,19 +143,7 @@ export default function MobileNavigation({
                 lang={lang}
                 className="mobile-nav-links"
               />
-              {/* Ensure NavLinksClient is included for active state management */}
-              {/* Note: NavLinksClient should already be included in NavLinks component */}
             </ul>
-          </div>
-
-          {/* Mobile Search - FIXED: Use SearchBarClient to prevent hydration issues */}
-          <div className="px-6 py-4 border-t border-ol-var/20" data-interactive="true">
-            <SearchBarClient
-              dictionary={dictionary}
-              lang={lang}
-              onSearchComplete={handleSearchComplete}
-              className="search-container"
-            />
           </div>
         </div>
       </div>

@@ -220,3 +220,58 @@ html {
   font-weight: bold;
   margin-right: 0.25rem;
 }
+
+/* ============================================
+   MOBILE SEARCH PANEL STYLES
+   Add these to your existing globals.scss
+   ============================================ */
+
+/* Ensure mobile search content is always interactive */
+#mobile-search-content {
+  pointer-events: auto !important;
+}
+
+/* Ensure all interactive elements in mobile search are clickable */
+#mobile-search-content a,
+#mobile-search-content button,
+#mobile-search-content input,
+#mobile-search-content textarea,
+#mobile-search-content [role="button"],
+#mobile-search-content [role="menuitem"],
+#mobile-search-content [role="combobox"],
+#mobile-search-content .search-container,
+#mobile-search-content [data-interactive] {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* Ensure search input shows text cursor */
+#mobile-search-content input[type="text"],
+#mobile-search-content input[type="search"] {
+  cursor: text;
+}
+
+/* Fix for any potential z-index conflicts */
+.mobile-search-overlay {
+  z-index: 45;
+}
+
+#mobile-search-content {
+  z-index: 60;
+}
+
+/* Ensure hover states work properly */
+#mobile-search-content a:hover,
+#mobile-search-content button:hover {
+  opacity: 1;
+  transform: none;
+}
+
+/* Fix for transformed elements losing pointer events */
+#mobile-search-content.translate-x-0 {
+  pointer-events: auto;
+}
+
+#mobile-search-content.translate-x-full {
+  pointer-events: none;
+}
