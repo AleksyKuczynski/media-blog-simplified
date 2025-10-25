@@ -43,14 +43,7 @@ export default function MobileNavigation({
         itemScope
         itemType="https://schema.org/SiteNavigationElement"
       >
-        <div className="flex items-center justify-between h-16 px-4">
-          <Logo 
-            lang={lang}
-            variant="mobile"
-            role="img"
-            aria-label={dictionary.navigation.accessibility.logoAlt}
-          />
-          
+        <div className="flex items-center justify-between h-16 px-4">        
           <button
             ref={toggleRef}
             onClick={toggleMenu}
@@ -64,7 +57,6 @@ export default function MobileNavigation({
             className="
               p-3 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf 
               transition-all duration-200 
-              focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
               active:scale-95 touch-manipulation
             "
             type="button"
@@ -95,17 +87,24 @@ export default function MobileNavigation({
               )}
             </div>
           </button>
+          
+          <Logo 
+            lang={lang}
+            variant="mobile"
+            role="img"
+            aria-label={dictionary.navigation.accessibility.logoAlt}
+          />
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay - FIXED: Lower z-index than menu content */}
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && <MobileNavOverlay onClose={handleClose} />}
 
-      {/* Slide-out Menu Panel - FIXED: Added onClick handler and proper z-index + pointer events */}
+      {/* Slide-out Menu Panel */}
       <div
         ref={menuRef}
         id="mobile-menu-content"
-        onClick={handleMenuClick} // FIXED: Added missing click handler
+        onClick={handleMenuClick}
         className={`
           fixed top-16 left-0 right-0 bottom-0 z-[60] pointer-events-auto
           bg-sf-cont/95 backdrop-blur-lg border-b border-ol-var/20
