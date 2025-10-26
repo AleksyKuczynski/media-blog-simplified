@@ -234,3 +234,40 @@ html {
   font-weight: bold;
   margin-right: 0.25rem;
 }
+
+/* ============================================
+   SCROLL MARGIN FOR FIXED NAVIGATION
+   Prevents fixed header from covering anchor targets
+   ============================================ */
+
+/* Mobile: 64px (h-16) + 8px buffer = 72px */
+@media (max-width: 1279px) {
+  /* All headings with IDs (anchor targets) */
+  h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
+  [id^="heading-"],
+  /* Table of Contents might reference elements by ID */
+  article [id] {
+    scroll-margin-top: 72px;
+  }
+}
+
+/* Desktop: 96px (h-24) + 8px buffer = 104px */
+@media (min-width: 1280px) {
+  h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
+  [id^="heading-"],
+  article [id] {
+    scroll-margin-top: 104px;
+  }
+}
+
+/* Alternative: Apply to html for global scroll-padding  
+   (affects all anchor scrolling, including URL fragments) */
+html {
+  @media (max-width: 1279px) {
+    scroll-padding-top: 72px;
+  }
+  
+  @media (min-width: 1280px) {
+    scroll-padding-top: 104px;
+  }
+}
