@@ -34,6 +34,9 @@ export default function LoadMoreButton({
     const params = new URLSearchParams(searchParams);
     params.set('page', (currentPage + 1).toString());
     
+    // Add flag to prevent scroll restoration hook from interfering
+    params.set('preserve-scroll', '1');
+    
     // Preserve existing parameters (sort, category, etc.)
     const newUrl = `${pathname}?${params.toString()}`;
     
