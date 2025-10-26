@@ -1,11 +1,11 @@
 // src/main/components/Navigation/MobileSearch.tsx
-// Mobile search interface with button and slide-out panel from right
-// MATCHES MENU PANEL: Same styling as mobile-menu-content
+// Mobile search interface sliding from RIGHT
+// Uses unified useMobilePanel hook - matches menu behavior exactly
 
 'use client'
 
-import { MobileSearchOverlay } from './MobileSearchOverlay'
-import { useMobileSearch } from './useMobileSearch'
+import { MobilePanelOverlay } from './MobilePanelOverlay'
+import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
 import SearchBarClient from '../Search/SearchBarClient'
 
@@ -21,15 +21,22 @@ export default function MobileSearch({
   onMenuClose,
 }: MobileSearchProps) {
   const {
-    searchState,
-    isSearchOpen,
-    searchRef,
+    panelState: searchState,
+    isPanelOpen: isSearchOpen,
+    panelRef: searchRef,
     toggleRef,
-    toggleSearch,
+    togglePanel: toggleSearch,
     handleClose,
-    handleSearchComplete,
-    handleSearchClick,
-  } = useMobileSearch(onMenuClose)
+    handleContentComplete: handleSearchComplete,
+    handlePanelClick: handleSearchClick,
+    transformClasses: searchTransform
+  } = useMobilePanel({
+    side: 'right',
+    panelId: 'mobile-search-content',
+    historyStateKey: 'mobileSearchOpen',
+    onOtherPanelOpen: onMenuClose, // Close menu when search opens
+    focusSelector: 'input[type="text"], input[type="search"]'
+  })
   
   return (
     <>
@@ -78,10 +85,10 @@ export default function MobileSearch({
         </div>
       </button>
 
-      {/* Search Overlay - EXACTLY like menu overlay */}
-      {isSearchOpen && <MobileSearchOverlay onClose={handleClose} />}
+      {/* Search Overlay - Same as menu */}
+      {isSearchOpen && <MobilePanelOverlay onClose={() => handleClose(false)} />}
 
-      {/* Slide-out Search Panel - EXACTLY like menu panel */}
+      {/* Slide-out Search Panel - Same as menu, but slides from RIGHT */}
       <div
         ref={searchRef}
         id="mobile-search-content"
@@ -90,7 +97,7 @@ export default function MobileSearch({
           fixed top-16 left-0 right-0 bottom-0 z-[60] pointer-events-auto
           bg-sf-cont/95 backdrop-blur-lg border-b border-ol-var/20
           transform transition-transform duration-300 ease-in-out
-          ${searchState === 'FULLY_OPENED' ? 'translate-x-0' : 'translate-x-full'}
+          ${searchTransform}
         `}
         aria-hidden={!isSearchOpen}
         aria-label={dictionary.search.accessibility.searchLabel || 'Search'}

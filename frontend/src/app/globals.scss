@@ -117,13 +117,19 @@ html {
   }
 }
 
+/* ============================================
+   UNIFIED MOBILE PANEL STYLES
+   Applies to both #mobile-menu-content and #mobile-search-content
+   ============================================ */
 
-/* Ensure mobile menu content is always interactive */
-#mobile-menu-content {
+/* Ensure mobile panel content is always interactive */
+#mobile-menu-content,
+#mobile-search-content {
   pointer-events: auto !important;
+  z-index: 60;
 }
 
-/* Ensure all interactive elements in mobile menu are clickable */
+/* Ensure all interactive elements in mobile panels are clickable */
 #mobile-menu-content a,
 #mobile-menu-content button,
 #mobile-menu-content input,
@@ -132,39 +138,47 @@ html {
 #mobile-menu-content [role="menuitem"],
 #mobile-menu-content [role="combobox"],
 #mobile-menu-content .search-container,
-#mobile-menu-content [data-interactive] {
+#mobile-menu-content [data-interactive],
+#mobile-search-content a,
+#mobile-search-content button,
+#mobile-search-content input,
+#mobile-search-content textarea,
+#mobile-search-content [role="button"],
+#mobile-search-content [role="menuitem"],
+#mobile-search-content [role="combobox"],
+#mobile-search-content .search-container,
+#mobile-search-content [data-interactive] {
   pointer-events: auto !important;
   cursor: pointer;
 }
 
 /* Ensure search input shows text cursor */
 #mobile-menu-content input[type="text"],
-#mobile-menu-content input[type="search"] {
+#mobile-menu-content input[type="search"],
+#mobile-search-content input[type="text"],
+#mobile-search-content input[type="search"] {
   cursor: text;
-}
-
-/* Fix for any potential z-index conflicts */
-.mobile-nav-overlay {
-  z-index: 45;
-}
-
-#mobile-menu-content {
-  z-index: 60;
 }
 
 /* Ensure hover states work properly */
 #mobile-menu-content a:hover,
-#mobile-menu-content button:hover {
+#mobile-menu-content button:hover,
+#mobile-search-content a:hover,
+#mobile-search-content button:hover {
   opacity: 1;
   transform: none;
 }
 
 /* Fix for transformed elements losing pointer events */
-#mobile-menu-content.translate-x-0 {
+#mobile-menu-content.translate-x-0,
+#mobile-search-content.translate-x-0 {
   pointer-events: auto;
 }
 
-#mobile-menu-content.-translate-x-full {
+#mobile-menu-content.-translate-x-full,
+#mobile-menu-content.translate-x-full,
+#mobile-search-content.-translate-x-full,
+#mobile-search-content.translate-x-full {
   pointer-events: none;
 }
 
@@ -219,59 +233,4 @@ html {
   content: "• ";
   font-weight: bold;
   margin-right: 0.25rem;
-}
-
-/* ============================================
-   MOBILE SEARCH PANEL STYLES
-   Add these to your existing globals.scss
-   ============================================ */
-
-/* Ensure mobile search content is always interactive */
-#mobile-search-content {
-  pointer-events: auto !important;
-}
-
-/* Ensure all interactive elements in mobile search are clickable */
-#mobile-search-content a,
-#mobile-search-content button,
-#mobile-search-content input,
-#mobile-search-content textarea,
-#mobile-search-content [role="button"],
-#mobile-search-content [role="menuitem"],
-#mobile-search-content [role="combobox"],
-#mobile-search-content .search-container,
-#mobile-search-content [data-interactive] {
-  pointer-events: auto !important;
-  cursor: pointer;
-}
-
-/* Ensure search input shows text cursor */
-#mobile-search-content input[type="text"],
-#mobile-search-content input[type="search"] {
-  cursor: text;
-}
-
-/* Fix for any potential z-index conflicts */
-.mobile-search-overlay {
-  z-index: 45;
-}
-
-#mobile-search-content {
-  z-index: 60;
-}
-
-/* Ensure hover states work properly */
-#mobile-search-content a:hover,
-#mobile-search-content button:hover {
-  opacity: 1;
-  transform: none;
-}
-
-/* Fix for transformed elements losing pointer events */
-#mobile-search-content.translate-x-0 {
-  pointer-events: auto;
-}
-
-#mobile-search-content.translate-x-full {
-  pointer-events: none;
 }

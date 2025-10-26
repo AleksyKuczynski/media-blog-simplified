@@ -1,14 +1,16 @@
 // src/main/components/Navigation/MobileNav.tsx
-// Updated to include separate search overlay and mutual exclusivity
+// Mobile navigation with hamburger menu sliding from LEFT
+// Uses unified useMobilePanel hook
 
 'use client'
 
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
-import { MobileNavOverlay } from './MobileNavOverlay'
-import { useMobileNavigation } from './useMobileNavigation'
+import { MobilePanelOverlay } from './MobilePanelOverlay'
+import { useMobilePanel } from './useMobilePanel'
 import MobileSearch from './MobileSearch'
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
+import { useState } from 'react'
 
 interface MobileNavProps {
   dictionary: Dictionary
@@ -23,16 +25,33 @@ export default function MobileNavigation({
   lang,
   currentPageTitle,
 }: MobileNavProps) {
+  // Track if search is open to close menu when search opens
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  
   const {
-    menuState,
-    isMenuOpen,
-    menuRef,
+    panelState: menuState,
+    isPanelOpen: isMenuOpen,
+    panelRef: menuRef,
     toggleRef,
-    toggleMenu,
+    togglePanel: toggleMenu,
     handleClose,
-    handleSearchComplete,
-    handleMenuClick,
-  } = useMobileNavigation()
+    handleContentComplete: handleSearchComplete,
+    handlePanelClick: handleMenuClick,
+    transformClasses: menuTransform
+  } = useMobilePanel({
+    side: 'left',
+    panelId: 'mobile-menu-content',
+    historyStateKey: 'mobileMenuOpen',
+    onOtherPanelOpen: undefined, // Menu doesn't close search
+    focusSelector: 'a, button:not([aria-hidden="true"])'
+  })
+
+  // Callback for search to close menu
+  const handleMenuClose = () => {
+    if (isMenuOpen) {
+      handleClose(false)
+    }
+  }
   
   return (
     <>
@@ -101,13 +120,13 @@ export default function MobileNavigation({
           <MobileSearch
             dictionary={dictionary}
             lang={lang}
-            onMenuClose={handleClose}
+            onMenuClose={handleMenuClose}
           />
         </div>
       </nav>
 
       {/* Mobile Menu Overlay */}
-      {isMenuOpen && <MobileNavOverlay onClose={handleClose} />}
+      {isMenuOpen && <MobilePanelOverlay onClose={() => handleClose(false)} />}
 
       {/* Slide-out Menu Panel */}
       <div
@@ -118,7 +137,7 @@ export default function MobileNavigation({
           fixed top-16 left-0 right-0 bottom-0 z-[60] pointer-events-auto
           bg-sf-cont/95 backdrop-blur-lg border-b border-ol-var/20
           transform transition-transform duration-300 ease-in-out
-          ${menuState === 'FULLY_OPENED' ? 'translate-x-0' : '-translate-x-full'}
+          ${menuTransform}
         `}
         aria-hidden={!isMenuOpen}
         aria-label={dictionary.navigation.accessibility.menuDescription}
