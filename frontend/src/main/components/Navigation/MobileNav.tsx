@@ -1,16 +1,17 @@
 // src/main/components/Navigation/MobileNav.tsx
-// Mobile navigation with hamburger menu sliding from LEFT
-// Uses unified useMobilePanel hook
+// Refactored mobile navigation with unified offcanvas panels
+// Manages state for both menu and search panels
 
 'use client'
 
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
-import { MobilePanelOverlay } from './MobilePanelOverlay'
+import HamburgerButton from './HamburgerButton'
+import SearchButton from './SearchButton'
+import OffcanvasPanel from './OffcanvasPanel'
+import MobileSearchContent from '../Search/MobileSearchContent'
 import { useMobilePanel } from './useMobilePanel'
-import MobileSearch from './MobileSearch'
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
-import { useState } from 'react'
 
 interface MobileNavProps {
   dictionary: Dictionary
@@ -20,38 +21,53 @@ interface MobileNavProps {
   currentPath?: string
 }
 
+/**
+ * MobileNavigation - Unified mobile navigation coordinator
+ * Manages both menu and search offcanvas panels
+ * Uses unified OffcanvasPanel component for consistent behavior
+ */
 export default function MobileNavigation({
   dictionary,
   lang,
   currentPageTitle,
 }: MobileNavProps) {
-  // Track if search is open to close menu when search opens
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
   
+  // Menu panel state management
   const {
-    panelState: menuState,
     isPanelOpen: isMenuOpen,
     panelRef: menuRef,
-    toggleRef,
+    toggleRef: menuToggleRef,
     togglePanel: toggleMenu,
-    handleClose,
-    handleContentComplete: handleSearchComplete,
-    handlePanelClick: handleMenuClick,
-    transformClasses: menuTransform
+    handleClose: closeMenu,
+    handleContentComplete: handleMenuComplete,
   } = useMobilePanel({
     side: 'left',
     panelId: 'mobile-menu-content',
     historyStateKey: 'mobileMenuOpen',
-    onOtherPanelOpen: undefined, // Menu doesn't close search
+    onOtherPanelOpen: undefined, // Menu doesn't auto-close search
     focusSelector: 'a, button:not([aria-hidden="true"])'
   })
 
-  // Callback for search to close menu
-  const handleMenuClose = () => {
-    if (isMenuOpen) {
-      handleClose(false)
-    }
-  }
+  // Search panel state management
+  const {
+    isPanelOpen: isSearchOpen,
+    panelRef: searchRef,
+    toggleRef: searchToggleRef,
+    togglePanel: toggleSearch,
+    handleClose: closeSearch,
+    handleContentComplete: handleSearchComplete,
+  } = useMobilePanel({
+    side: 'right',
+    panelId: 'mobile-search-content',
+    historyStateKey: 'mobileSearchOpen',
+    onOtherPanelOpen: () => {
+      // Close menu when search opens
+      if (isMenuOpen) {
+        closeMenu(false)
+      }
+    },
+    focusSelector: 'input[type="text"], input[type="search"]'
+  })
   
   return (
     <>
@@ -62,51 +78,22 @@ export default function MobileNavigation({
         itemScope
         itemType="https://schema.org/SiteNavigationElement"
       >
-        <div className="flex items-center justify-between h-16 px-4">        
-          {/* Hamburger Menu Button - Left */}
-          <button
-            ref={toggleRef}
-            onClick={toggleMenu}
-            aria-expanded={isMenuOpen}
-            aria-controls="mobile-menu-content" 
-            aria-label={
-              isMenuOpen 
-                ? dictionary.navigation.accessibility.closeMenu
-                : dictionary.navigation.accessibility.openMenu
-            }
-            className="
-              p-3 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf 
-              transition-all duration-200 
-              active:scale-95 touch-manipulation
-            "
-            type="button"
-          >
-            <div className="w-6 h-6 flex items-center justify-center">
-              {isMenuOpen ? (
-                // Close icon
-                <svg 
-                  className="w-5 h-5" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                // Menu icon
-                <svg 
-                  className="w-5 h-5" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </div>
-          </button>
+        <div className="flex items-center justify-between h-16 px-4">
+          
+          {/* Hamburger Menu Button - Left (hidden when search is open) */}
+          {!isSearchOpen && (
+            <HamburgerButton
+              isOpen={isMenuOpen}
+              onClick={toggleMenu}
+              ariaControls="mobile-menu-content"
+              openLabel={dictionary.navigation.accessibility.openMenu}
+              closeLabel={dictionary.navigation.accessibility.closeMenu}
+              buttonRef={menuToggleRef}
+            />
+          )}
+          
+          {/* Spacer when hamburger is hidden */}
+          {isSearchOpen && <div className="w-12" />}
           
           {/* Logo - Center */}
           <Logo 
@@ -116,56 +103,68 @@ export default function MobileNavigation({
             aria-label={dictionary.navigation.accessibility.logoAlt}
           />
           
-          {/* Search Component - Right */}
-          <MobileSearch
-            dictionary={dictionary}
-            lang={lang}
-            onMenuClose={handleMenuClose}
-          />
+          {/* Spacer when search is hidden */}
+          {isMenuOpen && <div className="w-12" />}
+          
+          {/* Search Button - Right (hidden when menu is open) */}
+          {!isMenuOpen && (
+            <SearchButton
+              isOpen={isSearchOpen}
+              onClick={toggleSearch}
+              ariaControls="mobile-search-content"
+              openLabel={dictionary.search.accessibility.openSearch || 'Open search'}
+              closeLabel={dictionary.search.accessibility.closeSearch || 'Close search'}
+              buttonRef={searchToggleRef}
+            />
+          )}
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
-      {isMenuOpen && <MobilePanelOverlay onClose={() => handleClose(false)} />}
-
-      {/* Slide-out Menu Panel */}
-      <div
-        ref={menuRef}
+      {/* Mobile Menu Offcanvas Panel - Slides from LEFT */}
+      <OffcanvasPanel
         id="mobile-menu-content"
-        onClick={handleMenuClick}
-        className={`
-          fixed top-16 left-0 right-0 bottom-0 z-[60] pointer-events-auto
-          bg-sf-cont/95 backdrop-blur-lg border-b border-ol-var/20
-          transform transition-transform duration-300 ease-in-out
-          ${menuTransform}
-        `}
-        aria-hidden={!isMenuOpen}
-        aria-label={dictionary.navigation.accessibility.menuDescription}
+        isOpen={isMenuOpen}
+        onClose={() => closeMenu(false)}
+        side="left"
+        title={dictionary.navigation.accessibility.menuTitle}
+        ariaLabel={dictionary.navigation.accessibility.menuDescription}
+        panelRef={menuRef}
       >
-        <div className="flex flex-col h-full">
-          {/* Menu Header */}
-          <div className="px-6 py-4 border-b border-ol-var/20">
-            <h2 className="text-lg font-semibold text-on-sf">
-              {dictionary.navigation.accessibility.menuTitle}
-            </h2>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="flex-1 px-6 py-6 overflow-y-auto" data-interactive="true">
-            <ul 
-              className="space-y-4"
-              role="menu"
-              aria-label={dictionary.navigation.accessibility.mainMenuLabel}
-            >
-              <NavLinks 
-                dictionary={dictionary}
-                lang={lang}
-                className="mobile-nav-links"
-              />
-            </ul>
-          </div>
+        {/* Menu Navigation Links */}
+        <div className="px-6 py-6">
+          <ul 
+            className="space-y-4"
+            role="menu"
+            aria-label={dictionary.navigation.accessibility.mainMenuLabel}
+          >
+            <NavLinks 
+              dictionary={dictionary}
+              lang={lang}
+              className="mobile-nav-links"
+            />
+          </ul>
         </div>
-      </div>
+      </OffcanvasPanel>
+
+      {/* Mobile Search Offcanvas Panel - Slides from RIGHT */}
+      <OffcanvasPanel
+        id="mobile-search-content"
+        isOpen={isSearchOpen}
+        onClose={() => closeSearch(false)}
+        side="right"
+        title={dictionary.search.labels.title}
+        ariaLabel={dictionary.search.accessibility.searchLabel || 'Search'}
+        panelRef={searchRef}
+      >
+        {/* Search Content - Only render when open for performance */}
+        {isSearchOpen && (
+          <MobileSearchContent
+            dictionary={dictionary}
+            lang={lang}
+            onSearchComplete={handleSearchComplete}
+          />
+        )}
+      </OffcanvasPanel>
     </>
   )
 }

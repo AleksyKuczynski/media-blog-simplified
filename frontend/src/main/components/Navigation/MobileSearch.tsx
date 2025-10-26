@@ -1,13 +1,13 @@
 // src/main/components/Navigation/MobileSearch.tsx
 // Mobile search interface sliding from RIGHT
-// Uses unified useMobilePanel hook - matches menu behavior exactly
+// Uses unified useMobilePanel hook with mobile-optimized search content
 
 'use client'
 
 import { MobilePanelOverlay } from './MobilePanelOverlay'
 import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
-import SearchBarClient from '../Search/SearchBarClient'
+import MobileSearchContent from '../Search/MobileSearchContent'
 
 interface MobileSearchProps {
   dictionary: Dictionary
@@ -88,7 +88,7 @@ export default function MobileSearch({
       {/* Search Overlay - Same as menu */}
       {isSearchOpen && <MobilePanelOverlay onClose={() => handleClose(false)} />}
 
-      {/* Slide-out Search Panel - Same as menu, but slides from RIGHT */}
+      {/* Slide-out Search Panel */}
       <div
         ref={searchRef}
         id="mobile-search-content"
@@ -102,24 +102,14 @@ export default function MobileSearch({
         aria-hidden={!isSearchOpen}
         aria-label={dictionary.search.accessibility.searchLabel || 'Search'}
       >
-        <div className="flex flex-col h-full">
-          {/* Search Header */}
-          <div className="px-6 py-4 border-b border-ol-var/20">
-            <h2 className="text-lg font-semibold text-on-sf">
-              {dictionary.search.labels.title || 'Search'}
-            </h2>
-          </div>
-
-          {/* Search Interface */}
-          <div className="flex-1 px-6 py-6 overflow-y-auto" data-interactive="true">
-            <SearchBarClient
-              dictionary={dictionary}
-              lang={lang}
-              onSearchComplete={handleSearchComplete}
-              className="search-container"
-            />
-          </div>
-        </div>
+        {/* Mobile Search Content - Only render when open for better performance */}
+        {isSearchOpen && (
+          <MobileSearchContent
+            dictionary={dictionary}
+            lang={lang}
+            onSearchComplete={handleSearchComplete}
+          />
+        )}
       </div>
     </>
   )
