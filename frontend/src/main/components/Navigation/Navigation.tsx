@@ -5,7 +5,7 @@
 
 import { usePathname } from 'next/navigation'
 import DesktopNavigation from './DesktopNav'
-import MobileNavigation from './MobileNav'
+import MobileNavigation from './MobileNav/MobileNav'
 import SkipLinks from './SkipLinks'
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
 import { CompleteNavigationSchema } from '@/main/components/SEO'

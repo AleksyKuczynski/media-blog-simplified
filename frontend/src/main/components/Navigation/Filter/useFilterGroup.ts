@@ -12,7 +12,7 @@ import {
   getFilterLabels,
   getSortingOptions,
 } from '@/main/lib/dictionary/helpers/filter';
-import type { DropdownItemType } from '../Interface/Dropdown/types';
+import type { DropdownItemType } from '../../Interface/Dropdown/types';
 
 // ===================================================================
 // TYPES - Simplified and clean, FIXED TYPES

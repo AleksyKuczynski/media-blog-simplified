@@ -6,12 +6,12 @@
 import React from 'react';
 import { Category } from '@/main/lib/directus/directusInterfaces';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
-import { ChevronDownIcon } from '../Interface/Icons';
-import SortingControl from './SortingControl';
-import { useFilterGroup, useFilterValidation } from './useFilterGroup';
+import { ChevronDownIcon } from '../../Interface/Icons';
 import { getFilterAccessibilityData } from '@/main/lib/dictionary/helpers/filter';
-import { CustomButton, NavButton } from '../Interface';
-import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../Interface/Dropdown';
+import { CustomButton, NavButton } from '../../Interface';
+import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../../Interface/Dropdown';
+import { useFilterGroup, useFilterValidation } from './useFilterGroup';
+import SortingControl from './SortingControl';
 
 // ===================================================================
 // TYPES - Simple and clean

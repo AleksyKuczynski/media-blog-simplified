@@ -5,7 +5,7 @@
 import React from 'react';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import SortingControl from '@/main/components/Navigation/SortingControl';
+import SortingControl from '@/main/components/Navigation/Filter/SortingControl';
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { getLocalizedCount } from '@/main/lib/dictionary/helpers/content';

@@ -4,14 +4,14 @@
 
 'use client'
 
-import Logo from '../Logo'
-import NavLinks from './NavLinks'
-import HamburgerButton from './HamburgerButton'
+import Logo from '../../Logo'
+import NavLinks from '../NavLinks'
 import SearchButton from './SearchButton'
 import OffcanvasPanel from './OffcanvasPanel'
-import MobileSearchContent from '../Search/MobileSearchContent'
+import MobileSearchContent from '../../Search/MobileSearchContent'
 import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/main/lib/dictionary/types'
+import HamburgerButton from './HamburgerButton'
 
 interface MobileNavProps {
   dictionary: Dictionary

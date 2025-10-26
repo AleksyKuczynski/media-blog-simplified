@@ -1,11 +1,13 @@
 // src/main/components/Navigation/useMobilePanel.ts
 // Unified hook for mobile offcanvas panels (menu and search)
 // Supports panels sliding from left or right with identical behavior
+// UPDATED: Enhanced body scroll lock with iOS Safari support
 
 import { useState, useRef, useReducer, useCallback, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
+import { lockBodyScroll, unlockBodyScroll } from '@/main/lib/utils/bodyScrollLock'
 import { menuAnimationReducer } from './menuAnimationReducer'
-import { CONTROLS_ANIMATION_DURATION, MENU_ANIMATION_DURATION } from '../Interface/constants'
+import { CONTROLS_ANIMATION_DURATION, MENU_ANIMATION_DURATION } from '../../Interface/constants'
 
 interface UseMobilePanelConfig {
   side: 'left' | 'right'
@@ -48,7 +50,9 @@ export function useMobilePanel({
     if (popstateHandlerRef.current) {
       window.removeEventListener('popstate', popstateHandlerRef.current)
     }
-    document.body.style.overflow = 'unset'
+    
+    // UPDATED: Use enhanced body scroll unlock
+    unlockBodyScroll()
     
     // Handle history cleanup
     if (historyStatePushed.current) {
@@ -90,7 +94,9 @@ export function useMobilePanel({
       // Moving forward to when panel was open
       setIsPanelOpen(true)
       dispatch({ type: 'OPEN_MENU' })
-      document.body.style.overflow = 'hidden'
+      
+      // UPDATED: Use enhanced body scroll lock
+      lockBodyScroll()
       
       setTimeout(() => {
         dispatch({ type: 'SHOW_CONTROLS' })
@@ -134,8 +140,8 @@ export function useMobilePanel({
       window.addEventListener('popstate', popstateHandlerRef.current)
     }
     
-    // Prevent body scroll when panel is open
-    document.body.style.overflow = 'hidden'
+    // UPDATED: Use enhanced body scroll lock
+    lockBodyScroll()
     
     setTimeout(() => {
       dispatch({ type: 'SHOW_CONTROLS' })

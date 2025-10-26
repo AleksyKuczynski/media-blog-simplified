@@ -12,7 +12,7 @@ import { processContent } from '@/main/lib/markdown/processContent';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { generateArticleMetadata, generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';
 import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
-import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/SmartBreadcrumbs';
+import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
 
