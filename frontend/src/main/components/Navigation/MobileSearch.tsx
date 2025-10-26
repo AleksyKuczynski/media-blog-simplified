@@ -1,5 +1,6 @@
 // src/main/components/Navigation/MobileSearch.tsx
 // Mobile search interface with button and slide-out panel from right
+// MATCHES MENU PANEL: Same styling as mobile-menu-content
 
 'use client'
 
@@ -77,16 +78,16 @@ export default function MobileSearch({
         </div>
       </button>
 
-      {/* Search Overlay */}
+      {/* Search Overlay - EXACTLY like menu overlay */}
       {isSearchOpen && <MobileSearchOverlay onClose={handleClose} />}
 
-      {/* Slide-out Search Panel from Right */}
+      {/* Slide-out Search Panel - EXACTLY like menu panel */}
       <div
         ref={searchRef}
         id="mobile-search-content"
         onClick={handleSearchClick}
         className={`
-          fixed top-16 right-0 bottom-0 left-0 z-[60] pointer-events-auto
+          fixed top-16 left-0 right-0 bottom-0 z-[60] pointer-events-auto
           bg-sf-cont/95 backdrop-blur-lg border-b border-ol-var/20
           transform transition-transform duration-300 ease-in-out
           ${searchState === 'FULLY_OPENED' ? 'translate-x-0' : 'translate-x-full'}
