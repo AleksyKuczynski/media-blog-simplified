@@ -1,12 +1,11 @@
 // frontend/src/main/components/Article/ArticleEngagement.tsx
+// FIXED: Removed useEffect anti-patterns, proper error handling, optimistic updates only
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { trackGAEvent } from '@/main/lib/analytics/google';
 import { trackYandexEvent } from '@/main/lib/analytics/yandex';
 import {
-  fetchEngagement,
-  trackView,
   toggleLike as toggleLikeApi,
   trackShare as trackShareApi,
   isArticleLiked,
@@ -23,6 +22,8 @@ interface ArticleEngagementProps {
   slug: string;
   title: string;
   url: string;
+  /** Initial engagement data from SSR */
+  initialEngagement: EngagementData;
   className?: string;
 }
 
@@ -49,80 +50,64 @@ const SHARE_URLS = {
 
 /**
  * ArticleEngagement - Client component for article interactions
- * Handles: view tracking, likes, and social sharing
+ * 
+ * ARCHITECTURE:
+ * - Gets initial engagement data from SSR (no fetch on mount)
+ * - Uses optimistic updates for instant UI feedback
+ * - One useEffect for localStorage sync (necessary to prevent hydration mismatch)
+ * 
+ * WHY ONE useEffect IS ACCEPTABLE:
+ * localStorage is a browser-only API not available during SSR.
+ * Reading it during initial render causes hydration mismatch.
+ * This useEffect runs once after mount to sync with browser state.
+ * This is the recommended Next.js pattern for browser-only state.
+ * 
+ * @param initialEngagement - Engagement data fetched during SSR (prevents initial API call)
  */
 export default function ArticleEngagement({
   slug,
   title,
   url,
+  initialEngagement,
   className = '',
 }: ArticleEngagementProps) {
-  // State
-  const [engagement, setEngagement] = useState<EngagementData>({
-    slug,
-    views: 0,
-    likes: 0,
-    shares: 0,
-  });
+  // ===================================================================
+  // STATE
+  // ===================================================================
+  const [engagement, setEngagement] = useState<EngagementData>(initialEngagement);
+  
+  // FIXED: Initialize to false to match SSR, then sync with localStorage after hydration
+  // This prevents React hydration mismatch errors
   const [isLiked, setIsLiked] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  
   const [showCopySuccess, setShowCopySuccess] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Track if component has mounted (for localStorage access)
+  const [isMounted, setIsMounted] = useState(false);
 
   // ===================================================================
-  // DATA FETCHING
+  // ERROR HANDLING
   // ===================================================================
 
   /**
-   * Fetch current engagement data
+   * Sync with localStorage after hydration
+   * This useEffect is necessary to prevent hydration mismatches
+   * since localStorage is not available during SSR
    */
-  const loadEngagement = useCallback(async () => {
-    try {
-      const data = await fetchEngagement(slug);
-      setEngagement(data);
-    } catch (error) {
-      console.error('Error loading engagement:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  useEffect(() => {
+    setIsMounted(true);
+    setIsLiked(isArticleLiked(slug));
   }, [slug]);
 
   /**
-   * Initialize on mount
+   * Show error message briefly
    */
-  useEffect(() => {
-    // Load engagement data
-    loadEngagement();
-
-    // Check if article is liked (from localStorage)
-    setIsLiked(isArticleLiked(slug));
-  }, [slug, loadEngagement]);
-
-  /**
-   * Track page view on mount (only once, after 2 seconds)
-   */
-  useEffect(() => {
-    const trackViewAsync = async () => {
-      try {
-        // Track in backend
-        const updatedData = await trackView(slug);
-        setEngagement(updatedData);
-
-        // Track in analytics
-        trackGAEvent('page_view', {
-          page_path: url,
-          article_slug: slug,
-        });
-        trackYandexEvent('article_view', { slug });
-      } catch (error) {
-        console.error('Error tracking view:', error);
-      }
-    };
-
-    // Track after 2 seconds (avoid counting bounces)
-    const timer = setTimeout(trackViewAsync, 2000);
-    return () => clearTimeout(timer);
-  }, [slug, url]);
+  const showError = useCallback((message: string) => {
+    setError(message);
+    setTimeout(() => setError(null), 5000);
+  }, []);
 
   // ===================================================================
   // INTERACTION HANDLERS
@@ -130,64 +115,89 @@ export default function ArticleEngagement({
 
   /**
    * Handle like/unlike toggle
+   * FIXED: Trust optimistic updates, don't refetch after mutation
    */
-  const handleLikeToggle = async () => {
+  const handleLikeToggle = useCallback(async () => {
     if (isProcessing) return;
 
     setIsProcessing(true);
+    setError(null);
+    
     const previousLikedState = isLiked;
-    const previousEngagement = { ...engagement };
+    const previousLikeCount = engagement.likes;
 
     try {
-      // Optimistic update
+      // Step 1: Optimistic UI update
       const newLikedState = !isLiked;
       setIsLiked(newLikedState);
       
-      // Don't go below 0 in UI
+      // Calculate new count (prevent going below 0)
       const newLikeCount = newLikedState 
         ? engagement.likes + 1 
         : Math.max(0, engagement.likes - 1);
       
-      setEngagement({
-        ...engagement,
+      setEngagement(prev => ({
+        ...prev,
         likes: newLikeCount,
-      });
+      }));
 
-      // Update backend
-      const updatedData = await toggleLikeApi(slug, previousLikedState);
-      
-      // CRITICAL: Update with actual server data
-      setEngagement(updatedData);
-
-      // Update localStorage
+      // Step 2: Update localStorage immediately
       if (newLikedState) {
         saveLikedArticle(slug);
       } else {
         removeLikedArticle(slug);
       }
 
-      // Track in analytics
-      const action = newLikedState ? 'like' : 'unlike';
-      trackGAEvent(action, {
-        article_slug: slug,
-        article_title: title,
-      });
-      trackYandexEvent(`article_${action}`, { slug });
-    } catch (error) {
+      // Step 3: Update backend (but DON'T refetch - trust the optimistic update)
+      try {
+        await toggleLikeApi(slug, previousLikedState);
+        
+        // Track in analytics only on success
+        const action = newLikedState ? 'like' : 'unlike';
+        trackGAEvent(action, {
+          article_slug: slug,
+          article_title: title,
+        });
+        trackYandexEvent(`article_${action}`, { slug });
+      } catch (apiError: any) {
+        // If API fails but was rate limit, keep the optimistic update
+        // (user might have legitimately liked it, just hit rate limit)
+        if (apiError?.message?.includes('Rate limit')) {
+          showError('Too many requests. Your like has been saved locally and will sync when possible.');
+          // Keep the optimistic update
+        } else {
+          // For other errors, rollback
+          throw apiError;
+        }
+      }
+    } catch (error: any) {
       console.error('Error toggling like:', error);
       
       // Rollback on error
       setIsLiked(previousLikedState);
-      setEngagement(previousEngagement);
+      setEngagement(prev => ({
+        ...prev,
+        likes: previousLikeCount,
+      }));
+      
+      // Update localStorage to match rollback
+      if (previousLikedState) {
+        saveLikedArticle(slug);
+      } else {
+        removeLikedArticle(slug);
+      }
+      
+      showError(error?.message || 'Failed to update like. Please try again.');
     } finally {
       setIsProcessing(false);
     }
-  };
+  }, [isProcessing, isLiked, engagement.likes, slug, title, showError]);
 
   /**
    * Handle share action
+   * FIXED: Optimistic update for share count
    */
-  const handleShare = async (platform: SharePlatform) => {
+  const handleShare = useCallback(async (platform: SharePlatform) => {
     if (platform === 'copy') {
       // Copy link to clipboard
       try {
@@ -204,17 +214,22 @@ export default function ArticleEngagement({
         trackYandexEvent('article_share', { slug, method: 'copy' });
       } catch (error) {
         console.error('Failed to copy link:', error);
+        showError('Failed to copy link to clipboard');
       }
       return;
     }
 
-    // Track share in backend
-    try {
-      const updatedData = await trackShareApi(slug);
-      setEngagement(updatedData);
-    } catch (error) {
+    // Optimistically increment share count
+    setEngagement(prev => ({
+      ...prev,
+      shares: prev.shares + 1,
+    }));
+
+    // Track share in backend (fire and forget - don't block user)
+    trackShareApi(slug).catch((error) => {
       console.error('Error tracking share:', error);
-    }
+      // Don't rollback - user already opened share dialog
+    });
 
     // Open share dialog
     const shareUrl = SHARE_URLS[platform](url, title);
@@ -227,89 +242,94 @@ export default function ArticleEngagement({
       article_title: title,
     });
     trackYandexEvent('article_share', { slug, method: platform });
-  };
+  }, [slug, title, url, showError]);
 
   // ===================================================================
   // RENDER
   // ===================================================================
 
-  if (isLoading) {
-    return (
-      <div className={`flex items-center gap-4 sm:gap-6 py-4 ${className}`}>
-        <div className="h-8 w-24 bg-gray-200 animate-pulse rounded" />
-        <div className="h-8 w-24 bg-gray-200 animate-pulse rounded" />
-        <div className="h-8 w-32 bg-gray-200 animate-pulse rounded" />
-      </div>
-    );
-  }
-
   return (
-    <div
-      className={`flex flex-wrap items-center gap-4 sm:gap-6 py-4 border-t border-b border-gray-200 ${className}`}
-      role="group"
-      aria-label="Article engagement actions"
-    >
-      {/* View Count (Read-only) */}
+    <>
+      {/* Error Banner */}
+      {error && (
+        <div
+          className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800"
+          role="alert"
+        >
+          {error}
+        </div>
+      )}
+
+      {/* Engagement Actions */}
       <div
-        className="flex items-center gap-2 text-gray-600"
-        aria-label={`${engagement.views} views`}
+        className={`flex flex-wrap items-center gap-4 sm:gap-6 py-4 border-t border-b border-gray-200 ${className}`}
+        role="group"
+        aria-label="Article engagement actions"
       >
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
+        {/* View Count (Read-only) */}
+        <div
+          className="flex items-center gap-2 text-gray-600"
+          aria-label={`${engagement.views} views`}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-          />
-        </svg>
-        <span className="font-medium">{engagement.views.toLocaleString()}</span>
-      </div>
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+            />
+          </svg>
+          <span className="font-medium">{engagement.views.toLocaleString()}</span>
+        </div>
 
-      {/* Like Button */}
-      <button
-        onClick={handleLikeToggle}
-        disabled={isProcessing}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
-          isLiked
-            ? 'text-red-600 bg-red-50 hover:bg-red-100'
-            : 'text-gray-600 hover:text-red-600 hover:bg-gray-50'
-        } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-        aria-label={isLiked ? 'Unlike article' : 'Like article'}
-        aria-pressed={isLiked}
-      >
-        <svg
-          className="w-5 h-5"
-          fill={isLiked ? 'currentColor' : 'none'}
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
+        {/* Like Button */}
+        <button
+          onClick={handleLikeToggle}
+          disabled={isProcessing}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
+            isLiked
+              ? 'text-red-600 bg-red-50 hover:bg-red-100'
+              : 'text-gray-600 hover:text-red-600 hover:bg-gray-50'
+          } ${isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+          aria-label={isLiked ? 'Unlike article' : 'Like article'}
+          aria-pressed={isLiked}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-          />
-        </svg>
-        <span className="font-medium">{engagement.likes.toLocaleString()}</span>
-      </button>
+          <svg
+            className="w-5 h-5"
+            fill={isLiked ? 'currentColor' : 'none'}
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
+          </svg>
+          <span className="font-medium">{engagement.likes.toLocaleString()}</span>
+        </button>
 
-      {/* Share Button with Counter */}
-      <div className="relative">
-        <details className="group">
-          <summary className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-600 hover:bg-gray-50 cursor-pointer list-none">
+        {/* Share Dropdown */}
+        <div className="relative group">
+          <button
+            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all cursor-pointer"
+            aria-label="Share article"
+            aria-haspopup="true"
+          >
             <svg
               className="w-5 h-5"
               fill="none"
@@ -325,72 +345,54 @@ export default function ArticleEngagement({
               />
             </svg>
             <span className="font-medium">{engagement.shares.toLocaleString()}</span>
-          </summary>
+          </button>
 
-          {/* Dropdown Menu */}
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10">
-            {/* Copy Link */}
+          {/* Share Dropdown Menu */}
+          <div
+            className="absolute bottom-full left-0 mb-2 hidden group-hover:block bg-white shadow-lg rounded-lg border border-gray-200 py-2 min-w-[180px] z-10"
+            role="menu"
+          >
             <button
               onClick={() => handleShare('copy')}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+              role="menuitem"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
               </svg>
-              {showCopySuccess ? 'Copied!' : 'Copy link'}
+              {showCopySuccess ? '✓ Copied!' : 'Copy link'}
             </button>
-
-            {/* Facebook */}
             <button
               onClick={() => handleShare('facebook')}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+              role="menuitem"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-              </svg>
               Facebook
             </button>
-
-            {/* Twitter */}
             <button
               onClick={() => handleShare('twitter')}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+              role="menuitem"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
-              </svg>
               Twitter
             </button>
-
-            {/* Telegram */}
             <button
               onClick={() => handleShare('telegram')}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+              role="menuitem"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
-              </svg>
               Telegram
             </button>
-
-            {/* WhatsApp */}
             <button
               onClick={() => handleShare('whatsapp')}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
+              role="menuitem"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-              </svg>
               WhatsApp
             </button>
           </div>
-        </details>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

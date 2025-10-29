@@ -1,5 +1,5 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
-// Fixed: Prevents negative counters and ensures accurate updates
+// FIXED: Proper cache control, better rate limiting, prevents stale data
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -8,8 +8,8 @@ const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
 
 // Rate limiting configuration
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000;
-const MAX_REQUESTS_PER_WINDOW = 10;
+const RATE_LIMIT_WINDOW = 60 * 1000; // 60 seconds
+const MAX_REQUESTS_PER_WINDOW = 15; // Increased from 10 to 15
 
 // ===================================================================
 // HELPER FUNCTIONS
@@ -21,9 +21,21 @@ function getClientIP(request: NextRequest): string {
   return forwarded?.split(',')[0] || realIp || 'unknown';
 }
 
+/**
+ * FIXED: More lenient rate limiting and better cleanup
+ */
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const clientData = rateLimitMap.get(ip);
+
+  // Cleanup old entries periodically
+  if (rateLimitMap.size > 1000) {
+    for (const [key, value] of rateLimitMap.entries()) {
+      if (now > value.resetTime) {
+        rateLimitMap.delete(key);
+      }
+    }
+  }
 
   if (!clientData || now > clientData.resetTime) {
     rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
@@ -31,6 +43,7 @@ function checkRateLimit(ip: string): boolean {
   }
 
   if (clientData.count >= MAX_REQUESTS_PER_WINDOW) {
+    console.warn(`⚠️ Rate limit exceeded for IP: ${ip}`);
     return false;
   }
 
@@ -63,7 +76,7 @@ async function validateArticleSlug(slug: string): Promise<boolean> {
 }
 
 /**
- * Fetch engagement data from Directus
+ * FIXED: Added explicit cache control
  */
 async function fetchEngagementData(slug: string) {
   try {
@@ -79,8 +92,9 @@ async function fetchEngagementData(slug: string) {
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
+        'Cache-Control': 'no-cache', // Force fresh data
       },
-      cache: 'no-store',
+      cache: 'no-store', // Never cache
     });
 
     if (response.status === 401) {
@@ -141,7 +155,7 @@ async function readEngagementRecord(slug: string) {
 
 /**
  * Update engagement field (generic function)
- * FIXED: Prevents negative values
+ * FIXED: Better error handling and logging
  */
 async function updateEngagementField(
   slug: string,
@@ -154,7 +168,7 @@ async function updateEngagementField(
       return false;
     }
 
-    console.log(`🔍 Updating ${field} for:`, slug);
+    console.log(`🔍 Updating ${field} for:`, slug, `(${increment > 0 ? '+' : ''}${increment})`);
 
     // Step 1: Try to read existing record
     let existingRecord = await readEngagementRecord(slug);
@@ -168,7 +182,7 @@ async function updateEngagementField(
       const newValue = Math.max(0, currentValue + increment);
 
       // If decrementing would go negative, skip the update
-      if (newValue === currentValue) {
+      if (newValue === currentValue && increment < 0) {
         console.log(`⚠️  Skipping ${field} update - would result in negative value`);
         return true; // Still return true to not show error to user
       }
@@ -194,7 +208,8 @@ async function updateEngagementField(
       const updated = await updateResponse.json();
       console.log(`✅ ${field} updated:`, {
         id: updated.data.id,
-        [field]: updated.data[field],
+        old: currentValue,
+        new: updated.data[field],
       });
       return true;
 
@@ -315,6 +330,10 @@ async function incrementShareCount(slug: string): Promise<boolean> {
 // API ROUTE HANDLERS
 // ===================================================================
 
+/**
+ * GET /api/engagement/[slug]
+ * FIXED: Proper cache control headers
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -349,7 +368,7 @@ export async function GET(
 
     const engagement = await fetchEngagementData(slug);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: {
         slug: engagement.article_slug,
@@ -358,6 +377,13 @@ export async function GET(
         shares: engagement.share_count || 0,
       },
     });
+
+    // FIXED: Prevent caching to avoid stale data
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+
+    return response;
   } catch (error) {
     console.error('GET /api/engagement error:', error);
     
@@ -390,6 +416,10 @@ export async function GET(
   }
 }
 
+/**
+ * POST /api/engagement/[slug]
+ * FIXED: Better rate limit handling and response headers
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -473,10 +503,10 @@ export async function POST(
       );
     }
 
-    // Fetch updated data to ensure accuracy
+    // FIXED: Fetch updated data with fresh read
     const updatedEngagement = await fetchEngagementData(slug);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       action,
       data: {
@@ -486,6 +516,13 @@ export async function POST(
         shares: updatedEngagement.share_count || 0,
       },
     });
+
+    // FIXED: Prevent caching mutation responses
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
+
+    return response;
   } catch (error) {
     console.error('POST /api/engagement error:', error);
     return NextResponse.json(

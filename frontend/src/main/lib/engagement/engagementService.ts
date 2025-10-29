@@ -1,4 +1,5 @@
 // frontend/src/main/lib/engagement/engagementService.ts
+// FIXED: Added exponential backoff, better error handling, retry logic
 /**
  * Engagement Service
  * 
@@ -31,6 +32,86 @@ export interface EngagementError {
 export type EngagementAction = 'view' | 'like' | 'unlike' | 'share';
 
 // ===================================================================
+// RETRY LOGIC
+// ===================================================================
+
+interface RetryOptions {
+  maxRetries?: number;
+  initialDelayMs?: number;
+  maxDelayMs?: number;
+  shouldRetry?: (error: any) => boolean;
+}
+
+/**
+ * Exponential backoff retry utility
+ */
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  options: RetryOptions = {}
+): Promise<T> {
+  const {
+    maxRetries = 3,
+    initialDelayMs = 1000,
+    maxDelayMs = 10000,
+    shouldRetry = () => true,
+  } = options;
+
+  let lastError: any;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+
+      // Don't retry if this is the last attempt or if we shouldn't retry this error
+      if (attempt === maxRetries || !shouldRetry(error)) {
+        throw error;
+      }
+
+      // Calculate delay with exponential backoff
+      const delay = Math.min(
+        initialDelayMs * Math.pow(2, attempt),
+        maxDelayMs
+      );
+
+      console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+
+  throw lastError;
+}
+
+/**
+ * Determine if an error should be retried
+ */
+function shouldRetryError(error: any): boolean {
+  const errorMessage = error?.message || '';
+  
+  // Retry on rate limits (with backoff)
+  if (errorMessage.includes('Rate limit')) {
+    return true;
+  }
+  
+  // Retry on network errors
+  if (errorMessage.includes('fetch failed') || errorMessage.includes('Network')) {
+    return true;
+  }
+  
+  // Don't retry on client errors (400, 401, 403, 404)
+  if (errorMessage.includes('400') || 
+      errorMessage.includes('401') || 
+      errorMessage.includes('403') || 
+      errorMessage.includes('404')) {
+    return false;
+  }
+  
+  // Retry on server errors (500, 502, 503, 504)
+  return true;
+}
+
+// ===================================================================
 // SERVICE FUNCTIONS
 // ===================================================================
 
@@ -53,6 +134,7 @@ export async function fetchEngagement(slug: string): Promise<EngagementData> {
       headers: {
         'Content-Type': 'application/json',
       },
+      cache: 'no-store', // Prevent stale data
     });
 
     if (!response.ok) {
@@ -82,6 +164,7 @@ export async function fetchEngagement(slug: string): Promise<EngagementData> {
 
 /**
  * Update engagement counter (view, like, unlike, share)
+ * FIXED: Added retry logic with exponential backoff
  * 
  * @param slug - Article slug
  * @param action - Action to perform
@@ -100,47 +183,55 @@ export async function updateEngagement(
   slug: string,
   action: EngagementAction
 ): Promise<EngagementData> {
-  try {
-    const response = await fetch(`/api/engagement/${slug}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ action }),
-    });
+  return retryWithBackoff(
+    async () => {
+      const response = await fetch(`/api/engagement/${slug}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action }),
+        cache: 'no-store',
+      });
 
-    if (!response.ok) {
-      const errorData: EngagementError = await response.json();
-      throw new Error(errorData.message || errorData.error || 'Failed to update engagement');
+      if (!response.ok) {
+        const errorData: EngagementError = await response.json();
+        const errorMessage = errorData.message || errorData.error || 'Failed to update engagement';
+        
+        // Add status code to error for better retry logic
+        const error: any = new Error(errorMessage);
+        error.status = response.status;
+        throw error;
+      }
+
+      const result: EngagementResponse = await response.json();
+
+      if (!result.success || !result.data) {
+        throw new Error('Invalid response format');
+      }
+
+      return result.data;
+    },
+    {
+      maxRetries: 2,
+      initialDelayMs: 1000,
+      maxDelayMs: 5000,
+      shouldRetry: shouldRetryError,
     }
-
-    const result: EngagementResponse = await response.json();
-
-    if (!result.success || !result.data) {
-      throw new Error('Invalid response format');
-    }
-
-    return result.data;
-  } catch (error) {
-    console.error(`Error updating engagement (${action}):`, error);
-    throw error;
-  }
+  );
 }
 
 /**
  * Track a page view (convenience function)
+ * NOTE: Consider calling this server-side instead of client-side
  * 
  * @param slug - Article slug
  * @returns Promise with updated engagement data
  * 
  * @example
  * ```typescript
- * useEffect(() => {
- *   const timer = setTimeout(() => {
- *     trackView(articleSlug);
- *   }, 2000);
- *   return () => clearTimeout(timer);
- * }, [articleSlug]);
+ * // Don't use useEffect - this is an anti-pattern
+ * // Instead, call from server component or on user interaction
  * ```
  */
 export async function trackView(slug: string): Promise<EngagementData> {
@@ -158,8 +249,7 @@ export async function trackView(slug: string): Promise<EngagementData> {
  * ```typescript
  * const handleLike = async () => {
  *   const data = await toggleLike(slug, isLiked);
- *   setIsLiked(!isLiked);
- *   setEngagement(data);
+ *   // UI should update optimistically, not wait for this
  * };
  * ```
  */
@@ -180,8 +270,11 @@ export async function toggleLike(
  * @example
  * ```typescript
  * const handleShare = async (platform: string) => {
- *   await trackShare(slug);
- *   openShareWindow(platform);
+ *   // Update UI optimistically first
+ *   setShareCount(prev => prev + 1);
+ *   
+ *   // Then track in background
+ *   trackShare(slug).catch(console.error);
  * };
  * ```
  */
@@ -190,8 +283,10 @@ export async function trackShare(slug: string): Promise<EngagementData> {
 }
 
 // ===================================================================
-// HELPER FUNCTIONS
+// LOCALSTORAGE HELPERS
 // ===================================================================
+
+const LIKED_ARTICLES_KEY = 'liked_articles';
 
 /**
  * Get liked articles from localStorage
@@ -202,7 +297,7 @@ export function getLikedArticles(): string[] {
   if (typeof window === 'undefined') return [];
 
   try {
-    const stored = localStorage.getItem('liked_articles');
+    const stored = localStorage.getItem(LIKED_ARTICLES_KEY);
     if (!stored) return [];
 
     const parsed = JSON.parse(stored);
@@ -237,7 +332,7 @@ export function saveLikedArticle(slug: string): void {
     
     if (!likedArticles.includes(slug)) {
       likedArticles.push(slug);
-      localStorage.setItem('liked_articles', JSON.stringify(likedArticles));
+      localStorage.setItem(LIKED_ARTICLES_KEY, JSON.stringify(likedArticles));
     }
   } catch (error) {
     console.error('Error saving liked article:', error);
@@ -255,7 +350,7 @@ export function removeLikedArticle(slug: string): void {
   try {
     const likedArticles = getLikedArticles();
     const filtered = likedArticles.filter(s => s !== slug);
-    localStorage.setItem('liked_articles', JSON.stringify(filtered));
+    localStorage.setItem(LIKED_ARTICLES_KEY, JSON.stringify(filtered));
   } catch (error) {
     console.error('Error removing liked article:', error);
   }
