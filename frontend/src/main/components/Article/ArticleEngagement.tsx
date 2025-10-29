@@ -1,13 +1,11 @@
 // frontend/src/main/components/Article/ArticleEngagement.tsx
-// FIXED: Removed useEffect anti-patterns, proper error handling, optimistic updates only
+// FIXED: Proper unlike action, uses Flow via API
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
 import { trackGAEvent } from '@/main/lib/analytics/google';
 import { trackYandexEvent } from '@/main/lib/analytics/yandex';
 import {
-  toggleLike as toggleLikeApi,
-  trackShare as trackShareApi,
   isArticleLiked,
   saveLikedArticle,
   removeLikedArticle,
@@ -54,84 +52,60 @@ const SHARE_URLS = {
  * ARCHITECTURE:
  * - Gets initial engagement data from SSR (no fetch on mount)
  * - Uses optimistic updates for instant UI feedback
- * - One useEffect for localStorage sync (necessary to prevent hydration mismatch)
+ * - Calls API route which triggers Directus Flow
+ * - One useEffect for localStorage sync (browser-only API)
  * 
- * WHY ONE useEffect IS ACCEPTABLE:
- * localStorage is a browser-only API not available during SSR.
- * Reading it during initial render causes hydration mismatch.
- * This useEffect runs once after mount to sync with browser state.
- * This is the recommended Next.js pattern for browser-only state.
- * 
- * @param initialEngagement - Engagement data fetched during SSR (prevents initial API call)
+ * LIKE/UNLIKE:
+ * - Single button that toggles between liked/not liked
+ * - Sends "like" action to increment
+ * - Sends "unlike" action to decrement
+ * - localStorage tracks user's like status locally
  */
 export default function ArticleEngagement({
   slug,
   title,
   url,
   initialEngagement,
-  className = '',
+  className,
 }: ArticleEngagementProps) {
-  // ===================================================================
-  // STATE
-  // ===================================================================
+  // State
   const [engagement, setEngagement] = useState<EngagementData>(initialEngagement);
-  
-  // FIXED: Initialize to false to match SSR, then sync with localStorage after hydration
-  // This prevents React hydration mismatch errors
   const [isLiked, setIsLiked] = useState(false);
-  
-  const [showCopySuccess, setShowCopySuccess] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  // Track if component has mounted (for localStorage access)
-  const [isMounted, setIsMounted] = useState(false);
+  const [showCopySuccess, setShowCopySuccess] = useState(false);
 
-  // ===================================================================
-  // ERROR HANDLING
-  // ===================================================================
-
-  /**
-   * Sync with localStorage after hydration
-   * This useEffect is necessary to prevent hydration mismatches
-   * since localStorage is not available during SSR
-   */
+  // Sync with localStorage after mount (prevents hydration mismatch)
   useEffect(() => {
-    setIsMounted(true);
     setIsLiked(isArticleLiked(slug));
   }, [slug]);
 
   /**
-   * Show error message briefly
+   * Show error message temporarily
    */
   const showError = useCallback((message: string) => {
     setError(message);
     setTimeout(() => setError(null), 5000);
   }, []);
 
-  // ===================================================================
-  // INTERACTION HANDLERS
-  // ===================================================================
-
   /**
    * Handle like/unlike toggle
-   * FIXED: Trust optimistic updates, don't refetch after mutation
+   * FIXED: Sends correct action (like or unlike) to API
    */
   const handleLikeToggle = useCallback(async () => {
     if (isProcessing) return;
 
     setIsProcessing(true);
-    setError(null);
     
+    // Store previous state for rollback
     const previousLikedState = isLiked;
     const previousLikeCount = engagement.likes;
 
     try {
-      // Step 1: Optimistic UI update
-      const newLikedState = !isLiked;
+      // Step 1: Optimistic update (instant UI feedback)
+      const newLikedState = !previousLikedState;
       setIsLiked(newLikedState);
-      
-      // Calculate new count (prevent going below 0)
+
       const newLikeCount = newLikedState 
         ? engagement.likes + 1 
         : Math.max(0, engagement.likes - 1);
@@ -148,28 +122,50 @@ export default function ArticleEngagement({
         removeLikedArticle(slug);
       }
 
-      // Step 3: Update backend (but DON'T refetch - trust the optimistic update)
+      // Step 3: Send correct action to API (which triggers Flow)
+      const action = newLikedState ? 'like' : 'unlike';
+      
       try {
-        await toggleLikeApi(slug, previousLikedState);
+        const response = await fetch(`/api/engagement/${slug}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ action }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to update like');
+        }
+
+        const result = await response.json();
         
-        // Track in analytics only on success
-        const action = newLikedState ? 'like' : 'unlike';
+        // Update with actual count from server (in case of sync issues)
+        setEngagement(prev => ({
+          ...prev,
+          likes: result.data.likes,
+        }));
+
+        // Track in analytics
         trackGAEvent(action, {
           article_slug: slug,
           article_title: title,
         });
         trackYandexEvent(`article_${action}`, { slug });
+
       } catch (apiError: any) {
-        // If API fails but was rate limit, keep the optimistic update
-        // (user might have legitimately liked it, just hit rate limit)
+        // Handle rate limiting gracefully
         if (apiError?.message?.includes('Rate limit')) {
           showError('Too many requests. Your like has been saved locally and will sync when possible.');
           // Keep the optimistic update
-        } else {
-          // For other errors, rollback
-          throw apiError;
+          return;
         }
+        
+        // For other errors, throw to trigger rollback
+        throw apiError;
       }
+
     } catch (error: any) {
       console.error('Error toggling like:', error);
       
@@ -195,7 +191,7 @@ export default function ArticleEngagement({
 
   /**
    * Handle share action
-   * FIXED: Optimistic update for share count
+   * Optimistic update for share count
    */
   const handleShare = useCallback(async (platform: SharePlatform) => {
     if (platform === 'copy') {
@@ -225,8 +221,14 @@ export default function ArticleEngagement({
       shares: prev.shares + 1,
     }));
 
-    // Track share in backend (fire and forget - don't block user)
-    trackShareApi(slug).catch((error) => {
+    // Track share in backend via Flow (fire and forget - don't block user)
+    fetch(`/api/engagement/${slug}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ action: 'share' }),
+    }).catch((error) => {
       console.error('Error tracking share:', error);
       // Don't rollback - user already opened share dialog
     });
@@ -323,12 +325,12 @@ export default function ArticleEngagement({
           <span className="font-medium">{engagement.likes.toLocaleString()}</span>
         </button>
 
-        {/* Share Dropdown */}
-        <div className="relative group">
+        {/* Share Button */}
+        <div className="relative">
           <button
-            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all cursor-pointer"
+            onClick={() => handleShare('copy')}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-gray-50 transition-all cursor-pointer"
             aria-label="Share article"
-            aria-haspopup="true"
           >
             <svg
               className="w-5 h-5"
@@ -347,51 +349,16 @@ export default function ArticleEngagement({
             <span className="font-medium">{engagement.shares.toLocaleString()}</span>
           </button>
 
-          {/* Share Dropdown Menu */}
-          <div
-            className="absolute bottom-full left-0 mb-2 hidden group-hover:block bg-white shadow-lg rounded-lg border border-gray-200 py-2 min-w-[180px] z-10"
-            role="menu"
-          >
-            <button
-              onClick={() => handleShare('copy')}
-              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100 flex items-center gap-2"
-              role="menuitem"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              {showCopySuccess ? '✓ Copied!' : 'Copy link'}
-            </button>
-            <button
-              onClick={() => handleShare('facebook')}
-              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              Facebook
-            </button>
-            <button
-              onClick={() => handleShare('twitter')}
-              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              Twitter
-            </button>
-            <button
-              onClick={() => handleShare('telegram')}
-              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              Telegram
-            </button>
-            <button
-              onClick={() => handleShare('whatsapp')}
-              className="w-full px-4 py-2 text-left text-gray-700 hover:bg-gray-100"
-              role="menuitem"
-            >
-              WhatsApp
-            </button>
-          </div>
+          {/* Copy Success Indicator */}
+          {showCopySuccess && (
+            <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-green-600 text-white text-sm rounded shadow-lg whitespace-nowrap">
+              Link copied!
+            </div>
+          )}
         </div>
+
+        {/* Share Dropdown (optional - can add later) */}
+        {/* TODO: Add share menu with Facebook, Twitter, Telegram, WhatsApp */}
       </div>
     </>
   );

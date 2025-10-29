@@ -1,15 +1,16 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
-// FIXED: Proper cache control, better rate limiting, prevents stale data
+// FIXED: Now uses Directus Flow webhook for all counter updates
 
 import { NextRequest, NextResponse } from 'next/server';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
+const DIRECTUS_FLOW_ID = process.env.DIRECTUS_FLOW_INCREMENT_VIEWS;
 
 // Rate limiting configuration
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 60 seconds
-const MAX_REQUESTS_PER_WINDOW = 15; // Increased from 10 to 15
+const MAX_REQUESTS_PER_WINDOW = 15;
 
 // ===================================================================
 // HELPER FUNCTIONS
@@ -22,7 +23,7 @@ function getClientIP(request: NextRequest): string {
 }
 
 /**
- * FIXED: More lenient rate limiting and better cleanup
+ * Check rate limit for IP
  */
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
@@ -51,6 +52,9 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+/**
+ * Validate article exists (only for view action to reduce unnecessary Flow calls)
+ */
 async function validateArticleSlug(slug: string): Promise<boolean> {
   try {
     const filter = encodeURIComponent(JSON.stringify({ 
@@ -76,7 +80,8 @@ async function validateArticleSlug(slug: string): Promise<boolean> {
 }
 
 /**
- * FIXED: Added explicit cache control
+ * Fetch current engagement data from Directus
+ * Used to return updated counts after Flow execution
  */
 async function fetchEngagementData(slug: string) {
   try {
@@ -92,9 +97,9 @@ async function fetchEngagementData(slug: string) {
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
-        'Cache-Control': 'no-cache', // Force fresh data
+        'Cache-Control': 'no-cache',
       },
-      cache: 'no-store', // Never cache
+      cache: 'no-store',
     });
 
     if (response.status === 401) {
@@ -130,200 +135,54 @@ async function fetchEngagementData(slug: string) {
 }
 
 /**
- * Read existing engagement record
+ * CRITICAL: Trigger Directus Flow to update counters
+ * This replaces all direct PATCH/POST operations
  */
-async function readEngagementRecord(slug: string) {
-  const filter = encodeURIComponent(
-    JSON.stringify({ article_slug: { _eq: slug } })
-  );
-  const url = `${DIRECTUS_URL}/items/articles_engagement?filter=${filter}&limit=1`;
-
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
-    },
-    cache: 'no-store',
-  });
-
-  if (!response.ok) {
-    return null;
-  }
-
-  const data = await response.json();
-  return data.data && data.data.length > 0 ? data.data[0] : null;
-}
-
-/**
- * Update engagement field (generic function)
- * FIXED: Better error handling and logging
- */
-async function updateEngagementField(
+async function triggerEngagementFlow(
   slug: string,
-  field: 'view_count' | 'like_count' | 'share_count',
-  increment: number
+  action: 'view' | 'like' | 'unlike' | 'share'
 ): Promise<boolean> {
   try {
-    if (!DIRECTUS_API_TOKEN) {
-      console.error('❌ DIRECTUS_API_TOKEN is required');
+    if (!DIRECTUS_FLOW_ID) {
+      console.error('❌ DIRECTUS_FLOW_ID not configured');
       return false;
     }
 
-    console.log(`🔍 Updating ${field} for:`, slug, `(${increment > 0 ? '+' : ''}${increment})`);
-
-    // Step 1: Try to read existing record
-    let existingRecord = await readEngagementRecord(slug);
-
-    if (existingRecord) {
-      // Record exists - update it
-      console.log('📝 Updating existing record ID:', existingRecord.id);
-
-      // FIXED: Calculate new value and prevent negatives
-      const currentValue = existingRecord[field] || 0;
-      const newValue = Math.max(0, currentValue + increment);
-
-      // If decrementing would go negative, skip the update
-      if (newValue === currentValue && increment < 0) {
-        console.log(`⚠️  Skipping ${field} update - would result in negative value`);
-        return true; // Still return true to not show error to user
-      }
-
-      const updateUrl = `${DIRECTUS_URL}/items/articles_engagement/${existingRecord.id}`;
-      const updateResponse = await fetch(updateUrl, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
-        },
-        body: JSON.stringify({
-          [field]: newValue,
-        }),
-      });
-
-      if (!updateResponse.ok) {
-        const errorText = await updateResponse.text();
-        console.error('❌ Failed to update:', updateResponse.status, errorText);
-        return false;
-      }
-
-      const updated = await updateResponse.json();
-      console.log(`✅ ${field} updated:`, {
-        id: updated.data.id,
-        old: currentValue,
-        new: updated.data[field],
-      });
-      return true;
-
-    } else {
-      // Record doesn't exist - try to create it
-      console.log('➕ Creating new record for:', slug);
-
-      // FIXED: Ensure initial values are never negative
-      const createUrl = `${DIRECTUS_URL}/items/articles_engagement`;
-      const createResponse = await fetch(createUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
-        },
-        body: JSON.stringify({
-          article_slug: slug,
-          view_count: field === 'view_count' ? Math.max(0, increment) : 0,
-          like_count: field === 'like_count' ? Math.max(0, increment) : 0,
-          share_count: field === 'share_count' ? Math.max(0, increment) : 0,
-        }),
-      });
-
-      // Handle race condition where another request created the record
-      if (createResponse.status === 400) {
-        const errorData = await createResponse.json();
-        
-        if (errorData.errors?.[0]?.extensions?.code === 'RECORD_NOT_UNIQUE') {
-          console.log('⚠️  Record was created by another request - retrying update');
-          
-          // Re-read the record that was just created
-          existingRecord = await readEngagementRecord(slug);
-          
-          if (existingRecord) {
-            // Now update it with negative prevention
-            const currentValue = existingRecord[field] || 0;
-            const newValue = Math.max(0, currentValue + increment);
-
-            const updateUrl = `${DIRECTUS_URL}/items/articles_engagement/${existingRecord.id}`;
-            const updateResponse = await fetch(updateUrl, {
-              method: 'PATCH',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
-              },
-              body: JSON.stringify({
-                [field]: newValue,
-              }),
-            });
-
-            if (updateResponse.ok) {
-              const updated = await updateResponse.json();
-              console.log(`✅ ${field} updated after retry:`, {
-                id: updated.data.id,
-                [field]: updated.data[field],
-              });
-              return true;
-            }
-          }
-          
-          console.error('❌ Failed to recover from race condition');
-          return false;
-        }
-        
-        console.error('❌ Failed to create:', errorData);
-        return false;
-      }
-
-      if (!createResponse.ok) {
-        const errorText = await createResponse.text();
-        console.error('❌ Failed to create:', createResponse.status, errorText);
-        return false;
-      }
-
-      const created = await createResponse.json();
-      console.log('✅ Record created:', {
-        id: created.data.id,
-        [field]: created.data[field],
-      });
-      return true;
+    if (!DIRECTUS_API_TOKEN) {
+      console.error('❌ DIRECTUS_API_TOKEN not configured');
+      return false;
     }
+
+    const flowUrl = `${DIRECTUS_URL}/flows/trigger/${DIRECTUS_FLOW_ID}`;
+    
+    console.log(`🔄 Triggering Flow for ${action}:`, slug);
+
+    const response = await fetch(flowUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DIRECTUS_API_TOKEN}`,
+      },
+      body: JSON.stringify({
+        slug,
+        action,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`❌ Flow execution failed (${response.status}):`, errorText);
+      return false;
+    }
+
+    const result = await response.json();
+    console.log(`✅ Flow executed successfully for ${action}:`, slug, result);
+    
+    return true;
   } catch (error) {
-    console.error(`❌ Error updating ${field}:`, error);
+    console.error(`❌ Error triggering Flow:`, error);
     return false;
   }
-}
-
-/**
- * Increment view count
- */
-async function incrementViewCount(slug: string): Promise<boolean> {
-  return updateEngagementField(slug, 'view_count', 1);
-}
-
-/**
- * Increment like count
- */
-async function incrementLikeCount(slug: string): Promise<boolean> {
-  return updateEngagementField(slug, 'like_count', 1);
-}
-
-/**
- * Decrement like count
- * FIXED: Will not go below 0
- */
-async function decrementLikeCount(slug: string): Promise<boolean> {
-  return updateEngagementField(slug, 'like_count', -1);
-}
-
-/**
- * Increment share count
- */
-async function incrementShareCount(slug: string): Promise<boolean> {
-  return updateEngagementField(slug, 'share_count', 1);
 }
 
 // ===================================================================
@@ -332,7 +191,7 @@ async function incrementShareCount(slug: string): Promise<boolean> {
 
 /**
  * GET /api/engagement/[slug]
- * FIXED: Proper cache control headers
+ * Fetch current engagement data
  */
 export async function GET(
   request: NextRequest,
@@ -378,7 +237,7 @@ export async function GET(
       },
     });
 
-    // FIXED: Prevent caching to avoid stale data
+    // Prevent caching to avoid stale data
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
@@ -387,30 +246,12 @@ export async function GET(
   } catch (error) {
     console.error('GET /api/engagement error:', error);
     
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Unknown error occurred';
     
-    if (errorMessage.includes('Authentication failed')) {
-      return NextResponse.json(
-        { 
-          error: 'Authentication error',
-          message: 'Invalid or missing API token',
-        },
-        { status: 500 }
-      );
-    }
-
-    if (errorMessage.includes('Permission denied')) {
-      return NextResponse.json(
-        { 
-          error: 'Permission error',
-          message: 'API token lacks required permissions',
-        },
-        { status: 500 }
-      );
-    }
-
     return NextResponse.json(
-      { error: 'Failed to fetch engagement data' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
@@ -418,7 +259,7 @@ export async function GET(
 
 /**
  * POST /api/engagement/[slug]
- * FIXED: Better rate limit handling and response headers
+ * Trigger Flow to update engagement counters
  */
 export async function POST(
   request: NextRequest,
@@ -429,6 +270,7 @@ export async function POST(
     const body = await request.json();
     const { action } = body;
 
+    // Validate inputs
     if (!slug || typeof slug !== 'string') {
       return NextResponse.json(
         { error: 'Invalid slug parameter' },
@@ -436,14 +278,14 @@ export async function POST(
       );
     }
 
-    const validActions = ['view', 'like', 'unlike', 'share'];
-    if (!action || !validActions.includes(action)) {
+    if (!action || !['view', 'like', 'unlike', 'share'].includes(action)) {
       return NextResponse.json(
         { error: 'Invalid action. Must be: view, like, unlike, or share' },
         { status: 400 }
       );
     }
 
+    // Rate limiting
     const clientIP = getClientIP(request);
     if (!checkRateLimit(clientIP)) {
       return NextResponse.json(
@@ -452,11 +294,12 @@ export async function POST(
       );
     }
 
-    if (!DIRECTUS_API_TOKEN) {
+    // Check configuration
+    if (!DIRECTUS_API_TOKEN || !DIRECTUS_FLOW_ID) {
       return NextResponse.json(
         { 
           error: 'Server configuration error',
-          message: 'API token not configured',
+          message: 'Flow or API token not configured',
         },
         { status: 500 }
       );
@@ -473,37 +316,23 @@ export async function POST(
       }
     }
 
-    // Execute action
-    let success = false;
-
-    switch (action) {
-      case 'view':
-        success = await incrementViewCount(slug);
-        break;
-
-      case 'like':
-        success = await incrementLikeCount(slug);
-        break;
-
-      case 'unlike':
-        success = await decrementLikeCount(slug);
-        break;
-
-      case 'share':
-        success = await incrementShareCount(slug);
-        break;
-    }
+    // Trigger Directus Flow
+    const success = await triggerEngagementFlow(slug, action);
 
     if (!success) {
       return NextResponse.json(
         { 
           error: 'Failed to update engagement counter',
+          message: 'Flow execution failed',
         },
         { status: 500 }
       );
     }
 
-    // FIXED: Fetch updated data with fresh read
+    // Fetch updated engagement data
+    // Small delay to ensure Flow has completed
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     const updatedEngagement = await fetchEngagementData(slug);
 
     const response = NextResponse.json({
@@ -517,7 +346,7 @@ export async function POST(
       },
     });
 
-    // FIXED: Prevent caching mutation responses
+    // Prevent caching mutation responses
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
@@ -525,8 +354,13 @@ export async function POST(
     return response;
   } catch (error) {
     console.error('POST /api/engagement error:', error);
+    
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : 'Unknown error occurred';
+    
     return NextResponse.json(
-      { error: 'Failed to update engagement data' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
