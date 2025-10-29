@@ -1,5 +1,5 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
-// FIXED: Handles race condition when record is created between check and insert
+// Fixed: Prevents negative counters and ensures accurate updates
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -140,16 +140,21 @@ async function readEngagementRecord(slug: string) {
 }
 
 /**
- * Increment view count - FIXED: Handles race conditions
+ * Update engagement field (generic function)
+ * FIXED: Prevents negative values
  */
-async function incrementViewCount(slug: string): Promise<boolean> {
+async function updateEngagementField(
+  slug: string,
+  field: 'view_count' | 'like_count' | 'share_count',
+  increment: number
+): Promise<boolean> {
   try {
     if (!DIRECTUS_API_TOKEN) {
       console.error('❌ DIRECTUS_API_TOKEN is required');
       return false;
     }
 
-    console.log('🔍 Checking for existing record:', slug);
+    console.log(`🔍 Updating ${field} for:`, slug);
 
     // Step 1: Try to read existing record
     let existingRecord = await readEngagementRecord(slug);
@@ -157,6 +162,16 @@ async function incrementViewCount(slug: string): Promise<boolean> {
     if (existingRecord) {
       // Record exists - update it
       console.log('📝 Updating existing record ID:', existingRecord.id);
+
+      // FIXED: Calculate new value and prevent negatives
+      const currentValue = existingRecord[field] || 0;
+      const newValue = Math.max(0, currentValue + increment);
+
+      // If decrementing would go negative, skip the update
+      if (newValue === currentValue) {
+        console.log(`⚠️  Skipping ${field} update - would result in negative value`);
+        return true; // Still return true to not show error to user
+      }
 
       const updateUrl = `${DIRECTUS_URL}/items/articles_engagement/${existingRecord.id}`;
       const updateResponse = await fetch(updateUrl, {
@@ -166,7 +181,7 @@ async function incrementViewCount(slug: string): Promise<boolean> {
           Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
         },
         body: JSON.stringify({
-          view_count: (existingRecord.view_count || 0) + 1,
+          [field]: newValue,
         }),
       });
 
@@ -177,9 +192,9 @@ async function incrementViewCount(slug: string): Promise<boolean> {
       }
 
       const updated = await updateResponse.json();
-      console.log('✅ Record updated:', {
+      console.log(`✅ ${field} updated:`, {
         id: updated.data.id,
-        views: updated.data.view_count,
+        [field]: updated.data[field],
       });
       return true;
 
@@ -187,6 +202,7 @@ async function incrementViewCount(slug: string): Promise<boolean> {
       // Record doesn't exist - try to create it
       console.log('➕ Creating new record for:', slug);
 
+      // FIXED: Ensure initial values are never negative
       const createUrl = `${DIRECTUS_URL}/items/articles_engagement`;
       const createResponse = await fetch(createUrl, {
         method: 'POST',
@@ -196,17 +212,16 @@ async function incrementViewCount(slug: string): Promise<boolean> {
         },
         body: JSON.stringify({
           article_slug: slug,
-          view_count: 1,
-          like_count: 0,
-          share_count: 0,
+          view_count: field === 'view_count' ? Math.max(0, increment) : 0,
+          like_count: field === 'like_count' ? Math.max(0, increment) : 0,
+          share_count: field === 'share_count' ? Math.max(0, increment) : 0,
         }),
       });
 
-      // FIXED: Handle race condition where another request created the record
+      // Handle race condition where another request created the record
       if (createResponse.status === 400) {
         const errorData = await createResponse.json();
         
-        // Check if error is "record not unique"
         if (errorData.errors?.[0]?.extensions?.code === 'RECORD_NOT_UNIQUE') {
           console.log('⚠️  Record was created by another request - retrying update');
           
@@ -214,7 +229,10 @@ async function incrementViewCount(slug: string): Promise<boolean> {
           existingRecord = await readEngagementRecord(slug);
           
           if (existingRecord) {
-            // Now update it
+            // Now update it with negative prevention
+            const currentValue = existingRecord[field] || 0;
+            const newValue = Math.max(0, currentValue + increment);
+
             const updateUrl = `${DIRECTUS_URL}/items/articles_engagement/${existingRecord.id}`;
             const updateResponse = await fetch(updateUrl, {
               method: 'PATCH',
@@ -223,15 +241,15 @@ async function incrementViewCount(slug: string): Promise<boolean> {
                 Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
               },
               body: JSON.stringify({
-                view_count: (existingRecord.view_count || 0) + 1,
+                [field]: newValue,
               }),
             });
 
             if (updateResponse.ok) {
               const updated = await updateResponse.json();
-              console.log('✅ Record updated after retry:', {
+              console.log(`✅ ${field} updated after retry:`, {
                 id: updated.data.id,
-                views: updated.data.view_count,
+                [field]: updated.data[field],
               });
               return true;
             }
@@ -241,7 +259,6 @@ async function incrementViewCount(slug: string): Promise<boolean> {
           return false;
         }
         
-        // Different 400 error
         console.error('❌ Failed to create:', errorData);
         return false;
       }
@@ -255,14 +272,43 @@ async function incrementViewCount(slug: string): Promise<boolean> {
       const created = await createResponse.json();
       console.log('✅ Record created:', {
         id: created.data.id,
-        views: created.data.view_count,
+        [field]: created.data[field],
       });
       return true;
     }
   } catch (error) {
-    console.error('❌ Error in incrementViewCount:', error);
+    console.error(`❌ Error updating ${field}:`, error);
     return false;
   }
+}
+
+/**
+ * Increment view count
+ */
+async function incrementViewCount(slug: string): Promise<boolean> {
+  return updateEngagementField(slug, 'view_count', 1);
+}
+
+/**
+ * Increment like count
+ */
+async function incrementLikeCount(slug: string): Promise<boolean> {
+  return updateEngagementField(slug, 'like_count', 1);
+}
+
+/**
+ * Decrement like count
+ * FIXED: Will not go below 0
+ */
+async function decrementLikeCount(slug: string): Promise<boolean> {
+  return updateEngagementField(slug, 'like_count', -1);
+}
+
+/**
+ * Increment share count
+ */
+async function incrementShareCount(slug: string): Promise<boolean> {
+  return updateEngagementField(slug, 'share_count', 1);
 }
 
 // ===================================================================
@@ -386,6 +432,7 @@ export async function POST(
       );
     }
 
+    // Validate article exists (only for view action to save API calls)
     if (action === 'view') {
       const isValidSlug = await validateArticleSlug(slug);
       if (!isValidSlug) {
@@ -396,6 +443,7 @@ export async function POST(
       }
     }
 
+    // Execute action
     let success = false;
 
     switch (action) {
@@ -404,21 +452,15 @@ export async function POST(
         break;
 
       case 'like':
-        // TODO: Implement like functionality
-        success = true;
-        console.log('Like action - not yet implemented');
+        success = await incrementLikeCount(slug);
         break;
 
       case 'unlike':
-        // TODO: Implement unlike functionality
-        success = true;
-        console.log('Unlike action - not yet implemented');
+        success = await decrementLikeCount(slug);
         break;
 
       case 'share':
-        // TODO: Implement share functionality
-        success = true;
-        console.log('Share action - not yet implemented');
+        success = await incrementShareCount(slug);
         break;
     }
 
@@ -431,6 +473,7 @@ export async function POST(
       );
     }
 
+    // Fetch updated data to ensure accuracy
     const updatedEngagement = await fetchEngagementData(slug);
 
     return NextResponse.json({
