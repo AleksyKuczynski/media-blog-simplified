@@ -1,11 +1,15 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
-// FIXED: Now uses Directus Flow webhook for all counter updates
+// FIXED: Uses three separate Directus Flows (one per action type)
 
 import { NextRequest, NextResponse } from 'next/server';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
-const DIRECTUS_FLOW_ID = process.env.DIRECTUS_FLOW_INCREMENT_VIEWS;
+
+// Three separate flow IDs
+const DIRECTUS_FLOW_VIEWS = process.env.DIRECTUS_FLOW_INCREMENT_VIEWS;
+const DIRECTUS_FLOW_LIKES = process.env.DIRECTUS_FLOW_INCREMENT_LIKES;
+const DIRECTUS_FLOW_SHARES = process.env.DIRECTUS_FLOW_INCREMENT_SHARES;
 
 // Rate limiting configuration
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -22,14 +26,10 @@ function getClientIP(request: NextRequest): string {
   return forwarded?.split(',')[0] || realIp || 'unknown';
 }
 
-/**
- * Check rate limit for IP
- */
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const clientData = rateLimitMap.get(ip);
 
-  // Cleanup old entries periodically
   if (rateLimitMap.size > 1000) {
     for (const [key, value] of rateLimitMap.entries()) {
       if (now > value.resetTime) {
@@ -52,9 +52,6 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-/**
- * Validate article exists (only for view action to reduce unnecessary Flow calls)
- */
 async function validateArticleSlug(slug: string): Promise<boolean> {
   try {
     const filter = encodeURIComponent(JSON.stringify({ 
@@ -79,10 +76,6 @@ async function validateArticleSlug(slug: string): Promise<boolean> {
   }
 }
 
-/**
- * Fetch current engagement data from Directus
- * Used to return updated counts after Flow execution
- */
 async function fetchEngagementData(slug: string) {
   try {
     if (!DIRECTUS_API_TOKEN) {
@@ -135,16 +128,40 @@ async function fetchEngagementData(slug: string) {
 }
 
 /**
- * CRITICAL: Trigger Directus Flow to update counters
- * This replaces all direct PATCH/POST operations
+ * FIXED: Trigger appropriate Directus Flow based on action type
+ * Uses three separate flows to avoid PostgreSQL type errors
  */
 async function triggerEngagementFlow(
   slug: string,
   action: 'view' | 'like' | 'unlike' | 'share'
 ): Promise<boolean> {
   try {
-    if (!DIRECTUS_FLOW_ID) {
-      console.error('❌ DIRECTUS_FLOW_ID not configured');
+    // Map actions to their specific flow IDs
+    let flowId: string | undefined;
+    let flowName: string;
+    
+    switch (action) {
+      case 'view':
+        flowId = DIRECTUS_FLOW_VIEWS;
+        flowName = 'Views Flow';
+        break;
+      case 'like':
+      case 'unlike':
+        flowId = DIRECTUS_FLOW_LIKES;
+        flowName = 'Likes Flow';
+        break;
+      case 'share':
+        flowId = DIRECTUS_FLOW_SHARES;
+        flowName = 'Shares Flow';
+        break;
+    }
+
+    if (!flowId) {
+      console.error(`❌ ${flowName} ID not configured for action: ${action}`);
+      console.error('Check these environment variables:');
+      console.error('- DIRECTUS_FLOW_INCREMENT_VIEWS');
+      console.error('- DIRECTUS_FLOW_INCREMENT_LIKES');
+      console.error('- DIRECTUS_FLOW_INCREMENT_SHARES');
       return false;
     }
 
@@ -153,9 +170,17 @@ async function triggerEngagementFlow(
       return false;
     }
 
-    const flowUrl = `${DIRECTUS_URL}/flows/trigger/${DIRECTUS_FLOW_ID}`;
+    const flowUrl = `${DIRECTUS_URL}/flows/trigger/${flowId}`;
     
-    console.log(`🔄 Triggering Flow for ${action}:`, slug);
+    console.log(`🔄 Triggering ${flowName} for ${action}:`, slug);
+
+    // Prepare payload
+    // View and Share flows only need slug
+    // Like flow needs to know if it's like or unlike
+    const payload: any = { slug };
+    if (action === 'like' || action === 'unlike') {
+      payload.action = action;
+    }
 
     const response = await fetch(flowUrl, {
       method: 'POST',
@@ -163,20 +188,24 @@ async function triggerEngagementFlow(
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${DIRECTUS_API_TOKEN}`,
       },
-      body: JSON.stringify({
-        slug,
-        action,
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`❌ Flow execution failed (${response.status}):`, errorText);
+      console.error(`❌ ${flowName} execution failed (${response.status}):`, errorText);
       return false;
     }
 
     const result = await response.json();
-    console.log(`✅ Flow executed successfully for ${action}:`, slug, result);
+    
+    // Check if result contains an error (Flow executed but had issues)
+    if (result.error || result.name === 'error') {
+      console.error(`❌ ${flowName} returned error:`, result);
+      return false;
+    }
+    
+    console.log(`✅ ${flowName} executed successfully for ${action}:`, slug);
     
     return true;
   } catch (error) {
@@ -237,7 +266,6 @@ export async function GET(
       },
     });
 
-    // Prevent caching to avoid stale data
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
@@ -259,7 +287,7 @@ export async function GET(
 
 /**
  * POST /api/engagement/[slug]
- * Trigger Flow to update engagement counters
+ * Trigger appropriate Flow to update engagement counters
  */
 export async function POST(
   request: NextRequest,
@@ -295,17 +323,40 @@ export async function POST(
     }
 
     // Check configuration
-    if (!DIRECTUS_API_TOKEN || !DIRECTUS_FLOW_ID) {
+    if (!DIRECTUS_API_TOKEN) {
       return NextResponse.json(
         { 
           error: 'Server configuration error',
-          message: 'Flow or API token not configured',
+          message: 'API token not configured',
         },
         { status: 500 }
       );
     }
 
-    // Validate article exists (only for view action to save API calls)
+    // Check that appropriate flow is configured
+    const requiredFlowVar = action === 'view' 
+      ? 'DIRECTUS_FLOW_INCREMENT_VIEWS'
+      : action === 'share'
+      ? 'DIRECTUS_FLOW_INCREMENT_SHARES'
+      : 'DIRECTUS_FLOW_INCREMENT_LIKES';
+    
+    const flowId = action === 'view' 
+      ? DIRECTUS_FLOW_VIEWS
+      : action === 'share'
+      ? DIRECTUS_FLOW_SHARES
+      : DIRECTUS_FLOW_LIKES;
+
+    if (!flowId) {
+      return NextResponse.json(
+        { 
+          error: 'Server configuration error',
+          message: `${requiredFlowVar} not configured`,
+        },
+        { status: 500 }
+      );
+    }
+
+    // Validate article exists (only for view action)
     if (action === 'view') {
       const isValidSlug = await validateArticleSlug(slug);
       if (!isValidSlug) {
@@ -316,7 +367,7 @@ export async function POST(
       }
     }
 
-    // Trigger Directus Flow
+    // Trigger appropriate Directus Flow
     const success = await triggerEngagementFlow(slug, action);
 
     if (!success) {
@@ -329,10 +380,10 @@ export async function POST(
       );
     }
 
-    // Fetch updated engagement data
     // Small delay to ensure Flow has completed
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 150));
     
+    // Fetch updated engagement data
     const updatedEngagement = await fetchEngagementData(slug);
 
     const response = NextResponse.json({
@@ -346,7 +397,6 @@ export async function POST(
       },
     });
 
-    // Prevent caching mutation responses
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
