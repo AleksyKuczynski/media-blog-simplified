@@ -150,3 +150,39 @@ export interface Asset {
   title: string;
 }
 
+/**
+ * Article Engagement Metrics
+ * Tracks views, likes, and shares per article
+ */
+export interface ArticleEngagement {
+  id: number;
+  article_slug: string;
+  view_count: number;
+  like_count: number;
+  share_count: number;
+  date_created: string;
+  date_updated: string;
+}
+
+/**
+ * Engagement API Response (from Next.js API routes)
+ */
+export interface EngagementResponse {
+  success: boolean;
+  data: {
+    slug: string;
+    views: number;
+    likes: number;
+    shares: number;
+  };
+  action?: 'view' | 'like' | 'unlike' | 'share';
+}
+
+/**
+ * Engagement API Error Response
+ */
+export interface EngagementError {
+  error: string;
+}
+
+

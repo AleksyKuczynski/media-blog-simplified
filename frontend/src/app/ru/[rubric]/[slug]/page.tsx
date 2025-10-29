@@ -15,6 +15,7 @@ import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
+import EngagementTest from '@/main/components/Article/EngagementTest';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
@@ -229,6 +230,9 @@ export default async function ArticlePage({
                   author={article.authors[0]?.name || 'EventForMe Editorial'}
                   datePublished={article.published_at}
                 />
+
+                {/* ✨ ADD THIS: Test Component */}
+                <EngagementTest slug={resolvedParams.slug} />
 
                 {/* Related Links for SEO Enhancement */}
                 <RelatedLinks
