@@ -15,7 +15,7 @@ import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
-import EngagementTest from '@/main/components/Article/EngagementTest';
+import ArticleEngagement from '@/main/components/Article/ArticleEngagement';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
@@ -88,11 +88,11 @@ export default async function ArticlePage({
   searchParams: Promise<{ author?: string }>
 }) {
   try {
-        const resolvedParams = await params;
+    const resolvedParams = await params;
 
     const [article, rubricBasics] = await Promise.all([
-      fetchFullArticle(resolvedParams.slug, 'ru'),
-      fetchRubricBasics('ru'),
+      fetchFullArticle(resolvedParams.slug, DEFAULT_LANG),
+      fetchRubricBasics(DEFAULT_LANG),
     ]);
 
     if (!article) {
@@ -167,7 +167,7 @@ export default async function ArticlePage({
       name: cat.name,
     })) || [];
 
-    const currentArticleUrl = `${dictionary.seo.site.url}/ru/${resolvedParams.rubric}/${resolvedParams.slug}`;
+    const currentArticleUrl = `${dictionary.seo.site.url}/${DEFAULT_LANG}/${resolvedParams.rubric}/${resolvedParams.slug}`;
 
     return (
       <>
@@ -214,6 +214,13 @@ export default async function ArticlePage({
                   })}
                 />
 
+                {/* Add engagement component */}
+                  <ArticleEngagement
+                    slug={resolvedParams.slug}
+                    title={article.translations[0].title}
+                    url={currentArticleUrl}
+                  />                
+
                 {/* Table of Contents */}
                 {tocItems.length > 0 && (
                   <TableOfContents
@@ -230,9 +237,6 @@ export default async function ArticlePage({
                   author={article.authors[0]?.name || 'EventForMe Editorial'}
                   datePublished={article.published_at}
                 />
-
-                {/* ✨ ADD THIS: Test Component */}
-                <EngagementTest slug={resolvedParams.slug} />
 
                 {/* Related Links for SEO Enhancement */}
                 <RelatedLinks
