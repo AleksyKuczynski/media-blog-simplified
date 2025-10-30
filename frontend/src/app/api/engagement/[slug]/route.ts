@@ -1,24 +1,18 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
-// FIXED: Uses three separate Directus Flows (one per action type)
+// DEBUG VERSION: Comprehensive logging to identify Flow issue
 
 import { NextRequest, NextResponse } from 'next/server';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
 
-// Three separate flow IDs
 const DIRECTUS_FLOW_VIEWS = process.env.DIRECTUS_FLOW_INCREMENT_VIEWS;
 const DIRECTUS_FLOW_LIKES = process.env.DIRECTUS_FLOW_INCREMENT_LIKES;
 const DIRECTUS_FLOW_SHARES = process.env.DIRECTUS_FLOW_INCREMENT_SHARES;
 
-// Rate limiting configuration
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000; // 60 seconds
+const RATE_LIMIT_WINDOW = 60 * 1000;
 const MAX_REQUESTS_PER_WINDOW = 15;
-
-// ===================================================================
-// HELPER FUNCTIONS
-// ===================================================================
 
 function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');
@@ -90,9 +84,11 @@ async function fetchEngagementData(slug: string) {
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
-        'Cache-Control': 'no-cache',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
       },
       cache: 'no-store',
+      next: { revalidate: 0 },
     });
 
     if (response.status === 401) {
@@ -128,15 +124,13 @@ async function fetchEngagementData(slug: string) {
 }
 
 /**
- * FIXED: Trigger appropriate Directus Flow based on action type
- * Uses three separate flows to avoid PostgreSQL type errors
+ * DEBUG VERSION: Comprehensive logging
  */
 async function triggerEngagementFlow(
   slug: string,
   action: 'view' | 'like' | 'unlike' | 'share'
 ): Promise<boolean> {
   try {
-    // Map actions to their specific flow IDs
     let flowId: string | undefined;
     let flowName: string;
     
@@ -158,10 +152,6 @@ async function triggerEngagementFlow(
 
     if (!flowId) {
       console.error(`❌ ${flowName} ID not configured for action: ${action}`);
-      console.error('Check these environment variables:');
-      console.error('- DIRECTUS_FLOW_INCREMENT_VIEWS');
-      console.error('- DIRECTUS_FLOW_INCREMENT_LIKES');
-      console.error('- DIRECTUS_FLOW_INCREMENT_SHARES');
       return false;
     }
 
@@ -172,15 +162,26 @@ async function triggerEngagementFlow(
 
     const flowUrl = `${DIRECTUS_URL}/flows/trigger/${flowId}`;
     
-    console.log(`🔄 Triggering ${flowName} for ${action}:`, slug);
-
-    // Prepare payload
-    // View and Share flows only need slug
-    // Like flow needs to know if it's like or unlike
     const payload: any = { slug };
     if (action === 'like' || action === 'unlike') {
       payload.action = action;
     }
+
+    // === DEBUG LOGGING START ===
+    console.log('='.repeat(60));
+    console.log('FLOW DEBUG - Starting');
+    console.log('='.repeat(60));
+    console.log('Flow Name:', flowName);
+    console.log('Flow ID:', flowId);
+    console.log('Flow URL:', flowUrl);
+    console.log('Action:', action);
+    console.log('Slug:', slug);
+    console.log('Slug Length:', slug.length);
+    console.log('Payload:', JSON.stringify(payload, null, 2));
+    console.log('Token (first 10):', DIRECTUS_API_TOKEN?.substring(0, 10));
+    console.log('-'.repeat(60));
+
+    const startTime = Date.now();
 
     const response = await fetch(flowUrl, {
       method: 'POST',
@@ -191,37 +192,80 @@ async function triggerEngagementFlow(
       body: JSON.stringify(payload),
     });
 
+    const duration = Date.now() - startTime;
+
+    console.log('Response Status:', response.status);
+    console.log('Response Status Text:', response.statusText);
+    console.log('Duration:', `${duration}ms`);
+    console.log('Response Headers:', JSON.stringify(
+      Object.fromEntries(response.headers.entries()),
+      null,
+      2
+    ));
+    console.log('-'.repeat(60));
+
+    const responseText = await response.text();
+    console.log('Response Body (raw):', responseText.substring(0, 500));
+    if (responseText.length > 500) {
+      console.log(`... (truncated, total length: ${responseText.length})`);
+    }
+    console.log('-'.repeat(60));
+
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`❌ ${flowName} execution failed (${response.status}):`, errorText);
+      console.error(`❌ ${flowName} execution failed`);
+      console.error('Full response:', responseText);
+      console.log('='.repeat(60));
       return false;
     }
 
-    const result = await response.json();
-    
-    // Check if result contains an error (Flow executed but had issues)
-    if (result.error || result.name === 'error') {
-      console.error(`❌ ${flowName} returned error:`, result);
+    let result;
+    try {
+      result = JSON.parse(responseText);
+      console.log('Parsed Result:', JSON.stringify(result, null, 2));
+    } catch (parseError) {
+      console.error('❌ Failed to parse response as JSON');
+      console.error('Parse Error:', parseError);
+      console.log('='.repeat(60));
+      // If response is OK but not JSON, might still be success
+      return true;
+    }
+
+    // Check for errors in EVERY possible location
+    const errorChecks = {
+      'result.error': !!result.error,
+      'result.name === "error"': result.name === 'error',
+      'result.code === "22P02"': result.code === '22P02',
+      'result.errors?.length > 0': result.errors?.length > 0,
+      'result.data?.error': !!result.data?.error,
+      'result.data?.name === "error"': result.data?.name === 'error',
+      'result.data?.code === "22P02"': result.data?.code === '22P02',
+      'responseText contains "error"': responseText.toLowerCase().includes('"name":"error"'),
+      'responseText contains 22P02': responseText.includes('22P02'),
+    };
+
+    console.log('Error Checks:', JSON.stringify(errorChecks, null, 2));
+
+    const hasError = Object.values(errorChecks).some(check => check);
+
+    if (hasError) {
+      console.error(`❌ ${flowName} returned error`);
+      console.error('Error Details:', JSON.stringify(result, null, 2));
+      console.log('='.repeat(60));
       return false;
     }
     
-    console.log(`✅ ${flowName} executed successfully for ${action}:`, slug);
+    console.log(`✅ ${flowName} executed successfully`);
+    console.log('='.repeat(60));
     
     return true;
   } catch (error) {
     console.error(`❌ Error triggering Flow:`, error);
+    console.error('Error Stack:', error instanceof Error ? error.stack : 'No stack');
+    console.log('='.repeat(60));
     return false;
   }
 }
 
-// ===================================================================
-// API ROUTE HANDLERS
-// ===================================================================
-
-/**
- * GET /api/engagement/[slug]
- * Fetch current engagement data
- */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -285,10 +329,6 @@ export async function GET(
   }
 }
 
-/**
- * POST /api/engagement/[slug]
- * Trigger appropriate Flow to update engagement counters
- */
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -298,7 +338,8 @@ export async function POST(
     const body = await request.json();
     const { action } = body;
 
-    // Validate inputs
+    console.log('📥 POST /api/engagement received:', { slug, action });
+
     if (!slug || typeof slug !== 'string') {
       return NextResponse.json(
         { error: 'Invalid slug parameter' },
@@ -313,7 +354,6 @@ export async function POST(
       );
     }
 
-    // Rate limiting
     const clientIP = getClientIP(request);
     if (!checkRateLimit(clientIP)) {
       return NextResponse.json(
@@ -322,7 +362,6 @@ export async function POST(
       );
     }
 
-    // Check configuration
     if (!DIRECTUS_API_TOKEN) {
       return NextResponse.json(
         { 
@@ -333,7 +372,6 @@ export async function POST(
       );
     }
 
-    // Check that appropriate flow is configured
     const requiredFlowVar = action === 'view' 
       ? 'DIRECTUS_FLOW_INCREMENT_VIEWS'
       : action === 'share'
@@ -356,7 +394,6 @@ export async function POST(
       );
     }
 
-    // Validate article exists (only for view action)
     if (action === 'view') {
       const isValidSlug = await validateArticleSlug(slug);
       if (!isValidSlug) {
@@ -367,10 +404,11 @@ export async function POST(
       }
     }
 
-    // Trigger appropriate Directus Flow
+    console.log('🚀 Triggering Flow...');
     const success = await triggerEngagementFlow(slug, action);
 
     if (!success) {
+      console.error('❌ Flow execution failed');
       return NextResponse.json(
         { 
           error: 'Failed to update engagement counter',
@@ -380,11 +418,12 @@ export async function POST(
       );
     }
 
-    // Small delay to ensure Flow has completed
-    await new Promise(resolve => setTimeout(resolve, 150));
+    console.log('⏳ Waiting for Flow to complete...');
+    await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Fetch updated engagement data
+    console.log('📊 Fetching updated engagement data...');
     const updatedEngagement = await fetchEngagementData(slug);
+    console.log('✅ Engagement data:', updatedEngagement);
 
     const response = NextResponse.json({
       success: true,
