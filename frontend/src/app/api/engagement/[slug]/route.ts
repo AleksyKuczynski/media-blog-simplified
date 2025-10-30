@@ -1,13 +1,15 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
-// DEBUG VERSION: Comprehensive logging to identify Flow issue
+// UPDATED: Uses two separate Directus Flows for like/unlike
 
 import { NextRequest, NextResponse } from 'next/server';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
 
+// Updated: Separate flows for increment and decrement
 const DIRECTUS_FLOW_VIEWS = process.env.DIRECTUS_FLOW_INCREMENT_VIEWS;
-const DIRECTUS_FLOW_LIKES = process.env.DIRECTUS_FLOW_INCREMENT_LIKES;
+const DIRECTUS_FLOW_INCREMENT_LIKES = process.env.DIRECTUS_FLOW_INCREMENT_LIKES;
+const DIRECTUS_FLOW_DECREMENT_LIKES = process.env.DIRECTUS_FLOW_DECREMENT_LIKES;
 const DIRECTUS_FLOW_SHARES = process.env.DIRECTUS_FLOW_INCREMENT_SHARES;
 
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -124,7 +126,8 @@ async function fetchEngagementData(slug: string) {
 }
 
 /**
- * DEBUG VERSION: Comprehensive logging
+ * UPDATED: Simpler function using separate flows for like/unlike
+ * No more conditional logic - just route to the correct flow
  */
 async function triggerEngagementFlow(
   slug: string,
@@ -134,15 +137,19 @@ async function triggerEngagementFlow(
     let flowId: string | undefined;
     let flowName: string;
     
+    // UPDATED: Route to correct flow based on action
     switch (action) {
       case 'view':
         flowId = DIRECTUS_FLOW_VIEWS;
         flowName = 'Views Flow';
         break;
       case 'like':
+        flowId = DIRECTUS_FLOW_INCREMENT_LIKES;
+        flowName = 'Increment Likes Flow';
+        break;
       case 'unlike':
-        flowId = DIRECTUS_FLOW_LIKES;
-        flowName = 'Likes Flow';
+        flowId = DIRECTUS_FLOW_DECREMENT_LIKES;
+        flowName = 'Decrement Likes Flow';
         break;
       case 'share':
         flowId = DIRECTUS_FLOW_SHARES;
@@ -162,23 +169,17 @@ async function triggerEngagementFlow(
 
     const flowUrl = `${DIRECTUS_URL}/flows/trigger/${flowId}`;
     
-    const payload: any = { slug };
-    if (action === 'like' || action === 'unlike') {
-      payload.action = action;
-    }
+    // SIMPLIFIED: Just send the slug - no action field needed anymore
+    const payload = { slug };
 
-    // === DEBUG LOGGING START ===
     console.log('='.repeat(60));
-    console.log('FLOW DEBUG - Starting');
+    console.log('FLOW TRIGGER');
     console.log('='.repeat(60));
     console.log('Flow Name:', flowName);
     console.log('Flow ID:', flowId);
-    console.log('Flow URL:', flowUrl);
     console.log('Action:', action);
     console.log('Slug:', slug);
-    console.log('Slug Length:', slug.length);
     console.log('Payload:', JSON.stringify(payload, null, 2));
-    console.log('Token (first 10):', DIRECTUS_API_TOKEN?.substring(0, 10));
     console.log('-'.repeat(60));
 
     const startTime = Date.now();
@@ -195,61 +196,25 @@ async function triggerEngagementFlow(
     const duration = Date.now() - startTime;
 
     console.log('Response Status:', response.status);
-    console.log('Response Status Text:', response.statusText);
     console.log('Duration:', `${duration}ms`);
-    console.log('Response Headers:', JSON.stringify(
-      Object.fromEntries(response.headers.entries()),
-      null,
-      2
-    ));
-    console.log('-'.repeat(60));
-
-    const responseText = await response.text();
-    console.log('Response Body (raw):', responseText.substring(0, 500));
-    if (responseText.length > 500) {
-      console.log(`... (truncated, total length: ${responseText.length})`);
-    }
     console.log('-'.repeat(60));
 
     if (!response.ok) {
+      const responseText = await response.text();
       console.error(`❌ ${flowName} execution failed`);
-      console.error('Full response:', responseText);
+      console.error('Response:', responseText);
       console.log('='.repeat(60));
       return false;
     }
 
-    let result;
-    try {
-      result = JSON.parse(responseText);
-      console.log('Parsed Result:', JSON.stringify(result, null, 2));
-    } catch (parseError) {
-      console.error('❌ Failed to parse response as JSON');
-      console.error('Parse Error:', parseError);
-      console.log('='.repeat(60));
-      // If response is OK but not JSON, might still be success
-      return true;
-    }
-
-    // Check for errors in EVERY possible location
-    const errorChecks = {
-      'result.error': !!result.error,
-      'result.name === "error"': result.name === 'error',
-      'result.code === "22P02"': result.code === '22P02',
-      'result.errors?.length > 0': result.errors?.length > 0,
-      'result.data?.error': !!result.data?.error,
-      'result.data?.name === "error"': result.data?.name === 'error',
-      'result.data?.code === "22P02"': result.data?.code === '22P02',
-      'responseText contains "error"': responseText.toLowerCase().includes('"name":"error"'),
-      'responseText contains 22P02': responseText.includes('22P02'),
-    };
-
-    console.log('Error Checks:', JSON.stringify(errorChecks, null, 2));
-
-    const hasError = Object.values(errorChecks).some(check => check);
-
-    if (hasError) {
+    const responseText = await response.text();
+    console.log('Response Body:', responseText.substring(0, 500));
+    
+    // Check for errors in response
+    if (responseText.toLowerCase().includes('"name":"error"') || 
+        responseText.includes('22P02')) {
       console.error(`❌ ${flowName} returned error`);
-      console.error('Error Details:', JSON.stringify(result, null, 2));
+      console.error('Details:', responseText);
       console.log('='.repeat(60));
       return false;
     }
@@ -372,23 +337,22 @@ export async function POST(
       );
     }
 
-    const requiredFlowVar = action === 'view' 
-      ? 'DIRECTUS_FLOW_INCREMENT_VIEWS'
-      : action === 'share'
-      ? 'DIRECTUS_FLOW_INCREMENT_SHARES'
-      : 'DIRECTUS_FLOW_INCREMENT_LIKES';
-    
-    const flowId = action === 'view' 
-      ? DIRECTUS_FLOW_VIEWS
-      : action === 'share'
-      ? DIRECTUS_FLOW_SHARES
-      : DIRECTUS_FLOW_LIKES;
-
-    if (!flowId) {
+    // UPDATED: Check for flow configuration based on action
+    if (action === 'like' && !DIRECTUS_FLOW_INCREMENT_LIKES) {
       return NextResponse.json(
         { 
           error: 'Server configuration error',
-          message: `${requiredFlowVar} not configured`,
+          message: 'DIRECTUS_FLOW_INCREMENT_LIKES not configured',
+        },
+        { status: 500 }
+      );
+    }
+
+    if (action === 'unlike' && !DIRECTUS_FLOW_DECREMENT_LIKES) {
+      return NextResponse.json(
+        { 
+          error: 'Server configuration error',
+          message: 'DIRECTUS_FLOW_DECREMENT_LIKES not configured',
         },
         { status: 500 }
       );
