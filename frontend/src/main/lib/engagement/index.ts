@@ -47,7 +47,7 @@ export {
   shouldRetryError,
 } from './retry';
 
-// Hooks
+// Hooks (from ../hooks since they're in lib/hooks not lib/engagement/hooks)
 export {
   useEngagement,
   type UseEngagementOptions,
@@ -58,7 +58,7 @@ export {
   useViewTracking,
   type UseViewTrackingOptions,
   type UseViewTrackingReturn,
-} from '../hooks/useViewTracking';
+} from '../hooks/useEngagement';
 
 export {
   useLikeState,

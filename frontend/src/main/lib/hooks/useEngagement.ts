@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/hooks/useEngagement.ts
+// frontend/src/main/lib/hooks/useEngagement.ts
 /**
  * Main Engagement Hook
  * 
@@ -7,10 +7,12 @@
 
 import { useState, useCallback } from 'react';
 import { useLikeState } from './useLikeState';
-import { copyToClipboard, getShareUrl, openShareWindow, updateEngagement, useViewTracking } from '../engagement';
+import { updateEngagement } from '../engagement/api';
+import { getShareUrl, copyToClipboard, openShareWindow } from '../engagement/share';
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
-import { EngagementData } from '../engagement/engagementService';
+import type { EngagementData, SharePlatform } from '../engagement';
+import { useViewTracking } from '../engagement';
 
 export interface UseEngagementOptions {
   slug: string;
