@@ -58,7 +58,7 @@ export {
   useViewTracking,
   type UseViewTrackingOptions,
   type UseViewTrackingReturn,
-} from '../hooks/useEngagement';
+} from '../hooks/useViewTracking';
 
 export {
   useLikeState,

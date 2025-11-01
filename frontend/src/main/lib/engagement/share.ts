@@ -5,9 +5,7 @@
  * Social media sharing URLs and copy-to-clipboard functionality
  */
 
-import { ShareConfig } from "./types";
-import { SharePlatform } from "./types";
-
+import { ShareConfig, SharePlatform } from "./types";
 
 /**
  * Generate share URL for different platforms
