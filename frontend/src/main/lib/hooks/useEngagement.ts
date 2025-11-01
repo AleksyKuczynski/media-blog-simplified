@@ -6,13 +6,11 @@
  */
 
 import { useState, useCallback } from 'react';
-import { updateEngagement } from '../api';
-import { trackGAEvent } from '../../analytics/google';
-import { trackYandexEvent } from '../../analytics/yandex';
-import { getShareUrl, copyToClipboard, openShareWindow } from '../share';
-import { useViewTracking } from './useViewTracking';
 import { useLikeState } from './useLikeState';
-import type { EngagementData, SharePlatform } from '../types';
+import { copyToClipboard, getShareUrl, openShareWindow, updateEngagement, useViewTracking } from '../engagement';
+import { trackGAEvent } from '../analytics/google';
+import { trackYandexEvent } from '../analytics/yandex';
+import { EngagementData } from '../engagement/engagementService';
 
 export interface UseEngagementOptions {
   slug: string;

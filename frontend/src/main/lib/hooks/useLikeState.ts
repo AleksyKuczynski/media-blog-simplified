@@ -6,9 +6,9 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-import { isArticleLiked, saveLikedArticle, removeLikedArticle } from '../localStorage';
-import type { EngagementData } from '../types';
 import { updateEngagement } from '../engagement/api';
+import { EngagementData } from '../engagement/engagementService';
+import { isArticleLiked, removeLikedArticle, saveLikedArticle } from '../engagement';
 
 export interface UseLikeStateOptions {
   slug: string;
