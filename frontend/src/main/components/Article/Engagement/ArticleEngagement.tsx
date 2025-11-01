@@ -10,9 +10,10 @@
 
 'use client';
 
-import { useEngagement, type EngagementData } from '@/main/lib/engagement';
+import { useEngagement } from '@/main/lib/hooks';
 import { EngagementMetric } from './EngagementMetric';
 import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
+import { EngagementData } from '@/main/lib/engagement';
 
 export interface ArticleEngagementProps {
   slug: string;

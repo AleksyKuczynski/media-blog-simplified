@@ -12,7 +12,7 @@ import { getShareUrl, copyToClipboard, openShareWindow } from '../engagement/sha
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
 import type { EngagementData, SharePlatform } from '../engagement';
-import { useViewTracking } from '../engagement';
+import { useViewTracking } from '../hooks';
 
 export interface UseEngagementOptions {
   slug: string;
