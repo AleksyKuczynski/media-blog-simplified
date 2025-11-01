@@ -15,7 +15,7 @@ import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
-import ArticleEngagementWrapper from '@/main/components/Article/ArticleEngagementWrapper';
+import ArticleEngagementWrapper from '@/main/components/Article/Engagement/ArticleEngagementWrapper';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
