@@ -1,16 +1,13 @@
-// frontend/src/main/components/Article/ArticleEngagementWrapper.tsx
+// frontend/src/main/components/Article/Engagement/ArticleEngagementWrapper.tsx
 /**
- * Article Engagement Wrapper
+ * Article Engagement Wrapper - Server Component
  * 
- * REFACTORED: Main presentation component
- * - Server component that fetches initial data
- * - Renders ArticleEngagement controller with clean UI
- * - Uses unified EngagementMetric components
+ * SIMPLIFIED: Just fetches data and passes to client component
+ * - No render props (fixes server/client boundary issue)
+ * - ArticleEngagement handles its own rendering
  */
 
 import ArticleEngagement from './ArticleEngagement';
-import { EngagementMetric } from './EngagementMetric';
-import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
 import type { EngagementData } from '@/main/lib/engagement';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
@@ -81,20 +78,18 @@ async function fetchEngagementSSR(slug: string): Promise<EngagementData> {
 }
 
 /**
- * Article Engagement Wrapper - Main Presentation Component
+ * Article Engagement Wrapper - Server Component
  * 
- * ARCHITECTURE:
- * - Server component: Fetches initial data from Directus
- * - Renders ArticleEngagement controller with render props
- * - Uses unified EngagementMetric components for consistent UI
- * - Shows loading states during view tracking
- * - Displays errors gracefully
+ * SIMPLIFIED ARCHITECTURE:
+ * - Fetches initial data from Directus (SSR)
+ * - Passes data as props to ArticleEngagement client component
+ * - No render props = works across server/client boundary
  */
 export default async function ArticleEngagementWrapper({
   slug,
   title,
   url,
-  className = '',
+  className,
 }: ArticleEngagementWrapperProps) {
   const initialEngagement = await fetchEngagementSSR(slug);
 
@@ -104,86 +99,7 @@ export default async function ArticleEngagementWrapper({
       title={title}
       url={url}
       initialEngagement={initialEngagement}
-    >
-      {({
-        engagement,
-        isViewTracking,
-        isLiked,
-        isLikeProcessing,
-        onLikeToggle,
-        onShare,
-        showCopySuccess,
-        error,
-        onErrorDismiss,
-      }) => (
-        <div className={className}>
-          {/* Error Banner */}
-          {error && (
-            <div
-              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 flex items-center justify-between"
-              role="alert"
-            >
-              <span>{error}</span>
-              <button
-                type="button"
-                onClick={onErrorDismiss}
-                className="ml-2 text-red-600 hover:text-red-800"
-                aria-label="Dismiss error"
-              >
-                ×
-              </button>
-            </div>
-          )}
-
-          {/* Engagement Metrics */}
-          <div
-            className="flex flex-wrap items-center gap-4 sm:gap-6 py-4 border-t border-b border-gray-200"
-            role="group"
-            aria-label="Article engagement metrics"
-          >
-            {/* View Count - Shows loading state during tracking */}
-            <EngagementMetric
-              type="view"
-              count={engagement.views}
-              icon={<EyeIcon />}
-              isLoading={isViewTracking}
-              ariaLabel={`${engagement.views} views${isViewTracking ? ' (updating...)' : ''}`}
-            />
-
-            {/* Like Button - Interactive with optimistic updates */}
-            <EngagementMetric
-              type="like"
-              count={engagement.likes}
-              icon={<HeartIcon filled={isLiked} />}
-              interactive
-              isActive={isLiked}
-              isLoading={isLikeProcessing}
-              disabled={isLikeProcessing}
-              onClick={onLikeToggle}
-              ariaLabel={isLiked ? 'Unlike article' : 'Like article'}
-            />
-
-            {/* Share Button - Shows copy success feedback */}
-            <div className="relative">
-              <EngagementMetric
-                type="share"
-                count={engagement.shares}
-                icon={<ShareIcon />}
-                interactive
-                onClick={() => onShare('copy')}
-                ariaLabel="Share article (copy link)"
-              />
-
-              {/* Copy Success Tooltip */}
-              {showCopySuccess && (
-                <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-green-600 text-white text-sm rounded shadow-lg whitespace-nowrap animate-fade-in-out">
-                  Link copied!
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </ArticleEngagement>
+      className={className}
+    />
   );
 }

@@ -1,43 +1,32 @@
-// frontend/src/main/components/Article/ArticleEngagement.tsx
+// frontend/src/main/components/Article/Engagement/ArticleEngagement.tsx
 /**
- * Article Engagement Controller
+ * Article Engagement - Client Component
  * 
- * REFACTORED: Clean, focused controller component
- * - Uses custom hooks for all logic
- * - Minimal state management
- * - Delegates presentation to ArticleEngagementWrapper
+ * SIMPLIFIED: Direct rendering without render props
+ * - Uses custom hook for logic
+ * - Renders UI directly
+ * - No function children (fixes server/client boundary issue)
  */
 
 'use client';
 
 import { useEngagement, type EngagementData } from '@/main/lib/engagement';
+import { EngagementMetric } from './EngagementMetric';
+import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
 
 export interface ArticleEngagementProps {
   slug: string;
   title: string;
   url: string;
   initialEngagement: EngagementData;
-  children: (props: ArticleEngagementRenderProps) => React.ReactNode;
-}
-
-export interface ArticleEngagementRenderProps {
-  engagement: EngagementData;
-  isViewTracking: boolean;
-  hasViewTracked: boolean;
-  isLiked: boolean;
-  isLikeProcessing: boolean;
-  onLikeToggle: () => Promise<void>;
-  onShare: (platform: 'copy' | 'facebook' | 'twitter' | 'telegram' | 'whatsapp') => Promise<void>;
-  showCopySuccess: boolean;
-  error: string | null;
-  onErrorDismiss: () => void;
+  className?: string;
 }
 
 /**
- * Article Engagement Controller
+ * Article Engagement Component
  * 
- * Uses render props pattern to keep presentation separate
- * All logic is handled by the useEngagement hook
+ * Combines logic (useEngagement hook) and presentation (UI)
+ * All in one client component - simpler and works across server/client boundary
  * 
  * @example
  * ```tsx
@@ -46,9 +35,7 @@ export interface ArticleEngagementRenderProps {
  *   title="Article Title"
  *   url="https://example.com/article"
  *   initialEngagement={data}
- * >
- *   {(props) => <ArticleEngagementView {...props} />}
- * </ArticleEngagement>
+ * />
  * ```
  */
 export default function ArticleEngagement({
@@ -56,12 +43,11 @@ export default function ArticleEngagement({
   title,
   url,
   initialEngagement,
-  children,
+  className = '',
 }: ArticleEngagementProps) {
   const {
     engagement,
     isViewTracking,
-    hasViewTracked,
     isLiked,
     isLikeProcessing,
     toggleLike,
@@ -77,19 +63,72 @@ export default function ArticleEngagement({
   });
 
   return (
-    <>
-      {children({
-        engagement,
-        isViewTracking,
-        hasViewTracked,
-        isLiked,
-        isLikeProcessing,
-        onLikeToggle: toggleLike,
-        onShare: handleShare,
-        showCopySuccess,
-        error,
-        onErrorDismiss: clearError,
-      })}
-    </>
+    <div className={className}>
+      {/* Error Banner */}
+      {error && (
+        <div
+          className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 flex items-center justify-between"
+          role="alert"
+        >
+          <span>{error}</span>
+          <button
+            type="button"
+            onClick={clearError}
+            className="ml-2 text-red-600 hover:text-red-800"
+            aria-label="Dismiss error"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
+      {/* Engagement Metrics */}
+      <div
+        className="flex flex-wrap items-center gap-4 sm:gap-6 py-4 border-t border-b border-gray-200"
+        role="group"
+        aria-label="Article engagement metrics"
+      >
+        {/* View Count - Shows loading state during tracking */}
+        <EngagementMetric
+          type="view"
+          count={engagement.views}
+          icon={<EyeIcon />}
+          isLoading={isViewTracking}
+          ariaLabel={`${engagement.views} views${isViewTracking ? ' (updating...)' : ''}`}
+        />
+
+        {/* Like Button - Interactive with optimistic updates */}
+        <EngagementMetric
+          type="like"
+          count={engagement.likes}
+          icon={<HeartIcon filled={isLiked} />}
+          interactive
+          isActive={isLiked}
+          isLoading={isLikeProcessing}
+          disabled={isLikeProcessing}
+          onClick={toggleLike}
+          ariaLabel={isLiked ? 'Unlike article' : 'Like article'}
+        />
+
+        {/* Share Button - Shows copy success feedback */}
+        <div className="relative">
+          <EngagementMetric
+            type="share"
+            count={engagement.shares}
+            icon={<ShareIcon />}
+            interactive
+            onClick={() => handleShare('copy')}
+            ariaLabel="Share article (copy link)"
+          />
+
+          {/* Copy Success Tooltip */}
+          {showCopySuccess && (
+            <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-green-600 text-white text-sm rounded shadow-lg whitespace-nowrap">
+              Link copied!
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
