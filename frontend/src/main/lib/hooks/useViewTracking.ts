@@ -2,50 +2,48 @@
 /**
  * View Tracking Hook
  * 
- * Handles delayed view tracking with loading state and prevents double-tracking
+ * REFACTORED: Optimistic updates, 1-second delay, fire-and-forget
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { updateEngagement } from '../engagement/api';
-import type { EngagementData } from '../engagement/types';
 
 export interface UseViewTrackingOptions {
   slug: string;
   delayMs?: number;
-  onSuccess?: (data: EngagementData) => void;
-  onError?: (error: Error) => void;
+  onTrack?: () => void; // Called when view is tracked (for optimistic UI update)
 }
 
 export interface UseViewTrackingReturn {
-  isTracking: boolean;
   hasTracked: boolean;
-  error: Error | null;
 }
 
 /**
  * Hook for tracking article views with delay
+ * 
+ * BEHAVIOR:
+ * 1. Waits for specified delay (default 1 second)
+ * 2. Calls onTrack callback immediately (for optimistic UI update)
+ * 3. Fires API call in background (fire-and-forget)
+ * 4. Does NOT wait for response or sync state
  * 
  * @param options - Tracking configuration
  * @returns Tracking state
  * 
  * @example
  * ```tsx
- * const { isTracking, hasTracked } = useViewTracking({
+ * const { hasTracked } = useViewTracking({
  *   slug: 'my-article',
- *   delayMs: 2000,
- *   onSuccess: (data) => setEngagement(data)
+ *   delayMs: 1000,
+ *   onTrack: () => setEngagement(prev => ({ ...prev, views: prev.views + 1 }))
  * });
  * ```
  */
 export function useViewTracking({
   slug,
-  delayMs = 2000,
-  onSuccess,
-  onError,
+  delayMs = 1000,
+  onTrack,
 }: UseViewTrackingOptions): UseViewTrackingReturn {
-  const [isTracking, setIsTracking] = useState(false);
-  const [hasTracked, setHasTracked] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
   const hasTrackedRef = useRef(false);
 
   useEffect(() => {
@@ -54,43 +52,44 @@ export function useViewTracking({
       return;
     }
 
+    // Check if already tracked this session
+    const sessionKey = `viewed_${slug}`;
+    if (typeof window !== 'undefined' && sessionStorage.getItem(sessionKey)) {
+      hasTrackedRef.current = true;
+      return;
+    }
+
     // Delay view tracking to filter bots and accidental clicks
-    const timer = setTimeout(async () => {
+    const timer = setTimeout(() => {
       if (hasTrackedRef.current) return;
       
       hasTrackedRef.current = true;
-      setIsTracking(true);
-      setHasTracked(false);
 
-      try {
-        console.log('[ViewTracking] Tracking view for:', slug);
-
-        const data = await updateEngagement(slug, 'view');
-        
-        console.log('[ViewTracking] View tracked successfully:', data);
-        setHasTracked(true);
-        setError(null);
-        
-        // Notify parent component of success
-        onSuccess?.(data);
-      } catch (err) {
-        const error = err instanceof Error ? err : new Error('Failed to track view');
-        console.error('[ViewTracking] Error:', error);
-        setError(error);
-        
-        // Notify parent component of error
-        onError?.(error);
-      } finally {
-        setIsTracking(false);
+      // Mark as tracked in session
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(sessionKey, 'true');
       }
+
+      console.log('[ViewTracking] Tracking view for:', slug);
+
+      // 1. Optimistic UI update (immediate)
+      onTrack?.();
+
+      // 2. Fire API call (background, fire-and-forget)
+      updateEngagement(slug, 'view')
+        .then(() => {
+          console.log('[ViewTracking] View tracked successfully (background)');
+        })
+        .catch((error) => {
+          console.error('[ViewTracking] Error (non-critical, ignored):', error);
+          // Don't revert - optimistic update already done
+        });
     }, delayMs);
 
     return () => clearTimeout(timer);
-  }, [slug, delayMs, onSuccess, onError]);
+  }, [slug, delayMs, onTrack]);
 
   return {
-    isTracking,
-    hasTracked,
-    error,
+    hasTracked: hasTrackedRef.current,
   };
 }

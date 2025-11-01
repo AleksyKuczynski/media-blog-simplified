@@ -2,32 +2,33 @@
 /**
  * Article Engagement - Client Component
  * 
- * SIMPLIFIED: Direct rendering without render props
- * - Uses custom hook for logic
- * - Renders UI directly
- * - No function children (fixes server/client boundary issue)
+ * REFACTORED: Client-side data fetching, optimistic updates, fire-and-forget
  */
 
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useEngagement } from '@/main/lib/hooks';
+import { fetchEngagement } from '@/main/lib/engagement';
 import { EngagementMetric } from './EngagementMetric';
 import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
-import { EngagementData } from '@/main/lib/engagement';
+import type { EngagementData } from '@/main/lib/engagement';
 
 export interface ArticleEngagementProps {
   slug: string;
   title: string;
   url: string;
-  initialEngagement: EngagementData;
   className?: string;
 }
 
 /**
  * Article Engagement Component
  * 
- * Combines logic (useEngagement hook) and presentation (UI)
- * All in one client component - simpler and works across server/client boundary
+ * ARCHITECTURE:
+ * 1. Mounts with placeholder data { views: 0, likes: 0, shares: 0 }
+ * 2. Fetches real data from API on mount
+ * 3. Updates state with real data
+ * 4. All user interactions use optimistic updates + fire-and-forget API
  * 
  * @example
  * ```tsx
@@ -35,7 +36,6 @@ export interface ArticleEngagementProps {
  *   slug="my-article"
  *   title="Article Title"
  *   url="https://example.com/article"
- *   initialEngagement={data}
  * />
  * ```
  */
@@ -43,12 +43,35 @@ export default function ArticleEngagement({
   slug,
   title,
   url,
-  initialEngagement,
   className = '',
 }: ArticleEngagementProps) {
+  const [initialData, setInitialData] = useState<EngagementData>({
+    slug,
+    views: 0,
+    likes: 0,
+    shares: 0,
+  });
+  const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+
+  // Fetch real engagement data on mount
+  useEffect(() => {
+    fetchEngagement(slug)
+      .then(data => {
+        console.log('[ArticleEngagement] Initial data loaded:', data);
+        setInitialData(data);
+      })
+      .catch(error => {
+        console.error('[ArticleEngagement] Failed to fetch initial data:', error);
+        // Keep placeholder data on error
+      })
+      .finally(() => {
+        setIsLoadingInitial(false);
+      });
+  }, [slug]);
+
+  // Main engagement hook
   const {
     engagement,
-    isViewTracking,
     isLiked,
     isLikeProcessing,
     toggleLike,
@@ -60,7 +83,7 @@ export default function ArticleEngagement({
     slug,
     title,
     url,
-    initialData: initialEngagement,
+    initialData,
   });
 
   return (
@@ -89,46 +112,66 @@ export default function ArticleEngagement({
         role="group"
         aria-label="Article engagement metrics"
       >
-        {/* View Count - Shows loading state during tracking */}
-        <EngagementMetric
-          type="view"
-          count={engagement.views}
-          icon={<EyeIcon />}
-          isLoading={isViewTracking}
-          ariaLabel={`${engagement.views} views${isViewTracking ? ' (updating...)' : ''}`}
-        />
-
-        {/* Like Button - Interactive with optimistic updates */}
-        <EngagementMetric
-          type="like"
-          count={engagement.likes}
-          icon={<HeartIcon filled={isLiked} />}
-          interactive
-          isActive={isLiked}
-          isLoading={isLikeProcessing}
-          disabled={isLikeProcessing}
-          onClick={toggleLike}
-          ariaLabel={isLiked ? 'Unlike article' : 'Like article'}
-        />
-
-        {/* Share Button - Shows copy success feedback */}
-        <div className="relative">
+        {/* View Count - Shows skeleton during initial load */}
+        {isLoadingInitial ? (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 animate-pulse">
+            <div className="w-5 h-5 bg-gray-300 rounded"></div>
+            <div className="w-12 h-4 bg-gray-300 rounded"></div>
+          </div>
+        ) : (
           <EngagementMetric
-            type="share"
-            count={engagement.shares}
-            icon={<ShareIcon />}
-            interactive
-            onClick={() => handleShare('copy')}
-            ariaLabel="Share article (copy link)"
+            type="view"
+            count={engagement.views}
+            icon={<EyeIcon />}
+            ariaLabel={`${engagement.views} views`}
           />
+        )}
 
-          {/* Copy Success Tooltip */}
-          {showCopySuccess && (
-            <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-green-600 text-white text-sm rounded shadow-lg whitespace-nowrap">
-              Link copied!
-            </div>
-          )}
-        </div>
+        {/* Like Button - Shows skeleton during initial load */}
+        {isLoadingInitial ? (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 animate-pulse">
+            <div className="w-5 h-5 bg-gray-300 rounded"></div>
+            <div className="w-12 h-4 bg-gray-300 rounded"></div>
+          </div>
+        ) : (
+          <EngagementMetric
+            type="like"
+            count={engagement.likes}
+            icon={<HeartIcon filled={isLiked} />}
+            interactive
+            isActive={isLiked}
+            isLoading={isLikeProcessing}
+            disabled={isLikeProcessing}
+            onClick={toggleLike}
+            ariaLabel={isLiked ? 'Unlike article' : 'Like article'}
+          />
+        )}
+
+        {/* Share Button - Shows skeleton during initial load */}
+        {isLoadingInitial ? (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 animate-pulse">
+            <div className="w-5 h-5 bg-gray-300 rounded"></div>
+            <div className="w-12 h-4 bg-gray-300 rounded"></div>
+          </div>
+        ) : (
+          <div className="relative">
+            <EngagementMetric
+              type="share"
+              count={engagement.shares}
+              icon={<ShareIcon />}
+              interactive
+              onClick={() => handleShare('copy')}
+              ariaLabel="Share article (copy link)"
+            />
+
+            {/* Copy Success Tooltip */}
+            {showCopySuccess && (
+              <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-green-600 text-white text-sm rounded shadow-lg whitespace-nowrap z-10">
+                Link copied!
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
-import ArticleEngagementWrapper from '@/main/components/Article/Engagement/ArticleEngagementWrapper';
+import ArticleEngagement from '@/main/components/Article/Engagement/ArticleEngagement';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
@@ -215,7 +215,7 @@ export default async function ArticlePage({
                 />
 
                 {/* Add engagement component */}
-                  <ArticleEngagementWrapper
+                  <ArticleEngagement
                     slug={resolvedParams.slug}
                     title={article.translations[0].title}
                     url={currentArticleUrl}

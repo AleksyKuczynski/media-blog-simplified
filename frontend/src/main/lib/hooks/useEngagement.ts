@@ -2,17 +2,18 @@
 /**
  * Main Engagement Hook
  * 
- * Combines view tracking, like state, and share functionality
+ * REFACTORED: Combines view tracking, like state, and share functionality
+ * All optimistic updates, fire-and-forget API calls
  */
 
 import { useState, useCallback } from 'react';
 import { useLikeState } from './useLikeState';
+import { useViewTracking } from './useViewTracking';
 import { updateEngagement } from '../engagement/api';
 import { getShareUrl, copyToClipboard, openShareWindow } from '../engagement/share';
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
 import type { EngagementData, SharePlatform } from '../engagement';
-import { useViewTracking } from '../hooks';
 
 export interface UseEngagementOptions {
   slug: string;
@@ -26,13 +27,12 @@ export interface UseEngagementReturn {
   engagement: EngagementData;
   
   // View tracking
-  isViewTracking: boolean;
   hasViewTracked: boolean;
   
   // Like state
   isLiked: boolean;
   isLikeProcessing: boolean;
-  toggleLike: () => Promise<void>;
+  toggleLike: () => void;
   
   // Share
   handleShare: (platform: SharePlatform) => Promise<void>;
@@ -45,6 +45,12 @@ export interface UseEngagementReturn {
 
 /**
  * Main engagement hook - combines all engagement functionality
+ * 
+ * BEHAVIOR:
+ * - Views: Track after 1 second, optimistic +1, fire-and-forget
+ * - Likes: Debounced (1s), optimistic updates, fire-and-forget
+ * - Shares: Optimistic +1, fire-and-forget
+ * - No syncing back from server (fire-and-forget)
  * 
  * @param options - Engagement configuration
  * @returns Complete engagement state and handlers
@@ -89,59 +95,41 @@ export function useEngagement({
     setError(null);
   }, []);
 
-  // View tracking with delayed execution
-  const { isTracking: isViewTracking, hasTracked: hasViewTracked } = useViewTracking({
+  /**
+   * View tracking with optimistic update
+   */
+  const { hasTracked: hasViewTracked } = useViewTracking({
     slug,
-    delayMs: 2000,
-    onSuccess: (data) => {
-      console.log('[Engagement] View tracked, updating state');
-      setEngagement(data);
-    },
-    onError: (err) => {
-      console.error('[Engagement] View tracking error:', err);
-      // Silent failure for views - don't disrupt UX
+    delayMs: 1000, // 1 second delay
+    onTrack: () => {
+      console.log('[Engagement] View tracked, optimistic +1');
+      setEngagement(prev => ({
+        ...prev,
+        views: prev.views + 1,
+      }));
     },
   });
 
-  // Like state management
+  /**
+   * Like state management with debouncing
+   */
   const {
     isLiked,
     isProcessing: isLikeProcessing,
     optimisticLikes,
-    toggleLike: toggleLikeInternal,
+    toggleLike,
   } = useLikeState({
     slug,
     currentLikes: engagement.likes,
-    onSuccess: (data, action) => {
-      console.log(`[Engagement] ${action} successful, updating state`);
-      setEngagement(data);
-      
-      // Track in analytics
-      trackGAEvent(action, {
-        article_slug: slug,
-        article_title: title,
-      });
-      trackYandexEvent(`article_${action}`, { slug });
-    },
-    onError: (err) => {
-      showError(err.message);
-    },
   });
 
   /**
-   * Update engagement state with optimistic like count
+   * Display engagement with optimistic like count
    */
-  const currentEngagement: EngagementData = {
+  const displayEngagement: EngagementData = {
     ...engagement,
-    likes: optimisticLikes, // Use optimistic value for instant feedback
+    likes: optimisticLikes, // Use optimistic value
   };
-
-  /**
-   * Toggle like wrapper
-   */
-  const toggleLike = useCallback(async () => {
-    await toggleLikeInternal();
-  }, [toggleLikeInternal]);
 
   /**
    * Handle share action
@@ -174,9 +162,9 @@ export function useEngagement({
       shares: prev.shares + 1,
     }));
 
-    // Track share in backend via Flow (fire and forget - don't block user)
+    // Track share in backend via Flow (fire and forget)
     updateEngagement(slug, 'share').catch((error) => {
-      console.error('[Engagement] Error tracking share:', error);
+      console.error('[Engagement] Error tracking share (non-critical):', error);
       // Don't rollback - user already opened share dialog
     });
 
@@ -194,8 +182,7 @@ export function useEngagement({
   }, [slug, title, url, showError]);
 
   return {
-    engagement: currentEngagement,
-    isViewTracking,
+    engagement: displayEngagement,
     hasViewTracked,
     isLiked,
     isLikeProcessing,
