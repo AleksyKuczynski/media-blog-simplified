@@ -1,8 +1,8 @@
 // frontend/src/main/components/Article/ArticleEngagement.tsx
-// FIXED: Proper unlike action, uses Flow via API
+// UPDATED: Merged view tracking from ArticleViewTracker - eliminates race condition
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { trackGAEvent } from '@/main/lib/analytics/google';
 import { trackYandexEvent } from '@/main/lib/analytics/yandex';
 import {
@@ -51,15 +51,18 @@ const SHARE_URLS = {
  * 
  * ARCHITECTURE:
  * - Gets initial engagement data from SSR (no fetch on mount)
+ * - Tracks views after 2 second delay (merged from ArticleViewTracker)
+ * - Updates view counter when tracking succeeds (FIXES off-by-one issue)
  * - Uses optimistic updates for instant UI feedback
  * - Calls API route which triggers Directus Flow
- * - One useEffect for localStorage sync (browser-only API)
  * 
  * LIKE/UNLIKE:
  * - Single button that toggles between liked/not liked
  * - Sends "like" action to increment
  * - Sends "unlike" action to decrement
  * - localStorage tracks user's like status locally
+ * 
+ * FIXED: View tracking now updates engagement state, eliminating race condition
  */
 export default function ArticleEngagement({
   slug,
@@ -75,9 +78,61 @@ export default function ArticleEngagement({
   const [error, setError] = useState<string | null>(null);
   const [showCopySuccess, setShowCopySuccess] = useState(false);
 
+  // Track if view has been recorded (prevents double-tracking in dev mode)
+  const hasTrackedView = useRef(false);
+
   // Sync with localStorage after mount (prevents hydration mismatch)
   useEffect(() => {
     setIsLiked(isArticleLiked(slug));
+  }, [slug]);
+
+  // MERGED: Track view on mount (from ArticleViewTracker)
+  // FIXED: Now updates engagement state when tracking succeeds
+  useEffect(() => {
+    // Prevent double-tracking in development (React StrictMode)
+    if (hasTrackedView.current) {
+      return;
+    }
+
+    // Delay view tracking to filter bots and accidental clicks
+    const timer = setTimeout(async () => {
+      if (hasTrackedView.current) return;
+      hasTrackedView.current = true;
+
+      try {
+        console.log('📊 Tracking view for:', slug);
+
+        const response = await fetch(`/api/engagement/${slug}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ action: 'view' }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('❌ Failed to track view:', error);
+          return;
+        }
+
+        const result = await response.json();
+        console.log('✅ View tracked:', result.data);
+
+        // FIXED: Update engagement state with the new view count from API
+        if (result.success && result.data) {
+          setEngagement(prev => ({
+            ...prev,
+            views: result.data.views,
+          }));
+        }
+      } catch (error) {
+        // Silent failure - don't disrupt user experience
+        console.error('❌ Error tracking view:', error);
+      }
+    }, 2000); // 2 second delay
+
+    return () => clearTimeout(timer);
   }, [slug]);
 
   /**

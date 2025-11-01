@@ -15,7 +15,6 @@ import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
-import ArticleEngagement from '@/main/components/Article/ArticleEngagement';
 import ArticleEngagementWrapper from '@/main/components/Article/ArticleEngagementWrapper';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
@@ -220,7 +219,7 @@ export default async function ArticlePage({
                     slug={resolvedParams.slug}
                     title={article.translations[0].title}
                     url={currentArticleUrl}
-                  />                
+                  />
 
                 {/* Table of Contents */}
                 {tocItems.length > 0 && (
