@@ -46,3 +46,7 @@ export {
   retryWithBackoff,
   shouldRetryError,
 } from './retry';
+
+export { checkRateLimit } from './checkRateLimit';
+export { hasRecentlyViewed } from './hasRecentlyViewed'
+export { triggerEngagementFlow } from './triggerEngagementFlow'
