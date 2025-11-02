@@ -1,7 +1,7 @@
 // frontend/src/main/components/Article/Engagement/ArticleEngagement.tsx
 /**
  * Article Engagement - Client Component
- * FINAL CORRECT VERSION - Uses fetchedData directly for optimistic +1
+ * FIXED VERSION - Adds client-side session check to prevent duplicate view tracking
  */
 
 'use client';
@@ -43,6 +43,20 @@ export default function ArticleEngagement({
 
   // Fetch engagement data on mount
   useEffect(() => {
+    // CRITICAL FIX: Check if article was already viewed in this browser session
+    // This prevents the API from triggering the Directus flow on subsequent visits
+    const sessionKey = `viewed_${slug}`;
+    const alreadyViewedInSession = typeof window !== 'undefined' 
+      ? sessionStorage.getItem(sessionKey) 
+      : null;
+
+    if (alreadyViewedInSession) {
+      console.log('[ArticleEngagement] ✅ Already viewed in this session - skipping view tracking');
+      // Still fetch data but don't expect viewTracked=true from server
+    } else {
+      console.log('[ArticleEngagement] 🆕 First view in this session');
+    }
+
     console.log('[ArticleEngagement] Fetching data for:', slug);
     
     fetch(`/api/engagement/${slug}`, {
@@ -64,6 +78,23 @@ export default function ArticleEngagement({
         
         setFetchedData(result.data);
         setViewWasTracked(result.viewTracked || false);
+
+        // Debug log immediately after state update
+        console.log('[ArticleEngagement] 🔄 State updated:', {
+          fetchedViews: result.data.views,
+          viewTracked: result.viewTracked || false,
+          willShowOptimistic: result.viewTracked ? 'YES (+1)' : 'NO',
+          calculatedDisplay: result.viewTracked 
+            ? result.data.views + 1 
+            : result.data.views,
+        });
+
+        // CRITICAL FIX: Mark as viewed in session storage if view was tracked
+        // This prevents the flow from firing again on page refresh/navigation
+        if (result.viewTracked && typeof window !== 'undefined') {
+          sessionStorage.setItem(sessionKey, 'true');
+          console.log('[ArticleEngagement] 📝 Marked as viewed in session storage');
+        }
       })
       .catch((error) => {
         console.error('[ArticleEngagement] ❌ Fetch error:', error);
@@ -97,12 +128,19 @@ export default function ArticleEngagement({
     ? fetchedData.views + 1 
     : fetchedData.views;
 
-  console.log('[ArticleEngagement] 📊 Display:', {
-    fetchedViews: fetchedData.views,
-    viewWasTracked,
-    displayedViews,
-    calculation: viewWasTracked ? `${fetchedData.views} + 1 = ${displayedViews}` : `${fetchedData.views} (no optimistic)`,
-  });
+  // Log display state after data is loaded (not during initial render)
+  useEffect(() => {
+    if (!isLoadingInitial) {
+      console.log('[ArticleEngagement] 📊 Display:', {
+        fetchedViews: fetchedData.views,
+        viewWasTracked,
+        displayedViews,
+        calculation: viewWasTracked 
+          ? `${fetchedData.views} + 1 = ${displayedViews}` 
+          : `${fetchedData.views} (no optimistic)`,
+      });
+    }
+  }, [fetchedData.views, viewWasTracked, displayedViews, isLoadingInitial]);
 
   return (
     <div className={className}>
