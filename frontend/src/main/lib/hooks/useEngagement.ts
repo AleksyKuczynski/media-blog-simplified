@@ -2,11 +2,11 @@
 /**
  * Main Engagement Hook
  * 
- * REFACTORED: Combines view tracking, like state, and share functionality
- * All optimistic updates, fire-and-forget API calls
+ * FIXED: View tracking is now optional (handled by GET endpoint)
+ * All other functionality remains: likes, shares, optimistic updates
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLikeState } from './useLikeState';
 import { useViewTracking } from './useViewTracking';
 import { updateEngagement } from '../engagement/api';
@@ -20,6 +20,7 @@ export interface UseEngagementOptions {
   title: string;
   url: string;
   initialData: EngagementData;
+  trackView?: boolean; // CHANGED: Make view tracking optional (default: false)
 }
 
 export interface UseEngagementReturn {
@@ -46,8 +47,8 @@ export interface UseEngagementReturn {
 /**
  * Main engagement hook - combines all engagement functionality
  * 
- * BEHAVIOR:
- * - Views: Track after 1 second, optimistic +1, fire-and-forget
+ * BEHAVIOR (UPDATED):
+ * - Views: Tracked by GET endpoint (optional client-side tracking)
  * - Likes: Debounced (1s), optimistic updates, fire-and-forget
  * - Shares: Optimistic +1, fire-and-forget
  * - No syncing back from server (fire-and-forget)
@@ -66,7 +67,8 @@ export interface UseEngagementReturn {
  *   slug: 'my-article',
  *   title: 'Article Title',
  *   url: 'https://example.com/article',
- *   initialData: { slug: 'my-article', views: 0, likes: 0, shares: 0 }
+ *   initialData: { slug: 'my-article', views: 100, likes: 5, shares: 2 },
+ *   trackView: false // View tracking handled by GET endpoint
  * });
  * ```
  */
@@ -75,10 +77,17 @@ export function useEngagement({
   title,
   url,
   initialData,
+  trackView = false, // CHANGED: Default to false (GET endpoint handles it)
 }: UseEngagementOptions): UseEngagementReturn {
   const [engagement, setEngagement] = useState<EngagementData>(initialData);
   const [error, setError] = useState<string | null>(null);
   const [showCopySuccess, setShowCopySuccess] = useState(false);
+
+  // CRITICAL FIX: Sync engagement state when initialData changes
+  useEffect(() => {
+    console.log('[useEngagement] Updating engagement with initialData:', initialData);
+    setEngagement(initialData);
+  }, [initialData]);
 
   /**
    * Show error message temporarily
@@ -96,13 +105,15 @@ export function useEngagement({
   }, []);
 
   /**
-   * View tracking with optimistic update
+   * Optional view tracking (disabled by default)
+   * View tracking is now handled by GET endpoint during initial fetch
    */
   const { hasTracked: hasViewTracked } = useViewTracking({
     slug,
-    delayMs: 1000, // 1 second delay
+    delayMs: 1000,
+    enabled: trackView, // CHANGED: Only track if explicitly enabled
     onTrack: () => {
-      console.log('[Engagement] View tracked, optimistic +1');
+      console.log('[Engagement] View tracked (client-side), optimistic +1');
       setEngagement(prev => ({
         ...prev,
         views: prev.views + 1,
@@ -128,7 +139,7 @@ export function useEngagement({
    */
   const displayEngagement: EngagementData = {
     ...engagement,
-    likes: optimisticLikes, // Use optimistic value
+    likes: optimisticLikes, // Use optimistic value for likes
   };
 
   /**

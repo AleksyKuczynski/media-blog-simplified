@@ -2,7 +2,10 @@
 /**
  * Article Engagement - Client Component
  * 
- * REFACTORED: Client-side data fetching, optimistic updates, fire-and-forget
+ * FIXED: View tracking now happens during initial fetch (in GET endpoint)
+ * - No more delayed view tracking
+ * - Shows correct counters immediately on page load
+ * - View count already includes current view
  */
 
 'use client';
@@ -24,11 +27,13 @@ export interface ArticleEngagementProps {
 /**
  * Article Engagement Component
  * 
- * ARCHITECTURE:
+ * ARCHITECTURE (UPDATED):
  * 1. Mounts with placeholder data { views: 0, likes: 0, shares: 0 }
  * 2. Fetches real data from API on mount
- * 3. Updates state with real data
- * 4. All user interactions use optimistic updates + fire-and-forget API
+ *    - GET endpoint automatically tracks view and creates/updates record
+ *    - Returns fresh data with view already counted
+ * 3. Updates state with real data (view count already correct)
+ * 4. User interactions (like/share) use optimistic updates + fire-and-forget API
  * 
  * @example
  * ```tsx
@@ -54,10 +59,14 @@ export default function ArticleEngagement({
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
 
   // Fetch real engagement data on mount
+  // NOTE: This now automatically tracks the view in the backend
   useEffect(() => {
+    console.log('[ArticleEngagement] Fetching initial data for:', slug);
+    
     fetchEngagement(slug)
       .then(data => {
         console.log('[ArticleEngagement] Initial data loaded:', data);
+        console.log('  - View count includes current visit');
         setInitialData(data);
       })
       .catch(error => {
@@ -69,7 +78,7 @@ export default function ArticleEngagement({
       });
   }, [slug]);
 
-  // Main engagement hook
+  // Main engagement hook (WITHOUT view tracking - that's handled by GET endpoint now)
   const {
     engagement,
     isLiked,
@@ -84,6 +93,7 @@ export default function ArticleEngagement({
     title,
     url,
     initialData,
+    trackView: false, // CHANGED: Don't track view here - GET endpoint handles it
   });
 
   return (

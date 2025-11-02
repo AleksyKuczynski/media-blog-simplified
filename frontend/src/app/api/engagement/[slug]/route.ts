@@ -1,5 +1,6 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
-// REFACTORED: Fire-and-forget optimistic updates, no waiting for DB
+// FIXED: Fire Increment Views Flow during GET request for immediate counter display
+// ARCHITECTURE: GET request now triggers view tracking, eliminating the delay
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -15,6 +16,10 @@ const DIRECTUS_FLOW_SHARES = process.env.DIRECTUS_FLOW_INCREMENT_SHARES;
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 15;
+
+// Session tracking to prevent duplicate view counts within same session
+const viewTrackingMap = new Map<string, number>();
+const VIEW_TRACKING_WINDOW = 3600 * 1000; // 1 hour
 
 function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get('x-forwarded-for');
@@ -49,6 +54,33 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+/**
+ * Check if this slug was already viewed in this session
+ * Prevents duplicate view tracking within 1 hour
+ */
+function hasRecentlyViewed(ip: string, slug: string): boolean {
+  const now = Date.now();
+  const key = `${ip}:${slug}`;
+  
+  // Cleanup old entries
+  if (viewTrackingMap.size > 1000) {
+    for (const [k, timestamp] of viewTrackingMap.entries()) {
+      if (now - timestamp > VIEW_TRACKING_WINDOW) {
+        viewTrackingMap.delete(k);
+      }
+    }
+  }
+  
+  const lastViewTime = viewTrackingMap.get(key);
+  
+  if (lastViewTime && (now - lastViewTime) < VIEW_TRACKING_WINDOW) {
+    return true;
+  }
+  
+  viewTrackingMap.set(key, now);
+  return false;
+}
+
 async function validateArticleSlug(slug: string): Promise<boolean> {
   try {
     const filter = encodeURIComponent(JSON.stringify({ 
@@ -76,7 +108,7 @@ async function validateArticleSlug(slug: string): Promise<boolean> {
 
 /**
  * Fetch engagement data from Directus
- * Used by GET endpoint
+ * Used by GET endpoint AFTER view has been tracked
  */
 async function fetchEngagementData(slug: string) {
   try {
@@ -84,6 +116,8 @@ async function fetchEngagementData(slug: string) {
       JSON.stringify({ article_slug: { _eq: slug } })
     );
     const url = `${DIRECTUS_URL}/items/articles_engagement?filter=${filter}&limit=1`;
+
+    console.log('📊 Fetching engagement data for:', slug);
 
     const response = await fetch(url, {
       headers: {
@@ -93,16 +127,27 @@ async function fetchEngagementData(slug: string) {
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Directus API Error:', errorText);
       throw new Error(`Directus API error: ${response.status}`);
     }
 
     const data = await response.json();
 
     if (data.data && data.data.length > 0) {
-      return data.data[0];
+      const record = data.data[0];
+      console.log('✅ Found engagement record:', {
+        slug: record.article_slug,
+        views: record.view_count,
+        likes: record.like_count,
+        shares: record.share_count,
+      });
+      return record;
     }
 
-    // Return default structure if no record exists
+    // IMPORTANT: If no record exists, Flow will create it with view_count=1
+    // So we should never see this, but return default just in case
+    console.warn('⚠️ No record found (Flow should have created it)');
     return {
       article_slug: slug,
       view_count: 0,
@@ -110,14 +155,13 @@ async function fetchEngagementData(slug: string) {
       share_count: 0,
     };
   } catch (error) {
-    console.error('Error fetching engagement data:', error);
+    console.error('❌ Error fetching engagement data:', error);
     throw error;
   }
 }
 
 /**
  * Trigger Directus Flow for engagement action
- * SIMPLIFIED: Fire-and-forget, no waiting
  */
 async function triggerEngagementFlow(
   slug: string,
@@ -127,47 +171,34 @@ async function triggerEngagementFlow(
     let flowId: string | undefined;
     let flowName: string;
     
-    // Route to correct flow based on action
     switch (action) {
       case 'view':
         flowId = DIRECTUS_FLOW_VIEWS;
-        flowName = 'Views Flow';
+        flowName = 'Increment Views';
         break;
       case 'like':
         flowId = DIRECTUS_FLOW_INCREMENT_LIKES;
-        flowName = 'Increment Likes Flow';
+        flowName = 'Increment Likes';
         break;
       case 'unlike':
         flowId = DIRECTUS_FLOW_DECREMENT_LIKES;
-        flowName = 'Decrement Likes Flow';
+        flowName = 'Decrement Likes';
         break;
       case 'share':
         flowId = DIRECTUS_FLOW_SHARES;
-        flowName = 'Shares Flow';
+        flowName = 'Increment Shares';
         break;
     }
 
     if (!flowId) {
-      console.error(`❌ ${flowName} ID not configured for action: ${action}`);
-      return false;
-    }
-
-    if (!DIRECTUS_API_TOKEN) {
-      console.error('❌ DIRECTUS_API_TOKEN not configured');
+      console.error(`❌ ${flowName} Flow ID not configured`);
       return false;
     }
 
     const flowUrl = `${DIRECTUS_URL}/flows/trigger/${flowId}`;
     const payload = { slug };
 
-    console.log('='.repeat(60));
-    console.log('FLOW TRIGGER');
-    console.log('='.repeat(60));
-    console.log('Flow Name:', flowName);
-    console.log('Flow ID:', flowId);
-    console.log('Action:', action);
-    console.log('Slug:', slug);
-    console.log('-'.repeat(60));
+    console.log(`🚀 Triggering ${flowName} Flow for:`, slug);
 
     const response = await fetch(flowUrl, {
       method: 'POST',
@@ -178,28 +209,31 @@ async function triggerEngagementFlow(
       body: JSON.stringify(payload),
     });
 
-    console.log('Response Status:', response.status);
-    console.log('='.repeat(60));
-
     if (!response.ok) {
       const responseText = await response.text();
-      console.error(`❌ ${flowName} execution failed`);
-      console.error('Response:', responseText);
+      console.error(`❌ ${flowName} Flow failed:`, responseText);
       return false;
     }
 
-    console.log(`✅ ${flowName} triggered successfully`);
+    console.log(`✅ ${flowName} Flow triggered successfully`);
     return true;
     
   } catch (error) {
-    console.error(`❌ Error triggering Flow:`, error);
+    console.error(`❌ Error triggering ${action} Flow:`, error);
     return false;
   }
 }
 
 /**
  * GET /api/engagement/[slug]
- * Fetch current engagement data
+ * FIXED: Now fires Increment Views Flow BEFORE fetching data
+ * 
+ * BEHAVIOR:
+ * 1. Check if slug already viewed in this session → Skip if yes
+ * 2. Trigger Increment Views Flow (creates/updates record)
+ * 3. Wait briefly for Flow to complete
+ * 4. Fetch fresh engagement data
+ * 5. Return data with view already counted
  */
 export async function GET(
   request: NextRequest,
@@ -208,6 +242,12 @@ export async function GET(
   try {
     const { slug } = await params;
 
+    console.log('\n' + '='.repeat(70));
+    console.log('GET /api/engagement/[slug]');
+    console.log('='.repeat(70));
+    console.log('Slug:', slug);
+    console.log('Timestamp:', new Date().toISOString());
+
     if (!slug || typeof slug !== 'string') {
       return NextResponse.json(
         { error: 'Invalid slug parameter' },
@@ -216,6 +256,8 @@ export async function GET(
     }
 
     const clientIP = getClientIP(request);
+    console.log('Client IP:', clientIP);
+    
     if (!checkRateLimit(clientIP)) {
       return NextResponse.json(
         { error: 'Rate limit exceeded. Please try again later.' },
@@ -233,9 +275,39 @@ export async function GET(
       );
     }
 
+    // Check if article exists
+    const isValidArticle = await validateArticleSlug(slug);
+    if (!isValidArticle) {
+      console.warn('⚠️ Article not found:', slug);
+      return NextResponse.json(
+        { error: 'Article not found' },
+        { status: 404 }
+      );
+    }
+
+    // CRITICAL: Check if already viewed in this session
+    const alreadyViewed = hasRecentlyViewed(clientIP, slug);
+    
+    if (!alreadyViewed) {
+      console.log('🆕 First view in this session - triggering Flow');
+      
+      // 1. Trigger Increment Views Flow
+      const flowTriggered = await triggerEngagementFlow(slug, 'view');
+      
+      if (flowTriggered) {
+        // 2. Small delay to let Flow complete (100ms)
+        await new Promise(resolve => setTimeout(resolve, 100));
+      } else {
+        console.warn('⚠️ Flow trigger failed, but continuing with fetch');
+      }
+    } else {
+      console.log('♻️ Already viewed in this session - skipping Flow');
+    }
+
+    // 3. Fetch fresh engagement data (now includes the new view if Flow succeeded)
     const engagement = await fetchEngagementData(slug);
 
-    const response = NextResponse.json({
+    const responseData = {
       success: true,
       data: {
         slug: engagement.article_slug,
@@ -243,22 +315,33 @@ export async function GET(
         likes: engagement.like_count || 0,
         shares: engagement.share_count || 0,
       },
-    });
+      viewTracked: !alreadyViewed, // Inform client if view was tracked
+    };
 
+    console.log('✅ Response:', JSON.stringify(responseData, null, 2));
+    console.log('='.repeat(70) + '\n');
+
+    const response = NextResponse.json(responseData);
+
+    // Prevent caching
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
 
     return response;
+    
   } catch (error) {
-    console.error('GET /api/engagement error:', error);
+    console.error('❌ GET /api/engagement error:', error);
     
     const errorMessage = error instanceof Error 
       ? error.message 
       : 'Unknown error occurred';
     
     return NextResponse.json(
-      { error: errorMessage },
+      { 
+        error: 'Failed to fetch engagement data',
+        message: errorMessage,
+      },
       { status: 500 }
     );
   }
@@ -266,8 +349,8 @@ export async function GET(
 
 /**
  * POST /api/engagement/[slug]
- * Trigger engagement action (view, like, unlike, share)
- * REFACTORED: Fire-and-forget, returns immediately without waiting for DB
+ * Handle like, unlike, and share actions
+ * Fire-and-forget - returns immediately
  */
 export async function POST(
   request: NextRequest,
@@ -276,11 +359,15 @@ export async function POST(
   try {
     const { slug } = await params;
     const body = await request.json();
-    const { action } = body;
+    const { action } = body as { action: 'like' | 'unlike' | 'share' };
 
-    console.log('📥 POST /api/engagement received:', { slug, action });
+    console.log('\n' + '='.repeat(70));
+    console.log('POST /api/engagement/[slug]');
+    console.log('='.repeat(70));
+    console.log('Slug:', slug);
+    console.log('Action:', action);
+    console.log('Timestamp:', new Date().toISOString());
 
-    // Validation
     if (!slug || typeof slug !== 'string') {
       return NextResponse.json(
         { error: 'Invalid slug parameter' },
@@ -288,14 +375,14 @@ export async function POST(
       );
     }
 
-    if (!action || !['view', 'like', 'unlike', 'share'].includes(action)) {
+    // Note: 'view' action should use GET endpoint, not POST
+    if (!action || !['like', 'unlike', 'share'].includes(action)) {
       return NextResponse.json(
-        { error: 'Invalid action. Must be: view, like, unlike, or share' },
+        { error: 'Invalid action. Must be: like, unlike, or share' },
         { status: 400 }
       );
     }
 
-    // Rate limiting
     const clientIP = getClientIP(request);
     if (!checkRateLimit(clientIP)) {
       return NextResponse.json(
@@ -304,7 +391,6 @@ export async function POST(
       );
     }
 
-    // Configuration checks
     if (!DIRECTUS_API_TOKEN) {
       return NextResponse.json(
         { 
@@ -315,59 +401,32 @@ export async function POST(
       );
     }
 
-    if (action === 'like' && !DIRECTUS_FLOW_INCREMENT_LIKES) {
+    // Validate article exists
+    const isValidArticle = await validateArticleSlug(slug);
+    if (!isValidArticle) {
       return NextResponse.json(
-        { 
-          error: 'Server configuration error',
-          message: 'DIRECTUS_FLOW_INCREMENT_LIKES not configured',
-        },
-        { status: 500 }
+        { error: 'Article not found' },
+        { status: 404 }
       );
-    }
-
-    if (action === 'unlike' && !DIRECTUS_FLOW_DECREMENT_LIKES) {
-      return NextResponse.json(
-        { 
-          error: 'Server configuration error',
-          message: 'DIRECTUS_FLOW_DECREMENT_LIKES not configured',
-        },
-        { status: 500 }
-      );
-    }
-
-    // Validate article exists (for view actions only)
-    if (action === 'view') {
-      const isValidSlug = await validateArticleSlug(slug);
-      if (!isValidSlug) {
-        return NextResponse.json(
-          { error: 'Article not found' },
-          { status: 404 }
-        );
-      }
     }
 
     // Trigger Flow (fire-and-forget)
-    console.log('🚀 Triggering Flow...');
-    const success = await triggerEngagementFlow(slug, action);
+    const flowTriggered = await triggerEngagementFlow(slug, action);
 
-    // CHANGED: Return immediately without waiting or fetching
-    // Client will use optimistic updates
-    const response = NextResponse.json({
-      success,
+    console.log('✅ POST complete - Flow triggered:', flowTriggered);
+    console.log('='.repeat(70) + '\n');
+
+    // Return immediately - client uses optimistic updates
+    return NextResponse.json({
+      success: flowTriggered,
       action,
-      message: success 
-        ? 'Engagement action triggered' 
-        : 'Flow trigger failed, but request accepted',
+      message: flowTriggered 
+        ? 'Engagement action triggered successfully' 
+        : 'Flow trigger failed',
     });
-
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    response.headers.set('Pragma', 'no-cache');
-    response.headers.set('Expires', '0');
-
-    return response;
     
   } catch (error) {
-    console.error('POST /api/engagement error:', error);
+    console.error('❌ POST /api/engagement error:', error);
     
     const errorMessage = error instanceof Error 
       ? error.message 
