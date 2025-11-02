@@ -1,6 +1,9 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
-// FIXED: Fire Increment Views Flow during GET request for immediate counter display
-// ARCHITECTURE: GET request now triggers view tracking, eliminating the delay
+// CORRECT IMPLEMENTATION per specification:
+// 1. Fetch data
+// 2. Trigger Flow (fire-and-forget)
+// 3. Client displays fetched + 1
+// 4. On refresh: No trigger, display as-is
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -108,20 +111,24 @@ async function validateArticleSlug(slug: string): Promise<boolean> {
 
 /**
  * Fetch engagement data from Directus
- * Used by GET endpoint AFTER view has been tracked
+ * Returns current counts from database
  */
 async function fetchEngagementData(slug: string) {
   try {
     const filter = encodeURIComponent(
       JSON.stringify({ article_slug: { _eq: slug } })
     );
-    const url = `${DIRECTUS_URL}/items/articles_engagement?filter=${filter}&limit=1`;
+    // Add timestamp to bust Directus cache
+    const timestamp = Date.now();
+    const url = `${DIRECTUS_URL}/items/articles_engagement?filter=${filter}&limit=1&_=${timestamp}`;
 
     console.log('📊 Fetching engagement data for:', slug);
 
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
       },
       cache: 'no-store',
     });
@@ -145,9 +152,8 @@ async function fetchEngagementData(slug: string) {
       return record;
     }
 
-    // IMPORTANT: If no record exists, Flow will create it with view_count=1
-    // So we should never see this, but return default just in case
-    console.warn('⚠️ No record found (Flow should have created it)');
+    // If no record exists, return defaults (Flow will create it)
+    console.warn('⚠️ No record found - returning defaults');
     return {
       article_slug: slug,
       view_count: 0,
@@ -162,6 +168,7 @@ async function fetchEngagementData(slug: string) {
 
 /**
  * Trigger Directus Flow for engagement action
+ * Fire-and-forget - doesn't wait for completion
  */
 async function triggerEngagementFlow(
   slug: string,
@@ -198,24 +205,28 @@ async function triggerEngagementFlow(
     const flowUrl = `${DIRECTUS_URL}/flows/trigger/${flowId}`;
     const payload = { slug };
 
-    console.log(`🚀 Triggering ${flowName} Flow for:`, slug);
+    console.log(`🚀 Triggering ${flowName} Flow (fire-and-forget)`);
 
-    const response = await fetch(flowUrl, {
+    // Fire-and-forget: Don't await the response
+    fetch(flowUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${DIRECTUS_API_TOKEN}`,
       },
       body: JSON.stringify(payload),
-    });
+    })
+      .then(response => {
+        if (response.ok) {
+          console.log(`✅ ${flowName} Flow triggered successfully`);
+        } else {
+          console.error(`❌ ${flowName} Flow failed: ${response.status}`);
+        }
+      })
+      .catch(error => {
+        console.error(`❌ Error triggering ${flowName} Flow:`, error);
+      });
 
-    if (!response.ok) {
-      const responseText = await response.text();
-      console.error(`❌ ${flowName} Flow failed:`, responseText);
-      return false;
-    }
-
-    console.log(`✅ ${flowName} Flow triggered successfully`);
     return true;
     
   } catch (error) {
@@ -226,14 +237,12 @@ async function triggerEngagementFlow(
 
 /**
  * GET /api/engagement/[slug]
- * FIXED: Now fires Increment Views Flow BEFORE fetching data
  * 
- * BEHAVIOR:
- * 1. Check if slug already viewed in this session → Skip if yes
- * 2. Trigger Increment Views Flow (creates/updates record)
- * 3. Wait briefly for Flow to complete
- * 4. Fetch fresh engagement data
- * 5. Return data with view already counted
+ * BEHAVIOR PER SPECIFICATION:
+ * 1. Fetch current data from DB
+ * 2. Check session: First view? Trigger Flow (fire-and-forget)
+ * 3. Return data + viewTracked flag
+ * 4. Client handles optimistic +1 display
  */
 export async function GET(
   request: NextRequest,
@@ -275,7 +284,7 @@ export async function GET(
       );
     }
 
-    // Check if article exists
+    // Validate article exists
     const isValidArticle = await validateArticleSlug(slug);
     if (!isValidArticle) {
       console.warn('⚠️ Article not found:', slug);
@@ -285,28 +294,25 @@ export async function GET(
       );
     }
 
-    // CRITICAL: Check if already viewed in this session
+    // 1. FETCH DATA FIRST (get current counts)
+    const engagement = await fetchEngagementData(slug);
+
+    // 2. CHECK SESSION and TRIGGER FLOW if first view
     const alreadyViewed = hasRecentlyViewed(clientIP, slug);
+    let viewTracked = false;
     
     if (!alreadyViewed) {
-      console.log('🆕 First view in this session - triggering Flow');
+      console.log('🆕 First view in this session - triggering Flow (fire-and-forget)');
+      viewTracked = true;
       
-      // 1. Trigger Increment Views Flow
-      const flowTriggered = await triggerEngagementFlow(slug, 'view');
-      
-      if (flowTriggered) {
-        // 2. Small delay to let Flow complete (100ms)
-        await new Promise(resolve => setTimeout(resolve, 100));
-      } else {
-        console.warn('⚠️ Flow trigger failed, but continuing with fetch');
-      }
+      // Trigger Flow without waiting (fire-and-forget)
+      triggerEngagementFlow(slug, 'view');
     } else {
       console.log('♻️ Already viewed in this session - skipping Flow');
     }
 
-    // 3. Fetch fresh engagement data (now includes the new view if Flow succeeded)
-    const engagement = await fetchEngagementData(slug);
-
+    // 3. RETURN DATA + viewTracked flag
+    // Client will handle optimistic +1 if viewTracked is true
     const responseData = {
       success: true,
       data: {
@@ -315,7 +321,7 @@ export async function GET(
         likes: engagement.like_count || 0,
         shares: engagement.share_count || 0,
       },
-      viewTracked: !alreadyViewed, // Inform client if view was tracked
+      viewTracked, // Client uses this to add optimistic +1
     };
 
     console.log('✅ Response:', JSON.stringify(responseData, null, 2));
@@ -411,18 +417,16 @@ export async function POST(
     }
 
     // Trigger Flow (fire-and-forget)
-    const flowTriggered = await triggerEngagementFlow(slug, action);
+    const flowTriggered = triggerEngagementFlow(slug, action);
 
-    console.log('✅ POST complete - Flow triggered:', flowTriggered);
+    console.log('✅ POST complete - Flow triggered');
     console.log('='.repeat(70) + '\n');
 
     // Return immediately - client uses optimistic updates
     return NextResponse.json({
-      success: flowTriggered,
+      success: true,
       action,
-      message: flowTriggered 
-        ? 'Engagement action triggered successfully' 
-        : 'Flow trigger failed',
+      message: 'Engagement action triggered',
     });
     
   } catch (error) {

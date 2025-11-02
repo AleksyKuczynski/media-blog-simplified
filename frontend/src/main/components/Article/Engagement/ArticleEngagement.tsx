@@ -1,18 +1,13 @@
 // frontend/src/main/components/Article/Engagement/ArticleEngagement.tsx
 /**
  * Article Engagement - Client Component
- * 
- * FIXED: View tracking now happens during initial fetch (in GET endpoint)
- * - No more delayed view tracking
- * - Shows correct counters immediately on page load
- * - View count already includes current view
+ * FINAL CORRECT VERSION - Uses fetchedData directly for optimistic +1
  */
 
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useEngagement } from '@/main/lib/hooks';
-import { fetchEngagement } from '@/main/lib/engagement';
 import { EngagementMetric } from './EngagementMetric';
 import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
 import type { EngagementData } from '@/main/lib/engagement';
@@ -24,61 +19,61 @@ export interface ArticleEngagementProps {
   className?: string;
 }
 
-/**
- * Article Engagement Component
- * 
- * ARCHITECTURE (UPDATED):
- * 1. Mounts with placeholder data { views: 0, likes: 0, shares: 0 }
- * 2. Fetches real data from API on mount
- *    - GET endpoint automatically tracks view and creates/updates record
- *    - Returns fresh data with view already counted
- * 3. Updates state with real data (view count already correct)
- * 4. User interactions (like/share) use optimistic updates + fire-and-forget API
- * 
- * @example
- * ```tsx
- * <ArticleEngagement
- *   slug="my-article"
- *   title="Article Title"
- *   url="https://example.com/article"
- * />
- * ```
- */
+interface EngagementResponse {
+  success: boolean;
+  data: EngagementData;
+  viewTracked?: boolean;
+}
+
 export default function ArticleEngagement({
   slug,
   title,
   url,
   className = '',
 }: ArticleEngagementProps) {
-  const [initialData, setInitialData] = useState<EngagementData>({
+  // Track fetched data separately for direct access
+  const [fetchedData, setFetchedData] = useState<EngagementData>({
     slug,
     views: 0,
     likes: 0,
     shares: 0,
   });
+  const [viewWasTracked, setViewWasTracked] = useState(false);
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
 
-  // Fetch real engagement data on mount
-  // NOTE: This now automatically tracks the view in the backend
+  // Fetch engagement data on mount
   useEffect(() => {
-    console.log('[ArticleEngagement] Fetching initial data for:', slug);
+    console.log('[ArticleEngagement] Fetching data for:', slug);
     
-    fetchEngagement(slug)
-      .then(data => {
-        console.log('[ArticleEngagement] Initial data loaded:', data);
-        console.log('  - View count includes current visit');
-        setInitialData(data);
+    fetch(`/api/engagement/${slug}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+      cache: 'no-store',
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Failed to fetch');
+        return response.json() as Promise<EngagementResponse>;
       })
-      .catch(error => {
-        console.error('[ArticleEngagement] Failed to fetch initial data:', error);
-        // Keep placeholder data on error
+      .then((result) => {
+        console.log('[ArticleEngagement] ✅ Response:', {
+          views: result.data.views,
+          likes: result.data.likes,
+          shares: result.data.shares,
+          viewTracked: result.viewTracked,
+        });
+        
+        setFetchedData(result.data);
+        setViewWasTracked(result.viewTracked || false);
+      })
+      .catch((error) => {
+        console.error('[ArticleEngagement] ❌ Fetch error:', error);
       })
       .finally(() => {
         setIsLoadingInitial(false);
       });
   }, [slug]);
 
-  // Main engagement hook (WITHOUT view tracking - that's handled by GET endpoint now)
+  // Engagement hook for likes/shares functionality
   const {
     engagement,
     isLiked,
@@ -92,13 +87,25 @@ export default function ArticleEngagement({
     slug,
     title,
     url,
-    initialData,
-    trackView: false, // CHANGED: Don't track view here - GET endpoint handles it
+    initialData: fetchedData,
+    trackView: false,
+  });
+
+  // Calculate displayed views with optimistic +1
+  // CRITICAL: Use fetchedData directly, not engagement state
+  const displayedViews = viewWasTracked 
+    ? fetchedData.views + 1 
+    : fetchedData.views;
+
+  console.log('[ArticleEngagement] 📊 Display:', {
+    fetchedViews: fetchedData.views,
+    viewWasTracked,
+    displayedViews,
+    calculation: viewWasTracked ? `${fetchedData.views} + 1 = ${displayedViews}` : `${fetchedData.views} (no optimistic)`,
   });
 
   return (
     <div className={className}>
-      {/* Error Banner */}
       {error && (
         <div
           className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 flex items-center justify-between"
@@ -116,13 +123,12 @@ export default function ArticleEngagement({
         </div>
       )}
 
-      {/* Engagement Metrics */}
       <div
         className="flex flex-wrap items-center gap-4 sm:gap-6 py-4 border-t border-b border-gray-200"
         role="group"
         aria-label="Article engagement metrics"
       >
-        {/* View Count - Shows skeleton during initial load */}
+        {/* Views */}
         {isLoadingInitial ? (
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 animate-pulse">
             <div className="w-5 h-5 bg-gray-300 rounded"></div>
@@ -131,13 +137,13 @@ export default function ArticleEngagement({
         ) : (
           <EngagementMetric
             type="view"
-            count={engagement.views}
+            count={displayedViews}
             icon={<EyeIcon />}
-            ariaLabel={`${engagement.views} views`}
+            ariaLabel={`${displayedViews} views`}
           />
         )}
 
-        {/* Like Button - Shows skeleton during initial load */}
+        {/* Likes */}
         {isLoadingInitial ? (
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 animate-pulse">
             <div className="w-5 h-5 bg-gray-300 rounded"></div>
@@ -157,7 +163,7 @@ export default function ArticleEngagement({
           />
         )}
 
-        {/* Share Button - Shows skeleton during initial load */}
+        {/* Shares */}
         {isLoadingInitial ? (
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 animate-pulse">
             <div className="w-5 h-5 bg-gray-300 rounded"></div>
@@ -173,8 +179,6 @@ export default function ArticleEngagement({
               onClick={() => handleShare('copy')}
               ariaLabel="Share article (copy link)"
             />
-
-            {/* Copy Success Tooltip */}
             {showCopySuccess && (
               <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-green-600 text-white text-sm rounded shadow-lg whitespace-nowrap z-10">
                 Link copied!
