@@ -1,9 +1,9 @@
 // frontend/src/main/components/Article/Engagement/EngagementMetric.tsx
 /**
- * Engagement Metric Component
+ * Engagement Metric Component - UPDATED FOR VERTICAL LAYOUT
  * 
  * Unified, reusable display component for views, likes, and shares
- * Provides consistent styling and behavior across all metrics
+ * Now supports vertical orientation with icon above count for sticky sidebar
  */
 
 'use client';
@@ -43,7 +43,7 @@ export interface EngagementMetricProps {
 }
 
 /**
- * Unified metric display component
+ * Unified metric display component with vertical layout
  * 
  * @example
  * ```tsx
@@ -75,16 +75,17 @@ export function EngagementMetric({
   ariaLabel,
   className = '',
 }: EngagementMetricProps) {
-  const baseClasses = 'flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all';
+  // Vertical layout: flex-col, centered, compact padding
+  const baseClasses = 'flex flex-col items-center justify-center gap-1 p-2 transition-all rounded-lg';
   
   const stateClasses = interactive
     ? isActive
       ? getActiveClasses(type)
       : getInactiveClasses(type)
-    : 'text-gray-600'; // Static display
+    : 'text-on-sf-var'; // Static display
   
   const interactionClasses = interactive && !disabled
-    ? 'cursor-pointer'
+    ? 'cursor-pointer hover:scale-105'
     : disabled
     ? 'opacity-50 cursor-not-allowed'
     : '';
@@ -95,11 +96,13 @@ export function EngagementMetric({
 
   const content = (
     <>
-      <div className="w-5 h-5 flex-shrink-0">
+      {/* Icon - slightly larger for better visibility */}
+      <div className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0">
         {icon}
       </div>
-      <span className="font-medium tabular-nums">
-        {isLoading ? '...' : count.toLocaleString()}
+      {/* Count - below icon, smaller font */}
+      <span className="text-xs sm:text-sm font-medium tabular-nums">
+        {isLoading ? '...' : formatCount(count)}
       </span>
     </>
   );
@@ -137,11 +140,11 @@ export function EngagementMetric({
 function getActiveClasses(type: 'view' | 'like' | 'share'): string {
   switch (type) {
     case 'like':
-      return 'text-red-600 bg-red-50 hover:bg-red-100';
+      return 'text-red-600 bg-red-50/50 hover:bg-red-100/50';
     case 'share':
-      return 'text-blue-600 bg-blue-50 hover:bg-blue-100';
+      return 'text-blue-600 bg-blue-50/50 hover:bg-blue-100/50';
     default:
-      return 'text-gray-600 bg-gray-50';
+      return 'text-on-sf-var bg-sf-hi/30';
   }
 }
 
@@ -151,10 +154,23 @@ function getActiveClasses(type: 'view' | 'like' | 'share'): string {
 function getInactiveClasses(type: 'view' | 'like' | 'share'): string {
   switch (type) {
     case 'like':
-      return 'text-gray-600 hover:text-red-600 hover:bg-gray-50';
+      return 'text-on-sf-var hover:text-red-600 hover:bg-red-50/30';
     case 'share':
-      return 'text-gray-600 hover:text-blue-600 hover:bg-gray-50';
+      return 'text-on-sf-var hover:text-blue-600 hover:bg-blue-50/30';
     default:
-      return 'text-gray-600 hover:bg-gray-50';
+      return 'text-on-sf-var hover:bg-sf-hi/20';
   }
+}
+
+/**
+ * Format count for display (compact notation for large numbers)
+ */
+function formatCount(count: number): string {
+  if (count >= 1000000) {
+    return `${(count / 1000000).toFixed(1)}M`;
+  }
+  if (count >= 1000) {
+    return `${(count / 1000).toFixed(1)}K`;
+  }
+  return count.toLocaleString();
 }

@@ -1,7 +1,8 @@
 // frontend/src/main/components/Article/Engagement/ArticleEngagement.tsx
 /**
  * Article Engagement - Client Component
- * FIXED VERSION - Adds client-side session check to prevent duplicate view tracking
+ * UPDATED: Sticky vertical bar in bottom-left corner
+ * Matches scroll-to-top button styling
  */
 
 'use client';
@@ -52,7 +53,6 @@ export default function ArticleEngagement({
 
     if (alreadyViewedInSession) {
       console.log('[ArticleEngagement] ✅ Already viewed in this session - skipping view tracking');
-      // Still fetch data but don't expect viewTracked=true from server
     } else {
       console.log('[ArticleEngagement] 🆕 First view in this session');
     }
@@ -79,18 +79,7 @@ export default function ArticleEngagement({
         setFetchedData(result.data);
         setViewWasTracked(result.viewTracked || false);
 
-        // Debug log immediately after state update
-        console.log('[ArticleEngagement] 🔄 State updated:', {
-          fetchedViews: result.data.views,
-          viewTracked: result.viewTracked || false,
-          willShowOptimistic: result.viewTracked ? 'YES (+1)' : 'NO',
-          calculatedDisplay: result.viewTracked 
-            ? result.data.views + 1 
-            : result.data.views,
-        });
-
         // CRITICAL FIX: Mark as viewed in session storage if view was tracked
-        // This prevents the flow from firing again on page refresh/navigation
         if (result.viewTracked && typeof window !== 'undefined') {
           sessionStorage.setItem(sessionKey, 'true');
           console.log('[ArticleEngagement] 📝 Marked as viewed in session storage');
@@ -123,75 +112,76 @@ export default function ArticleEngagement({
   });
 
   // Calculate displayed views with optimistic +1
-  // CRITICAL: Use fetchedData directly, not engagement state
   const displayedViews = viewWasTracked 
     ? fetchedData.views + 1 
     : fetchedData.views;
 
-  // Log display state after data is loaded (not during initial render)
-  useEffect(() => {
-    if (!isLoadingInitial) {
-      console.log('[ArticleEngagement] 📊 Display:', {
-        fetchedViews: fetchedData.views,
-        viewWasTracked,
-        displayedViews,
-        calculation: viewWasTracked 
-          ? `${fetchedData.views} + 1 = ${displayedViews}` 
-          : `${fetchedData.views} (no optimistic)`,
-      });
-    }
-  }, [fetchedData.views, viewWasTracked, displayedViews, isLoadingInitial]);
-
   return (
-    <div className={className}>
+    <>
+      {/* Error Toast (if needed) - positioned at top */}
       {error && (
         <div
-          className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 flex items-center justify-between"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-[70] max-w-md w-full mx-4"
           role="alert"
         >
-          <span>{error}</span>
-          <button
-            type="button"
-            onClick={clearError}
-            className="ml-2 text-red-600 hover:text-red-800"
-            aria-label="Dismiss error"
-          >
-            ×
-          </button>
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 flex items-center justify-between shadow-lg">
+            <span>{error}</span>
+            <button
+              type="button"
+              onClick={clearError}
+              className="ml-2 text-red-600 hover:text-red-800 font-bold"
+              aria-label="Dismiss error"
+            >
+              ×
+            </button>
+          </div>
         </div>
       )}
 
-      <div
-        className="flex flex-wrap items-center gap-4 sm:gap-6 py-4 border-t border-b border-gray-200"
-        role="group"
+      {/* Sticky Engagement Bar - Bottom Left */}
+      <aside
+        className={`
+          fixed bottom-4 left-4 z-60
+          flex flex-col gap-2
+          p-3 sm:p-4
+          bg-pr-cont hover:bg-pr-fix
+          text-on-pr
+          rounded-full shadow-lg hover:shadow-xl
+          transition-all duration-200
+          ${className}
+        `}
+        role="complementary"
         aria-label="Article engagement metrics"
       >
-        {/* Views */}
+        {/* Views - Top */}
         {isLoadingInitial ? (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 animate-pulse">
-            <div className="w-5 h-5 bg-gray-300 rounded"></div>
-            <div className="w-12 h-4 bg-gray-300 rounded"></div>
+          <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
+            <div className="w-8 h-3 bg-on-pr/20 rounded"></div>
           </div>
         ) : (
           <EngagementMetric
             type="view"
             count={displayedViews}
-            icon={<EyeIcon />}
+            icon={<EyeIcon className="w-full h-full" />}
             ariaLabel={`${displayedViews} views`}
           />
         )}
 
-        {/* Likes */}
+        {/* Separator */}
+        <div className="h-px bg-on-pr/20 mx-2" />
+
+        {/* Likes - Middle */}
         {isLoadingInitial ? (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 animate-pulse">
-            <div className="w-5 h-5 bg-gray-300 rounded"></div>
-            <div className="w-12 h-4 bg-gray-300 rounded"></div>
+          <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
+            <div className="w-8 h-3 bg-on-pr/20 rounded"></div>
           </div>
         ) : (
           <EngagementMetric
             type="like"
             count={engagement.likes}
-            icon={<HeartIcon filled={isLiked} />}
+            icon={<HeartIcon filled={isLiked} className="w-full h-full" />}
             interactive
             isActive={isLiked}
             isLoading={isLikeProcessing}
@@ -201,30 +191,34 @@ export default function ArticleEngagement({
           />
         )}
 
-        {/* Shares */}
+        {/* Separator */}
+        <div className="h-px bg-on-pr/20 mx-2" />
+
+        {/* Shares - Bottom */}
         {isLoadingInitial ? (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 animate-pulse">
-            <div className="w-5 h-5 bg-gray-300 rounded"></div>
-            <div className="w-12 h-4 bg-gray-300 rounded"></div>
+          <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
+            <div className="w-8 h-3 bg-on-pr/20 rounded"></div>
           </div>
         ) : (
           <div className="relative">
             <EngagementMetric
               type="share"
               count={engagement.shares}
-              icon={<ShareIcon />}
+              icon={<ShareIcon className="w-full h-full" />}
               interactive
               onClick={() => handleShare('copy')}
               ariaLabel="Share article (copy link)"
             />
+            {/* Link copied notification - positioned to the right of the button */}
             {showCopySuccess && (
-              <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-3 py-1 bg-green-600 text-white text-sm rounded shadow-lg whitespace-nowrap z-10">
+              <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-2 bg-green-600 text-white text-sm rounded-lg shadow-lg whitespace-nowrap z-10 animate-fade-in">
                 Link copied!
               </div>
             )}
           </div>
         )}
-      </div>
-    </div>
+      </aside>
+    </>
   );
 }
