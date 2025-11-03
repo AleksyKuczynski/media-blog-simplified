@@ -54,7 +54,8 @@ export interface ViewTrackingState {
 // SHARE TYPES
 // ===================================================================
 
-export type SharePlatform = 'copy' | 'facebook' | 'twitter' | 'telegram' | 'whatsapp';
+// UPDATED: Added 'instagram' to SharePlatform
+export type SharePlatform = 'copy' | 'facebook' | 'twitter' | 'telegram' | 'whatsapp' | 'instagram';
 
 export interface ShareConfig {
   url: string;

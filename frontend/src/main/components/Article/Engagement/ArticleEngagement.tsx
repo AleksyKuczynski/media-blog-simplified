@@ -1,7 +1,8 @@
 // frontend/src/main/components/Article/Engagement/ArticleEngagement.tsx
 /**
  * Article Engagement - Client Component
- * UPDATED: Sticky vertical bar in bottom-left corner
+ * UPDATED: Added SharePopup for social media sharing options
+ * Sticky vertical bar in bottom-left corner
  * Matches scroll-to-top button styling
  */
 
@@ -10,6 +11,7 @@
 import { useState, useEffect } from 'react';
 import { useEngagement } from '@/main/lib/hooks';
 import { EngagementMetric } from './EngagementMetric';
+import { SharePopup } from './SharePopup';
 import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
 import type { EngagementData } from '@/main/lib/engagement';
 
@@ -41,6 +43,9 @@ export default function ArticleEngagement({
   });
   const [viewWasTracked, setViewWasTracked] = useState(false);
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+  
+  // UPDATED: Add state for share popup
+  const [isSharePopupOpen, setIsSharePopupOpen] = useState(false);
 
   // Fetch engagement data on mount
   useEffect(() => {
@@ -48,52 +53,43 @@ export default function ArticleEngagement({
     // This prevents the API from triggering the Directus flow on subsequent visits
     const sessionKey = `viewed_${slug}`;
     const alreadyViewedInSession = typeof window !== 'undefined' 
-      ? sessionStorage.getItem(sessionKey) 
-      : null;
+      ? sessionStorage.getItem(sessionKey) === 'true'
+      : false;
 
-    if (alreadyViewedInSession) {
-      console.log('[ArticleEngagement] ✅ Already viewed in this session - skipping view tracking');
-    } else {
-      console.log('[ArticleEngagement] 🆕 First view in this session');
-    }
-
-    console.log('[ArticleEngagement] Fetching data for:', slug);
-    
-    fetch(`/api/engagement/${slug}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      cache: 'no-store',
-    })
-      .then(async (response) => {
-        if (!response.ok) throw new Error('Failed to fetch');
-        return response.json() as Promise<EngagementResponse>;
-      })
-      .then((result) => {
-        console.log('[ArticleEngagement] ✅ Response:', {
-          views: result.data.views,
-          likes: result.data.likes,
-          shares: result.data.shares,
-          viewTracked: result.viewTracked,
-        });
+    const fetchData = async () => {
+      try {
+        // FIXED: Use correct endpoint path - /api/engagement/[slug]
+        // The GET endpoint automatically handles view tracking
+        const response = await fetch(`/api/engagement/${slug}`);
         
-        setFetchedData(result.data);
-        setViewWasTracked(result.viewTracked || false);
-
-        // CRITICAL FIX: Mark as viewed in session storage if view was tracked
-        if (result.viewTracked && typeof window !== 'undefined') {
-          sessionStorage.setItem(sessionKey, 'true');
-          console.log('[ArticleEngagement] 📝 Marked as viewed in session storage');
+        if (!response.ok) {
+          throw new Error(`Failed to fetch engagement: ${response.status}`);
         }
-      })
-      .catch((error) => {
-        console.error('[ArticleEngagement] ❌ Fetch error:', error);
-      })
-      .finally(() => {
+        
+        const result: EngagementResponse = await response.json();
+        
+        if (result.success && result.data) {
+          setFetchedData(result.data);
+          
+          // Mark view as tracked if it was tracked in this request
+          if (result.viewTracked && !alreadyViewedInSession) {
+            setViewWasTracked(true);
+            if (typeof window !== 'undefined') {
+              sessionStorage.setItem(sessionKey, 'true');
+            }
+          }
+        }
+      } catch (error) {
+        console.error('[Engagement] Failed to fetch initial data:', error);
+      } finally {
         setIsLoadingInitial(false);
-      });
+      }
+    };
+
+    fetchData();
   }, [slug]);
 
-  // Engagement hook for likes/shares functionality
+  // Use engagement hook for likes, shares, and optimistic updates
   const {
     engagement,
     isLiked,
@@ -108,10 +104,28 @@ export default function ArticleEngagement({
     title,
     url,
     initialData: fetchedData,
-    trackView: false,
+    trackView: false, // View tracking already handled by GET endpoint
   });
 
-  // Calculate displayed views with optimistic +1
+  // Update engagement state when fetched data changes
+  useEffect(() => {
+    if (!isLoadingInitial && fetchedData) {
+      // Sync fetched data with engagement hook
+      // (engagement hook manages its own state, but we initialize it)
+    }
+  }, [fetchedData, isLoadingInitial]);
+
+  // UPDATED: Toggle share popup instead of direct share
+  const handleShareButtonClick = () => {
+    setIsSharePopupOpen(prev => !prev);
+  };
+
+  // UPDATED: Close popup handler
+  const handleClosePopup = () => {
+    setIsSharePopupOpen(false);
+  };
+
+  // Calculate displayed views (add 1 if view was tracked in this session)
   const displayedViews = viewWasTracked 
     ? fetchedData.views + 1 
     : fetchedData.views;
@@ -194,7 +208,7 @@ export default function ArticleEngagement({
         {/* Separator */}
         <div className="h-px bg-on-pr/20 mx-2" />
 
-        {/* Shares - Bottom */}
+        {/* Shares - Bottom (UPDATED: with popup) */}
         {isLoadingInitial ? (
           <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
             <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
@@ -207,15 +221,18 @@ export default function ArticleEngagement({
               count={engagement.shares}
               icon={<ShareIcon className="w-full h-full" />}
               interactive
-              onClick={() => handleShare('copy')}
-              ariaLabel="Share article (copy link)"
+              isActive={isSharePopupOpen}
+              onClick={handleShareButtonClick}
+              ariaLabel="Share article"
             />
-            {/* Link copied notification - positioned to the right of the button */}
-            {showCopySuccess && (
-              <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-2 bg-green-600 text-white text-sm rounded-lg shadow-lg whitespace-nowrap z-10 animate-fade-in">
-                Link copied!
-              </div>
-            )}
+            
+            {/* UPDATED: Share Popup */}
+            <SharePopup
+              isOpen={isSharePopupOpen}
+              onClose={handleClosePopup}
+              onShare={handleShare}
+              showCopySuccess={showCopySuccess}
+            />
           </div>
         )}
       </aside>

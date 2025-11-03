@@ -3,6 +3,7 @@
  * Share Platform Utilities
  * 
  * Social media sharing URLs and copy-to-clipboard functionality
+ * UPDATED: Added Instagram support
  */
 
 import { ShareConfig, SharePlatform } from "./types";
@@ -29,6 +30,11 @@ export function getShareUrl(platform: SharePlatform, config: ShareConfig): strin
     
     case 'whatsapp':
       return `https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`;
+    
+    case 'instagram':
+      // Instagram doesn't support direct web sharing
+      // Return the URL for clipboard copy
+      return url;
     
     case 'copy':
       return url; // Will be handled by clipboard API
