@@ -2,8 +2,13 @@
 /**
  * Main Engagement Hook
  * 
- * FIXED: View tracking is now optional (handled by GET endpoint)
- * All other functionality remains: likes, shares, optimistic updates
+ * UPDATED v2: Added share delta persistence to localStorage
+ * 
+ * BEHAVIOR:
+ * - Views: Tracked by GET endpoint (optional client-side tracking)
+ * - Likes: Debounced (1s), optimistic updates, fire-and-forget, localStorage persistence
+ * - Shares: Optimistic +1, fire-and-forget, localStorage delta (60s expiry)
+ * - No syncing back from server (fire-and-forget)
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -11,16 +16,18 @@ import { useLikeState } from './useLikeState';
 import { useViewTracking } from './useViewTracking';
 import { updateEngagement } from '../engagement/api';
 import { getShareUrl, copyToClipboard, openShareWindow } from '../engagement/share';
+import { saveShareDelta } from '../engagement/localStorage';
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
 import type { EngagementData, SharePlatform } from '../engagement';
+import { useShareState } from './useShareState';
 
 export interface UseEngagementOptions {
   slug: string;
   title: string;
   url: string;
   initialData: EngagementData;
-  trackView?: boolean; // CHANGED: Make view tracking optional (default: false)
+  trackView?: boolean;
 }
 
 export interface UseEngagementReturn {
@@ -47,43 +54,21 @@ export interface UseEngagementReturn {
 /**
  * Main engagement hook - combines all engagement functionality
  * 
- * BEHAVIOR (UPDATED):
- * - Views: Tracked by GET endpoint (optional client-side tracking)
- * - Likes: Debounced (1s), optimistic updates, fire-and-forget
- * - Shares: Optimistic +1, fire-and-forget
- * - No syncing back from server (fire-and-forget)
- * 
  * @param options - Engagement configuration
  * @returns Complete engagement state and handlers
- * 
- * @example
- * ```tsx
- * const {
- *   engagement,
- *   isLiked,
- *   toggleLike,
- *   handleShare,
- * } = useEngagement({
- *   slug: 'my-article',
- *   title: 'Article Title',
- *   url: 'https://example.com/article',
- *   initialData: { slug: 'my-article', views: 100, likes: 5, shares: 2 },
- *   trackView: false // View tracking handled by GET endpoint
- * });
- * ```
  */
 export function useEngagement({
   slug,
   title,
   url,
   initialData,
-  trackView = false, // CHANGED: Default to false (GET endpoint handles it)
+  trackView = false,
 }: UseEngagementOptions): UseEngagementReturn {
   const [engagement, setEngagement] = useState<EngagementData>(initialData);
   const [error, setError] = useState<string | null>(null);
   const [showCopySuccess, setShowCopySuccess] = useState(false);
 
-  // CRITICAL FIX: Sync engagement state when initialData changes
+  // Sync engagement state when initialData changes
   useEffect(() => {
     console.log('[useEngagement] Updating engagement with initialData:', initialData);
     setEngagement(initialData);
@@ -106,12 +91,11 @@ export function useEngagement({
 
   /**
    * Optional view tracking (disabled by default)
-   * View tracking is now handled by GET endpoint during initial fetch
    */
   const { hasTracked: hasViewTracked } = useViewTracking({
     slug,
     delayMs: 1000,
-    enabled: trackView, // CHANGED: Only track if explicitly enabled
+    enabled: trackView,
     onTrack: () => {
       console.log('[Engagement] View tracked (client-side), optimistic +1');
       setEngagement(prev => ({
@@ -122,7 +106,7 @@ export function useEngagement({
   });
 
   /**
-   * Like state management with debouncing
+   * Like state management with debouncing and localStorage
    */
   const {
     isLiked,
@@ -135,15 +119,25 @@ export function useEngagement({
   });
 
   /**
-   * Display engagement with optimistic like count
+   * NEW: Share state management with localStorage delta
+   */
+  const { optimisticShares } = useShareState({
+    slug,
+    currentShares: engagement.shares,
+  });
+
+  /**
+   * Display engagement with optimistic counts
    */
   const displayEngagement: EngagementData = {
     ...engagement,
-    likes: optimisticLikes, // Use optimistic value for likes
+    likes: optimisticLikes, // Optimistic like count with delta
+    shares: optimisticShares, // NEW: Optimistic share count with delta
   };
 
   /**
    * Handle share action
+   * UPDATED: Now saves delta to localStorage for persistence
    */
   const handleShare = useCallback(async (platform: SharePlatform) => {
     if (platform === 'copy') {
@@ -154,7 +148,7 @@ export function useEngagement({
         setShowCopySuccess(true);
         setTimeout(() => setShowCopySuccess(false), 2000);
 
-        // Track in analytics
+        // Track in analytics (no backend call for copy)
         trackGAEvent('share', {
           method: 'copy',
           article_slug: slug,
@@ -167,23 +161,40 @@ export function useEngagement({
       return;
     }
 
-    // Optimistically increment share count
+    // For all other platforms (including Instagram):
+    // 1. Save delta to localStorage (persists across refreshes)
+    saveShareDelta(slug);
+
+    // 2. Optimistically increment share count in state
     setEngagement(prev => ({
       ...prev,
       shares: prev.shares + 1,
     }));
 
-    // Track share in backend via Flow (fire and forget)
+    // 3. Track share in backend via Flow (fire and forget)
     updateEngagement(slug, 'share').catch((error) => {
       console.error('[Engagement] Error tracking share (non-critical):', error);
-      // Don't rollback - user already opened share dialog
+      // Don't rollback - user already opened share dialog and delta is saved
     });
 
-    // Open share dialog
-    const shareUrl = getShareUrl(platform, { url, title });
-    openShareWindow(shareUrl);
+    // 4. Handle platform-specific actions
+    if (platform === 'instagram') {
+      // Instagram has no web share URL, so copy link
+      const success = await copyToClipboard(url);
+      
+      if (success) {
+        setShowCopySuccess(true);
+        setTimeout(() => setShowCopySuccess(false), 2000);
+      } else {
+        showError('Failed to copy link to clipboard');
+      }
+    } else {
+      // Open share dialog for other platforms
+      const shareUrl = getShareUrl(platform, { url, title });
+      openShareWindow(shareUrl);
+    }
 
-    // Track in analytics
+    // 5. Track in analytics
     trackGAEvent('share', {
       method: platform,
       article_slug: slug,
@@ -193,7 +204,7 @@ export function useEngagement({
   }, [slug, title, url, showError]);
 
   return {
-    engagement: displayEngagement,
+    engagement: displayEngagement, // Returns optimistic counts
     hasViewTracked,
     isLiked,
     isLikeProcessing,

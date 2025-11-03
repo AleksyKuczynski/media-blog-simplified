@@ -1,4 +1,4 @@
-// src/main/lib/hooks/index.ts
+// frontend/src/main/lib/hooks/index.ts
 export { useDebounce } from '@/main/lib/hooks/useDebounce';
 export { useFocusInput } from '@/main/lib/hooks/useFocusInput';
 export { useKeyboardNavigation } from '@/main/lib/hooks/useKeyboardNavigation';
@@ -21,3 +21,10 @@ export {
   type UseLikeStateOptions,
   type UseLikeStateReturn,
 } from '@/main/lib/hooks/useLikeState';
+
+// NEW: Share state hook
+export {
+  useShareState,
+  type UseShareStateOptions,
+  type UseShareStateReturn,
+} from '@/main/lib/hooks/useShareState';

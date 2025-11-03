@@ -2,7 +2,7 @@
 /**
  * LocalStorage Operations for Engagement
  * 
- * ENHANCED v3: Hybrid approach - Permanent liked state + Temporary deltas
+ * ENHANCED v4: Added share delta support
  * 
  * TWO SEPARATE STORAGE KEYS:
  * 1. "liked_articles" - Permanent list of liked articles (for button state)
@@ -15,8 +15,11 @@
  * STRUCTURE:
  * liked_articles: ["slug-1", "slug-2", "slug-3"]
  * engagement_deltas: {
- *   "slug-1": { delta: 1, timestamp: 1699..., action: "like" }
+ *   "slug-1": { delta: 1, timestamp: 1699..., action: "like" },
+ *   "slug-2": { delta: 1, timestamp: 1699..., action: "share" }
  * }
+ * 
+ * NEW: Share deltas added - same 60s expiry, no permanent state needed
  */
 
 const LIKED_ARTICLES_KEY = 'liked_articles';
@@ -24,9 +27,9 @@ const ENGAGEMENT_DELTAS_KEY = 'engagement_deltas';
 const DELTA_EXPIRY_MS = 60 * 1000; // 60 seconds
 
 export interface EngagementDelta {
-  delta: number; // +1 for like, -1 for unlike
+  delta: number; // +1 for like/share, -1 for unlike
   timestamp: number;
-  action: 'like' | 'unlike';
+  action: 'like' | 'unlike' | 'share';
 }
 
 export interface EngagementDeltas {
@@ -183,7 +186,45 @@ function saveEngagementDeltas(deltas: EngagementDeltas): void {
  */
 export function getArticleDelta(slug: string): EngagementDelta {
   const deltas = getEngagementDeltas();
-  return deltas[slug] || { delta: 0, timestamp: 0, action: 'unlike' };
+  return deltas[slug] || { delta: 0, timestamp: 0, action: 'like' };
+}
+
+/**
+ * NEW: Save share delta (temporary)
+ * Creates a +1 delta that expires after 60s
+ * This persists optimistic share counts across page refreshes
+ */
+export function saveShareDelta(slug: string): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const deltas = getEngagementDeltas();
+    
+    // Get current delta or default
+    const currentDelta = deltas[slug] || { delta: 0, timestamp: Date.now(), action: 'share' };
+    
+    // Increment the delta (allow multiple shares to accumulate)
+    deltas[slug] = {
+      delta: currentDelta.delta + 1,
+      timestamp: Date.now(), // Reset timestamp on new share
+      action: 'share',
+    };
+    
+    saveEngagementDeltas(deltas);
+    console.log(`[localStorage] Created share delta +${deltas[slug].delta} for ${slug} (temporary, 60s)`);
+  } catch (error) {
+    console.error('[localStorage] Error saving share delta:', error);
+  }
+}
+
+/**
+ * NEW: Get share delta for specific article
+ * Returns only the delta value for shares
+ */
+export function getShareDelta(slug: string): number {
+  const delta = getArticleDelta(slug);
+  // Only return delta if it's a share action
+  return delta.action === 'share' ? delta.delta : 0;
 }
 
 /**

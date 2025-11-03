@@ -2,6 +2,7 @@
 /**
  * Engagement Module - Public API
  * 
+ * UPDATED: Added share delta exports
  * Centralized exports for all engagement functionality
  */
 
@@ -26,12 +27,19 @@ export {
   fetchEngagementBatch,
 } from './api';
 
-// LocalStorage
+// LocalStorage - Likes (permanent + delta)
 export {
   getLikedArticles,
   isArticleLiked,
   saveLikedArticle,
   removeLikedArticle,
+  getArticleDelta,
+} from './localStorage';
+
+// LocalStorage - Shares (NEW: delta only)
+export {
+  saveShareDelta,
+  getShareDelta,
 } from './localStorage';
 
 // Share
@@ -48,5 +56,5 @@ export {
 } from './retry';
 
 export { checkRateLimit } from './checkRateLimit';
-export { hasRecentlyViewed } from './hasRecentlyViewed'
-export { triggerEngagementFlow } from './triggerEngagementFlow'
+export { hasRecentlyViewed } from './hasRecentlyViewed';
+export { triggerEngagementFlow } from './triggerEngagementFlow';
