@@ -2,16 +2,40 @@
 /**
  * Like State Management Hook
  * 
- * FIXED v4: Simplest approach - two sequential setState calls, no nesting
+ * IMPROVED v6: Permanent liked state + Temporary count deltas
+ * 
+ * KEY IMPROVEMENT:
+ * - Button state (isLiked) persists FOREVER in localStorage
+ * - Count delta persists for 60s (compensates for cache delay)
+ * - After 60s: Button still liked, count shows server value
+ * 
+ * BEHAVIOR:
+ * 1. User likes article
+ *    - localStorage: ["article-1"] (permanent)
+ *    - delta: { delta: +1, timestamp: NOW } (temporary)
+ *    - Display: Liked ✅, Count: server+1
+ * 
+ * 2. Page refresh within 60s
+ *    - Button: Liked ✅ (from permanent storage)
+ *    - Count: server+1 (delta still active)
+ * 
+ * 3. Page refresh after 60s
+ *    - Button: Liked ✅ (from permanent storage)
+ *    - Count: server (delta expired, cache caught up)
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { updateEngagement } from '../engagement/api';
-import { isArticleLiked, saveLikedArticle, removeLikedArticle } from '../engagement/localStorage';
+import { 
+  isArticleLiked, 
+  saveLikedArticle, 
+  removeLikedArticle,
+  getArticleDelta 
+} from '../engagement/localStorage';
 
 export interface UseLikeStateOptions {
   slug: string;
-  currentLikes: number;
+  currentLikes: number; // Server count (might be stale)
 }
 
 export interface UseLikeStateReturn {
@@ -25,34 +49,63 @@ export function useLikeState({
   slug,
   currentLikes,
 }: UseLikeStateOptions): UseLikeStateReturn {
-  const [isLiked, setIsLiked] = useState(false);
+  // PART 1: Button state from PERMANENT storage
+  // This never expires - user preference persists forever
+  const [isLiked, setIsLiked] = useState(() => isArticleLiked(slug));
   const [isProcessing, setIsProcessing] = useState(false);
-  const [optimisticLikes, setOptimisticLikes] = useState(currentLikes);
+  
+  // PART 2: Count adjustment from TEMPORARY delta
+  // This expires after 60s - only for cache compensation
+  const localDelta = getArticleDelta(slug);
+  const adjustedLikes = Math.max(0, currentLikes + localDelta.delta);
+  const [optimisticLikes, setOptimisticLikes] = useState(adjustedLikes);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pendingActionRef = useRef<'like' | 'unlike' | null>(null);
   const isApiCallInFlightRef = useRef<boolean>(false);
 
-  // Sync with localStorage after mount
+  // Log delta application for debugging
   useEffect(() => {
-    setIsLiked(isArticleLiked(slug));
+    if (localDelta.delta !== 0) {
+      const age = Math.round((Date.now() - localDelta.timestamp) / 1000);
+      console.log(`[LikeState] Applied delta for ${slug}:`, {
+        serverCount: currentLikes,
+        delta: localDelta.delta,
+        displayCount: adjustedLikes,
+        deltaAge: `${age}s`,
+        expiresIn: `${60 - age}s`,
+      });
+    } else if (isLiked) {
+      console.log(`[LikeState] Liked state restored for ${slug} (delta expired, using server count)`);
+    }
+  }, [slug, currentLikes, localDelta.delta, localDelta.timestamp, adjustedLikes, isLiked]);
+
+  // Sync isLiked when slug changes (navigation)
+  // IMPORTANT: This reads from PERMANENT storage
+  useEffect(() => {
+    const liked = isArticleLiked(slug);
+    setIsLiked(liked);
+    console.log(`[LikeState] Loaded liked state for ${slug}: ${liked}`);
   }, [slug]);
 
-  // Update optimistic count when prop changes
+  // Update optimistic count when server count OR delta changes
   useEffect(() => {
-    setOptimisticLikes(currentLikes);
-  }, [currentLikes]);
+    const newDelta = getArticleDelta(slug);
+    const newAdjustedLikes = Math.max(0, currentLikes + newDelta.delta);
+    setOptimisticLikes(newAdjustedLikes);
+  }, [currentLikes, slug]);
 
-  // SAFETY GUARD: Never liked with 0 count
+  // SAFETY GUARD: Never show liked state with 0 count
+  // This handles edge cases where data might be inconsistent
   useEffect(() => {
     if (optimisticLikes === 0 && isLiked) {
-      console.warn('[LikeState] Fixing inconsistent state');
+      console.warn('[LikeState] Inconsistent state: liked but 0 count - resetting');
       setIsLiked(false);
       removeLikedArticle(slug);
     }
   }, [optimisticLikes, isLiked, slug]);
 
-  // Cleanup
+  // Cleanup timer on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) {
@@ -72,38 +125,37 @@ export function useLikeState({
       timerRef.current = null;
     }
 
-    // 1. Update isLiked and store action for later use
+    // 1. Update isLiked state and BOTH storages
     setIsLiked(prev => {
       const next = !prev;
       const action = next ? 'like' : 'unlike';
       
-      // CRITICAL: Set pendingActionRef HERE where we know the action
-      // Not outside where timing might be wrong!
       pendingActionRef.current = action;
       
-      // Side effects
+      // Update BOTH:
+      // - Permanent liked state (for button)
+      // - Temporary delta (for count adjustment)
       if (next) {
         saveLikedArticle(slug);
       } else {
         removeLikedArticle(slug);
       }
       
-      console.log(`[LikeState] Liked: ${prev} → ${next} (action: ${action})`);
+      console.log(`[LikeState] Toggled: ${prev} → ${next} (action: ${action})`);
+      console.log(`[LikeState] ✅ Permanent state saved, ⏱️ temporary delta created (60s)`);
       return next;
     });
 
-    // 2. Update count - determine delta from pendingActionRef
-    // Note: pendingActionRef was just set in the previous setState
+    // 2. Update optimistic count
     setOptimisticLikes(prev => {
-      // Use pendingActionRef which was set in the setIsLiked callback above
       const delta = pendingActionRef.current === 'like' ? 1 : -1;
       const next = Math.max(0, prev + delta);
       
-      console.log(`[LikeState] Count: ${prev} ${delta > 0 ? '+' : ''}${delta} = ${next} (action: ${pendingActionRef.current})`);
+      console.log(`[LikeState] Count: ${prev} ${delta > 0 ? '+' : ''}${delta} = ${next}`);
       return next;
     });
 
-    // 3. Start processing
+    // 3. Debounced API call
     setIsProcessing(true);
     
     timerRef.current = setTimeout(() => {
@@ -117,8 +169,17 @@ export function useLikeState({
       console.log(`[LikeState] Sending ${action} to API`);
 
       updateEngagement(slug, action)
-        .then(() => console.log(`[LikeState] ${action} completed`))
-        .catch((error) => console.error(`[LikeState] ${action} error:`, error))
+        .then(() => {
+          console.log(`[LikeState] ✅ ${action} completed on server`);
+          // Note: We don't clear the delta here
+          // Permanent liked state stays forever
+          // Temporary delta expires after 60s automatically
+        })
+        .catch((error) => {
+          console.error(`[LikeState] ❌ ${action} error:`, error);
+          // On error, we keep both states
+          // User can retry, and states will persist
+        })
         .finally(() => {
           setIsProcessing(false);
           pendingActionRef.current = null;
