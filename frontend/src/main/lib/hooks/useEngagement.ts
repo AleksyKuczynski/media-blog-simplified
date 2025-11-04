@@ -67,6 +67,7 @@ export function useEngagement({
   const [engagement, setEngagement] = useState<EngagementData>(initialData);
   const [error, setError] = useState<string | null>(null);
   const [showCopySuccess, setShowCopySuccess] = useState(false);
+  const [shareRefreshTrigger, setShareRefreshTrigger] = useState(0);
 
   // Sync engagement state when initialData changes
   useEffect(() => {
@@ -124,6 +125,7 @@ export function useEngagement({
   const { optimisticShares } = useShareState({
     slug,
     currentShares: engagement.shares,
+    refreshTrigger: shareRefreshTrigger,
   });
 
   /**
@@ -165,14 +167,17 @@ export function useEngagement({
     // 1. Save delta to localStorage (persists across refreshes)
     // This will be automatically picked up by useShareState hook
     saveShareDelta(slug);
+    
+    // 2. Trigger re-read of delta in useShareState
+    setShareRefreshTrigger(prev => prev + 1);
 
-    // 2. Track share in backend via Flow (fire and forget)
+    // 3. Track share in backend via Flow (fire and forget)
     updateEngagement(slug, 'share').catch((error) => {
       console.error('[Engagement] Error tracking share (non-critical):', error);
       // Don't rollback - user already opened share dialog and delta is saved
     });
 
-    // 3. Handle platform-specific actions
+    // 4. Handle platform-specific actions
     if (platform === 'instagram') {
       // Instagram has no web share URL, so copy link
       const success = await copyToClipboard(url);
@@ -189,7 +194,7 @@ export function useEngagement({
       openShareWindow(shareUrl);
     }
 
-    // 4. Track in analytics
+    // 5. Track in analytics
     trackGAEvent('share', {
       method: platform,
       article_slug: slug,

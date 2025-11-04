@@ -17,6 +17,7 @@ import { getShareDelta } from '../engagement/localStorage';
 export interface UseShareStateOptions {
   slug: string;
   currentShares: number; // Server count (might be stale)
+  refreshTrigger?: number; // Optional trigger to force re-read of delta
 }
 
 export interface UseShareStateReturn {
@@ -43,6 +44,7 @@ export interface UseShareStateReturn {
 export function useShareState({
   slug,
   currentShares,
+  refreshTrigger = 0,
 }: UseShareStateOptions): UseShareStateReturn {
   // Get delta from localStorage (expires after 60s)
   const localDelta = getShareDelta(slug);
@@ -62,12 +64,12 @@ export function useShareState({
     }
   }, [slug, currentShares, localDelta, adjustedShares]);
 
-  // Update optimistic count when server count OR delta changes
+  // Update optimistic count when server count OR delta changes OR triggered to refresh
   useEffect(() => {
     const newDelta = getShareDelta(slug);
     const newAdjustedShares = Math.max(0, currentShares + newDelta);
     setOptimisticShares(newAdjustedShares);
-  }, [currentShares, slug]);
+  }, [currentShares, slug, refreshTrigger]);
 
   return {
     optimisticShares,
