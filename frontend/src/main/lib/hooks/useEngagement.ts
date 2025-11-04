@@ -13,6 +13,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useLikeState } from './useLikeState';
+import { useShareState } from './useShareState';
 import { useViewTracking } from './useViewTracking';
 import { updateEngagement } from '../engagement/api';
 import { getShareUrl, copyToClipboard, openShareWindow } from '../engagement/share';
@@ -20,7 +21,6 @@ import { saveShareDelta } from '../engagement/localStorage';
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
 import type { EngagementData, SharePlatform } from '../engagement';
-import { useShareState } from './useShareState';
 
 export interface UseEngagementOptions {
   slug: string;
@@ -163,21 +163,16 @@ export function useEngagement({
 
     // For all other platforms (including Instagram):
     // 1. Save delta to localStorage (persists across refreshes)
+    // This will be automatically picked up by useShareState hook
     saveShareDelta(slug);
 
-    // 2. Optimistically increment share count in state
-    setEngagement(prev => ({
-      ...prev,
-      shares: prev.shares + 1,
-    }));
-
-    // 3. Track share in backend via Flow (fire and forget)
+    // 2. Track share in backend via Flow (fire and forget)
     updateEngagement(slug, 'share').catch((error) => {
       console.error('[Engagement] Error tracking share (non-critical):', error);
       // Don't rollback - user already opened share dialog and delta is saved
     });
 
-    // 4. Handle platform-specific actions
+    // 3. Handle platform-specific actions
     if (platform === 'instagram') {
       // Instagram has no web share URL, so copy link
       const success = await copyToClipboard(url);
@@ -194,7 +189,7 @@ export function useEngagement({
       openShareWindow(shareUrl);
     }
 
-    // 5. Track in analytics
+    // 4. Track in analytics
     trackGAEvent('share', {
       method: platform,
       article_slug: slug,
