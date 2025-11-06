@@ -2,13 +2,14 @@
 /**
  * Main Engagement Hook
  * 
- * UPDATED v2: Added share delta persistence to localStorage
+ * UPDATED v3: Fixed double-counting issue by passing baseServerValue
  * 
  * BEHAVIOR:
  * - Views: Tracked by GET endpoint (optional client-side tracking)
  * - Likes: Debounced (1s), optimistic updates, fire-and-forget, localStorage persistence
- * - Shares: Optimistic +1, fire-and-forget, localStorage delta (60s expiry)
+ * - Shares: Optimistic +1, fire-and-forget, localStorage delta (120s expiry)
  * - No syncing back from server (fire-and-forget)
+ * - Delta applied to BASE server value, not current (prevents double-counting)
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -120,7 +121,8 @@ export function useEngagement({
   });
 
   /**
-   * NEW: Share state management with localStorage delta
+   * Share state management with localStorage delta
+   * UPDATED v3: Uses baseServerValue to prevent double-counting
    */
   const { optimisticShares } = useShareState({
     slug,
@@ -134,12 +136,12 @@ export function useEngagement({
   const displayEngagement: EngagementData = {
     ...engagement,
     likes: optimisticLikes, // Optimistic like count with delta
-    shares: optimisticShares, // NEW: Optimistic share count with delta
+    shares: optimisticShares, // Optimistic share count with delta
   };
 
   /**
    * Handle share action
-   * UPDATED: Now saves delta to localStorage for persistence
+   * UPDATED v3: Now passes currentShares to capture base value
    */
   const handleShare = useCallback(async (platform: SharePlatform) => {
     if (platform === 'copy') {
@@ -165,8 +167,9 @@ export function useEngagement({
 
     // For all other platforms (including Instagram):
     // 1. Save delta to localStorage (persists across refreshes)
-    // This will be automatically picked up by useShareState hook
-    saveShareDelta(slug);
+    // UPDATED v3: Pass current shares count to capture base value
+    // This prevents double-counting when server updates faster than cache expiry
+    saveShareDelta(slug, engagement.shares);
     
     // 2. Trigger re-read of delta in useShareState
     setShareRefreshTrigger(prev => prev + 1);
@@ -201,7 +204,7 @@ export function useEngagement({
       article_title: title,
     });
     trackYandexEvent('article_share', { slug, method: platform });
-  }, [slug, title, url, showError]);
+  }, [slug, title, url, engagement.shares, showError]);
 
   return {
     engagement: displayEngagement, // Returns optimistic counts

@@ -54,27 +54,34 @@ export function useShareState({
   refreshTrigger = 0,
 }: UseShareStateOptions): UseShareStateReturn {
   // Get delta from localStorage (expires after 120s, separate from likes)
-  const localDelta = getShareDelta(slug);
+  // UPDATED v2: Use baseServerValue to prevent double-counting
+  const shareDelta = getShareDelta(slug);
   
-  // Apply delta to server count
-  const adjustedShares = Math.max(0, currentShares + localDelta);
+  // Apply delta to base server value (not current server value!)
+  const adjustedShares = shareDelta
+    ? Math.max(0, shareDelta.baseServerValue + shareDelta.delta)
+    : currentShares;
   const [optimisticShares, setOptimisticShares] = useState(adjustedShares);
 
   // Log delta application for debugging
   useEffect(() => {
-    if (localDelta > 0) {
+    if (shareDelta) {
       console.log(`[ShareState] Applied share delta for ${slug}:`, {
-        serverCount: currentShares,
-        delta: localDelta,
+        baseServerValue: shareDelta.baseServerValue,
+        delta: shareDelta.delta,
         displayCount: adjustedShares,
+        currentServerValue: currentShares,
+        usingBase: true,
       });
     }
-  }, [slug, currentShares, localDelta, adjustedShares]);
+  }, [slug, currentShares, shareDelta, adjustedShares]);
 
   // Update optimistic count when server count OR delta changes OR triggered to refresh
   useEffect(() => {
     const newDelta = getShareDelta(slug);
-    const newAdjustedShares = Math.max(0, currentShares + newDelta);
+    const newAdjustedShares = newDelta
+      ? Math.max(0, newDelta.baseServerValue + newDelta.delta)
+      : currentShares;
     setOptimisticShares(newAdjustedShares);
   }, [currentShares, slug, refreshTrigger]);
 

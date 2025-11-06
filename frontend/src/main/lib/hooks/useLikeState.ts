@@ -43,8 +43,11 @@ export function useLikeState({
   
   // PART 2: Count adjustment from TEMPORARY delta (separate from shares)
   // This expires after 120s - only for cache compensation
-  const localDelta = getLikeDelta(slug);
-  const adjustedLikes = Math.max(0, currentLikes + localDelta);
+  // UPDATED v8: Use baseServerValue to prevent double-counting
+  const likeDelta = getLikeDelta(slug);
+  const adjustedLikes = likeDelta 
+    ? Math.max(0, likeDelta.baseServerValue + likeDelta.delta)
+    : currentLikes;
   const [optimisticLikes, setOptimisticLikes] = useState(adjustedLikes);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -53,16 +56,18 @@ export function useLikeState({
 
   // Log delta application for debugging
   useEffect(() => {
-    if (localDelta !== 0) {
+    if (likeDelta) {
       console.log(`[LikeState] Applied like delta for ${slug}:`, {
-        serverCount: currentLikes,
-        delta: localDelta,
+        baseServerValue: likeDelta.baseServerValue,
+        delta: likeDelta.delta,
         displayCount: adjustedLikes,
+        currentServerValue: currentLikes,
+        usingBase: true,
       });
     } else if (isLiked) {
-      console.log(`[LikeState] Liked state restored for ${slug} (delta expired, using server count)`);
+      console.log(`[LikeState] Liked state restored for ${slug} (delta expired, using server count: ${currentLikes})`);
     }
-  }, [slug, currentLikes, localDelta, adjustedLikes, isLiked]);
+  }, [slug, currentLikes, likeDelta, adjustedLikes, isLiked]);
 
   // Sync isLiked when slug changes (navigation)
   // IMPORTANT: This reads from PERMANENT storage
@@ -75,7 +80,9 @@ export function useLikeState({
   // Update optimistic count when server count OR delta changes
   useEffect(() => {
     const newDelta = getLikeDelta(slug);
-    const newAdjustedLikes = Math.max(0, currentLikes + newDelta);
+    const newAdjustedLikes = newDelta
+      ? Math.max(0, newDelta.baseServerValue + newDelta.delta)
+      : currentLikes;
     setOptimisticLikes(newAdjustedLikes);
   }, [currentLikes, slug]);
 
@@ -109,14 +116,15 @@ export function useLikeState({
       // Update BOTH:
       // - Permanent liked state (for button)
       // - Temporary delta (for count adjustment, 120s expiry, timestamp resets)
+      // UPDATED v8: Pass currentLikes to capture base server value
       if (next) {
-        saveLikedArticle(slug);
+        saveLikedArticle(slug, currentLikes);
       } else {
-        removeLikedArticle(slug);
+        removeLikedArticle(slug, currentLikes);
       }
       
       console.log(`[LikeState] Toggled: ${prev} → ${next} (action: ${action})`);
-      console.log(`[LikeState] ✅ Permanent state saved, ⏱️ temporary delta created (120s, timestamp reset)`);
+      console.log(`[LikeState] ✅ Permanent state saved, ⏱️ temporary delta created (base: ${currentLikes}, 120s)`);
       return next;
     });
 
@@ -161,7 +169,7 @@ export function useLikeState({
         });
     }, 1000);
 
-  }, [slug]);
+  }, [slug, currentLikes]);
 
   return {
     isLiked,

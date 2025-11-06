@@ -34,10 +34,15 @@ const DELTA_EXPIRY_MS = 120 * 1000; // 120 seconds (2 minutes cache latency)
 
 /**
  * Delta value for a single metric (likes or shares)
+ * 
+ * CRITICAL: baseServerValue prevents double-counting!
+ * We apply delta to the BASE value, not the CURRENT server value.
+ * This handles the case where the server updates faster than the 120s cache window.
  */
 export interface DeltaValue {
   delta: number; // +1 for like/share, -1 for unlike
   timestamp: number; // When action occurred (resets on each new action)
+  baseServerValue: number; // Server value when action occurred (NEW v6)
 }
 
 /**
@@ -90,8 +95,10 @@ export function isArticleLiked(slug: string): boolean {
 /**
  * Save liked article (permanent)
  * Adds to liked list and creates temporary delta
+ * 
+ * UPDATED v6: Now captures base server value to prevent double-counting
  */
-export function saveLikedArticle(slug: string): void {
+export function saveLikedArticle(slug: string, currentServerValue: number): void {
   if (typeof window === 'undefined') return;
 
   try {
@@ -112,10 +119,11 @@ export function saveLikedArticle(slug: string): void {
     deltas[slug].likes = {
       delta: 1,
       timestamp: Date.now(), // Reset timestamp on each like action
+      baseServerValue: currentServerValue, // ← NEW: Capture current server value
     };
     
     saveEngagementDeltas(deltas);
-    console.log(`[localStorage] Created like delta +1 for ${slug} (temporary, 120s)`);
+    console.log(`[localStorage] Created like delta +1 for ${slug} (base: ${currentServerValue}, 120s timer)`);
   } catch (error) {
     console.error('[localStorage] Error saving liked article:', error);
   }
@@ -124,8 +132,10 @@ export function saveLikedArticle(slug: string): void {
 /**
  * Remove liked article (permanent)
  * Removes from liked list and creates negative delta
+ * 
+ * UPDATED v6: Now captures base server value to prevent double-counting
  */
-export function removeLikedArticle(slug: string): void {
+export function removeLikedArticle(slug: string, currentServerValue: number): void {
   if (typeof window === 'undefined') return;
 
   try {
@@ -144,10 +154,11 @@ export function removeLikedArticle(slug: string): void {
     deltas[slug].likes = {
       delta: -1,
       timestamp: Date.now(), // Reset timestamp on each unlike action
+      baseServerValue: currentServerValue, // ← NEW: Capture current server value
     };
     
     saveEngagementDeltas(deltas);
-    console.log(`[localStorage] Created like delta -1 for ${slug} (temporary, 120s)`);
+    console.log(`[localStorage] Created like delta -1 for ${slug} (base: ${currentServerValue}, 120s timer)`);
   } catch (error) {
     console.error('[localStorage] Error removing liked article:', error);
   }
@@ -199,20 +210,26 @@ export function getEngagementDeltas(): EngagementDeltas {
       // Check likes delta
       if (articleDeltas.likes) {
         const age = now - articleDeltas.likes.timestamp;
-        if (age < DELTA_EXPIRY_MS) {
+        // UPDATED v6: Also check for baseServerValue (migration from v5)
+        if (age < DELTA_EXPIRY_MS && typeof articleDeltas.likes.baseServerValue === 'number') {
           filteredArticle.likes = articleDeltas.likes;
-        } else {
+        } else if (age >= DELTA_EXPIRY_MS) {
           console.log(`[localStorage] Like delta expired for ${slug} (${Math.round(age / 1000)}s old)`);
+        } else {
+          console.log(`[localStorage] Like delta missing baseServerValue for ${slug} - removing (v5 → v6 migration)`);
         }
       }
       
       // Check shares delta
       if (articleDeltas.shares) {
         const age = now - articleDeltas.shares.timestamp;
-        if (age < DELTA_EXPIRY_MS) {
+        // UPDATED v6: Also check for baseServerValue (migration from v5)
+        if (age < DELTA_EXPIRY_MS && typeof articleDeltas.shares.baseServerValue === 'number') {
           filteredArticle.shares = articleDeltas.shares;
-        } else {
+        } else if (age >= DELTA_EXPIRY_MS) {
           console.log(`[localStorage] Share delta expired for ${slug} (${Math.round(age / 1000)}s old)`);
+        } else {
+          console.log(`[localStorage] Share delta missing baseServerValue for ${slug} - removing (v5 → v6 migration)`);
         }
       }
       
@@ -249,28 +266,34 @@ function saveEngagementDeltas(deltas: EngagementDeltas): void {
 
 /**
  * Get like delta for specific article
- * Returns 0 if not found or expired
+ * Returns full delta object or null if not found/expired
+ * 
+ * UPDATED v6: Returns full DeltaValue with baseServerValue
  */
-export function getLikeDelta(slug: string): number {
+export function getLikeDelta(slug: string): DeltaValue | null {
   const deltas = getEngagementDeltas();
-  return deltas[slug]?.likes?.delta || 0;
+  return deltas[slug]?.likes || null;
 }
 
 /**
  * Get share delta for specific article
- * Returns 0 if not found or expired
+ * Returns full delta object or null if not found/expired
+ * 
+ * UPDATED v6: Returns full DeltaValue with baseServerValue
  */
-export function getShareDelta(slug: string): number {
+export function getShareDelta(slug: string): DeltaValue | null {
   const deltas = getEngagementDeltas();
-  return deltas[slug]?.shares?.delta || 0;
+  return deltas[slug]?.shares || null;
 }
 
 /**
  * Save share delta (temporary)
  * Accumulates count and resets timestamp on each share
  * This persists optimistic share counts across page refreshes
+ * 
+ * UPDATED v6: Now captures base server value to prevent double-counting
  */
-export function saveShareDelta(slug: string): void {
+export function saveShareDelta(slug: string, currentServerValue: number): void {
   if (typeof window === 'undefined') return;
 
   try {
@@ -282,16 +305,19 @@ export function saveShareDelta(slug: string): void {
     
     // Get current share delta or default to 0
     const currentDelta = deltas[slug].shares?.delta || 0;
+    const existingBase = deltas[slug].shares?.baseServerValue ?? currentServerValue;
     
     // Increment the delta (accumulate multiple shares)
     // Reset timestamp to restart 120s window
+    // Keep the ORIGINAL base value (from first share in this session)
     deltas[slug].shares = {
       delta: currentDelta + 1,
       timestamp: Date.now(), // Reset timestamp on each share
+      baseServerValue: currentDelta === 0 ? currentServerValue : existingBase, // ← NEW
     };
     
     saveEngagementDeltas(deltas);
-    console.log(`[localStorage] Share delta +${deltas[slug].shares!.delta} for ${slug} (120s timer restarted)`);
+    console.log(`[localStorage] Share delta +${deltas[slug].shares!.delta} for ${slug} (base: ${deltas[slug].shares!.baseServerValue}, 120s timer restarted)`);
   } catch (error) {
     console.error('[localStorage] Error saving share delta:', error);
   }
