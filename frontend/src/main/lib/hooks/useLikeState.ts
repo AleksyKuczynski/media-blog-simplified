@@ -2,20 +2,13 @@
 /**
  * Like State Management Hook
  * 
- * FIXED v7: Removed aggressive safety guard that was deleting permanent liked state
+ * FIXED v8: Updated to use separate like delta storage
  * 
- * BUG FIX:
- * The v6 safety guard was triggering after delta expiry:
- * - Article has 0 likes from server
- * - User likes it → stored in permanent storage
- * - After 60s: delta expires, optimisticLikes = 0
- * - Safety guard: "0 likes but isLiked=true? Remove it!" ❌
- * - This deleted the permanent liked state!
- * 
- * SOLUTION:
- * - Trust permanent storage as source of truth for button state
- * - Remove the aggressive safety guard
- * - Only prevent showing liked button when there's NO permanent storage entry
+ * CHANGES:
+ * - Now uses getLikeDelta() instead of getArticleDelta()
+ * - Delta storage is separate from shares (no interference)
+ * - 120s expiry window (updated from 60s)
+ * - Timestamp resets on each like/unlike action
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -24,7 +17,7 @@ import {
   isArticleLiked, 
   saveLikedArticle, 
   removeLikedArticle,
-  getArticleDelta 
+  getLikeDelta 
 } from '../engagement/localStorage';
 
 export interface UseLikeStateOptions {
@@ -48,10 +41,10 @@ export function useLikeState({
   const [isLiked, setIsLiked] = useState(() => isArticleLiked(slug));
   const [isProcessing, setIsProcessing] = useState(false);
   
-  // PART 2: Count adjustment from TEMPORARY delta
-  // This expires after 60s - only for cache compensation
-  const localDelta = getArticleDelta(slug);
-  const adjustedLikes = Math.max(0, currentLikes + localDelta.delta);
+  // PART 2: Count adjustment from TEMPORARY delta (separate from shares)
+  // This expires after 120s - only for cache compensation
+  const localDelta = getLikeDelta(slug);
+  const adjustedLikes = Math.max(0, currentLikes + localDelta);
   const [optimisticLikes, setOptimisticLikes] = useState(adjustedLikes);
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -60,19 +53,16 @@ export function useLikeState({
 
   // Log delta application for debugging
   useEffect(() => {
-    if (localDelta.delta !== 0) {
-      const age = Math.round((Date.now() - localDelta.timestamp) / 1000);
-      console.log(`[LikeState] Applied delta for ${slug}:`, {
+    if (localDelta !== 0) {
+      console.log(`[LikeState] Applied like delta for ${slug}:`, {
         serverCount: currentLikes,
-        delta: localDelta.delta,
+        delta: localDelta,
         displayCount: adjustedLikes,
-        deltaAge: `${age}s`,
-        expiresIn: `${60 - age}s`,
       });
     } else if (isLiked) {
       console.log(`[LikeState] Liked state restored for ${slug} (delta expired, using server count)`);
     }
-  }, [slug, currentLikes, localDelta.delta, localDelta.timestamp, adjustedLikes, isLiked]);
+  }, [slug, currentLikes, localDelta, adjustedLikes, isLiked]);
 
   // Sync isLiked when slug changes (navigation)
   // IMPORTANT: This reads from PERMANENT storage
@@ -84,26 +74,10 @@ export function useLikeState({
 
   // Update optimistic count when server count OR delta changes
   useEffect(() => {
-    const newDelta = getArticleDelta(slug);
-    const newAdjustedLikes = Math.max(0, currentLikes + newDelta.delta);
+    const newDelta = getLikeDelta(slug);
+    const newAdjustedLikes = Math.max(0, currentLikes + newDelta);
     setOptimisticLikes(newAdjustedLikes);
   }, [currentLikes, slug]);
-
-  // ❌ REMOVED: Aggressive safety guard that was deleting permanent liked state
-  // The old guard was:
-  // if (optimisticLikes === 0 && isLiked) {
-  //   removeLikedArticle(slug); // ← This was deleting permanent state!
-  // }
-  //
-  // Why it was wrong:
-  // - After 60s, delta expires → optimisticLikes = currentLikes
-  // - If server shows 0 (new article or cache delay), but user liked it
-  // - Safety guard would delete the permanent liked state!
-  //
-  // NEW APPROACH:
-  // - Trust permanent storage (liked_articles) as source of truth
-  // - Don't second-guess it based on count
-  // - Permanent storage is explicitly set by user action only
 
   // Cleanup timer on unmount
   useEffect(() => {
@@ -134,7 +108,7 @@ export function useLikeState({
       
       // Update BOTH:
       // - Permanent liked state (for button)
-      // - Temporary delta (for count adjustment)
+      // - Temporary delta (for count adjustment, 120s expiry, timestamp resets)
       if (next) {
         saveLikedArticle(slug);
       } else {
@@ -142,7 +116,7 @@ export function useLikeState({
       }
       
       console.log(`[LikeState] Toggled: ${prev} → ${next} (action: ${action})`);
-      console.log(`[LikeState] ✅ Permanent state saved, ⏱️ temporary delta created (60s)`);
+      console.log(`[LikeState] ✅ Permanent state saved, ⏱️ temporary delta created (120s, timestamp reset)`);
       return next;
     });
 
@@ -173,7 +147,7 @@ export function useLikeState({
           console.log(`[LikeState] ✅ ${action} completed on server`);
           // Note: We don't clear the delta here
           // Permanent liked state stays forever
-          // Temporary delta expires after 60s automatically
+          // Temporary delta expires after 120s automatically
         })
         .catch((error) => {
           console.error(`[LikeState] ❌ ${action} error:`, error);

@@ -2,38 +2,57 @@
 /**
  * LocalStorage Operations for Engagement
  * 
- * ENHANCED v4: Added share delta support
+ * FIXED v5: Separate delta tracking for likes and shares
  * 
  * TWO SEPARATE STORAGE KEYS:
  * 1. "liked_articles" - Permanent list of liked articles (for button state)
  * 2. "engagement_deltas" - Temporary count adjustments (for cache compensation)
  * 
- * WHY SEPARATE?
- * - Button state should persist forever (user preference)
- * - Count deltas should expire after 60s (cache has caught up)
+ * WHY SEPARATE DELTAS FOR LIKES AND SHARES?
+ * - Prevents interference: User can like AND share within 120s window
+ * - Independent expiry: Each action has its own 120s timer
+ * - Accurate counts: No data loss when both actions occur
  * 
  * STRUCTURE:
  * liked_articles: ["slug-1", "slug-2", "slug-3"]
  * engagement_deltas: {
- *   "slug-1": { delta: 1, timestamp: 1699..., action: "like" },
- *   "slug-2": { delta: 1, timestamp: 1699..., action: "share" }
+ *   "slug-1": {
+ *     likes: { delta: 1, timestamp: 1699... },
+ *     shares: { delta: 2, timestamp: 1699... }
+ *   }
  * }
  * 
- * NEW: Share deltas added - same 60s expiry, no permanent state needed
+ * BEHAVIOR:
+ * - Likes: delta resets timestamp on each like/unlike
+ * - Shares: delta accumulates and resets timestamp on each share
+ * - Both: expire after 120s of last action
  */
 
 const LIKED_ARTICLES_KEY = 'liked_articles';
 const ENGAGEMENT_DELTAS_KEY = 'engagement_deltas';
-const DELTA_EXPIRY_MS = 60 * 1000; // 60 seconds
+const DELTA_EXPIRY_MS = 120 * 1000; // 120 seconds (2 minutes cache latency)
 
-export interface EngagementDelta {
+/**
+ * Delta value for a single metric (likes or shares)
+ */
+export interface DeltaValue {
   delta: number; // +1 for like/share, -1 for unlike
-  timestamp: number;
-  action: 'like' | 'unlike' | 'share';
+  timestamp: number; // When action occurred (resets on each new action)
 }
 
+/**
+ * All deltas for a single article
+ */
+export interface ArticleDeltas {
+  likes?: DeltaValue;
+  shares?: DeltaValue;
+}
+
+/**
+ * All engagement deltas across all articles
+ */
 export interface EngagementDeltas {
-  [slug: string]: EngagementDelta;
+  [slug: string]: ArticleDeltas;
 }
 
 // ============================================================================
@@ -84,15 +103,19 @@ export function saveLikedArticle(slug: string): void {
       console.log(`[localStorage] Added ${slug} to liked articles (permanent)`);
     }
 
-    // 2. Create temporary delta for count adjustment
+    // 2. Create/update temporary delta for count adjustment
     const deltas = getEngagementDeltas();
-    deltas[slug] = {
+    if (!deltas[slug]) {
+      deltas[slug] = {};
+    }
+    
+    deltas[slug].likes = {
       delta: 1,
-      timestamp: Date.now(),
-      action: 'like',
+      timestamp: Date.now(), // Reset timestamp on each like action
     };
+    
     saveEngagementDeltas(deltas);
-    console.log(`[localStorage] Created delta +1 for ${slug} (temporary, 60s)`);
+    console.log(`[localStorage] Created like delta +1 for ${slug} (temporary, 120s)`);
   } catch (error) {
     console.error('[localStorage] Error saving liked article:', error);
   }
@@ -112,15 +135,19 @@ export function removeLikedArticle(slug: string): void {
     localStorage.setItem(LIKED_ARTICLES_KEY, JSON.stringify(filtered));
     console.log(`[localStorage] Removed ${slug} from liked articles (permanent)`);
 
-    // 2. Create temporary delta for count adjustment
+    // 2. Create/update temporary delta for count adjustment
     const deltas = getEngagementDeltas();
-    deltas[slug] = {
+    if (!deltas[slug]) {
+      deltas[slug] = {};
+    }
+    
+    deltas[slug].likes = {
       delta: -1,
-      timestamp: Date.now(),
-      action: 'unlike',
+      timestamp: Date.now(), // Reset timestamp on each unlike action
     };
+    
     saveEngagementDeltas(deltas);
-    console.log(`[localStorage] Created delta -1 for ${slug} (temporary, 60s)`);
+    console.log(`[localStorage] Created like delta -1 for ${slug} (temporary, 120s)`);
   } catch (error) {
     console.error('[localStorage] Error removing liked article:', error);
   }
@@ -132,7 +159,8 @@ export function removeLikedArticle(slug: string): void {
 
 /**
  * Get all engagement deltas (temporary)
- * Automatically filters out expired deltas (>60s old)
+ * Automatically filters out expired deltas (>120s old)
+ * Handles migration from old format
  */
 export function getEngagementDeltas(): EngagementDeltas {
   if (typeof window === 'undefined') return {};
@@ -141,17 +169,56 @@ export function getEngagementDeltas(): EngagementDeltas {
     const stored = localStorage.getItem(ENGAGEMENT_DELTAS_KEY);
     if (!stored) return {};
 
-    const parsed: EngagementDeltas = JSON.parse(stored);
+    const parsed = JSON.parse(stored);
     const now = Date.now();
     const filtered: EngagementDeltas = {};
 
+    // Check if we need to migrate from old format
+    let needsMigration = false;
+    for (const [slug, value] of Object.entries(parsed)) {
+      // Old format: { delta, timestamp, action }
+      // New format: { likes?: {delta, timestamp}, shares?: {delta, timestamp} }
+      if (value && typeof value === 'object') {
+        if ('action' in value) {
+          needsMigration = true;
+          break;
+        }
+      }
+    }
+
+    if (needsMigration) {
+      console.log('[localStorage] Migrating deltas to new format (old deltas will be cleared)');
+      saveEngagementDeltas({});
+      return {};
+    }
+
     // Filter out expired deltas
-    for (const [slug, delta] of Object.entries(parsed)) {
-      const age = now - delta.timestamp;
-      if (age < DELTA_EXPIRY_MS) {
-        filtered[slug] = delta;
-      } else {
-        console.log(`[localStorage] Delta expired for ${slug} (${Math.round(age / 1000)}s old) - cache should have caught up`);
+    for (const [slug, articleDeltas] of Object.entries(parsed as EngagementDeltas)) {
+      const filteredArticle: ArticleDeltas = {};
+      
+      // Check likes delta
+      if (articleDeltas.likes) {
+        const age = now - articleDeltas.likes.timestamp;
+        if (age < DELTA_EXPIRY_MS) {
+          filteredArticle.likes = articleDeltas.likes;
+        } else {
+          console.log(`[localStorage] Like delta expired for ${slug} (${Math.round(age / 1000)}s old)`);
+        }
+      }
+      
+      // Check shares delta
+      if (articleDeltas.shares) {
+        const age = now - articleDeltas.shares.timestamp;
+        if (age < DELTA_EXPIRY_MS) {
+          filteredArticle.shares = articleDeltas.shares;
+        } else {
+          console.log(`[localStorage] Share delta expired for ${slug} (${Math.round(age / 1000)}s old)`);
+        }
+      }
+      
+      // Only keep article if it has at least one active delta
+      if (filteredArticle.likes || filteredArticle.shares) {
+        filtered[slug] = filteredArticle;
       }
     }
 
@@ -181,17 +248,26 @@ function saveEngagementDeltas(deltas: EngagementDeltas): void {
 }
 
 /**
- * Get delta for specific article
- * Returns { delta: 0 } if not found or expired
+ * Get like delta for specific article
+ * Returns 0 if not found or expired
  */
-export function getArticleDelta(slug: string): EngagementDelta {
+export function getLikeDelta(slug: string): number {
   const deltas = getEngagementDeltas();
-  return deltas[slug] || { delta: 0, timestamp: 0, action: 'like' };
+  return deltas[slug]?.likes?.delta || 0;
 }
 
 /**
- * NEW: Save share delta (temporary)
- * Creates a +1 delta that expires after 60s
+ * Get share delta for specific article
+ * Returns 0 if not found or expired
+ */
+export function getShareDelta(slug: string): number {
+  const deltas = getEngagementDeltas();
+  return deltas[slug]?.shares?.delta || 0;
+}
+
+/**
+ * Save share delta (temporary)
+ * Accumulates count and resets timestamp on each share
  * This persists optimistic share counts across page refreshes
  */
 export function saveShareDelta(slug: string): void {
@@ -200,31 +276,25 @@ export function saveShareDelta(slug: string): void {
   try {
     const deltas = getEngagementDeltas();
     
-    // Get current delta or default
-    const currentDelta = deltas[slug] || { delta: 0, timestamp: Date.now(), action: 'share' };
+    if (!deltas[slug]) {
+      deltas[slug] = {};
+    }
     
-    // Increment the delta (allow multiple shares to accumulate)
-    deltas[slug] = {
-      delta: currentDelta.delta + 1,
-      timestamp: Date.now(), // Reset timestamp on new share
-      action: 'share',
+    // Get current share delta or default to 0
+    const currentDelta = deltas[slug].shares?.delta || 0;
+    
+    // Increment the delta (accumulate multiple shares)
+    // Reset timestamp to restart 120s window
+    deltas[slug].shares = {
+      delta: currentDelta + 1,
+      timestamp: Date.now(), // Reset timestamp on each share
     };
     
     saveEngagementDeltas(deltas);
-    console.log(`[localStorage] Created share delta +${deltas[slug].delta} for ${slug} (temporary, 60s)`);
+    console.log(`[localStorage] Share delta +${deltas[slug].shares!.delta} for ${slug} (120s timer restarted)`);
   } catch (error) {
     console.error('[localStorage] Error saving share delta:', error);
   }
-}
-
-/**
- * NEW: Get share delta for specific article
- * Returns only the delta value for shares
- */
-export function getShareDelta(slug: string): number {
-  const delta = getArticleDelta(slug);
-  // Only return delta if it's a share action
-  return delta.action === 'share' ? delta.delta : 0;
 }
 
 /**
@@ -238,7 +308,7 @@ export function clearArticleDelta(slug: string): void {
     const deltas = getEngagementDeltas();
     delete deltas[slug];
     saveEngagementDeltas(deltas);
-    console.log(`[localStorage] Cleared delta for ${slug}`);
+    console.log(`[localStorage] Cleared all deltas for ${slug}`);
   } catch (error) {
     console.error('[localStorage] Error clearing delta:', error);
   }
@@ -290,16 +360,31 @@ export function debugEngagementStorage(): void {
   console.log('📌 Liked Articles (Permanent):');
   console.table(likedArticles.map(slug => ({ slug, liked: '✅' })));
 
-  console.log('⏱️ Active Deltas (Temporary):');
-  console.table(
-    Object.entries(deltas).map(([slug, delta]) => ({
-      slug,
-      delta: delta.delta > 0 ? `+${delta.delta}` : delta.delta,
-      action: delta.action,
-      age: `${Math.round((Date.now() - delta.timestamp) / 1000)}s`,
-      expires: `in ${60 - Math.round((Date.now() - delta.timestamp) / 1000)}s`,
-    }))
-  );
+  console.log('⏱️ Active Deltas (Temporary, 120s expiry):');
+  const deltaTable: any[] = [];
+  for (const [slug, articleDeltas] of Object.entries(deltas)) {
+    if (articleDeltas.likes) {
+      const age = Math.round((Date.now() - articleDeltas.likes.timestamp) / 1000);
+      deltaTable.push({
+        slug,
+        type: 'likes',
+        delta: articleDeltas.likes.delta > 0 ? `+${articleDeltas.likes.delta}` : articleDeltas.likes.delta,
+        age: `${age}s`,
+        expires: `in ${120 - age}s`,
+      });
+    }
+    if (articleDeltas.shares) {
+      const age = Math.round((Date.now() - articleDeltas.shares.timestamp) / 1000);
+      deltaTable.push({
+        slug,
+        type: 'shares',
+        delta: `+${articleDeltas.shares.delta}`,
+        age: `${age}s`,
+        expires: `in ${120 - age}s`,
+      });
+    }
+  }
+  console.table(deltaTable);
 
   console.groupEnd();
 }
@@ -309,22 +394,37 @@ export function debugEngagementStorage(): void {
  */
 export function getStorageStats(): {
   likedCount: number;
-  activeDeltasCount: number;
+  activeLikeDeltasCount: number;
+  activeShareDeltasCount: number;
   totalSize: number;
 } {
   if (typeof window === 'undefined') {
-    return { likedCount: 0, activeDeltasCount: 0, totalSize: 0 };
+    return { 
+      likedCount: 0, 
+      activeLikeDeltasCount: 0, 
+      activeShareDeltasCount: 0, 
+      totalSize: 0 
+    };
   }
 
   const likedArticles = getLikedArticles();
   const deltas = getEngagementDeltas();
+  
+  let activeLikeDeltasCount = 0;
+  let activeShareDeltasCount = 0;
+  
+  for (const articleDeltas of Object.values(deltas)) {
+    if (articleDeltas.likes) activeLikeDeltasCount++;
+    if (articleDeltas.shares) activeShareDeltasCount++;
+  }
   
   const likedSize = JSON.stringify(likedArticles).length;
   const deltasSize = JSON.stringify(deltas).length;
 
   return {
     likedCount: likedArticles.length,
-    activeDeltasCount: Object.keys(deltas).length,
+    activeLikeDeltasCount,
+    activeShareDeltasCount,
     totalSize: likedSize + deltasSize,
   };
 }

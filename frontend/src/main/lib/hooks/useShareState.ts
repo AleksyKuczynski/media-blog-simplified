@@ -2,13 +2,19 @@
 /**
  * Share State Management Hook
  * 
- * Handles optimistic share count with localStorage persistence
- * Similar to useLikeState but simpler (no button state, only count)
+ * FIXED v2: Updated to use separate share delta storage
+ * 
+ * CHANGES:
+ * - Now uses getShareDelta() with separate storage from likes
+ * - 120s expiry window (updated from 60s)
+ * - Timestamp resets on each share action (accumulates count)
+ * - No interference with like deltas
  * 
  * BEHAVIOR:
- * - When user shares: +1 delta saved to localStorage (expires after 60s)
+ * - When user shares: +1 delta saved to localStorage (expires after 120s)
+ * - Multiple shares: Accumulate count and reset 120s timer each time
  * - On page refresh: Delta applied to server count (cache compensation)
- * - After 60s: Delta expires, server count displayed directly
+ * - After 120s: Delta expires, server count displayed directly
  */
 
 import { useState, useEffect } from 'react';
@@ -29,6 +35,7 @@ export interface UseShareStateReturn {
  * 
  * @param slug - Article slug
  * @param currentShares - Current share count from server
+ * @param refreshTrigger - Optional counter to force re-reading delta
  * @returns Optimistic share count with delta applied
  * 
  * @example
@@ -38,7 +45,7 @@ export interface UseShareStateReturn {
  *   currentShares: 10,
  * });
  * // If user shared recently: optimisticShares = 11
- * // After 60s or no delta: optimisticShares = 10
+ * // After 120s or no delta: optimisticShares = 10
  * ```
  */
 export function useShareState({
@@ -46,7 +53,7 @@ export function useShareState({
   currentShares,
   refreshTrigger = 0,
 }: UseShareStateOptions): UseShareStateReturn {
-  // Get delta from localStorage (expires after 60s)
+  // Get delta from localStorage (expires after 120s, separate from likes)
   const localDelta = getShareDelta(slug);
   
   // Apply delta to server count
