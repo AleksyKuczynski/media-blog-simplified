@@ -1,5 +1,14 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
-// PHASE 1 - UPDATED: Added last_updated timestamp to response for timestamp-based reconciliation
+/**
+ * Engagement API Route - Phase 2 (Session Tracking Fix)
+ * 
+ * UPDATED: Reduced logging verbosity + better session tracking
+ * 
+ * CHANGES:
+ * - Only log when Flow is actually triggered (not on every repeat visit)
+ * - Add session tracking header for client
+ * - Cleaner console output
+ */
 
 import { fetchEngagementData } from '@/main/lib/directus';
 import { checkRateLimit, hasRecentlyViewed, triggerEngagementFlow } from '@/main/lib/engagement';
@@ -15,12 +24,6 @@ export async function GET(
   try {
     const { slug } = await params;
 
-    console.log('\n' + '='.repeat(70));
-    console.log('GET /api/engagement/[slug]');
-    console.log('='.repeat(70));
-    console.log('Slug:', slug);
-    console.log('Timestamp:', new Date().toISOString());
-
     if (!slug || typeof slug !== 'string') {
       return NextResponse.json(
         { error: 'Invalid slug parameter' },
@@ -29,7 +32,6 @@ export async function GET(
     }
 
     const clientIP = getClientIP(request);
-    console.log('Client IP:', clientIP);
     
     if (!checkRateLimit(clientIP)) {
       return NextResponse.json(
@@ -51,7 +53,7 @@ export async function GET(
     // Validate article exists
     const isValidArticle = await validateArticleSlug(slug);
     if (!isValidArticle) {
-      console.warn('⚠️ Article not found:', slug);
+      console.warn(`⚠️ Article not found: ${slug}`);
       return NextResponse.json(
         { error: 'Article not found' },
         { status: 404 }
@@ -66,18 +68,16 @@ export async function GET(
     let viewTracked = false;
     
     if (!alreadyViewed) {
-      console.log('🆕 First view in this session - triggering Flow (fire-and-forget)');
+      // ONLY log when we're actually triggering the Flow
+      console.log(`🆕 [${slug}] First view from ${clientIP} - triggering Flow`);
       viewTracked = true;
       
       // Trigger Flow without waiting (fire-and-forget)
       triggerEngagementFlow(slug, 'view');
-    } else {
-      console.log('♻️ Already viewed in this session - skipping Flow');
     }
+    // REMOVED: No logging for repeat visits (reduces noise)
 
     // 3. RETURN DATA + viewTracked flag + last_updated timestamp
-    // Client will handle optimistic +1 if viewTracked is true
-    // PHASE 1 NEW: Include last_updated for timestamp-based reconciliation
     const responseData = {
       success: true,
       data: {
@@ -85,16 +85,17 @@ export async function GET(
         views: engagement.view_count || 0,
         likes: engagement.like_count || 0,
         shares: engagement.share_count || 0,
-        last_updated: engagement.date_updated || null, // NEW: Timestamp from Directus
+        last_updated: engagement.date_updated || null,
       },
-      viewTracked, // Client uses this to add optimistic +1
+      viewTracked,
     };
-
-    console.log('✅ Response:', JSON.stringify(responseData, null, 2));
-    console.log('='.repeat(70) + '\n');
 
     const response = NextResponse.json(responseData);
 
+    // Add custom headers for debugging
+    response.headers.set('X-View-Tracked', viewTracked ? 'true' : 'false');
+    response.headers.set('X-Session-Key', `${clientIP}:${slug}`.substring(0, 20)); // Truncated for privacy
+    
     // Prevent caching
     response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     response.headers.set('Pragma', 'no-cache');
@@ -132,13 +133,6 @@ export async function POST(
     const { slug } = await params;
     const body = await request.json();
     const { action } = body as { action: 'like' | 'unlike' | 'share' };
-
-    console.log('\n' + '='.repeat(70));
-    console.log('POST /api/engagement/[slug]');
-    console.log('='.repeat(70));
-    console.log('Slug:', slug);
-    console.log('Action:', action);
-    console.log('Timestamp:', new Date().toISOString());
 
     if (!slug || typeof slug !== 'string') {
       return NextResponse.json(
@@ -183,10 +177,10 @@ export async function POST(
     }
 
     // Trigger Flow (fire-and-forget)
-    const flowTriggered = triggerEngagementFlow(slug, action);
-
-    console.log('✅ POST complete - Flow triggered');
-    console.log('='.repeat(70) + '\n');
+    triggerEngagementFlow(slug, action);
+    
+    // Log engagement actions (useful for monitoring)
+    console.log(`✅ [${slug}] ${action} from ${clientIP}`);
 
     // Return immediately - client uses optimistic updates
     return NextResponse.json({

@@ -33,7 +33,6 @@ export {
   isArticleLiked,
   saveLikedArticle,
   removeLikedArticle,
-  getArticleDelta,
 } from './localStorage';
 
 // LocalStorage - Shares (NEW: delta only)
@@ -48,12 +47,6 @@ export {
   copyToClipboard,
   openShareWindow,
 } from './share';
-
-// Retry
-export {
-  retryWithBackoff,
-  shouldRetryError,
-} from './retry';
 
 export { checkRateLimit } from './checkRateLimit';
 export { hasRecentlyViewed } from './hasRecentlyViewed';

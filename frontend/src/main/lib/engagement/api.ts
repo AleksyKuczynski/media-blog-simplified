@@ -6,7 +6,6 @@
  */
 
 import type { EngagementData, EngagementResponse, EngagementAction, EngagementError } from './types';
-import { retryWithBackoff, shouldRetryError } from './retry';
 
 // FIXED: Request deduplication - track in-flight requests
 const inFlightRequests = new Map<string, Promise<any>>();
