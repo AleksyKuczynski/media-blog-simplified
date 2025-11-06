@@ -33,7 +33,7 @@ const MAX_ACTION_AGE_MS = 120 * 1000; // 120 seconds (2 minutes)
 // TYPES
 // ============================================================================
 
-export type ActionType = 'like' | 'unlike' | 'share';
+export type ActionType = 'view' | 'like' | 'unlike' | 'share';
 
 export interface EngagementAction {
   id: string;              // Unique ID (for deduplication)
@@ -43,6 +43,7 @@ export interface EngagementAction {
 }
 
 export interface ActionLog {
+  views: number;           // Delta for views
   likes: number;           // Delta for likes
   unlikes: number;         // Delta for unlikes
   shares: number;          // Delta for shares
@@ -219,13 +220,16 @@ export function getPendingActions(
  */
 export function calculateDeltaFromActions(pendingActions: EngagementAction[]): ActionLog {
   const delta: ActionLog = {
+    views: 0,
     likes: 0,
     unlikes: 0,
     shares: 0,
   };
 
   for (const action of pendingActions) {
-    if (action.type === 'like') {
+    if (action.type === 'view') {
+      delta.views += 1;
+    } else if (action.type === 'like') {
       delta.likes += 1;
     } else if (action.type === 'unlike') {
       delta.unlikes += 1;
@@ -252,9 +256,9 @@ export function calculateDeltaFromActions(pendingActions: EngagementAction[]): A
  */
 export function reconcileCounts(
   slug: string,
-  serverCounts: { likes: number; shares: number },
+  serverCounts: { views: number; likes: number; shares: number },
   serverLastUpdated: string | null
-): { likes: number; shares: number } {
+): { views: number; likes: number; shares: number } {
   // Clean up old actions first
   cleanupOldActions();
 
@@ -271,16 +275,18 @@ export function reconcileCounts(
 
   // Apply deltas (likes and unlikes cancel out)
   const netLikeDelta = delta.likes - delta.unlikes;
+  const adjustedViews = Math.max(0, serverCounts.views + delta.views);
   const adjustedLikes = Math.max(0, serverCounts.likes + netLikeDelta);
   const adjustedShares = Math.max(0, serverCounts.shares + delta.shares);
 
   console.log(`[ActionLog] Reconciled counts for ${slug}:`, {
     server: serverCounts,
-    delta: { likes: netLikeDelta, shares: delta.shares },
-    adjusted: { likes: adjustedLikes, shares: adjustedShares },
+    delta: { views: delta.views, likes: netLikeDelta, shares: delta.shares },
+    adjusted: { views: adjustedViews, likes: adjustedLikes, shares: adjustedShares },
   });
 
   return {
+    views: adjustedViews,
     likes: adjustedLikes,
     shares: adjustedShares,
   };
@@ -365,6 +371,7 @@ export function getActionLogStats(): {
   const stats = {
     totalActions: actions.length,
     actionsByType: {
+      view: 0,
       like: 0,
       unlike: 0,
       share: 0,

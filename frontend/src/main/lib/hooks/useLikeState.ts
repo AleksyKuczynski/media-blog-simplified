@@ -1,9 +1,8 @@
 // frontend/src/main/lib/hooks/useLikeState.ts
 /**
- * Like State Management Hook - Phase 2
+ * Like State Management Hook - Phase 2 (Views Fix)
  * 
- * UPDATED: Uses action log with timestamp-based reconciliation
- * REMOVED: baseServerValue approach (replaced with timestamp comparison)
+ * UPDATED: Now passes views through reconciliation to ensure all counts stay in sync
  * 
  * BEHAVIOR:
  * - Button state: Permanent (from liked_articles list)
@@ -25,6 +24,8 @@ import {
 export interface UseLikeStateOptions {
   slug: string;
   currentLikes: number;        // Server count
+  currentViews: number;        // Server count (needed for reconciliation)
+  currentShares: number;       // Server count (needed for reconciliation)
   lastUpdated: string | null;  // Server's last_updated timestamp
 }
 
@@ -40,12 +41,16 @@ export interface UseLikeStateReturn {
  * 
  * @param slug - Article slug
  * @param currentLikes - Server like count
+ * @param currentViews - Server view count
+ * @param currentShares - Server share count
  * @param lastUpdated - Server's last_updated timestamp (ISO string)
  * @returns Like state and handlers
  */
 export function useLikeState({
   slug,
   currentLikes,
+  currentViews,
+  currentShares,
   lastUpdated,
 }: UseLikeStateOptions): UseLikeStateReturn {
   // PART 1: Button state from permanent storage
@@ -55,7 +60,7 @@ export function useLikeState({
   // PART 2: Reconciled count (server + pending actions)
   const reconciledCounts = reconcileCounts(
     slug,
-    { likes: currentLikes, shares: 0 }, // Only care about likes here
+    { views: currentViews, likes: currentLikes, shares: currentShares },
     lastUpdated
   );
   const [optimisticLikes, setOptimisticLikes] = useState(reconciledCounts.likes);
@@ -88,11 +93,11 @@ export function useLikeState({
   useEffect(() => {
     const newReconciled = reconcileCounts(
       slug,
-      { likes: currentLikes, shares: 0 },
+      { views: currentViews, likes: currentLikes, shares: currentShares },
       lastUpdated
     );
     setOptimisticLikes(newReconciled.likes);
-  }, [currentLikes, slug, lastUpdated]);
+  }, [currentLikes, currentViews, currentShares, slug, lastUpdated]);
 
   /**
    * Execute the pending like/unlike action
@@ -122,7 +127,7 @@ export function useLikeState({
       // Recalculate optimistic count
       const rolled = reconcileCounts(
         slug,
-        { likes: currentLikes, shares: 0 },
+        { views: currentViews, likes: currentLikes, shares: currentShares },
         lastUpdated
       );
       setOptimisticLikes(rolled.likes);
@@ -131,7 +136,7 @@ export function useLikeState({
       pendingActionRef.current = null;
       setIsProcessing(false);
     }
-  }, [slug, currentLikes, lastUpdated]);
+  }, [slug, currentLikes, currentViews, currentShares, lastUpdated]);
 
   /**
    * Toggle like/unlike with debouncing
@@ -163,7 +168,7 @@ export function useLikeState({
     // STEP 3: Update optimistic count immediately
     const newReconciled = reconcileCounts(
       slug,
-      { likes: currentLikes, shares: 0 },
+      { views: currentViews, likes: currentLikes, shares: currentShares },
       lastUpdated
     );
     setOptimisticLikes(newReconciled.likes);
@@ -179,7 +184,7 @@ export function useLikeState({
     timerRef.current = setTimeout(() => {
       executePendingAction();
     }, 1000);
-  }, [isLiked, isProcessing, slug, currentLikes, lastUpdated, executePendingAction]);
+  }, [isLiked, isProcessing, slug, currentLikes, currentViews, currentShares, lastUpdated, executePendingAction]);
 
   // Cleanup on unmount
   useEffect(() => {

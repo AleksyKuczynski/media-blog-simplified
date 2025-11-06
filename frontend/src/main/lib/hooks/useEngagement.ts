@@ -1,12 +1,11 @@
 // frontend/src/main/lib/hooks/useEngagement.ts
 /**
- * Main Engagement Hook - Phase 2
+ * Main Engagement Hook - Phase 2 (Views Fix)
  * 
- * UPDATED: Uses action log with timestamp-based reconciliation
- * REMOVED: Delta with baseServerValue (replaced with timestamp comparison)
+ * UPDATED: Views now use the same reconciliation as likes/shares
  * 
  * BEHAVIOR:
- * - Views: Tracked by GET endpoint (optional client-side tracking)
+ * - Views: Reconciled from action log (logged when API tracks)
  * - Likes: Debounced (1s), optimistic updates, fire-and-forget, action log
  * - Shares: Optimistic +1, fire-and-forget, action log
  * - Reconciliation: Timestamp-based (action.timestamp vs server.last_updated)
@@ -18,7 +17,7 @@ import { useShareState } from './useShareState';
 import { useViewTracking } from './useViewTracking';
 import { updateEngagement } from '../engagement/api';
 import { getShareUrl, copyToClipboard, openShareWindow } from '../engagement/share';
-import { logAction } from '../engagement/actionLog';
+import { logAction, reconcileCounts } from '../engagement/actionLog';
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
 import type { EngagementData, SharePlatform } from '../engagement';
@@ -29,6 +28,7 @@ export interface UseEngagementOptions {
   url: string;
   initialData: EngagementData;
   trackView?: boolean;
+  viewWasTrackedByAPI?: boolean;  // NEW: Flag from API response
 }
 
 export interface UseEngagementReturn {
@@ -64,6 +64,7 @@ export function useEngagement({
   url,
   initialData,
   trackView = false,
+  viewWasTrackedByAPI = false,
 }: UseEngagementOptions): UseEngagementReturn {
   const [engagement, setEngagement] = useState<EngagementData>(initialData);
   const [error, setError] = useState<string | null>(null);
@@ -75,6 +76,14 @@ export function useEngagement({
     console.log('[useEngagement] Updating engagement with initialData:', initialData);
     setEngagement(initialData);
   }, [initialData]);
+
+  // Log view action if tracked by API (for reconciliation)
+  useEffect(() => {
+    if (viewWasTrackedByAPI) {
+      console.log('[useEngagement] View was tracked by API, logging action');
+      logAction(slug, 'view');
+    }
+  }, [slug, viewWasTrackedByAPI]);
 
   /**
    * Show error message temporarily
@@ -92,14 +101,15 @@ export function useEngagement({
   }, []);
 
   /**
-   * Optional view tracking (disabled by default)
+   * Optional view tracking (disabled by default, views handled by API)
    */
   const { hasTracked: hasViewTracked } = useViewTracking({
     slug,
     delayMs: 1000,
     enabled: trackView,
     onTrack: () => {
-      console.log('[Engagement] View tracked (client-side), optimistic +1');
+      console.log('[Engagement] View tracked (client-side), logging action');
+      logAction(slug, 'view');
       setEngagement(prev => ({
         ...prev,
         views: prev.views + 1,
@@ -109,7 +119,6 @@ export function useEngagement({
 
   /**
    * Like state management with action log reconciliation
-   * UPDATED: Now receives last_updated timestamp for reconciliation
    */
   const {
     isLiked,
@@ -119,32 +128,48 @@ export function useEngagement({
   } = useLikeState({
     slug,
     currentLikes: engagement.likes,
+    currentViews: engagement.views,
+    currentShares: engagement.shares,
     lastUpdated: engagement.last_updated || null,
   });
 
   /**
    * Share state management with action log reconciliation
-   * UPDATED: Now receives last_updated timestamp for reconciliation
    */
   const { optimisticShares } = useShareState({
     slug,
+    currentViews: engagement.views,
+    currentLikes: engagement.likes,
     currentShares: engagement.shares,
     lastUpdated: engagement.last_updated || null,
     refreshTrigger: shareRefreshTrigger,
   });
 
   /**
-   * Display engagement with optimistic counts (reconciled)
+   * Views reconciliation (same as likes/shares)
+   */
+  const reconciledCounts = reconcileCounts(
+    slug,
+    { 
+      views: engagement.views, 
+      likes: engagement.likes, 
+      shares: engagement.shares 
+    },
+    engagement.last_updated || null
+  );
+
+  /**
+   * Display engagement with optimistic counts (all reconciled)
    */
   const displayEngagement: EngagementData = {
     ...engagement,
-    likes: optimisticLikes,   // Reconciled like count
-    shares: optimisticShares, // Reconciled share count
+    views: reconciledCounts.views,    // Reconciled view count
+    likes: optimisticLikes,           // Reconciled like count
+    shares: optimisticShares,         // Reconciled share count
   };
 
   /**
    * Handle share action
-   * UPDATED: Uses action log instead of delta storage
    */
   const handleShare = useCallback(async (platform: SharePlatform) => {
     if (platform === 'copy') {
