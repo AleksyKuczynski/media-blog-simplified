@@ -1,89 +1,86 @@
 // frontend/src/main/lib/hooks/useShareState.ts
 /**
- * Share State Management Hook
+ * Share State Management Hook - Phase 2
  * 
- * FIXED v2: Updated to use separate share delta storage
- * 
- * CHANGES:
- * - Now uses getShareDelta() with separate storage from likes
- * - 120s expiry window (updated from 60s)
- * - Timestamp resets on each share action (accumulates count)
- * - No interference with like deltas
+ * UPDATED: Uses action log with timestamp-based reconciliation
+ * REMOVED: baseServerValue approach (replaced with timestamp comparison)
  * 
  * BEHAVIOR:
- * - When user shares: +1 delta saved to localStorage (expires after 120s)
- * - Multiple shares: Accumulate count and reset 120s timer each time
- * - On page refresh: Delta applied to server count (cache compensation)
- * - After 120s: Delta expires, server count displayed directly
+ * - Count display: Server count + pending action deltas
+ * - Reconciliation: Compare action timestamps with server's last_updated
+ * - No debouncing: Shares are immediate (but still fire-and-forget)
  */
 
 import { useState, useEffect } from 'react';
-import { getShareDelta } from '../engagement/localStorage';
+import { reconcileCounts } from '../engagement/actionLog';
 
 export interface UseShareStateOptions {
   slug: string;
-  currentShares: number; // Server count (might be stale)
-  refreshTrigger?: number; // Optional trigger to force re-read of delta
+  currentShares: number;       // Server count
+  lastUpdated: string | null;  // Server's last_updated timestamp
+  refreshTrigger?: number;     // Optional trigger to force re-calculation
 }
 
 export interface UseShareStateReturn {
-  optimisticShares: number; // Displayed count (with delta applied)
+  optimisticShares: number;    // Displayed count (with pending actions)
 }
 
 /**
- * Share state hook - manages optimistic share count
+ * Share state hook with timestamp-based reconciliation
  * 
  * @param slug - Article slug
- * @param currentShares - Current share count from server
- * @param refreshTrigger - Optional counter to force re-reading delta
- * @returns Optimistic share count with delta applied
+ * @param currentShares - Server share count
+ * @param lastUpdated - Server's last_updated timestamp (ISO string)
+ * @param refreshTrigger - Optional counter to force re-calculation
+ * @returns Optimistic share count with pending actions applied
  * 
  * @example
  * ```tsx
  * const { optimisticShares } = useShareState({
  *   slug: 'my-article',
  *   currentShares: 10,
+ *   lastUpdated: '2025-11-06T14:30:00.000Z',
  * });
  * // If user shared recently: optimisticShares = 11
- * // After 120s or no delta: optimisticShares = 10
+ * // If server processed: optimisticShares = 10 (converged)
  * ```
  */
 export function useShareState({
   slug,
   currentShares,
+  lastUpdated,
   refreshTrigger = 0,
 }: UseShareStateOptions): UseShareStateReturn {
-  // Get delta from localStorage (expires after 120s, separate from likes)
-  // UPDATED v2: Use baseServerValue to prevent double-counting
-  const shareDelta = getShareDelta(slug);
+  // Reconcile counts (server + pending actions)
+  const reconciledCounts = reconcileCounts(
+    slug,
+    { likes: 0, shares: currentShares }, // Only care about shares here
+    lastUpdated
+  );
   
-  // Apply delta to base server value (not current server value!)
-  const adjustedShares = shareDelta
-    ? Math.max(0, shareDelta.baseServerValue + shareDelta.delta)
-    : currentShares;
-  const [optimisticShares, setOptimisticShares] = useState(adjustedShares);
+  const [optimisticShares, setOptimisticShares] = useState(reconciledCounts.shares);
 
-  // Log delta application for debugging
+  // Log reconciliation for debugging
   useEffect(() => {
-    if (shareDelta) {
-      console.log(`[ShareState] Applied share delta for ${slug}:`, {
-        baseServerValue: shareDelta.baseServerValue,
-        delta: shareDelta.delta,
-        displayCount: adjustedShares,
-        currentServerValue: currentShares,
-        usingBase: true,
+    if (reconciledCounts.shares !== currentShares) {
+      console.log(`[ShareState] Reconciled shares for ${slug}:`, {
+        serverCount: currentShares,
+        reconciledCount: reconciledCounts.shares,
+        delta: reconciledCounts.shares - currentShares,
+        lastUpdated,
       });
     }
-  }, [slug, currentShares, shareDelta, adjustedShares]);
+  }, [slug, currentShares, reconciledCounts.shares, lastUpdated]);
 
-  // Update optimistic count when server count OR delta changes OR triggered to refresh
+  // Update optimistic count when server count OR timestamp OR trigger changes
   useEffect(() => {
-    const newDelta = getShareDelta(slug);
-    const newAdjustedShares = newDelta
-      ? Math.max(0, newDelta.baseServerValue + newDelta.delta)
-      : currentShares;
-    setOptimisticShares(newAdjustedShares);
-  }, [currentShares, slug, refreshTrigger]);
+    const newReconciled = reconcileCounts(
+      slug,
+      { likes: 0, shares: currentShares },
+      lastUpdated
+    );
+    setOptimisticShares(newReconciled.shares);
+  }, [currentShares, slug, lastUpdated, refreshTrigger]);
 
   return {
     optimisticShares,

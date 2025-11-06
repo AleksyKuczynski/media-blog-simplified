@@ -1,4 +1,5 @@
 // frontend/src/app/api/engagement/[slug]/route.ts
+// PHASE 1 - UPDATED: Added last_updated timestamp to response for timestamp-based reconciliation
 
 import { fetchEngagementData } from '@/main/lib/directus';
 import { checkRateLimit, hasRecentlyViewed, triggerEngagementFlow } from '@/main/lib/engagement';
@@ -57,7 +58,7 @@ export async function GET(
       );
     }
 
-    // 1. FETCH DATA FIRST (get current counts)
+    // 1. FETCH DATA FIRST (get current counts + timestamp)
     const engagement = await fetchEngagementData(slug);
 
     // 2. CHECK SESSION and TRIGGER FLOW if first view
@@ -74,8 +75,9 @@ export async function GET(
       console.log('♻️ Already viewed in this session - skipping Flow');
     }
 
-    // 3. RETURN DATA + viewTracked flag
+    // 3. RETURN DATA + viewTracked flag + last_updated timestamp
     // Client will handle optimistic +1 if viewTracked is true
+    // PHASE 1 NEW: Include last_updated for timestamp-based reconciliation
     const responseData = {
       success: true,
       data: {
@@ -83,6 +85,7 @@ export async function GET(
         views: engagement.view_count || 0,
         likes: engagement.like_count || 0,
         shares: engagement.share_count || 0,
+        last_updated: engagement.date_updated || null, // NEW: Timestamp from Directus
       },
       viewTracked, // Client uses this to add optimistic +1
     };

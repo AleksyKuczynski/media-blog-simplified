@@ -1,15 +1,15 @@
 // frontend/src/main/lib/hooks/useEngagement.ts
 /**
- * Main Engagement Hook
+ * Main Engagement Hook - Phase 2
  * 
- * UPDATED v3: Fixed double-counting issue by passing baseServerValue
+ * UPDATED: Uses action log with timestamp-based reconciliation
+ * REMOVED: Delta with baseServerValue (replaced with timestamp comparison)
  * 
  * BEHAVIOR:
  * - Views: Tracked by GET endpoint (optional client-side tracking)
- * - Likes: Debounced (1s), optimistic updates, fire-and-forget, localStorage persistence
- * - Shares: Optimistic +1, fire-and-forget, localStorage delta (120s expiry)
- * - No syncing back from server (fire-and-forget)
- * - Delta applied to BASE server value, not current (prevents double-counting)
+ * - Likes: Debounced (1s), optimistic updates, fire-and-forget, action log
+ * - Shares: Optimistic +1, fire-and-forget, action log
+ * - Reconciliation: Timestamp-based (action.timestamp vs server.last_updated)
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -18,7 +18,7 @@ import { useShareState } from './useShareState';
 import { useViewTracking } from './useViewTracking';
 import { updateEngagement } from '../engagement/api';
 import { getShareUrl, copyToClipboard, openShareWindow } from '../engagement/share';
-import { saveShareDelta } from '../engagement/localStorage';
+import { logAction } from '../engagement/actionLog';
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
 import type { EngagementData, SharePlatform } from '../engagement';
@@ -108,7 +108,8 @@ export function useEngagement({
   });
 
   /**
-   * Like state management with debouncing and localStorage
+   * Like state management with action log reconciliation
+   * UPDATED: Now receives last_updated timestamp for reconciliation
    */
   const {
     isLiked,
@@ -118,30 +119,32 @@ export function useEngagement({
   } = useLikeState({
     slug,
     currentLikes: engagement.likes,
+    lastUpdated: engagement.last_updated || null,
   });
 
   /**
-   * Share state management with localStorage delta
-   * UPDATED v3: Uses baseServerValue to prevent double-counting
+   * Share state management with action log reconciliation
+   * UPDATED: Now receives last_updated timestamp for reconciliation
    */
   const { optimisticShares } = useShareState({
     slug,
     currentShares: engagement.shares,
+    lastUpdated: engagement.last_updated || null,
     refreshTrigger: shareRefreshTrigger,
   });
 
   /**
-   * Display engagement with optimistic counts
+   * Display engagement with optimistic counts (reconciled)
    */
   const displayEngagement: EngagementData = {
     ...engagement,
-    likes: optimisticLikes, // Optimistic like count with delta
-    shares: optimisticShares, // Optimistic share count with delta
+    likes: optimisticLikes,   // Reconciled like count
+    shares: optimisticShares, // Reconciled share count
   };
 
   /**
    * Handle share action
-   * UPDATED v3: Now passes currentShares to capture base value
+   * UPDATED: Uses action log instead of delta storage
    */
   const handleShare = useCallback(async (platform: SharePlatform) => {
     if (platform === 'copy') {
@@ -166,48 +169,41 @@ export function useEngagement({
     }
 
     // For all other platforms (including Instagram):
-    // 1. Save delta to localStorage (persists across refreshes)
-    // UPDATED v3: Pass current shares count to capture base value
-    // This prevents double-counting when server updates faster than cache expiry
-    saveShareDelta(slug, engagement.shares);
+    // 1. Log action with timestamp (persists across refreshes)
+    logAction(slug, 'share');
     
-    // 2. Trigger re-read of delta in useShareState
+    // 2. Trigger re-calculation in useShareState
     setShareRefreshTrigger(prev => prev + 1);
 
     // 3. Track share in backend via Flow (fire and forget)
     updateEngagement(slug, 'share').catch((error) => {
       console.error('[Engagement] Error tracking share (non-critical):', error);
-      // Don't rollback - user already opened share dialog and delta is saved
+      // Don't rollback - user already opened share dialog and action is logged
     });
 
-    // 4. Handle platform-specific actions
-    if (platform === 'instagram') {
-      // Instagram has no web share URL, so copy link
-      const success = await copyToClipboard(url);
-      
-      if (success) {
-        setShowCopySuccess(true);
-        setTimeout(() => setShowCopySuccess(false), 2000);
-      } else {
-        showError('Failed to copy link to clipboard');
-      }
-    } else {
-      // Open share dialog for other platforms
-      const shareUrl = getShareUrl(platform, { url, title });
-      openShareWindow(shareUrl);
-    }
-
-    // 5. Track in analytics
+    // 4. Track in analytics
     trackGAEvent('share', {
       method: platform,
       article_slug: slug,
       article_title: title,
     });
     trackYandexEvent('article_share', { slug, method: platform });
-  }, [slug, title, url, engagement.shares, showError]);
+
+    // 5. Open share dialog
+    const shareUrl = getShareUrl(platform, { url, title });
+    
+    if (platform === 'instagram') {
+      // Instagram: Show instructions (can't programmatically share)
+      console.log('[Engagement] Instagram share:', shareUrl);
+      // Could show a modal with instructions here
+    } else {
+      // Other platforms: Open share window
+      openShareWindow(shareUrl);
+    }
+  }, [slug, title, url, showError]);
 
   return {
-    engagement: displayEngagement, // Returns optimistic counts
+    engagement: displayEngagement,
     hasViewTracked,
     isLiked,
     isLikeProcessing,

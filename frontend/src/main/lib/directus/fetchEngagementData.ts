@@ -1,4 +1,5 @@
 // src/main/lib/directus/fetchEngagementData.ts
+// PHASE 1 - UPDATED: Added date_updated field for timestamp-based reconciliation
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
@@ -8,9 +9,11 @@ export async function fetchEngagementData(slug: string) {
     const filter = encodeURIComponent(
       JSON.stringify({ article_slug: { _eq: slug } })
     );
+    // Request specific fields including date_updated for timestamp-based reconciliation
+    const fields = 'article_slug,view_count,like_count,share_count,date_updated';
     // Add timestamp to bust Directus cache
     const timestamp = Date.now();
-    const url = `${DIRECTUS_URL}/items/articles_engagement?filter=${filter}&limit=1&_=${timestamp}`;
+    const url = `${DIRECTUS_URL}/items/articles_engagement?filter=${filter}&fields=${fields}&limit=1&_=${timestamp}`;
 
     console.log('📊 Fetching engagement data for:', slug);
 
@@ -38,6 +41,7 @@ export async function fetchEngagementData(slug: string) {
         views: record.view_count,
         likes: record.like_count,
         shares: record.share_count,
+        date_updated: record.date_updated, // NEW: Log timestamp for debugging
       });
       return record;
     }
@@ -49,6 +53,7 @@ export async function fetchEngagementData(slug: string) {
       view_count: 0,
       like_count: 0,
       share_count: 0,
+      date_updated: null, // NEW: No timestamp for non-existent records
     };
   } catch (error) {
     console.error('❌ Error fetching engagement data:', error);

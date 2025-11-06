@@ -1,28 +1,31 @@
 // frontend/src/main/lib/hooks/useLikeState.ts
 /**
- * Like State Management Hook
+ * Like State Management Hook - Phase 2
  * 
- * FIXED v8: Updated to use separate like delta storage
+ * UPDATED: Uses action log with timestamp-based reconciliation
+ * REMOVED: baseServerValue approach (replaced with timestamp comparison)
  * 
- * CHANGES:
- * - Now uses getLikeDelta() instead of getArticleDelta()
- * - Delta storage is separate from shares (no interference)
- * - 120s expiry window (updated from 60s)
- * - Timestamp resets on each like/unlike action
+ * BEHAVIOR:
+ * - Button state: Permanent (from liked_articles list)
+ * - Count display: Server count + pending action deltas
+ * - Reconciliation: Compare action timestamps with server's last_updated
+ * - Debounced: 1 second delay before API call
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { updateEngagement } from '../engagement/api';
 import { 
-  isArticleLiked, 
-  saveLikedArticle, 
+  isArticleLiked,
+  addLikedArticle,
   removeLikedArticle,
-  getLikeDelta 
-} from '../engagement/localStorage';
+  logAction,
+  reconcileCounts,
+} from '../engagement/actionLog';
 
 export interface UseLikeStateOptions {
   slug: string;
-  currentLikes: number; // Server count (might be stale)
+  currentLikes: number;        // Server count
+  lastUpdated: string | null;  // Server's last_updated timestamp
 }
 
 export interface UseLikeStateReturn {
@@ -32,144 +35,165 @@ export interface UseLikeStateReturn {
   toggleLike: () => void;
 }
 
+/**
+ * Like state hook with timestamp-based reconciliation
+ * 
+ * @param slug - Article slug
+ * @param currentLikes - Server like count
+ * @param lastUpdated - Server's last_updated timestamp (ISO string)
+ * @returns Like state and handlers
+ */
 export function useLikeState({
   slug,
   currentLikes,
+  lastUpdated,
 }: UseLikeStateOptions): UseLikeStateReturn {
-  // PART 1: Button state from PERMANENT storage
-  // This never expires - user preference persists forever
+  // PART 1: Button state from permanent storage
   const [isLiked, setIsLiked] = useState(() => isArticleLiked(slug));
   const [isProcessing, setIsProcessing] = useState(false);
   
-  // PART 2: Count adjustment from TEMPORARY delta (separate from shares)
-  // This expires after 120s - only for cache compensation
-  // UPDATED v8: Use baseServerValue to prevent double-counting
-  const likeDelta = getLikeDelta(slug);
-  const adjustedLikes = likeDelta 
-    ? Math.max(0, likeDelta.baseServerValue + likeDelta.delta)
-    : currentLikes;
-  const [optimisticLikes, setOptimisticLikes] = useState(adjustedLikes);
+  // PART 2: Reconciled count (server + pending actions)
+  const reconciledCounts = reconcileCounts(
+    slug,
+    { likes: currentLikes, shares: 0 }, // Only care about likes here
+    lastUpdated
+  );
+  const [optimisticLikes, setOptimisticLikes] = useState(reconciledCounts.likes);
   
+  // Debounce timer
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const pendingActionRef = useRef<'like' | 'unlike' | null>(null);
   const isApiCallInFlightRef = useRef<boolean>(false);
 
-  // Log delta application for debugging
+  // Log reconciliation for debugging
   useEffect(() => {
-    if (likeDelta) {
-      console.log(`[LikeState] Applied like delta for ${slug}:`, {
-        baseServerValue: likeDelta.baseServerValue,
-        delta: likeDelta.delta,
-        displayCount: adjustedLikes,
-        currentServerValue: currentLikes,
-        usingBase: true,
+    if (reconciledCounts.likes !== currentLikes) {
+      console.log(`[LikeState] Reconciled likes for ${slug}:`, {
+        serverCount: currentLikes,
+        reconciledCount: reconciledCounts.likes,
+        delta: reconciledCounts.likes - currentLikes,
+        lastUpdated,
       });
-    } else if (isLiked) {
-      console.log(`[LikeState] Liked state restored for ${slug} (delta expired, using server count: ${currentLikes})`);
     }
-  }, [slug, currentLikes, likeDelta, adjustedLikes, isLiked]);
+  }, [slug, currentLikes, reconciledCounts.likes, lastUpdated]);
 
-  // Sync isLiked when slug changes (navigation)
-  // IMPORTANT: This reads from PERMANENT storage
+  // Sync button state when slug changes
   useEffect(() => {
     const liked = isArticleLiked(slug);
     setIsLiked(liked);
     console.log(`[LikeState] Loaded liked state for ${slug}: ${liked ? '✅ liked' : '❌ not liked'}`);
   }, [slug]);
 
-  // Update optimistic count when server count OR delta changes
+  // Update optimistic count when server count OR timestamp changes
   useEffect(() => {
-    const newDelta = getLikeDelta(slug);
-    const newAdjustedLikes = newDelta
-      ? Math.max(0, newDelta.baseServerValue + newDelta.delta)
-      : currentLikes;
-    setOptimisticLikes(newAdjustedLikes);
-  }, [currentLikes, slug]);
+    const newReconciled = reconcileCounts(
+      slug,
+      { likes: currentLikes, shares: 0 },
+      lastUpdated
+    );
+    setOptimisticLikes(newReconciled.likes);
+  }, [currentLikes, slug, lastUpdated]);
 
-  // Cleanup timer on unmount
+  /**
+   * Execute the pending like/unlike action
+   */
+  const executePendingAction = useCallback(async () => {
+    const action = pendingActionRef.current;
+    if (!action || isApiCallInFlightRef.current) return;
+
+    isApiCallInFlightRef.current = true;
+    console.log(`[LikeState] Executing pending ${action} for ${slug}`);
+
+    try {
+      await updateEngagement(slug, action);
+      console.log(`[LikeState] ✅ ${action} API call completed`);
+    } catch (error) {
+      console.error(`[LikeState] ❌ ${action} API call failed:`, error);
+      
+      // Rollback on error
+      if (action === 'like') {
+        removeLikedArticle(slug);
+        setIsLiked(false);
+      } else {
+        addLikedArticle(slug);
+        setIsLiked(true);
+      }
+      
+      // Recalculate optimistic count
+      const rolled = reconcileCounts(
+        slug,
+        { likes: currentLikes, shares: 0 },
+        lastUpdated
+      );
+      setOptimisticLikes(rolled.likes);
+    } finally {
+      isApiCallInFlightRef.current = false;
+      pendingActionRef.current = null;
+      setIsProcessing(false);
+    }
+  }, [slug, currentLikes, lastUpdated]);
+
+  /**
+   * Toggle like/unlike with debouncing
+   */
+  const toggleLike = useCallback(() => {
+    // Prevent spam clicking
+    if (isProcessing) {
+      console.warn('[LikeState] Like action already in progress, ignoring');
+      return;
+    }
+
+    setIsProcessing(true);
+
+    // Determine action
+    const action: 'like' | 'unlike' = isLiked ? 'unlike' : 'like';
+    
+    // STEP 1: Update permanent button state immediately
+    if (action === 'like') {
+      addLikedArticle(slug);
+      setIsLiked(true);
+    } else {
+      removeLikedArticle(slug);
+      setIsLiked(false);
+    }
+
+    // STEP 2: Log action with timestamp
+    logAction(slug, action);
+
+    // STEP 3: Update optimistic count immediately
+    const newReconciled = reconcileCounts(
+      slug,
+      { likes: currentLikes, shares: 0 },
+      lastUpdated
+    );
+    setOptimisticLikes(newReconciled.likes);
+
+    console.log(`[LikeState] Optimistic ${action}: ${currentLikes} → ${newReconciled.likes}`);
+
+    // STEP 4: Debounce API call (1 second)
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    pendingActionRef.current = action;
+    timerRef.current = setTimeout(() => {
+      executePendingAction();
+    }, 1000);
+  }, [isLiked, isProcessing, slug, currentLikes, lastUpdated, executePendingAction]);
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
+      
+      // Execute pending action on unmount
+      if (pendingActionRef.current && !isApiCallInFlightRef.current) {
+        executePendingAction();
+      }
     };
-  }, []);
-
-  const toggleLike = useCallback(() => {
-    if (isApiCallInFlightRef.current) {
-      console.warn('[LikeState] Ignoring click - API call in progress');
-      return;
-    }
-
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-
-    // 1. Update isLiked state and BOTH storages
-    setIsLiked(prev => {
-      const next = !prev;
-      const action = next ? 'like' : 'unlike';
-      
-      pendingActionRef.current = action;
-      
-      // Update BOTH:
-      // - Permanent liked state (for button)
-      // - Temporary delta (for count adjustment, 120s expiry, timestamp resets)
-      // UPDATED v8: Pass currentLikes to capture base server value
-      if (next) {
-        saveLikedArticle(slug, currentLikes);
-      } else {
-        removeLikedArticle(slug, currentLikes);
-      }
-      
-      console.log(`[LikeState] Toggled: ${prev} → ${next} (action: ${action})`);
-      console.log(`[LikeState] ✅ Permanent state saved, ⏱️ temporary delta created (base: ${currentLikes}, 120s)`);
-      return next;
-    });
-
-    // 2. Update optimistic count
-    setOptimisticLikes(prev => {
-      const delta = pendingActionRef.current === 'like' ? 1 : -1;
-      const next = Math.max(0, prev + delta);
-      
-      console.log(`[LikeState] Count: ${prev} ${delta > 0 ? '+' : ''}${delta} = ${next}`);
-      return next;
-    });
-
-    // 3. Debounced API call
-    setIsProcessing(true);
-    
-    timerRef.current = setTimeout(() => {
-      const action = pendingActionRef.current;
-      if (!action) {
-        setIsProcessing(false);
-        return;
-      }
-
-      isApiCallInFlightRef.current = true;
-      console.log(`[LikeState] Sending ${action} to API`);
-
-      updateEngagement(slug, action)
-        .then(() => {
-          console.log(`[LikeState] ✅ ${action} completed on server`);
-          // Note: We don't clear the delta here
-          // Permanent liked state stays forever
-          // Temporary delta expires after 120s automatically
-        })
-        .catch((error) => {
-          console.error(`[LikeState] ❌ ${action} error:`, error);
-          // On error, we keep both states
-          // User can retry, and states will persist
-        })
-        .finally(() => {
-          setIsProcessing(false);
-          pendingActionRef.current = null;
-          isApiCallInFlightRef.current = false;
-        });
-    }, 1000);
-
-  }, [slug, currentLikes]);
+  }, [executePendingAction]);
 
   return {
     isLiked,
