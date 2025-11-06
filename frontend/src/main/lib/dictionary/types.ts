@@ -163,6 +163,11 @@ export interface MetadataDictionary {
 // ERRORS - NEW: Template-driven error handling
 // ===================================================================
 
+export interface ErrorEngagement {
+  readonly updateFailed: string;
+}
+
+
 export interface ErrorTemplates {
   readonly loadingError: string;
   readonly loadingDescription: string;
@@ -181,6 +186,7 @@ export interface ErrorContentTypes {
 }
 
 export interface ErrorDictionary {
+  readonly engagement: ErrorEngagement;
   readonly templates: ErrorTemplates;
   readonly types: ErrorContentTypes;
 }

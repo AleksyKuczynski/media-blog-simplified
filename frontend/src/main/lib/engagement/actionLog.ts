@@ -1,72 +1,49 @@
 // frontend/src/main/lib/engagement/actionLog.ts
 /**
- * Action Log LocalStorage - Phase 2
+ * Action Log - Client-Side Engagement Tracking
  * 
- * REPLACES: Delta-based storage with baseServerValue
- * NEW APPROACH: Event log with timestamp reconciliation
+ * Maintains a log of user actions with timestamps for reconciliation with server state
+ * Prevents double-counting by comparing action timestamps against server's last_updated
  * 
- * KEY CONCEPT:
- * - Store user actions with timestamps
- * - Compare action timestamps with server's last_updated
- * - Only apply deltas for actions AFTER server's last update
- * - Auto-cleanup processed actions
- * 
- * STORAGE STRUCTURE:
- * {
- *   "engagement_actions": [
- *     {
- *       id: "uuid-123",
- *       slug: "article-1",
- *       type: "like" | "unlike" | "share",
- *       timestamp: 1699123456789,  // JS timestamp (milliseconds)
- *     }
- *   ],
- *   "liked_articles": ["article-1", "article-2"]  // Permanent like state
- * }
+ * Architecture:
+ * - Actions logged immediately when user interacts
+ * - Actions compared against server timestamp during reconciliation
+ * - Old actions (>10 min) automatically cleaned up
  */
 
-const ACTIONS_KEY = 'engagement_actions';
+const ACTION_LOG_KEY = 'engagement_action_log';
 const LIKED_ARTICLES_KEY = 'liked_articles';
-const MAX_ACTION_AGE_MS = 120 * 1000; // 120 seconds (2 minutes)
-
-// ============================================================================
-// TYPES
-// ============================================================================
+const ACTION_MAX_AGE_MS = 10 * 60 * 1000; // 10 minutes
 
 export type ActionType = 'view' | 'like' | 'unlike' | 'share';
 
-export interface EngagementAction {
-  id: string;              // Unique ID (for deduplication)
-  slug: string;            // Article slug
-  type: ActionType;        // Action type
-  timestamp: number;       // When action occurred (JS timestamp in ms)
+export interface Action {
+  id: string;
+  slug: string;
+  type: ActionType;
+  timestamp: number;
 }
 
-export interface ActionLog {
-  views: number;           // Delta for views
-  likes: number;           // Delta for likes
-  unlikes: number;         // Delta for unlikes
-  shares: number;          // Delta for shares
+/**
+ * Generate unique action ID
+ */
+function generateActionId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 }
-
-// ============================================================================
-// PART 1: ACTION LOG CRUD OPERATIONS
-// ============================================================================
 
 /**
  * Get all actions from localStorage
  */
-function getAllActions(): EngagementAction[] {
+export function getAllActions(): Action[] {
   if (typeof window === 'undefined') return [];
 
   try {
-    const stored = localStorage.getItem(ACTIONS_KEY);
+    const stored = localStorage.getItem(ACTION_LOG_KEY);
     if (!stored) return [];
 
     const parsed = JSON.parse(stored);
     return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
-    console.error('[ActionLog] Error reading actions:', error);
     return [];
   }
 }
@@ -74,30 +51,21 @@ function getAllActions(): EngagementAction[] {
 /**
  * Save actions to localStorage
  */
-function saveAllActions(actions: EngagementAction[]): void {
+function saveActions(actions: Action[]): void {
   if (typeof window === 'undefined') return;
 
   try {
-    localStorage.setItem(ACTIONS_KEY, JSON.stringify(actions));
+    localStorage.setItem(ACTION_LOG_KEY, JSON.stringify(actions));
   } catch (error) {
-    console.error('[ActionLog] Error saving actions:', error);
+    // Silent failure
   }
 }
 
 /**
- * Generate unique ID for action
- */
-function generateActionId(): string {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-}
-
-/**
- * Add new action to log
+ * Log a user action
  */
 export function logAction(slug: string, type: ActionType): void {
-  if (typeof window === 'undefined') return;
-
-  const action: EngagementAction = {
+  const action: Action = {
     id: generateActionId(),
     slug,
     type,
@@ -106,135 +74,65 @@ export function logAction(slug: string, type: ActionType): void {
 
   const actions = getAllActions();
   actions.push(action);
-  saveAllActions(actions);
-
-  console.log(`[ActionLog] Logged ${type} for ${slug}`, action);
+  saveActions(actions);
 }
 
 /**
- * Get actions for specific article
- */
-export function getActionsForArticle(slug: string): EngagementAction[] {
-  const allActions = getAllActions();
-  return allActions.filter(action => action.slug === slug);
-}
-
-/**
- * Clean up old actions (older than 120 seconds)
+ * Clean up old actions (>10 minutes)
  */
 export function cleanupOldActions(): void {
-  if (typeof window === 'undefined') return;
-
-  const actions = getAllActions();
   const now = Date.now();
-  const cutoff = now - MAX_ACTION_AGE_MS;
-
-  const activeActions = actions.filter(action => action.timestamp > cutoff);
-
-  if (activeActions.length !== actions.length) {
-    saveAllActions(activeActions);
-    console.log(`[ActionLog] Cleaned up ${actions.length - activeActions.length} old actions`);
+  const actions = getAllActions();
+  const freshActions = actions.filter(a => now - a.timestamp < ACTION_MAX_AGE_MS);
+  
+  if (freshActions.length !== actions.length) {
+    saveActions(freshActions);
   }
 }
 
 /**
- * Remove specific action by ID
- */
-export function removeAction(actionId: string): void {
-  if (typeof window === 'undefined') return;
-
-  const actions = getAllActions();
-  const filtered = actions.filter(a => a.id !== actionId);
-  
-  if (filtered.length !== actions.length) {
-    saveAllActions(filtered);
-    console.log(`[ActionLog] Removed action ${actionId}`);
-  }
-}
-
-/**
- * Clear all actions for specific article
- */
-export function clearActionsForArticle(slug: string): void {
-  if (typeof window === 'undefined') return;
-
-  const actions = getAllActions();
-  const filtered = actions.filter(a => a.slug !== slug);
-  saveAllActions(filtered);
-  
-  console.log(`[ActionLog] Cleared all actions for ${slug}`);
-}
-
-// ============================================================================
-// PART 2: TIMESTAMP-BASED RECONCILIATION
-// ============================================================================
-
-/**
- * Get pending actions for article based on server timestamp
- * 
- * CRITICAL LOGIC:
- * - If action.timestamp > serverLastUpdated → action is PENDING (not yet processed)
- * - If action.timestamp <= serverLastUpdated → action is PROCESSED (already counted)
- * 
- * @param slug - Article slug
- * @param serverLastUpdated - ISO timestamp from server (last_updated field)
- * @returns Actions that happened AFTER server's last update
+ * Get pending actions for a specific article
+ * Pending = action timestamp > server's last_updated
  */
 export function getPendingActions(
   slug: string,
   serverLastUpdated: string | null
-): EngagementAction[] {
-  const actions = getActionsForArticle(slug);
-
-  // If no server timestamp, all recent actions are pending
+): Action[] {
+  const actions = getAllActions().filter(a => a.slug === slug);
+  
   if (!serverLastUpdated) {
     return actions;
   }
 
-  // Convert server ISO timestamp to JS timestamp (milliseconds)
   const serverTimestamp = new Date(serverLastUpdated).getTime();
-
-  // Filter actions that occurred AFTER server's last update
-  const pending = actions.filter(action => action.timestamp > serverTimestamp);
-
-  if (pending.length > 0) {
-    console.log(`[ActionLog] Found ${pending.length} pending actions for ${slug}:`, {
-      serverTime: serverLastUpdated,
-      serverTimestamp,
-      pendingActions: pending.map(a => ({
-        type: a.type,
-        timestamp: a.timestamp,
-        delta: a.timestamp - serverTimestamp,
-      })),
-    });
-  }
-
-  return pending;
+  return actions.filter(a => a.timestamp > serverTimestamp);
 }
 
 /**
  * Calculate delta from pending actions
- * 
- * @param pendingActions - Actions not yet processed by server
- * @returns Like/unlike/share deltas
  */
-export function calculateDeltaFromActions(pendingActions: EngagementAction[]): ActionLog {
-  const delta: ActionLog = {
-    views: 0,
-    likes: 0,
-    unlikes: 0,
-    shares: 0,
-  };
+export function calculateDeltaFromActions(actions: Action[]): {
+  views: number;
+  likes: number;
+  unlikes: number;
+  shares: number;
+} {
+  const delta = { views: 0, likes: 0, unlikes: 0, shares: 0 };
 
-  for (const action of pendingActions) {
-    if (action.type === 'view') {
-      delta.views += 1;
-    } else if (action.type === 'like') {
-      delta.likes += 1;
-    } else if (action.type === 'unlike') {
-      delta.unlikes += 1;
-    } else if (action.type === 'share') {
-      delta.shares += 1;
+  for (const action of actions) {
+    switch (action.type) {
+      case 'view':
+        delta.views++;
+        break;
+      case 'like':
+        delta.likes++;
+        break;
+      case 'unlike':
+        delta.unlikes++;
+        break;
+      case 'share':
+        delta.shares++;
+        break;
     }
   }
 
@@ -242,12 +140,7 @@ export function calculateDeltaFromActions(pendingActions: EngagementAction[]): A
 }
 
 /**
- * Apply action log to server counts
- * 
- * This is the main reconciliation function:
- * 1. Get pending actions (timestamp > server's last_updated)
- * 2. Calculate deltas from pending actions
- * 3. Apply deltas to server counts
+ * Reconcile counts: Apply pending actions to server counts
  * 
  * @param slug - Article slug
  * @param serverCounts - Counts from server
@@ -259,18 +152,14 @@ export function reconcileCounts(
   serverCounts: { views: number; likes: number; shares: number },
   serverLastUpdated: string | null
 ): { views: number; likes: number; shares: number } {
-  // Clean up old actions first
   cleanupOldActions();
 
-  // Get pending actions
   const pendingActions = getPendingActions(slug, serverLastUpdated);
 
-  // If no pending actions, return server counts as-is
   if (pendingActions.length === 0) {
     return serverCounts;
   }
 
-  // Calculate deltas
   const delta = calculateDeltaFromActions(pendingActions);
 
   // Apply deltas (likes and unlikes cancel out)
@@ -279,22 +168,12 @@ export function reconcileCounts(
   const adjustedLikes = Math.max(0, serverCounts.likes + netLikeDelta);
   const adjustedShares = Math.max(0, serverCounts.shares + delta.shares);
 
-  console.log(`[ActionLog] Reconciled counts for ${slug}:`, {
-    server: serverCounts,
-    delta: { views: delta.views, likes: netLikeDelta, shares: delta.shares },
-    adjusted: { views: adjustedViews, likes: adjustedLikes, shares: adjustedShares },
-  });
-
   return {
     views: adjustedViews,
     likes: adjustedLikes,
     shares: adjustedShares,
   };
 }
-
-// ============================================================================
-// PART 3: PERMANENT LIKED STATE (Button State)
-// ============================================================================
 
 /**
  * Get all liked articles (permanent)
@@ -309,7 +188,6 @@ export function getLikedArticles(): string[] {
     const parsed = JSON.parse(stored);
     return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
-    console.error('[ActionLog] Error reading liked articles:', error);
     return [];
   }
 }
@@ -332,7 +210,6 @@ export function addLikedArticle(slug: string): void {
   if (!likedArticles.includes(slug)) {
     likedArticles.push(slug);
     localStorage.setItem(LIKED_ARTICLES_KEY, JSON.stringify(likedArticles));
-    console.log(`[ActionLog] Added ${slug} to liked articles (permanent)`);
   }
 }
 
@@ -347,13 +224,8 @@ export function removeLikedArticle(slug: string): void {
   
   if (filtered.length !== likedArticles.length) {
     localStorage.setItem(LIKED_ARTICLES_KEY, JSON.stringify(filtered));
-    console.log(`[ActionLog] Removed ${slug} from liked articles (permanent)`);
   }
 }
-
-// ============================================================================
-// PART 4: DEBUGGING & MONITORING
-// ============================================================================
 
 /**
  * Get statistics for debugging
@@ -390,30 +262,33 @@ export function getActionLogStats(): {
 
 /**
  * Debug: Print action log to console
+ * (Kept for development debugging, but silent internally)
  */
 export function debugActionLog(): void {
-  console.group('📋 Action Log Debug');
+  if (typeof window === 'undefined') return;
   
   const actions = getAllActions();
   const likedArticles = getLikedArticles();
   const stats = getActionLogStats();
 
-  console.log('Stats:', stats);
-  console.log('Liked Articles:', likedArticles);
-  
-  if (actions.length > 0) {
-    console.table(
-      actions.map(a => ({
-        id: a.id.slice(0, 8),
-        slug: a.slug.slice(0, 30),
-        type: a.type,
-        timestamp: new Date(a.timestamp).toISOString(),
-        age: `${Math.round((Date.now() - a.timestamp) / 1000)}s ago`,
-      }))
-    );
-  } else {
-    console.log('No actions logged');
+  // Only log in development environment
+  if (process.env.NODE_ENV === 'development') {
+    console.group('📋 Action Log Debug');
+    console.log('Stats:', stats);
+    console.log('Liked Articles:', likedArticles);
+    
+    if (actions.length > 0) {
+      console.table(
+        actions.map(a => ({
+          id: a.id.slice(0, 8),
+          slug: a.slug.slice(0, 30),
+          type: a.type,
+          timestamp: new Date(a.timestamp).toISOString(),
+          age: `${Math.round((Date.now() - a.timestamp) / 1000)}s ago`,
+        }))
+      );
+    }
+    
+    console.groupEnd();
   }
-
-  console.groupEnd();
 }

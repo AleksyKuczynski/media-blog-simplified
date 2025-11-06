@@ -158,6 +158,9 @@ const dictionary: Dictionary = {
   // ERRORS - NEW: Template-driven error handling
   // ===================================================================
   errors: {
+    engagement: {
+      updateFailed: 'Не удалось обновить счетчики',
+    },
     templates: {
       loadingError: 'Ошибка загрузки {contentType}',
       loadingDescription: 'Произошла ошибка при загрузке {contentType}. Попробуйте обновить страницу.',

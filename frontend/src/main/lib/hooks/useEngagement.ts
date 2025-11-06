@@ -1,14 +1,11 @@
 // frontend/src/main/lib/hooks/useEngagement.ts
 /**
- * Main Engagement Hook - Phase 2 (Views Fix)
+ * Main Engagement Hook
  * 
- * UPDATED: Views now use the same reconciliation as likes/shares
- * 
- * BEHAVIOR:
- * - Views: Reconciled from action log (logged when API tracks)
- * - Likes: Debounced (1s), optimistic updates, fire-and-forget, action log
- * - Shares: Optimistic +1, fire-and-forget, action log
- * - Reconciliation: Timestamp-based (action.timestamp vs server.last_updated)
+ * Coordinates all engagement functionality with timestamp-based reconciliation
+ * - Views: Server-tracked on first visit, reconciled via action log
+ * - Likes: Debounced (1s), optimistic updates, fire-and-forget API
+ * - Shares: Immediate optimistic update, fire-and-forget API
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -21,6 +18,7 @@ import { logAction, reconcileCounts } from '../engagement/actionLog';
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
 import type { EngagementData, SharePlatform } from '../engagement';
+import dictionary from '../dictionary/dictionary';
 
 export interface UseEngagementOptions {
   slug: string;
@@ -28,35 +26,23 @@ export interface UseEngagementOptions {
   url: string;
   initialData: EngagementData;
   trackView?: boolean;
-  viewWasTrackedByAPI?: boolean;  // NEW: Flag from API response
+  viewWasTrackedByAPI?: boolean;
 }
 
 export interface UseEngagementReturn {
-  // Data
   engagement: EngagementData;
-  
-  // View tracking
   hasViewTracked: boolean;
-  
-  // Like state
   isLiked: boolean;
   isLikeProcessing: boolean;
   toggleLike: () => void;
-  
-  // Share
   handleShare: (platform: SharePlatform) => Promise<void>;
   showCopySuccess: boolean;
-  
-  // Error handling
   error: string | null;
   clearError: () => void;
 }
 
 /**
  * Main engagement hook - combines all engagement functionality
- * 
- * @param options - Engagement configuration
- * @returns Complete engagement state and handlers
  */
 export function useEngagement({
   slug,
@@ -73,42 +59,31 @@ export function useEngagement({
 
   // Sync engagement state when initialData changes
   useEffect(() => {
-    console.log('[useEngagement] Updating engagement with initialData:', initialData);
     setEngagement(initialData);
   }, [initialData]);
 
   // Log view action if tracked by API (for reconciliation)
   useEffect(() => {
     if (viewWasTrackedByAPI) {
-      console.log('[useEngagement] View was tracked by API, logging action');
       logAction(slug, 'view');
     }
   }, [slug, viewWasTrackedByAPI]);
 
-  /**
-   * Show error message temporarily
-   */
   const showError = useCallback((message: string) => {
     setError(message);
     setTimeout(() => setError(null), 5000);
   }, []);
 
-  /**
-   * Clear error message
-   */
   const clearError = useCallback(() => {
     setError(null);
   }, []);
 
-  /**
-   * Optional view tracking (disabled by default, views handled by API)
-   */
+  // Optional view tracking (disabled by default, views handled by API)
   const { hasTracked: hasViewTracked } = useViewTracking({
     slug,
     delayMs: 1000,
     enabled: trackView,
     onTrack: () => {
-      console.log('[Engagement] View tracked (client-side), logging action');
       logAction(slug, 'view');
       setEngagement(prev => ({
         ...prev,
@@ -117,9 +92,7 @@ export function useEngagement({
     },
   });
 
-  /**
-   * Like state management with action log reconciliation
-   */
+  // Like state management with reconciliation
   const {
     isLiked,
     isProcessing: isLikeProcessing,
@@ -133,9 +106,7 @@ export function useEngagement({
     lastUpdated: engagement.last_updated || null,
   });
 
-  /**
-   * Share state management with action log reconciliation
-   */
+  // Share state management with reconciliation
   const { optimisticShares } = useShareState({
     slug,
     currentViews: engagement.views,
@@ -145,9 +116,7 @@ export function useEngagement({
     refreshTrigger: shareRefreshTrigger,
   });
 
-  /**
-   * Views reconciliation (same as likes/shares)
-   */
+  // Views reconciliation
   const reconciledCounts = reconcileCounts(
     slug,
     { 
@@ -158,14 +127,12 @@ export function useEngagement({
     engagement.last_updated || null
   );
 
-  /**
-   * Display engagement with optimistic counts (all reconciled)
-   */
+  // Display engagement with optimistic counts
   const displayEngagement: EngagementData = {
     ...engagement,
-    views: reconciledCounts.views,    // Reconciled view count
-    likes: optimisticLikes,           // Reconciled like count
-    shares: optimisticShares,         // Reconciled share count
+    views: reconciledCounts.views,
+    likes: optimisticLikes,
+    shares: optimisticShares,
   };
 
   /**
@@ -173,14 +140,12 @@ export function useEngagement({
    */
   const handleShare = useCallback(async (platform: SharePlatform) => {
     if (platform === 'copy') {
-      // Copy link to clipboard
       const success = await copyToClipboard(url);
       
       if (success) {
         setShowCopySuccess(true);
         setTimeout(() => setShowCopySuccess(false), 2000);
 
-        // Track in analytics (no backend call for copy)
         trackGAEvent('share', {
           method: 'copy',
           article_slug: slug,
@@ -188,25 +153,23 @@ export function useEngagement({
         });
         trackYandexEvent('article_share', { slug, method: 'copy' });
       } else {
-        showError('Failed to copy link to clipboard');
+        showError(dictionary.errors.engagement.updateFailed);
       }
       return;
     }
 
-    // For all other platforms (including Instagram):
-    // 1. Log action with timestamp (persists across refreshes)
+    // Log action for reconciliation
     logAction(slug, 'share');
     
-    // 2. Trigger re-calculation in useShareState
+    // Trigger re-calculation in useShareState
     setShareRefreshTrigger(prev => prev + 1);
 
-    // 3. Track share in backend via Flow (fire and forget)
-    updateEngagement(slug, 'share').catch((error) => {
-      console.error('[Engagement] Error tracking share (non-critical):', error);
-      // Don't rollback - user already opened share dialog and action is logged
+    // Track share in backend (fire-and-forget)
+    updateEngagement(slug, 'share').catch(() => {
+      // Silent failure - user already opened share dialog
     });
 
-    // 4. Track in analytics
+    // Track in analytics
     trackGAEvent('share', {
       method: platform,
       article_slug: slug,
@@ -214,15 +177,10 @@ export function useEngagement({
     });
     trackYandexEvent('article_share', { slug, method: platform });
 
-    // 5. Open share dialog
+    // Open share dialog
     const shareUrl = getShareUrl(platform, { url, title });
     
-    if (platform === 'instagram') {
-      // Instagram: Show instructions (can't programmatically share)
-      console.log('[Engagement] Instagram share:', shareUrl);
-      // Could show a modal with instructions here
-    } else {
-      // Other platforms: Open share window
+    if (platform !== 'instagram') {
       openShareWindow(shareUrl);
     }
   }, [slug, title, url, showError]);

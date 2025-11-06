@@ -19,7 +19,6 @@ export interface SharePopupProps {
   showCopySuccess: boolean;
 }
 
-// Social media platform configurations
 const SHARE_PLATFORMS = [
   {
     id: 'telegram' as SharePlatform,
@@ -85,12 +84,10 @@ const SHARE_PLATFORMS = [
 
 /**
  * SharePopup Component
- * Displays a popup with social media share buttons
  */
 export function SharePopup({ isOpen, onClose, onShare, showCopySuccess }: SharePopupProps) {
   const popupRef = useRef<HTMLDivElement>(null);
 
-  // Close popup on outside click
   useOutsideClick(popupRef, null, isOpen, onClose);
 
   if (!isOpen) return null;

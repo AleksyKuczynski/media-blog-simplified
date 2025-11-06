@@ -3,17 +3,12 @@
  * Share Platform Utilities
  * 
  * Social media sharing URLs and copy-to-clipboard functionality
- * UPDATED: Added Instagram support
  */
 
 import { ShareConfig, SharePlatform } from "./types";
 
 /**
  * Generate share URL for different platforms
- * 
- * @param platform - Social platform identifier
- * @param config - Share configuration (url, title)
- * @returns Formatted share URL
  */
 export function getShareUrl(platform: SharePlatform, config: ShareConfig): string {
   const { url, title } = config;
@@ -33,11 +28,10 @@ export function getShareUrl(platform: SharePlatform, config: ShareConfig): strin
     
     case 'instagram':
       // Instagram doesn't support direct web sharing
-      // Return the URL for clipboard copy
       return url;
     
     case 'copy':
-      return url; // Will be handled by clipboard API
+      return url;
     
     default:
       return url;
@@ -46,13 +40,9 @@ export function getShareUrl(platform: SharePlatform, config: ShareConfig): strin
 
 /**
  * Copy text to clipboard
- * 
- * @param text - Text to copy
- * @returns Promise resolving to success boolean
  */
 export async function copyToClipboard(text: string): Promise<boolean> {
   if (typeof window === 'undefined' || !navigator.clipboard) {
-    console.error('[Share] Clipboard API not available');
     return false;
   }
 
@@ -60,15 +50,12 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     await navigator.clipboard.writeText(text);
     return true;
   } catch (error) {
-    console.error('[Share] Failed to copy to clipboard:', error);
     return false;
   }
 }
 
 /**
  * Open share dialog in new window
- * 
- * @param url - Share URL
  */
 export function openShareWindow(url: string): void {
   window.open(

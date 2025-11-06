@@ -1,15 +1,3 @@
-// frontend/src/app/api/engagement/[slug]/route.ts
-/**
- * Engagement API Route - Phase 2 (Session Tracking Fix)
- * 
- * UPDATED: Reduced logging verbosity + better session tracking
- * 
- * CHANGES:
- * - Only log when Flow is actually triggered (not on every repeat visit)
- * - Add session tracking header for client
- * - Cleaner console output
- */
-
 import { fetchEngagementData } from '@/main/lib/directus';
 import { checkRateLimit, hasRecentlyViewed, triggerEngagementFlow } from '@/main/lib/engagement';
 import { getClientIP, validateArticleSlug } from '@/main/lib/utils';

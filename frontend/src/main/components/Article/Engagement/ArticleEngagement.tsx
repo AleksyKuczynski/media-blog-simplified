@@ -1,9 +1,11 @@
 // frontend/src/main/components/Article/Engagement/ArticleEngagement.tsx
 /**
- * Article Engagement - Client Component
- * UPDATED: Added SharePopup for social media sharing options
- * Sticky vertical bar in bottom-left corner
- * Matches scroll-to-top button styling
+ * Article Engagement Component
+ * 
+ * Displays engagement metrics (views, likes, shares) in a sticky sidebar
+ * - Views: Tracked server-side on first visit
+ * - Likes: Interactive with persistent state
+ * - Shares: Opens social sharing popup
  */
 
 'use client';
@@ -34,7 +36,6 @@ export default function ArticleEngagement({
   url,
   className = '',
 }: ArticleEngagementProps) {
-  // Track fetched data separately for direct access
   const [fetchedData, setFetchedData] = useState<EngagementData>({
     slug,
     views: 0,
@@ -43,53 +44,53 @@ export default function ArticleEngagement({
   });
   const [viewWasTracked, setViewWasTracked] = useState(false);
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
-  
-  // UPDATED: Add state for share popup
   const [isSharePopupOpen, setIsSharePopupOpen] = useState(false);
 
   // Fetch engagement data on mount
   useEffect(() => {
-    // CRITICAL FIX: Check if article was already viewed in this browser session
-    // This prevents the API from triggering the Directus flow on subsequent visits
+    // Check if article was already viewed in this browser session
     const sessionKey = `viewed_${slug}`;
     const alreadyViewedInSession = typeof window !== 'undefined' 
       ? sessionStorage.getItem(sessionKey) === 'true'
       : false;
 
-    const fetchData = async () => {
+    async function fetchData() {
       try {
-        // FIXED: Use correct endpoint path - /api/engagement/[slug]
-        // The GET endpoint automatically handles view tracking
-        const response = await fetch(`/api/engagement/${slug}`);
-        
+        const response = await fetch(`/api/engagement/${slug}`, {
+          method: 'GET',
+          cache: 'no-store',
+        });
+
         if (!response.ok) {
-          throw new Error(`Failed to fetch engagement: ${response.status}`);
+          throw new Error('Failed to fetch engagement data');
         }
-        
+
         const result: EngagementResponse = await response.json();
-        
+
         if (result.success && result.data) {
           setFetchedData(result.data);
-          
-          // Mark view as tracked if it was tracked in this request
-          if (result.viewTracked && !alreadyViewedInSession) {
-            setViewWasTracked(true);
-            if (typeof window !== 'undefined') {
-              sessionStorage.setItem(sessionKey, 'true');
-            }
+          setViewWasTracked(result.viewTracked || false);
+
+          // Mark as viewed in session if not already
+          if (result.viewTracked && typeof window !== 'undefined') {
+            sessionStorage.setItem(sessionKey, 'true');
           }
         }
       } catch (error) {
-        console.error('[Engagement] Failed to fetch initial data:', error);
+        // Silent failure - use default values
       } finally {
         setIsLoadingInitial(false);
       }
-    };
+    }
+
+    if (alreadyViewedInSession) {
+      setViewWasTracked(false);
+    }
 
     fetchData();
   }, [slug]);
 
-  // Use engagement hook for likes, shares, and optimistic updates
+  // Engagement hook
   const {
     engagement,
     isLiked,
@@ -104,35 +105,27 @@ export default function ArticleEngagement({
     title,
     url,
     initialData: fetchedData,
-    trackView: false, // View tracking already handled by GET endpoint
+    trackView: false,
+    viewWasTrackedByAPI: viewWasTracked,
   });
 
-  // Update engagement state when fetched data changes
-  useEffect(() => {
-    if (!isLoadingInitial && fetchedData) {
-      // Sync fetched data with engagement hook
-      // (engagement hook manages its own state, but we initialize it)
-    }
-  }, [fetchedData, isLoadingInitial]);
-
-  // UPDATED: Toggle share popup instead of direct share
+  // Share popup handlers
   const handleShareButtonClick = () => {
-    setIsSharePopupOpen(prev => !prev);
+    setIsSharePopupOpen(true);
   };
 
-  // UPDATED: Close popup handler
   const handleClosePopup = () => {
     setIsSharePopupOpen(false);
   };
 
-  // Calculate displayed views (add 1 if view was tracked in this session)
+  // Display views with optimistic +1 if view was just tracked
   const displayedViews = viewWasTracked 
     ? fetchedData.views + 1 
     : fetchedData.views;
 
   return (
     <>
-      {/* Error Toast (if needed) - positioned at top */}
+      {/* Error Toast */}
       {error && (
         <div
           className="fixed top-20 left-1/2 -translate-x-1/2 z-[70] max-w-md w-full mx-4"
@@ -152,7 +145,7 @@ export default function ArticleEngagement({
         </div>
       )}
 
-      {/* Sticky Engagement Bar - Bottom Left */}
+      {/* Sticky Engagement Bar */}
       <aside
         className={`
           fixed bottom-4 left-4 z-60
@@ -167,7 +160,7 @@ export default function ArticleEngagement({
         role="complementary"
         aria-label="Article engagement metrics"
       >
-        {/* Views - Top */}
+        {/* Views */}
         {isLoadingInitial ? (
           <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
             <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
@@ -182,10 +175,9 @@ export default function ArticleEngagement({
           />
         )}
 
-        {/* Separator */}
         <div className="h-px bg-on-pr/20 mx-2" />
 
-        {/* Likes - Middle */}
+        {/* Likes */}
         {isLoadingInitial ? (
           <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
             <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
@@ -205,10 +197,9 @@ export default function ArticleEngagement({
           />
         )}
 
-        {/* Separator */}
         <div className="h-px bg-on-pr/20 mx-2" />
 
-        {/* Shares - Bottom (UPDATED: with popup) */}
+        {/* Shares */}
         {isLoadingInitial ? (
           <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
             <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
@@ -226,7 +217,6 @@ export default function ArticleEngagement({
               ariaLabel="Share article"
             />
             
-            {/* UPDATED: Share Popup */}
             <SharePopup
               isOpen={isSharePopupOpen}
               onClose={handleClosePopup}
