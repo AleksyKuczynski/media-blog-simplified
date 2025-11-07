@@ -1,9 +1,10 @@
 // frontend/src/main/components/Article/Engagement/SharePopup.tsx
 /**
- * Share Popup Component
+ * Share Popup Component (Updated for visual consistency with Modal system)
  * 
  * Displays social media share options in a popup
  * Handles outside click to close, optimistic share count updates
+ * Positioned absolutely relative to parent button (unique behavior)
  */
 
 'use client';
@@ -103,38 +104,47 @@ export function SharePopup({ isOpen, onClose, onShare, showCopySuccess }: ShareP
 
   return (
     <>
-      {/* Backdrop overlay */}
+      {/* Backdrop overlay - matches Modal styling */}
       <div 
-        className="fixed inset-0 z-[50]" 
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[50]" 
         aria-hidden="true"
       />
       
-      {/* Popup */}
+      {/* Popup - UPDATED: Consistent with Modal design system */}
       <div
         ref={popupRef}
-        className="absolute left-full ml-4 bottom-0 z-[60] w-64 bg-sf-cont border border-ol-var rounded-xl shadow-xl p-4 animate-fade-in"
+        className="
+          absolute left-full ml-4 bottom-0 z-[60] 
+          w-72
+          bg-sf-cont 
+          border border-ol-var 
+          rounded-xl 
+          shadow-2xl 
+          p-5
+          animate-fade-in
+        "
         role="dialog"
         aria-label="Share options"
       >
-        {/* Header */}
-        <div className="mb-3 pb-2 border-b border-ol-var">
-          <h3 className="text-sm font-semibold text-on-sf">
-            Share Article
+        {/* Header - UPDATED: Consistent with Modal header */}
+        <div className="mb-4 pb-3 border-b border-ol-var">
+          <h3 className="text-base font-semibold text-on-sf">
+            Поделиться статьей
           </h3>
         </div>
 
         {/* Share buttons grid */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2.5">
           {SHARE_PLATFORMS.map((platform) => (
             <button
               key={platform.id}
               type="button"
               onClick={() => handlePlatformClick(platform.id)}
               className={`
-                flex flex-col items-center gap-2 p-3 rounded-lg
+                flex flex-col items-center gap-2 p-3.5 rounded-lg
                 text-on-sf-var transition-all duration-200
                 ${platform.color}
-                focus:outline-none focus:ring-2 focus:ring-pr-fix/50
+                focus:outline-none focus:ring-2 focus:ring-pr-fix focus:ring-offset-2
               `}
               aria-label={`Share on ${platform.name}`}
             >
@@ -148,11 +158,11 @@ export function SharePopup({ isOpen, onClose, onShare, showCopySuccess }: ShareP
           ))}
         </div>
 
-        {/* Copy success notification */}
+        {/* Copy success notification - UPDATED: Consistent with Modal success messages */}
         {showCopySuccess && (
-          <div className="mt-3 pt-3 border-t border-ol-var">
-            <div className="px-3 py-2 bg-success/10 text-success text-xs rounded-lg text-center font-medium">
-              Link copied!
+          <div className="mt-4 pt-4 border-t border-ol-var">
+            <div className="px-3 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800 text-sm rounded-lg text-center font-medium">
+              Ссылка скопирована!
             </div>
           </div>
         )}

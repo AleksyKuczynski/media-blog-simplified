@@ -453,6 +453,23 @@ export interface FooterContact {
   readonly title: string;
   readonly buttonLabel: string;
   readonly emailSubject: string;
+  readonly modal: {
+    readonly title: string;
+    readonly emailLabel: string;
+    readonly emailPlaceholder: string;
+    readonly subjectLabel: string;
+    readonly subjectPlaceholder: string;
+    readonly messageLabel: string;
+    readonly messagePlaceholder: string;
+    readonly submitButton: string;
+    readonly cancelButton: string;
+    readonly successMessage: string;
+    readonly errorMessage: string;
+    readonly emailRequired: string;
+    readonly emailInvalid: string;
+    readonly subjectRequired: string;
+    readonly messageRequired: string;
+  };
 }
 
 export interface FooterAccessibility {
