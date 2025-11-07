@@ -1,5 +1,5 @@
-// src/main/components/Footer/Footer.tsx
-// SEO-OPTIMIZED: No hardcoded text, complete dictionary usage, enhanced structured data
+// frontend/src/main/components/Footer/Footer.tsx
+// SEO-OPTIMIZED: Responsive 1>2>4 columns, sitemap, legal links, contact button
 
 import { Dictionary, Lang } from '@/main/lib/dictionary/types';
 import Link from 'next/link';
@@ -17,9 +17,10 @@ export default function Footer({ lang, dictionary }: FooterProps) {
   // Process copyright template with current year and site name
   const copyrightText = processTemplate(footer.legal.copyright, {
     siteName: seo.site.name,
+    year: currentYear.toString(),
   });
 
-  // Enhanced structured data for Organization
+  // Enhanced structured data for Organization (email hidden from UI, kept in schema)
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -53,9 +54,9 @@ export default function Footer({ lang, dictionary }: FooterProps) {
 
   return (
     <footer 
-      className="bg-sf-cont text-on-sf-var py-16"
+      className="bg-sf-cont text-on-sf-var py-12 md:py-16"
       role="contentinfo"
-      aria-label={footer.about.description}
+      aria-label={footer.accessibility.footerNavigation}
     >
       {/* Enhanced structured data */}
       <script
@@ -66,9 +67,10 @@ export default function Footer({ lang, dictionary }: FooterProps) {
       />
       
       <div className="container mx-auto px-4">
-        <div className="flex flex-col space-y-12 md:grid md:grid-cols-3 md:gap-12 md:space-y-0">
+        {/* Responsive Grid: 1 col mobile, 2 cols tablet, 4 cols desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 md:gap-12">
           
-          {/* About Section - Dictionary-driven */}
+          {/* Column 1: About Section */}
           <section className="space-y-4">
             <h3 className="text-lg font-semibold text-prcolor">
               {footer.about.title}
@@ -78,7 +80,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
             </p>
           </section>
 
-          {/* Navigation Section - Dictionary-driven, no hardcoded aria-label */}
+          {/* Column 2: Quick Links + Sitemap */}
           <section className="space-y-4">
             <h3 className="text-lg font-semibold text-prcolor">
               {footer.quickLinks.title}
@@ -87,14 +89,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               className="space-y-2" 
               aria-label={footer.quickLinks.ariaLabel}
             >
-              <div>
-                <Link 
-                  href={`/${lang}`}
-                  className="text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded"
-                >
-                  {navigation.labels.home}
-                </Link>
-              </div>
+              {/* Removed Home link - logo already provides this */}
               <div>
                 <Link 
                   href={`/${lang}/articles`}
@@ -119,10 +114,21 @@ export default function Footer({ lang, dictionary }: FooterProps) {
                   {navigation.labels.authors}
                 </Link>
               </div>
+              {/* NEW: Sitemap link for SEO */}
+              <div className="pt-2 border-t border-ol-var/20">
+                <Link 
+                  href="/sitemap.xml"
+                  className="text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {footer.legal.sitemap}
+                </Link>
+              </div>
             </nav>
           </section>
 
-          {/* Social Links Section - Dictionary-driven */}
+          {/* Column 3: Social Links */}
           <section className="space-y-4">
             <h3 className="text-lg font-semibold text-prcolor">
               {footer.socialLinks.title}
@@ -152,16 +158,50 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               </div>
             </nav>
           </section>
+
+          {/* Column 4: Legal + Contact */}
+          <section className="space-y-4">
+            <h3 className="text-lg font-semibold text-prcolor">
+              {footer.legal.title}
+            </h3>
+            <nav className="space-y-2">
+              {/* NEW: Privacy Policy link */}
+              <div>
+                <Link 
+                  href={`/${lang}/privacy-policy`}
+                  className="text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded"
+                >
+                  {footer.legal.privacyPolicy}
+                </Link>
+              </div>
+              {/* NEW: Terms of Service link */}
+              <div>
+                <Link 
+                  href={`/${lang}/terms`}
+                  className="text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded"
+                >
+                  {footer.legal.terms}
+                </Link>
+              </div>
+              {/* NEW: Contact Us button (mailto placeholder) */}
+              <div className="pt-2 border-t border-ol-var/20">
+                <a 
+                  href={`mailto:${seo.site.contactEmail}?subject=${encodeURIComponent(footer.contact.emailSubject)}`}
+                  className="inline-block px-4 py-2 text-sm font-medium text-on-pr bg-pr-cont hover:bg-pr-fix rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2"
+                  aria-label={footer.contact.buttonLabel}
+                >
+                  {footer.contact.buttonLabel}
+                </a>
+              </div>
+            </nav>
+          </section>
         </div>
 
-        {/* Footer Bottom - Dictionary-driven copyright */}
+        {/* Footer Bottom - Copyright */}
         <div className="mt-12 pt-8 border-t border-ol-var/20">
-          <div className="text-center text-sm text-on-sf-var space-y-2">
+          <div className="text-center text-sm text-on-sf-var">
             <p>
-              © {currentYear} {copyrightText}
-            </p>
-            <p>
-              {footer.legal.rights}
+              {copyrightText}
             </p>
           </div>
         </div>

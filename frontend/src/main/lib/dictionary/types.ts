@@ -441,8 +441,18 @@ export interface FooterSocialLinks {
 }
 
 export interface FooterLegal {
+  readonly title: string;
   readonly copyright: string;
   readonly rights: string;
+  readonly privacyPolicy: string;
+  readonly terms: string;
+  readonly sitemap: string;
+}
+
+export interface FooterContact {
+  readonly title: string;
+  readonly buttonLabel: string;
+  readonly emailSubject: string;
 }
 
 export interface FooterAccessibility {
@@ -455,6 +465,7 @@ export interface FooterDictionary {
   readonly quickLinks: FooterQuickLinks;
   readonly socialLinks: FooterSocialLinks;
   readonly legal: FooterLegal;
+  readonly contact: FooterContact;
   readonly accessibility: FooterAccessibility;
 }
 

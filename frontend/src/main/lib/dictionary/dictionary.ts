@@ -390,10 +390,19 @@ const dictionary: Dictionary = {
       title: 'Социальные сети',
     },
     legal: {
+      title: 'Правовая информация',
       copyright: '© {year} {siteName}. Все права защищены.',
       rights: 'Все права защищены',
+      privacyPolicy: 'Политика конфиденциальности',
+      terms: 'Условия использования',
+      sitemap: 'Карта сайта',
     },
-    accessibility: { // ADD THIS SECTION
+    contact: {
+      title: 'Связаться с нами',
+      buttonLabel: 'Написать нам',
+      emailSubject: 'Обращение с EventForMe',
+    },
+    accessibility: {
       skipToFooter: 'Перейти к подвалу сайта',
       footerNavigation: 'Навигация в подвале сайта',
     },
