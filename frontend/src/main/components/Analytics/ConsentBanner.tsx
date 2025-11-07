@@ -1,9 +1,10 @@
-// src/main/components/Analytics/ConsentBanner.tsx
+// frontend/src/main/components/Analytics/ConsentBanner.tsx
 'use client';
 
 import { useConsent } from '@/main/lib/analytics/useConsent';
 import Link from 'next/link';
 import { useState } from 'react';
+import { CustomButton } from '@/main/components/Interface/CustomButton';
 
 interface ConsentBannerProps {
   dictionary: {
@@ -13,6 +14,7 @@ interface ConsentBannerProps {
     rejectAll: string;
     customize: string;
     save: string;
+    back: string;
     necessary: string;
     analytics: string;
     marketing: string;
@@ -22,6 +24,7 @@ interface ConsentBannerProps {
     marketingDescription: string;
     preferencesDescription: string;
     privacyPolicy: string;
+    alwaysActive: string;
   };
 }
 
@@ -86,25 +89,30 @@ export default function ConsentBanner({ dictionary }: ConsentBannerProps) {
               </div>
 
               {/* Actions */}
-              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                <button
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <CustomButton
+                  color="primary"
+                  filled={false}
                   onClick={rejectAll}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
                 >
                   {dictionary.rejectAll}
-                </button>
+                </CustomButton>
+                
                 <button
                   onClick={() => setShowDetails(true)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white underline"
+                  className="px-5 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white underline transition-colors"
+                  type="button"
                 >
                   {dictionary.customize}
                 </button>
-                <button
+                
+                <CustomButton
+                  color="primary"
+                  filled={true}
                   onClick={acceptAll}
-                  className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm"
                 >
                   {dictionary.acceptAll}
-                </button>
+                </CustomButton>
               </div>
             </div>
           ) : (
@@ -122,7 +130,7 @@ export default function ConsentBanner({ dictionary }: ConsentBannerProps) {
                       {dictionary.necessary}
                     </h3>
                     <span className="text-xs px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded">
-                      Всегда активно
+                      {dictionary.alwaysActive}
                     </span>
                   </div>
                   <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
@@ -194,38 +202,37 @@ export default function ConsentBanner({ dictionary }: ConsentBannerProps) {
                 </label>
               </div>
 
-              {/* Actions */}
-              <div className="flex flex-col sm:flex-row gap-2 pt-4">
-                <button
-                  onClick={() => setShowDetails(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                >
-                  ← Назад
-                </button>
-                <div className="flex-1" />
-                <button
-                  onClick={rejectAll}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
-                >
-                  {dictionary.rejectAll}
-                </button>
-                <button
-                  onClick={savePreferences}
-                  className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-sm"
-                >
-                  {dictionary.save}
-                </button>
-              </div>
-
               {/* Privacy policy link */}
-              <p className="text-xs text-center text-gray-500 dark:text-gray-400">
+              <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
                 <Link 
                   href="/ru/privacy-policy" 
-                  className="underline hover:text-gray-700 dark:hover:text-gray-300"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
                 >
                   {dictionary.privacyPolicy}
                 </Link>
-              </p>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <CustomButton
+                  color="primary"
+                  filled={false}
+                  onClick={() => setShowDetails(false)}
+                >
+                  {dictionary.back}
+                </CustomButton>
+                
+                <CustomButton
+                  color="primary"
+                  filled={true}
+                  onClick={() => {
+                    savePreferences();
+                    setShowDetails(false);
+                  }}
+                >
+                  {dictionary.save}
+                </CustomButton>
+              </div>
             </div>
           )}
         </div>
