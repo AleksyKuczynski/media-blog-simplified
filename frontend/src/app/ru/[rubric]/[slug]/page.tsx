@@ -208,7 +208,6 @@ export default async function ArticlePage({
                   imagePath={article.article_heading_img}
                   authors={authorsWithDetails} // Creates clickable author profile links
                   publishedDate={formattedDate}
-                  lang="ru"
                   editorialText={processTemplate(dictionary.content.labels.editorial, {
                     siteName: dictionary.seo.site.name
                   })}

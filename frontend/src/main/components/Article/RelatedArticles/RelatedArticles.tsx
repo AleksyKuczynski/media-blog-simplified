@@ -3,7 +3,7 @@
 
 import { Dictionary } from '@/main/lib/dictionary/types';
 import { fetchRelatedArticles } from '@/main/lib/directus/fetchRelatedArticles';
-import { fetchArticleSlugs, fetchArticles } from '@/main/lib/directus';
+import { fetchArticleSlugs, fetchArticleCard, DIRECTUS_URL } from '@/main/lib/directus';
 import RelatedArticlesCarousel, { CarouselArticle } from './RelatedArticlesCarousel';
 
 interface RelatedArticlesProps {
@@ -17,7 +17,7 @@ interface RelatedArticlesProps {
   className?: string;
 }
 
-const MINIMUM_ARTICLES = 4;
+const MINIMUM_ARTICLES = 10;
 
 /**
  * RelatedArticles - Production version with carousel
@@ -62,7 +62,7 @@ export default async function RelatedArticles({
         ...finalArticles.map(a => a.slug)
       ];
 
-      // Fetch latest articles excluding already found ones
+      // Fetch latest article slugs excluding already found ones
       const { slugs: latestSlugs } = await fetchArticleSlugs(
         1, // page 1
         'desc', // newest first
@@ -71,28 +71,30 @@ export default async function RelatedArticles({
         excludeSlugs // exclude current and found articles
       );
 
-      console.log('RelatedArticles: Found', latestSlugs.length, 'latest articles');
+      console.log('RelatedArticles: Found', latestSlugs.length, 'latest article slugs');
 
-      // Fetch full article data for latest articles
+      // Fetch full article card data for latest articles using fetchArticleCard
       if (latestSlugs.length > 0) {
-        const latestArticles = await fetchArticles(
-          latestSlugs.slice(0, needed).map(s => ({ slug: s.slug, layout: s.layout })),
-          lang,
-          'desc'
-        );
+        const latestArticlesPromises = latestSlugs
+          .slice(0, needed)
+          .map(s => fetchArticleCard(s.slug, lang));
 
-        // Transform to RelatedArticleInfo format
-        const latestTransformed = latestArticles.map(article => ({
-          slug: article.slug,
-          title: article.title,
-          published_at: article.published_at,
-          layout: article.layout,
-          rubric_slug: article.rubric_slug || '',
-          article_heading_img: article.article_heading_img,
-          categories: [], // Latest articles don't need category info
-          matchTier: 3 as 1 | 2 | 3, // Assign to Tier 3 (lowest priority)
-          matchCount: 0
-        }));
+        const latestArticlesData = await Promise.all(latestArticlesPromises);
+        
+        // Filter out any null results and transform to RelatedArticleInfo format
+        const latestTransformed = latestArticlesData
+          .filter(article => article !== null)
+          .map(article => ({
+            slug: article!.slug,
+            title: article!.translations[0]?.title || '',
+            published_at: article!.published_at,
+            layout: article!.layout,
+            rubric_slug: article!.rubric_slug || '',
+            article_heading_img: article!.article_heading_img,
+            categories: [], // Latest articles don't need category info
+            matchTier: 3 as 1 | 2 | 3, // Assign to Tier 3 (lowest priority)
+            matchCount: 0
+          }));
 
         // Append to end (after all tiered articles)
         finalArticles = [...finalArticles, ...latestTransformed];
@@ -126,12 +128,17 @@ export default async function RelatedArticles({
         day: 'numeric'
       });
 
+      // Construct full image URL in server component
+      const imageSrc = article.article_heading_img 
+        ? `${DIRECTUS_URL}/assets/${article.article_heading_img}`
+        : undefined;
+
       return {
         slug: article.slug,
         title: article.title,
         publishedAt: article.published_at,
         rubricSlug: article.rubric_slug || 'articles', // Fallback to 'articles' if no rubric
-        imageId: article.article_heading_img,
+        imageSrc, // Full URL, not just ID
         formattedDate,
       };
     });

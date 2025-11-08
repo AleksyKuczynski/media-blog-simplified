@@ -3,13 +3,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/main/lib/utils/utils';
-import { DIRECTUS_URL } from '@/main/lib/directus';
 
 interface RelatedArticleCardProps {
   slug: string;
   title: string;
   publishedAt: string;
-  imageId?: string;
+  imageSrc?: string; // Full URL constructed in server component
   rubricSlug: string;
   formattedDate: string;
   lang: 'ru';
@@ -59,14 +58,13 @@ export default function RelatedArticleCard({
   slug,
   title,
   publishedAt,
-  imageId,
+  imageSrc, // Full URL passed from server component
   rubricSlug,
   formattedDate,
   lang
 }: RelatedArticleCardProps) {
   
   const articleLink = `/${lang}/${rubricSlug}/${slug}`;
-  const imageSrc = imageId ? `${DIRECTUS_URL}/assets/${imageId}` : null;
 
   return (
     <Link 

@@ -1,8 +1,7 @@
 // src/main/components/Article/Header.tsx - SIMPLIFIED
 import Image from 'next/image';
 import Link from 'next/link';
-import { DIRECTUS_URL } from '@/main/lib/directus/directusConstants';
-import { AuthorDetails } from '@/main/lib/directus/directusInterfaces';
+import { DIRECTUS_URL, AuthorDetails } from '@/main/lib/directus';
 import { IMAGE_RATIO_STRING } from '../mainConstants';
 import { Lang } from '@/main/lib/dictionary/types';
 
@@ -10,7 +9,6 @@ interface HeaderProps {
   title: string;
   publishedDate: string;
   authors: AuthorDetails[];
-  lang: Lang;
   editorialText: string;
   imagePath?: string;
   lead?: string;
@@ -20,7 +18,6 @@ export function Header({
   title, 
   publishedDate, 
   authors, 
-  lang, 
   editorialText, 
   imagePath,
   lead
