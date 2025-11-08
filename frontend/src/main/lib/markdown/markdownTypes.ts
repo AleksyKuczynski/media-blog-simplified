@@ -3,7 +3,7 @@
 import { ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
 
 export interface ContentChunk {
-  type: 'markdown' | 'blockquote' | 'figure' | 'image' | 'image-frame' | 'image-group' | 'table';
+  type: 'markdown' | 'blockquote' | 'figure' | 'image' | 'image-frame' | 'image-group' | 'table' | 'article-card';
   content?: string;
   blockquoteType?: '1' | '2' | '3' | '4';
   blockquoteProps?: BlockquoteProps;
@@ -16,6 +16,19 @@ export interface ContentChunk {
   images?: ImageFrameItem[];
   // Table properties
   tableData?: TableData;
+  // Article card properties
+  articleCardData?: ArticleCardData;
+}
+
+// NEW: Article card data interface
+export interface ArticleCardData {
+  slug: string;
+  title: string;
+  description?: string;
+  imageSrc?: string;
+  rubricSlug: string;
+  publishedAt: string;
+  layout: string;
 }
 
 export interface TocItem {

@@ -8,42 +8,44 @@ import { ProcessedContent, ContentChunk } from './markdownTypes';
 import { extractImagesAndCaptions } from './extractImagesAndCaptions';
 import { convertMarkdownToHtmlSync } from './markdownToHtml';
 import { createAddHeadingIds } from './addHeadingIds';
-import { processBalloonTips } from './processBalloonTips';
+import { processLinks } from './processLinks';
+import { processArticleCards } from './processArticleCards';
 
 export async function processContent(content: string): Promise<ProcessedContent> {
   const addHeadingIds = createAddHeadingIds();
 
   try {
-    // All operations are asynchronous
-    const blockquoteChunks = await parseBlockquotes(content);
+    // Step 1: Parse custom blockquotes
+    const blockquoteChunks = parseBlockquotes(content);
     let processedChunks: ContentChunk[] = [];
 
     for (const chunk of blockquoteChunks) {
       if (chunk.type === 'markdown' && chunk.content) {
-        // Extract images and captions first
+        // Step 2: Extract images and captions
         const { chunks } = await extractImagesAndCaptions(chunk.content);
         
-        // Process image frames
+        // Step 3: Process image frames
         const imageFrameChunks = await parseImageFrames(chunks);
         
-        // NEW: Extract tables from markdown chunks
+        // Step 4: Extract tables from markdown chunks
         let tableProcessedChunks: ContentChunk[] = [];
         for (const imgChunk of imageFrameChunks) {
           if (imgChunk.type === 'markdown' && imgChunk.content) {
-            // Extract tables from markdown content
             const { chunks: tableChunks } = await extractTables(imgChunk.content);
             tableProcessedChunks = [...tableProcessedChunks, ...tableChunks];
           } else {
-            // Non-markdown chunks pass through unchanged
             tableProcessedChunks.push(imgChunk);
           }
         }
         
-        // Process balloon tips
-        const balloonTipChunks = processBalloonTips(tableProcessedChunks);
+        // Step 5: Process links (detect article slugs, external links, balloon tips)
+        const linkProcessedChunks = processLinks(tableProcessedChunks);
         
-        // Convert markdown chunks to HTML
-        const htmlChunks = await Promise.all(balloonTipChunks.map(async (c) => {
+        // Step 6: Process article cards (validate slugs, fetch data, create chunks)
+        const articleCardChunks = await processArticleCards(linkProcessedChunks);
+        
+        // Step 7: Convert remaining markdown chunks to HTML
+        const htmlChunks = await Promise.all(articleCardChunks.map(async (c) => {
           if (c.type === 'markdown' && c.content) {
             const htmlContent = convertMarkdownToHtmlSync(c.content);
             const contentWithIds = addHeadingIds(htmlContent);
@@ -58,7 +60,7 @@ export async function processContent(content: string): Promise<ProcessedContent>
       }
     }
 
-    // Generate table of contents
+    // Generate table of contents (only from markdown chunks)
     const toc = generateToc(processedChunks
       .filter(chunk => chunk.type === 'markdown' && chunk.content)
       .map(chunk => chunk.content!)
