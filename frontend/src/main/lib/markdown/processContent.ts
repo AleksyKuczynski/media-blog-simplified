@@ -2,6 +2,7 @@
 
 import { parseBlockquotes } from './parseBlockquotes';
 import { parseImageFrames } from './parseImageFrames';
+import { extractTables } from './extractTables';
 import { generateToc } from './generateToc';
 import { ProcessedContent, ContentChunk } from './markdownTypes';
 import { extractImagesAndCaptions } from './extractImagesAndCaptions';
@@ -22,11 +23,24 @@ export async function processContent(content: string): Promise<ProcessedContent>
         // Extract images and captions first
         const { chunks } = await extractImagesAndCaptions(chunk.content);
         
-        // ← CHANGED: Use parseImageFrames instead of parseCarousels
+        // Process image frames
         const imageFrameChunks = await parseImageFrames(chunks);
         
+        // NEW: Extract tables from markdown chunks
+        let tableProcessedChunks: ContentChunk[] = [];
+        for (const imgChunk of imageFrameChunks) {
+          if (imgChunk.type === 'markdown' && imgChunk.content) {
+            // Extract tables from markdown content
+            const { chunks: tableChunks } = await extractTables(imgChunk.content);
+            tableProcessedChunks = [...tableProcessedChunks, ...tableChunks];
+          } else {
+            // Non-markdown chunks pass through unchanged
+            tableProcessedChunks.push(imgChunk);
+          }
+        }
+        
         // Process balloon tips
-        const balloonTipChunks = processBalloonTips(imageFrameChunks);
+        const balloonTipChunks = processBalloonTips(tableProcessedChunks);
         
         // Convert markdown chunks to HTML
         const htmlChunks = await Promise.all(balloonTipChunks.map(async (c) => {

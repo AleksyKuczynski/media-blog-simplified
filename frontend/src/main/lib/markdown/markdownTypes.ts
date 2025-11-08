@@ -3,7 +3,7 @@
 import { ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
 
 export interface ContentChunk {
-  type: 'markdown' | 'blockquote' | 'figure' | 'image' | 'image-frame' | 'image-group';
+  type: 'markdown' | 'blockquote' | 'figure' | 'image' | 'image-frame' | 'image-group' | 'table';
   content?: string;
   blockquoteType?: '1' | '2' | '3' | '4';
   blockquoteProps?: BlockquoteProps;
@@ -14,6 +14,8 @@ export interface ContentChunk {
   dimensions?: ImageFrameDimensions;
   // Image group properties (for future enhancement)
   images?: ImageFrameItem[];
+  // Table properties
+  tableData?: TableData;
 }
 
 export interface TocItem {
@@ -49,6 +51,16 @@ export interface CarouselItem {
   imageAttributes: ImageAttributes;
   caption?: string;
   processedCaption: string;
+}
+
+
+// Table interface for sheet/table support
+export interface TableData {
+  headers: string[];
+  alignments: ('left' | 'center' | 'right' | 'none')[];
+  rows: string[][];
+  caption?: string;
+  processedCaption?: string;
 }
 
 // Blockquote interfaces (unchanged)
