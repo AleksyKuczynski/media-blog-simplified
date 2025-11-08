@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
-import { Header, Content, ScrollToTopButton, TableOfContents, RelatedLinksSchema, RelatedLinks } from '@/main/components/Article';
+import { Header, Content, ScrollToTopButton, TableOfContents, RelatedLinksSchema, RelatedLinks, RelatedArticlesTest } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
 import dictionary from '@/main/lib/dictionary/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
@@ -244,6 +244,14 @@ export default async function ArticlePage({
                   rubric={rubricData}
                   categories={categoriesData}
                   className="mt-12 pt-8 border-t border-gray-200"
+                />
+
+                {/* TEST: Related Articles with Tiered Matching */}
+                <RelatedArticlesTest
+                  currentArticleSlug={resolvedParams.slug}
+                  articleCategories={categoriesData}
+                  lang="ru"
+                  dictionary={dictionary}
                 />
 
                 {/* Scroll to Top Button */}

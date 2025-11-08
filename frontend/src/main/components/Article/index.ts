@@ -6,3 +6,4 @@ export { ScrollToTopButton } from './ScrollToTopButton'
 export { TableOfContents } from './TableOfContents';
 export { default as RelatedLinks } from './RelatedLinks';
 export { default as RelatedLinksSchema } from '../SEO/schemas/RelatedLinksSchema';
+export { default as RelatedArticlesTest } from './RelatedArticles/RelatedArticles';

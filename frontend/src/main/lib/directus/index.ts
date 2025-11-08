@@ -21,3 +21,5 @@ export { fetchRubricDetails } from './fetchRubricDetails';
 export { fetchRubricSlug } from './fetchRubricSlug';
 export { fetchSearchPropositions } from './fetchSearchPropositions';
 export { fetchEngagementData } from './fetchEngagementData'
+export { fetchRelatedArticles } from './fetchRelatedArticles';
+export type { RelatedArticleInfo } from './fetchRelatedArticles';
