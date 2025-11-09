@@ -35,7 +35,7 @@ export function processLinks(chunks: ContentChunk[]): ContentChunk[] {
   return chunks.map(chunk => {
     if (chunk.type === 'markdown' && chunk.content) {
       chunk.content = chunk.content.replace(
-        /\[([^\]]+)\]\(([^)]+)\)/g,
+        /\[([^\]]*)\]\(([^)]+)\)/g,
         (match, text, url) => {
           const trimmedUrl = url.trim();
           
