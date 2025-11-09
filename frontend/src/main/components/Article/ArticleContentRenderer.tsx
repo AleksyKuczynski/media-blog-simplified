@@ -4,6 +4,7 @@ import React from 'react';
 import { ContentChunk } from '@/main/lib/markdown/markdownTypes';
 import ImageFrame from './ImageFrame';
 import { CustomBlockquote } from './Blockquote/CustomBlockquote';
+import InlineArticleCard from './InlineArticleCard';
 
 interface ArticleContentRendererProps {
   chunks: ContentChunk[];
@@ -26,16 +27,16 @@ export default function ArticleContentRenderer({
           />
         );
 
-    case 'blockquote':
+      case 'blockquote':
         return chunk.blockquoteProps ? (
-        // Blockquotes also need to escape prose styling for proper theme control
-        <div key={index} className="not-prose">
+          // Blockquotes escape prose styling for proper theme control
+          <div key={index} className="not-prose">
             <CustomBlockquote {...chunk.blockquoteProps} />
-        </div>
+          </div>
         ) : null;
 
       case 'image-frame':
-        // ← NEW: Render individual image frames
+        // Render individual image frames
         return (
           <ImageFrame
             key={index}
@@ -47,7 +48,7 @@ export default function ArticleContentRenderer({
         );
 
       case 'image-group':
-        // ← FUTURE: Simple image group layout
+        // Simple image group layout
         return (
           <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
             {chunk.images?.map((image, imgIndex) => (
@@ -61,6 +62,15 @@ export default function ArticleContentRenderer({
             ))}
           </div>
         );
+
+      case 'article-card':
+        // NEW: Render inline article cards
+        return chunk.articleCardData ? (
+          <InlineArticleCard
+            key={index}
+            articleCardData={chunk.articleCardData}
+          />
+        ) : null;
 
       default:
         console.warn('Unknown chunk type:', chunk.type);
