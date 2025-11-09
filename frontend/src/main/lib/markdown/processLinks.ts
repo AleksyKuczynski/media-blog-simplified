@@ -25,8 +25,11 @@ const balloonTipStyles = [
 /**
  * Process markdown links and categorize them into three types:
  * 1. External links (http/https) - leave unchanged
- * 2. Article slugs - mark with data attribute for later processing
+ * 2. Article slugs - mark with UNIQUE delimiter for later processing
  * 3. Everything else - convert to balloon tips
+ * 
+ * ✅ FIX: Use unique delimiter instead of HTML spans
+ * This prevents issues with markdown-to-HTML conversion
  */
 export function processLinks(chunks: ContentChunk[]): ContentChunk[] {
   return chunks.map(chunk => {
@@ -41,13 +44,13 @@ export function processLinks(chunks: ContentChunk[]): ContentChunk[] {
             return match;
           }
           
-          // Type 2: Article slugs - mark for article card processing
+          // Type 2: Article slugs - use UNIQUE delimiter
+          // Format: ___ARTICLE_CARD:slug___ (unlikely to appear naturally)
           if (isValidSlugFormat(trimmedUrl)) {
-            // Use a temporary marker that will be replaced by actual article card
-            return `<span data-article-slug="${trimmedUrl}" data-slug-placeholder="true"></span>`;
+            return `___ARTICLE_CARD:${trimmedUrl}___`;
           }
           
-          // Type 3: Everything else - balloon tip
+          // Type 3: Everything else - balloon tip (as HTML is safe here)
           return `<span class="${balloonContainerStyles}">
             ${text}
             <span class="${balloonTipStyles}">

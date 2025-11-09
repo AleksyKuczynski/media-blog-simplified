@@ -8,8 +8,11 @@ import { DIRECTUS_URL } from '../directus/directusConstants';
 /**
  * Process markdown chunks to extract article slug placeholders and create article-card chunks
  * 
+ * ✅ IMPROVED: Works with markdown-safe delimiters (___ARTICLE_CARD:slug___)
+ * This approach is more robust than HTML span extraction
+ * 
  * Process:
- * 1. Find all article slug placeholders in markdown
+ * 1. Find all article slug delimiters in markdown
  * 2. Validate slugs (check if articles exist)
  * 3. Fetch article card data for valid slugs
  * 4. Split chunks to insert article-card chunks between markdown sections
@@ -24,9 +27,9 @@ export async function processArticleCards(chunks: ContentChunk[]): Promise<Conte
   
   for (const chunk of chunks) {
     if (chunk.type === 'markdown' && chunk.content) {
-      // Find all article slug markers in this chunk
-      const slugMarkerRegex = /<span data-article-slug="([^"]+)" data-slug-placeholder="true"><\/span>/g;
-      const matches = [...chunk.content.matchAll(slugMarkerRegex)];
+      // ✅ NEW: Search for markdown-safe delimiter instead of HTML spans
+      const articleCardRegex = /___ARTICLE_CARD:([a-z0-9\-]+)___/g;
+      const matches = [...chunk.content.matchAll(articleCardRegex)];
       
       if (matches.length === 0) {
         // No article slugs in this chunk, keep as-is
@@ -34,12 +37,12 @@ export async function processArticleCards(chunks: ContentChunk[]): Promise<Conte
         continue;
       }
       
-      // Split content by article slug markers
+      // Split content by article card delimiters
       let lastIndex = 0;
       const parts: Array<{ type: 'text' | 'slug'; content: string }> = [];
       
       for (const match of matches) {
-        // Add text before marker
+        // Add text before delimiter
         if (match.index! > lastIndex) {
           parts.push({
             type: 'text',
@@ -50,13 +53,13 @@ export async function processArticleCards(chunks: ContentChunk[]): Promise<Conte
         // Add slug marker
         parts.push({
           type: 'slug',
-          content: match[1] // The slug from data-article-slug attribute
+          content: match[1] // The slug from ___ARTICLE_CARD:slug___
         });
         
         lastIndex = match.index! + match[0].length;
       }
       
-      // Add remaining text after last marker
+      // Add remaining text after last delimiter
       if (lastIndex < chunk.content.length) {
         parts.push({
           type: 'text',
@@ -95,7 +98,7 @@ export async function processArticleCards(chunks: ContentChunk[]): Promise<Conte
                     ? `${DIRECTUS_URL}/assets/${articleCard.article_heading_img}`
                     : undefined;
                   
-                  articleDataCache.set(slug, {
+                  const articleCardData: ArticleCardData = {
                     slug: articleCard.slug,
                     title: translation.title,
                     description: translation.description,
@@ -103,10 +106,13 @@ export async function processArticleCards(chunks: ContentChunk[]): Promise<Conte
                     rubricSlug: articleCard.rubric_slug,
                     publishedAt: articleCard.published_at,
                     layout: articleCard.layout
-                  });
+                  };
+                  
+                  articleDataCache.set(slug, articleCardData);
                 } else {
-                  // Invalid article data
+                  // Article not found or no translation
                   articleDataCache.set(slug, null);
+                  console.warn(`Article card not found or missing translation: ${slug}`);
                 }
               } catch (error) {
                 console.error(`Error fetching article card for slug ${slug}:`, error);
@@ -115,18 +121,19 @@ export async function processArticleCards(chunks: ContentChunk[]): Promise<Conte
             } else {
               // Invalid slug
               articleDataCache.set(slug, null);
+              console.warn(`Invalid article slug: ${slug}`);
             }
           }
           
-          // Add article-card chunk if data exists
-          const articleData = articleDataCache.get(slug);
-          if (articleData) {
+          // Add article-card chunk if data was fetched successfully
+          const cachedData = articleDataCache.get(slug);
+          if (cachedData) {
             processedChunks.push({
               type: 'article-card',
-              articleCardData: articleData
+              articleCardData: cachedData
             });
           }
-          // If article data is null, we silently skip (don't render anything)
+          // If invalid or failed to fetch, silently skip (no chunk added)
         }
       }
     } else {

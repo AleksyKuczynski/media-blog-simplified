@@ -11,6 +11,12 @@ import { createAddHeadingIds } from './addHeadingIds';
 import { processLinks } from './processLinks';
 import { processArticleCards } from './processArticleCards';
 
+/**
+ * Main content processing pipeline
+ * 
+ * ✅ CORRECT ARCHITECTURE: Process article cards BEFORE HTML conversion
+ * This creates clean, separate chunks for different content types
+ */
 export async function processContent(content: string): Promise<ProcessedContent> {
   const addHeadingIds = createAddHeadingIds();
 
@@ -39,12 +45,16 @@ export async function processContent(content: string): Promise<ProcessedContent>
         }
         
         // Step 5: Process links (detect article slugs, external links, balloon tips)
+        // Creates markdown-safe delimiters for article cards
         const linkProcessedChunks = processLinks(tableProcessedChunks);
         
         // Step 6: Process article cards (validate slugs, fetch data, create chunks)
+        // ✅ RUNS BEFORE HTML CONVERSION - This is the correct order
+        // Splits markdown chunks into: [markdown, article-card, markdown, ...]
         const articleCardChunks = await processArticleCards(linkProcessedChunks);
         
         // Step 7: Convert remaining markdown chunks to HTML
+        // Only processes markdown chunks, leaves article-card chunks untouched
         const htmlChunks = await Promise.all(articleCardChunks.map(async (c) => {
           if (c.type === 'markdown' && c.content) {
             const htmlContent = convertMarkdownToHtmlSync(c.content);

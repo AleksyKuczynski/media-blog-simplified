@@ -1,6 +1,7 @@
 // src/main/lib/markdown/parseBlockquotes.ts
 
 import { BlockquoteProps, ContentChunk, EpigraphBlockquote, HighlightBlockquote, ProfileBlockquote, QuoteBlockquote } from './markdownTypes';
+import { convertImageUrl } from './convertImageUrl';
 
 function parseHighlight(content: string): HighlightBlockquote | null {
   const paragraphs = content.trim().split('\n');
@@ -58,10 +59,14 @@ function parseProfile(content: string): ProfileBlockquote | null {
   const profileContent = lines.slice(2).join('\n').trim();
   if (!profileContent) return null;
 
+  // ✅ FIX: Convert avatar URL to use current DIRECTUS_URL
+  // This handles URLs from different Directus instances (dev/prod)
+  const normalizedAvatarUrl = convertImageUrl(avatarMatch[1]);
+
   return {
     type: '4',
     author: authorMatch[1].trim(),
-    avatarUrl: avatarMatch[1],
+    avatarUrl: normalizedAvatarUrl,
     content: profileContent
   };
 }
@@ -119,7 +124,7 @@ export function parseBlockquotes(content: string): ContentChunk[] {
             blockquoteProps
           });
         }
-        // Jeśli parsowanie się nie udało, po prostu pomijamy ten fragment
+        // If parsing failed, skip this blockquote silently
       }
       isInBlockquote = false;
       blockquoteType = null;
