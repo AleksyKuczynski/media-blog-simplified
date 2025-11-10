@@ -37,14 +37,23 @@ function parseAlignment(cell: string): 'left' | 'center' | 'right' | 'none' {
 }
 
 /**
- * Parse a table row into cells
+ * Parse a table row into cells and process markdown to HTML
  */
 function parseTableRow(line: string): string[] {
   // Remove leading/trailing pipes and whitespace
   const content = line.trim().replace(/^\||\|$/g, '');
   
-  // Split by pipe and trim each cell
-  return content.split('|').map(cell => cell.trim());
+  // Split by pipe and process each cell
+  return content.split('|').map(cell => {
+    const trimmed = cell.trim();
+    // Convert markdown formatting to HTML (bold, italic, links, etc.)
+    // Remove wrapping <p> tags that remark adds
+    const html = convertSimpleMarkdownToHtml(trimmed)
+      .replace(/^<p>/, '')
+      .replace(/<\/p>\s*$/, '')
+      .trim();
+    return html;
+  });
 }
 
 /**
@@ -68,8 +77,8 @@ function parseTable(lines: string[], startIndex: number): {
   // Parse header
   const headers = parseTableRow(headerLine);
   
-  // Parse alignments
-  const alignmentCells = parseTableRow(separatorLine);
+  // Parse alignments (before HTML conversion)
+  const alignmentCells = separatorLine.trim().replace(/^\||\|$/g, '').split('|').map(c => c.trim());
   const alignments = alignmentCells.map(parseAlignment);
   
   // Verify column count matches

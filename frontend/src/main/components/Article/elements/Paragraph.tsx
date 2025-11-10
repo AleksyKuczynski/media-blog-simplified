@@ -11,7 +11,7 @@ export const ArticleParagraph = ({ children }: ParagraphProps) => {
       mb-6 text-base md:text-lg
       text-on-sf-var leading-relaxed
       first:mt-0 last:mb-0
-      prose-sm
+      font-serif
     ">
       {children}
     </p>

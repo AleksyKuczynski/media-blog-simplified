@@ -18,15 +18,15 @@ export const ArticleHeading = ({ level, children, id }: HeadingProps) => {
       case 1:
         return `${baseStyles} text-3xl md:text-4xl font-display`;
       case 2:
-        return `${baseStyles} text-2xl md:text-3xl font-display`;
+        return `${baseStyles} text-2xl md:text-3xl font-sans`;
       case 3:
-        return `${baseStyles} text-xl md:text-2xl font-display`;
+        return `${baseStyles} text-xl md:text-2xl font-sans`;
       case 4:
-        return `${baseStyles} text-lg md:text-xl font-display`;
+        return `${baseStyles} text-lg md:text-xl font-sans`;
       case 5:
-        return `${baseStyles} text-base md:text-lg font-display`;
+        return `${baseStyles} text-base md:text-xl font-display`;
       case 6:
-        return `${baseStyles} text-sm md:text-base font-display`;
+        return `${baseStyles} text-sm md:text-lg font-display`;
       default:
         return baseStyles;
     }
