@@ -1,6 +1,7 @@
 // src/main/lib/markdown/parseImageFrames.ts
 
 import { convertSimpleMarkdownToHtml } from './markdownToHtml';
+import { processCaptionLinks } from './processCaptionLinks';
 import { ContentChunk, ImageAttributes } from './markdownTypes';
 import { fetchAssetMetadata } from '../directus';
 import { parseMarkdownImage } from './parseMarkdownImage';
@@ -39,9 +40,13 @@ export async function parseImageFrames(chunks: ContentChunk[]): Promise<ContentC
         const enrichedAttributes = await enrichImageAttributes(chunk.content || '');
         
         // Process caption if present
+        // ✅ NEW: Process links in captions before HTML conversion
+        // - External links preserved
+        // - Article slugs converted to plain text
+        // - Invalid links converted to plain text or removed
         const hasCaption = chunk.type === 'figure' && chunk.caption && chunk.caption.trim() !== '';
         const processedCaption = hasCaption 
-          ? convertSimpleMarkdownToHtml(chunk.caption!)
+          ? convertSimpleMarkdownToHtml(processCaptionLinks(chunk.caption!))
           : '';
 
         // Calculate optimal dimensions for this single image
@@ -102,7 +107,10 @@ export async function createImageGroup(imageChunks: ContentChunk[]): Promise<Con
       processedImages.push({
         imageAttributes: enrichedAttributes,
         caption: chunk.caption,
-        processedCaption: chunk.caption ? convertSimpleMarkdownToHtml(chunk.caption) : ''
+        // ✅ UPDATED: Use processCaptionLinks for image groups too
+        processedCaption: chunk.caption 
+          ? convertSimpleMarkdownToHtml(processCaptionLinks(chunk.caption)) 
+          : ''
       });
     }
   }

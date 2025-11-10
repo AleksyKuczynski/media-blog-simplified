@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { cn } from '@/main/lib/utils/utils';
 import { ImageAttributes, ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
 import { calculateImageFrameDimensionsClient } from '@/main/lib/image-utils/calculateImageFrameDimensions';
-import { Caption, createInitialCaptionBehavior } from './Captions';
 import { ImageFrameSkeleton } from './ImageFrameSkeleton';
 
 interface ImageFrameProps {
@@ -20,9 +19,12 @@ interface ImageFrameProps {
 
 // ✅ EXTRACT STYLING CONSTANTS FROM IMAGEFRAME
 export const IMAGE_FRAME_STYLES = {
+  wrapper: 'w-full mb-8', // Outer wrapper for image + caption
   figure: 'w-full',
-  container: 'relative mx-auto mb-8 overflow-hidden bg-sf-cont rounded-2xl shadow-lg',
+  container: 'relative mx-auto overflow-hidden bg-sf-cont rounded-2xl shadow-lg',
   image: 'w-full h-full object-cover',
+  // ✅ NEW: Simple caption styling - outside image container for readability
+  caption: 'prose-sm text-on-sf-var mt-4 text-center px-4',
 } as const;
 
 // ✅ ENHANCED SKELETON STYLES WITH SHIMMER EFFECT
@@ -90,40 +92,37 @@ export const ImageFrame = memo(function ImageFrame({
   };
 
   const hasCaption = Boolean(processedCaption || caption);
-  const captionBehavior = createInitialCaptionBehavior(hasCaption);
 
   return (
-    <figure className={IMAGE_FRAME_STYLES.figure}>
-      <div 
-        className={cn(IMAGE_FRAME_STYLES.container, className)}
-        style={containerStyle}
-      >
-        <Image
-          src={imageAttributes.src}
-          alt={imageAttributes.alt || 'Image'}
-          width={imageAttributes.width || 1200}
-          height={imageAttributes.height || 800}
-          className={IMAGE_FRAME_STYLES.image}
-          sizes="(max-width: 768px) 95vw, (max-width: 1024px) 90vw, 85vw"
-          priority={false}
-          quality={90}
-          placeholder="blur"
-          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
-        />
-        
-        {hasCaption && (
-          <Caption
-            content={processedCaption || caption || ''}
-            behavior={captionBehavior}
-            visible={true}
-            onModeChange={() => {}} // No-op for single images
-            navigationLayout="horizontal"
-            isActive={true}
-            imageHeight={dimensions.height}
+    <div className={IMAGE_FRAME_STYLES.wrapper}>
+      <figure className={IMAGE_FRAME_STYLES.figure}>
+        <div 
+          className={cn(IMAGE_FRAME_STYLES.container, className)}
+          style={containerStyle}
+        >
+          <Image
+            src={imageAttributes.src}
+            alt={imageAttributes.alt || 'Image'}
+            width={imageAttributes.width || 1200}
+            height={imageAttributes.height || 800}
+            className={IMAGE_FRAME_STYLES.image}
+            sizes="(max-width: 768px) 95vw, (max-width: 1024px) 90vw, 85vw"
+            priority={false}
+            quality={90}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
           />
-        )}
-      </div>
-    </figure>
+        </div>
+      </figure>
+      
+      {/* ✅ NEW: Caption placed outside figure element for better readability */}
+      {hasCaption && (
+        <figcaption 
+          className={IMAGE_FRAME_STYLES.caption}
+          dangerouslySetInnerHTML={{ __html: processedCaption || caption || '' }}
+        />
+      )}
+    </div>
   );
 });
 
