@@ -9,6 +9,7 @@ import GoogleAnalyticsScript from '@/main/components/Analytics/GoogleAnalyticsSc
 import GoogleAnalyticsNoScript from '@/main/components/Analytics/GoogleAnalyticsNoScript'
 import ConsentBanner from '@/main/components/Analytics/ConsentBanner'
 import ScrollRestoration from '@/main/lib/hooks/useScrollRestoration'
+import dictionary from '@/main/lib/dictionary/dictionary'
 
 const fontSans = Jost({
   subsets: ['latin', 'cyrillic'],
@@ -29,24 +30,7 @@ const fontDisplay = Yeseva_One({
   display: 'swap',
 })
 
-// FIXED: Comprehensive Russian consent dictionary
-const consentDictionary = {
-  title: 'Мы используем файлы cookie',
-  description: 'Мы используем файлы cookie для улучшения вашего опыта, анализа трафика и персонализации контента. Вы можете принять все или настроить свои предпочтения.',
-  acceptAll: 'Принять все',
-  rejectAll: 'Отклонить все',
-  customize: 'Настроить',
-  save: 'Сохранить настройки',
-  necessary: 'Необходимые',
-  analytics: 'Аналитика',
-  marketing: 'Маркетинг',
-  preferences: 'Предпочтения',
-  necessaryDescription: 'Эти файлы cookie обеспечивают базовую функциональность и безопасность.',
-  analyticsDescription: 'Помогают нам понять, как посетители взаимодействуют с сайтом, собирая анонимную информацию.',
-  marketingDescription: 'Используются для показа релевантной рекламы и измерения эффективности рекламных кампаний.',
-  preferencesDescription: 'Позволяют сайту запоминать ваши предпочтения, такие как язык или регион.',
-  privacyPolicy: 'Политика конфиденциальности',
-};
+const consentDictionary = dictionary.consent
 
 export default async function RootLayout({
   children,

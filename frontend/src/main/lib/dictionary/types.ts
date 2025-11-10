@@ -4,6 +4,30 @@
 export type Lang = 'ru';
 
 // ===================================================================
+// CONSENT - Consent banner with accessibility
+// ===================================================================
+
+export interface ConsentDictionary {
+  readonly title: string;
+  readonly description: string;
+  readonly acceptAll: string;
+  readonly rejectAll: string;
+  readonly customize: string;
+  readonly save: string;
+  readonly back: string;
+  readonly necessary: string;
+  readonly analytics: string;   
+  readonly marketing: string;   
+  readonly preferences: string;
+  readonly necessaryDescription: string;
+  readonly analyticsDescription: string;
+  readonly marketingDescription: string;
+  readonly preferencesDescription: string;
+  readonly privacyPolicy: string;
+  readonly alwaysActive: string;
+}
+
+// ===================================================================
 // NAVIGATION - Complete with accessibility
 // ===================================================================
 
@@ -492,6 +516,7 @@ export interface FooterDictionary {
 
 export interface Dictionary {
   readonly locale: string;
+  readonly consent: ConsentDictionary;
   readonly navigation: NavigationDictionary;
   readonly breadcrumb: BreadcrumbDictionary;
   readonly common: CommonDictionary;
