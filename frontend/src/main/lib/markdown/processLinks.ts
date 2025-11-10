@@ -1,36 +1,17 @@
 // src/main/lib/markdown/processLinks.ts
-import { ContentChunk } from './markdownTypes';
-import { isValidSlugFormat } from './validateSlug';
-
-const balloonContainerStyles = [
-  // Base styles
-  'relative inline-block group cursor-help',
-  // Theme variants
-  'theme-default:border-b theme-default:border-dotted theme-default:border-txcolor-muted',
-  'theme-rounded:border-b theme-rounded:border-dotted theme-rounded:border-txcolor-muted',
-  'theme-sharp:border-b theme-sharp:border-dashed theme-sharp:border-prcolor'
-].join(' ');
-
-const balloonTipStyles = [
-  // Base styles
-  'absolute bottom-full left-1/2 transform -translate-x-1/2 min-w-[200px] max-w-xs',
-  'opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10',
-  'p-2 text-xs text-bgcolor bg-txcolor shadow-lg',
-  // Theme variants
-  'theme-default:rounded',
-  'theme-rounded:rounded-xl',
-  'theme-sharp:border theme-sharp:border-prcolor'
-].join(' ');
-
 /**
  * Process markdown links and categorize them into three types:
  * 1. External links (http/https) - leave unchanged
  * 2. Article slugs - mark with UNIQUE delimiter for later processing
- * 3. Everything else - convert to balloon tips
+ * 3. Everything else - convert to balloon tips (data-attribute spans)
  * 
- * ✅ FIX: Use unique delimiter instead of HTML spans
- * This prevents issues with markdown-to-HTML conversion
+ * ✅ UPDATED: Generate data-attribute spans instead of styled HTML
+ * This allows client-side rendering with the BalloonTip component
  */
+
+import { ContentChunk } from './markdownTypes';
+import { isValidSlugFormat } from './validateSlug';
+
 export function processLinks(chunks: ContentChunk[]): ContentChunk[] {
   return chunks.map(chunk => {
     if (chunk.type === 'markdown' && chunk.content) {
@@ -38,8 +19,9 @@ export function processLinks(chunks: ContentChunk[]): ContentChunk[] {
         /\[([^\]]*)\]\(([^)]+)\)/g,
         (match, text, url) => {
           const trimmedUrl = url.trim();
+          const trimmedText = text.trim();
           
-          // Type 1: External links - keep as-is
+          // Type 1: External links - keep as-is for markdown processing
           if (/^https?:\/\//i.test(trimmedUrl)) {
             return match;
           }
@@ -50,13 +32,25 @@ export function processLinks(chunks: ContentChunk[]): ContentChunk[] {
             return `___ARTICLE_CARD:${trimmedUrl}___`;
           }
           
-          // Type 3: Everything else - balloon tip (as HTML is safe here)
-          return `<span class="${balloonContainerStyles}">
-            ${text}
-            <span class="${balloonTipStyles}">
-              ${trimmedUrl}
-            </span>
-          </span>`;
+          // Type 3: Everything else - balloon tip
+          // Generate simple span with data attributes for client-side rendering
+          // Escape HTML entities in text and URL to prevent XSS
+          const escapedText = trimmedText
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+          
+          const escapedUrl = trimmedUrl
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+          
+          // Use data-balloon-tip attribute to mark spans for client-side processing
+          return `<span data-balloon-tip="${escapedUrl}">${escapedText}</span>`;
         }
       );
     }
