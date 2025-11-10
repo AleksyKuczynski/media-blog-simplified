@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
   
-  // FIXED: Explicitly set the output file tracing root to silence workspace warning
+  // Explicitly set the output file tracing root to silence workspace warning
   outputFileTracingRoot: __dirname,
   
   images: {
@@ -30,7 +30,6 @@ const nextConfig = {
     includePaths: [path.join(__dirname, 'src', 'app')],
   },
   
-  // Optional: Experimental features for better performance
   experimental: {
     scrollRestoration: false, // Disables Next.js scroll restoration
     optimizePackageImports: ['@tailwindcss/typography'], // Enable optimizePackageImports for better tree shaking
