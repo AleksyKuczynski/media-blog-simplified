@@ -5,6 +5,7 @@ import { ContentChunk } from '@/main/lib/markdown/markdownTypes';
 import ImageFrame from './ImageFrame';
 import { CustomBlockquote } from './Blockquote/CustomBlockquote';
 import InlineArticleCard from './InlineArticleCard';
+import { MarkdownContent } from './MarkdownContent';
 
 interface ArticleContentRendererProps {
   chunks: ContentChunk[];
@@ -19,12 +20,13 @@ export default function ArticleContentRenderer({
   const renderChunk = (chunk: ContentChunk, index: number) => {
     switch (chunk.type) {
       case 'markdown':
+        // ✅ FIXED: Use MarkdownContent instead of dangerouslySetInnerHTML
+        // This parses HTML and converts it to React components via componentMap
+        // Enables custom Tailwind classes in ArticleParagraph and other components
         return (
-          <div 
-            key={index}
-            className="prose prose-lg max-w-none"
-            dangerouslySetInnerHTML={{ __html: chunk.content || '' }}
-          />
+          <div key={index}>
+            <MarkdownContent content={chunk.content || ''} />
+          </div>
         );
 
       case 'blockquote':
