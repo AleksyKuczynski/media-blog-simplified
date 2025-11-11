@@ -6,6 +6,7 @@ import ImageFrame from './ImageFrame';
 import { CustomBlockquote } from './Blockquote/CustomBlockquote';
 import InlineArticleCard from './InlineArticleCard';
 import { MarkdownContent } from './MarkdownContent';
+import Table from './Table';
 
 interface ArticleContentRendererProps {
   chunks: ContentChunk[];
@@ -71,6 +72,15 @@ export default function ArticleContentRenderer({
           <InlineArticleCard
             key={index}
             articleCardData={chunk.articleCardData}
+          />
+        ) : null;
+
+      case 'table':
+        return chunk.tableData ? (
+          <Table
+            key={index}
+            tableData={chunk.tableData}
+            className="my-8"
           />
         ) : null;
 

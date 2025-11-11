@@ -8,8 +8,12 @@ export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
   
   const renderNode = (node: Node): React.ReactNode => {
     if (node.nodeType === NodeType.TEXT_NODE) {
-      return node.text;
+        // For whitespace-only text nodes in table contexts, skip them
+      const text = node.text;
+      if (!text || text.trim() === '') return null;
+      return text;
     }
+    
     if (node.nodeType === NodeType.ELEMENT_NODE) {
       const element = node as HTMLElement;
       const tagName = element.tagName.toLowerCase();
