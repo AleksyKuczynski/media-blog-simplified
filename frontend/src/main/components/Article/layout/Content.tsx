@@ -1,7 +1,6 @@
 // SIMPLEST FIX: Content.tsx - Remove prose classes since components manage their own styling
-import React from 'react';
-import ArticleContentRenderer from './ArticleContentRenderer';
 import { ContentChunk, TocItem } from '@/main/lib/markdown/markdownTypes';
+import { ArticleContentRenderer } from '../content';
 
 interface ContentProps {
   chunks: ContentChunk[];

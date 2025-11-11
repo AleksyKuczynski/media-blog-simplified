@@ -2,8 +2,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/main/lib/directus';
-import { IMAGE_RATIO_STRING } from '../mainConstants';
-import { Lang } from '@/main/lib/dictionary/types';
+import { IMAGE_RATIO_STRING } from '../../mainConstants';
 
 interface HeaderProps {
   title: string;

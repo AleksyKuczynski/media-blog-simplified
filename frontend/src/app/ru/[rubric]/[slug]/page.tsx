@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
-import { Header, Content, ScrollToTopButton, TableOfContents, RelatedLinksSchema, RelatedLinks, RelatedArticlesTest } from '@/main/components/Article';
+import { ScrollToTopButton, RelatedLinksSchema, RelatedLinks, RelatedArticlesTest } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
 import dictionary from '@/main/lib/dictionary/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
@@ -16,6 +16,8 @@ import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/component
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
 import ArticleEngagement from '@/main/components/Article/widgets/Engagement/ArticleEngagement';
+import { Content, Header } from '@/main/components/Article/layout';
+import { TableOfContents } from '@/main/components/Article/navigation/TableOfContents/TableOfContents';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
