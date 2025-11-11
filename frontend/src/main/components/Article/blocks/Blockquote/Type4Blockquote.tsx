@@ -1,4 +1,4 @@
-// src/main/components/Article/Blockquote/Type4Blockquote.tsx - SIMPLIFIED
+// src/main/components/Article/blocks/Blockquote/Type4Blockquote.tsx - SIMPLIFIED
 import Image from 'next/image';
 
 interface Type4Props {

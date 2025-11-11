@@ -6,13 +6,13 @@
  */
 
 import React from 'react';
-import { ImageFrame } from '../ImageFrame';
 import { ArticleHeading } from './Heading';
 import { ArticleLink } from './Link';
 import { ArticleList } from './List';
 import { ListItem } from './ListItem';
 import { ArticleParagraph } from './Paragraph';
-import { BalloonTip } from '../BalloonTip';
+import { BalloonTip } from '../blocks/BalloonTip/BalloonTip';
+import { ImageFrame } from '../media';
 
 // Helper to recursively extract text from React children
 const extractTextFromChildren = (children: React.ReactNode): string => {

@@ -1,4 +1,4 @@
-// src/main/components/Article/Table.tsx
+// src/main/components/Article/blocks/Table.tsx
 import React from 'react';
 import { TableData } from '@/main/lib/markdown/markdownTypes';
 import { twMerge } from 'tailwind-merge';

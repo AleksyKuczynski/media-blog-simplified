@@ -1,4 +1,4 @@
-// src/main/components/Article/BalloonTip.tsx
+// src/main/components/Article/blocks/BalloonTip/BalloonTip.tsx
 /**
  * BalloonTip - Interactive tooltip component for inline link explanations
  * 

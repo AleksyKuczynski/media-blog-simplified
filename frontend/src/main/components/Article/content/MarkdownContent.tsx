@@ -1,7 +1,7 @@
 // src/main/components/Article/MarkdownContent.tsx
 import React from 'react';
 import { parse, HTMLElement, Node, NodeType } from 'node-html-parser';
-import { componentMap } from './elements/componentMap';
+import { componentMap } from '../elements/componentMap';
 
 export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
   const root = parse(content);

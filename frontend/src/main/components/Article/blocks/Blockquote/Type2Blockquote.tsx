@@ -1,4 +1,4 @@
-// src/main/components/Article/Blockquote/Type2Blockquote.tsx - SIMPLIFIED
+// src/main/components/Article/blocks/Blockquote/Type2Blockquote.tsx - SIMPLIFIED
 interface Type2Props {
   content: string;
   author: string;

@@ -1,4 +1,4 @@
-// src/main/components/Article/InlineArticleCard.tsx
+// src/main/components/Article/blocks/InlineArticleCard.tsx
 
 import Link from 'next/link';
 import Image from 'next/image';

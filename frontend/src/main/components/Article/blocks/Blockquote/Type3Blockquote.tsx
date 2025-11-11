@@ -1,4 +1,4 @@
-// src/main/components/Article/Blockquote/Type3Blockquote.tsx - SIMPLIFIED
+// src/main/components/Article/blocks/Blockquote/Type3Blockquote.tsx - SIMPLIFIED
 interface Type3Props {
   content: string;
   author: string;

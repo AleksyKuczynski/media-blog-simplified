@@ -1,4 +1,4 @@
-// src/main/components/Article/Blockquote/Type1Blockquote.tsx
+// src/main/components/Article/blocks/Blockquote/Type1Blockquote.tsx
 interface Type1Props {
   content: string;
 }

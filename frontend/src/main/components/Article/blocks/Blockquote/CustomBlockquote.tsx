@@ -1,4 +1,4 @@
-// src/main/components/Article/Blockquote/CustomBlockquote.tsx
+// src/main/components/Article/blocks/Blockquote/CustomBlockquote.tsx
 import { BlockquoteProps } from '@/main/lib/markdown/markdownTypes';
 import { Type1Blockquote } from './Type1Blockquote';
 import { Type2Blockquote } from './Type2Blockquote';
