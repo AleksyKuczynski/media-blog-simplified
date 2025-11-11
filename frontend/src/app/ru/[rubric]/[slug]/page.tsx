@@ -4,20 +4,18 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
-import { ScrollToTopButton, RelatedLinksSchema, RelatedLinks, RelatedArticlesTest } from '@/main/components/Article';
+import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedLinks, RelatedArticles, TableOfContents } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
 import dictionary from '@/main/lib/dictionary/dictionary';
+import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { processContent } from '@/main/lib/markdown/processContent';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { generateArticleMetadata, generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';
 import { ArticleSchema } from '@/main/components/SEO/schemas/ArticleSchema';
+import RelatedLinksSchema from '@/main/components/SEO/schemas/RelatedLinksSchema';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
-import ArticleEngagement from '@/main/components/Article/widgets/Engagement/ArticleEngagement';
-import { Content, Header } from '@/main/components/Article/layout';
-import { TableOfContents } from '@/main/components/Article/navigation/TableOfContents/TableOfContents';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
@@ -248,7 +246,7 @@ export default async function ArticlePage({
                 />
 
                 {/* TEST: Related Articles with Tiered Matching */}
-                <RelatedArticlesTest
+                <RelatedArticles
                   currentArticleSlug={resolvedParams.slug}
                   articleCategories={categoriesData}
                   lang="ru"

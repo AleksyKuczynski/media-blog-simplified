@@ -1,5 +1,6 @@
 // src/main/components/Article/TableOfContents.tsx
-import { TableOfContentsLink } from './TableOfContentsLink';
+
+import { TableOfContentsLink } from "./TableOfContentsLink";
 
 interface TocItem {
   id: string;
