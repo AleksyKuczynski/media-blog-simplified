@@ -66,7 +66,7 @@ export function EngagementMetric({
   ariaLabel,
   className = '',
 }: EngagementMetricProps) {
-  const baseClasses = 'flex flex-col items-center justify-center gap-1 p-2 transition-all rounded-lg';
+  const baseClasses = 'flex md:flex-col gap-1 items-center justify-center transition-all rounded-lg';
   
   const stateClasses = interactive
     ? isActive

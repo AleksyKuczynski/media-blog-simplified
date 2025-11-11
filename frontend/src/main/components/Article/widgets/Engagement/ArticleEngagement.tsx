@@ -149,8 +149,8 @@ export default function ArticleEngagement({
       <aside
         className={`
           fixed bottom-4 left-4 z-60
-          flex flex-col gap-2
-          p-3 sm:p-4
+          flex md:flex-col gap-2
+          py-3 px-4
           bg-pr-cont hover:bg-pr-fix
           text-on-pr
           rounded-full shadow-lg hover:shadow-xl
