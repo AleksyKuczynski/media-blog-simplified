@@ -1,6 +1,7 @@
 // src/main/components/Article/elements/Link.tsx
 import React from 'react';
 import Link from 'next/link';
+import { ELEMENTS_STYLES } from '../styles';
 
 interface ArticleLinkProps {
   href: string;
@@ -9,7 +10,6 @@ interface ArticleLinkProps {
 }
 
 export const ArticleLink = ({ href, children, external }: ArticleLinkProps) => {
-  const linkStyles = "text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-200";
 
   if (external) {
     return (
@@ -17,7 +17,7 @@ export const ArticleLink = ({ href, children, external }: ArticleLinkProps) => {
         href={href} 
         target="_blank" 
         rel="noopener noreferrer"
-        className={linkStyles}
+        className={ELEMENTS_STYLES.link.base}
       >
         {children}
       </a>
@@ -25,7 +25,7 @@ export const ArticleLink = ({ href, children, external }: ArticleLinkProps) => {
   }
 
   return (
-    <Link href={href} className={linkStyles}>
+    <Link href={href} className={ELEMENTS_STYLES.link.base}>
       {children}
     </Link>
   );

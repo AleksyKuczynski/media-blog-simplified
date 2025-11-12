@@ -8,6 +8,7 @@ import { cn } from '@/main/lib/utils/utils';
 import { ImageAttributes, ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
 import { calculateImageFrameDimensionsClient } from '@/main/lib/image-utils/calculateImageFrameDimensions';
 import { ImageFrameSkeleton } from './ImageFrameSkeleton';
+import { MEDIA_STYLES } from '../styles';
 
 interface ImageFrameProps {
   imageAttributes: ImageAttributes;
@@ -16,30 +17,6 @@ interface ImageFrameProps {
   maxWidth?: number;
   className?: string;
 }
-
-// ✅ EXTRACT STYLING CONSTANTS FROM IMAGEFRAME
-export const IMAGE_FRAME_STYLES = {
-  wrapper: 'w-full mb-8', // Outer wrapper for image + caption
-  figure: 'w-full',
-  container: 'relative mx-auto overflow-hidden bg-sf-cont rounded-2xl shadow-lg',
-  image: 'w-full h-full object-cover',
-  // ✅ NEW: Simple caption styling - outside image container for readability
-  caption: 'prose-sm text-on-sf-var mt-4 text-center px-4',
-} as const;
-
-// ✅ ENHANCED SKELETON STYLES WITH SHIMMER EFFECT
-export const IMAGE_FRAME_SKELETON_STYLES = {
-  figure: IMAGE_FRAME_STYLES.figure,
-  container: cn(IMAGE_FRAME_STYLES.container, 'animate-pulse'),
-  
-  // Enhanced loading states
-  shimmer: 'absolute inset-0 bg-gradient-to-r from-sf-hi via-sf-hst to-sf-hi bg-[length:200%_100%] animate-[shimmer_1.5s_infinite]',
-  placeholder: 'absolute inset-0 flex items-center justify-center text-on-sf-var/50',
-  loadingText: 'mt-2 text-sm text-on-sf-var/60',
-  
-  // Icon styling
-  iconContainer: 'w-16 h-16 text-on-sf-var/30 mb-2',
-} as const;
 
 export const ImageFrame = memo(function ImageFrame({ 
   imageAttributes, 
@@ -94,10 +71,10 @@ export const ImageFrame = memo(function ImageFrame({
   const hasCaption = Boolean(processedCaption || caption);
 
   return (
-    <div className={IMAGE_FRAME_STYLES.wrapper}>
-      <figure className={IMAGE_FRAME_STYLES.figure}>
+    <div className={MEDIA_STYLES.imageFrame.wrapper}>
+      <figure className={MEDIA_STYLES.imageFrame.figure}>
         <div 
-          className={cn(IMAGE_FRAME_STYLES.container, className)}
+          className={cn(MEDIA_STYLES.imageFrame.container, className)}
           style={containerStyle}
         >
           <Image
@@ -105,7 +82,7 @@ export const ImageFrame = memo(function ImageFrame({
             alt={imageAttributes.alt || 'Image'}
             width={imageAttributes.width || 1200}
             height={imageAttributes.height || 800}
-            className={IMAGE_FRAME_STYLES.image}
+            className={MEDIA_STYLES.imageFrame.image}
             sizes="(max-width: 768px) 95vw, (max-width: 1024px) 90vw, 85vw"
             priority={false}
             quality={90}
@@ -118,7 +95,7 @@ export const ImageFrame = memo(function ImageFrame({
       {/* ✅ NEW: Caption placed outside figure element for better readability */}
       {hasCaption && (
         <figcaption 
-          className={IMAGE_FRAME_STYLES.caption}
+          className={MEDIA_STYLES.imageFrame.caption}
           dangerouslySetInnerHTML={{ __html: processedCaption || caption || '' }}
         />
       )}

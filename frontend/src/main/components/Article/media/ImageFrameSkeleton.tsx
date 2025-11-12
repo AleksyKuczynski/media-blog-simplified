@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { cn } from '@/main/lib/utils/utils';
-// Import from ImageFrame where styling logic lives
-import { IMAGE_FRAME_SKELETON_STYLES } from './ImageFrame';
+import { MEDIA_STYLES } from '../styles';
 
 interface ImageFrameSkeletonProps {
   width?: string | number;
@@ -21,24 +20,24 @@ export function ImageFrameSkeleton({
   showIcon = true
 }: ImageFrameSkeletonProps) {
   return (
-    <figure className={IMAGE_FRAME_SKELETON_STYLES.figure}>
+    <figure className={MEDIA_STYLES.imageFrame.figure}>
       <div 
-        className={cn(IMAGE_FRAME_SKELETON_STYLES.container, className)}
+        className={cn(MEDIA_STYLES.imageSkeleton.container, className)}
         style={{ width, height }}
         role="status"
         aria-label="Loading image..."
       >
         {/* Shimmer effect overlay */}
         {showShimmer && (
-          <div className={IMAGE_FRAME_SKELETON_STYLES.shimmer} />
+          <div className={MEDIA_STYLES.imageSkeleton.shimmer} />
         )}
         
         {/* Centered placeholder content */}
-        <div className={IMAGE_FRAME_SKELETON_STYLES.placeholder}>
+        <div className={MEDIA_STYLES.imageSkeleton.placeholder}>
           <div className="flex flex-col items-center">
             {showIcon && (
               <svg 
-                className={IMAGE_FRAME_SKELETON_STYLES.iconContainer}
+                className={MEDIA_STYLES.imageSkeleton.iconContainer}
                 fill="currentColor" 
                 viewBox="0 0 20 20"
                 aria-hidden="true"
@@ -50,7 +49,7 @@ export function ImageFrameSkeleton({
                 />
               </svg>
             )}
-            <div className={IMAGE_FRAME_SKELETON_STYLES.loadingText}>
+            <div className={MEDIA_STYLES.imageSkeleton.loadingText}>
               Loading image...
             </div>
           </div>

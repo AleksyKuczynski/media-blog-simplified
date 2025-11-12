@@ -1,5 +1,6 @@
 // src/main/components/Article/elements/Paragraph.tsx
 import React from 'react';
+import { ELEMENTS_STYLES } from '@/main/components/Article/styles';
 
 interface ParagraphProps {
   children: React.ReactNode;
@@ -7,12 +8,7 @@ interface ParagraphProps {
 
 export const ArticleParagraph = ({ children }: ParagraphProps) => {
   return (
-    <p className="
-      mb-6 text-base md:text-lg
-      text-on-sf-var leading-relaxed
-      first:mt-0 last:mb-0
-      font-serif
-    ">
+    <p className={ELEMENTS_STYLES.paragraph.base}>
       {children}
     </p>
   );

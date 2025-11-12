@@ -1,3 +1,5 @@
+import { BLOCKS_STYLES } from "../../styles";
+
 // src/main/components/Article/blocks/Blockquote/Type2Blockquote.tsx - SIMPLIFIED
 interface Type2Props {
   content: string;
@@ -6,23 +8,11 @@ interface Type2Props {
 
 export function Type2Blockquote({ content, author }: Type2Props) {
   return (
-    <blockquote className="
-      relative mb-6 p-6 md:mx-8 lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4
-      rounded-xl shadow-md
-      before:content-[''] before:font-display before:text-8xl before:text-pr-cont
-      before:text-start before:absolute
-    ">
-      <p className="
-        text-on-sf-var mt-0 mb-4 pt-12
-        text-xl text-center leading-loose
-        font-medium font-serif
-      ">
+    <blockquote className={BLOCKS_STYLES.blockquote2.container}>
+      <p className={BLOCKS_STYLES.blockquote2.content}>
         {content}
       </p>
-      <p className="
-        text-on-sf-var text-right mb-2
-        text-base font-medium font-serif
-      ">
+      <p className={BLOCKS_STYLES.blockquote2.author}>
         — {author}
       </p>
     </blockquote>

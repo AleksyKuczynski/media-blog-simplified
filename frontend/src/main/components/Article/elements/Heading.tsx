@@ -1,5 +1,6 @@
 // src/main/components/Article/elements/Heading.tsx
 import React from 'react';
+import { ELEMENTS_STYLES } from '../styles';
 
 interface HeadingProps {
   level: 1 | 2 | 3 | 4 | 5 | 6;
@@ -12,21 +13,21 @@ export const ArticleHeading = ({ level, children, id }: HeadingProps) => {
 
   // Direct rounded theme styling for all heading levels
   const getHeadingStyles = (level: number) => {
-    const baseStyles = "font-bold text-on-sf mb-4 mt-8 first:mt-0";
+    const baseStyles = ELEMENTS_STYLES.heading.base;
     
     switch (level) {
       case 1:
-        return `${baseStyles} text-3xl md:text-4xl font-display`;
+        return `${baseStyles} ${ELEMENTS_STYLES.heading.h1}`;
       case 2:
-        return `${baseStyles} text-2xl md:text-3xl font-sans`;
+        return `${baseStyles} ${ELEMENTS_STYLES.heading.h2}`;
       case 3:
-        return `${baseStyles} text-xl md:text-2xl font-sans`;
+        return `${baseStyles} ${ELEMENTS_STYLES.heading.h3}`;
       case 4:
-        return `${baseStyles} text-lg md:text-xl font-sans`;
+        return `${baseStyles} ${ELEMENTS_STYLES.heading.h4}`;
       case 5:
-        return `${baseStyles} text-base md:text-xl font-display`;
+        return `${baseStyles} ${ELEMENTS_STYLES.heading.h5}`;
       case 6:
-        return `${baseStyles} text-sm md:text-lg font-display`;
+        return `${baseStyles} ${ELEMENTS_STYLES.heading.h6}`;
       default:
         return baseStyles;
     }

@@ -188,7 +188,6 @@ export const BLOCKS_STYLES = {
     container: 'relative inline-block group',
     trigger: 'cursor-help border-b-2 border-dotted border-pr-cont text-pr-cont hover:text-pr-fix transition-colors',
     tooltip: 'absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-sf-hst text-on-sf text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50',
-    arrow: 'absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-sf-hst',
   },
 } as const;
 
@@ -203,7 +202,6 @@ export const NAVIGATION_STYLES = {
     title: 'text-xl font-bold mb-4 text-on-sf-var bg-sf-hst py-3 px-6 rounded-lg shadow-sm',
     list: 'space-y-2 pl-6',
     link: 'block text-pr-cont hover:text-pr-fix transition-colors duration-200 py-1',
-    linkActive: 'text-pr-fix font-semibold',
   },
 
   // RelatedLinks

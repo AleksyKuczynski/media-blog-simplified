@@ -1,5 +1,7 @@
 // src/main/components/Article/elements/List.tsx
 import React from 'react';
+import { ELEMENTS_STYLES } from '../styles';
+
 
 interface ListProps {
   ordered?: boolean;
@@ -14,10 +16,7 @@ export const ArticleList = ({ ordered = false, children }: ListProps) => {
   const Tag = ordered ? 'ol' : 'ul';
   
   return (
-    <Tag className="
-      mb-6 pl-6 space-y-2
-      text-on-sf-var leading-relaxed
-    ">
+    <Tag className={ELEMENTS_STYLES.list.base}>
       {children}
     </Tag>
   );
@@ -25,11 +24,8 @@ export const ArticleList = ({ ordered = false, children }: ListProps) => {
 
 export const ArticleListItem = ({ children }: ListItemProps) => {
   return (
-    <li className="
-      text-on-sf-var
-      marker:text-pr-cont
-    ">
+    <>
       {children}
-    </li>
+    </>
   );
 };
