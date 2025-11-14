@@ -3,7 +3,7 @@
 
 'use client';
 
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { 
   getSkipLinksData, 
   getSkipLinksAccessibility 

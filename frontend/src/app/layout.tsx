@@ -9,7 +9,7 @@ import GoogleAnalyticsScript from '@/main/components/Analytics/GoogleAnalyticsSc
 import GoogleAnalyticsNoScript from '@/main/components/Analytics/GoogleAnalyticsNoScript'
 import ConsentBanner from '@/main/components/Analytics/ConsentBanner'
 import ScrollRestoration from '@/main/lib/hooks/useScrollRestoration'
-import dictionary from '@/main/lib/dictionary/dictionary'
+import { dictionary } from '@/main/lib/dictionary';
 
 const fontSans = Jost({
   subsets: ['latin', 'cyrillic'],

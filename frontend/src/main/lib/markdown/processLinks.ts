@@ -5,7 +5,7 @@
  * 2. Article slugs - mark with UNIQUE delimiter for later processing
  * 3. Everything else - convert to balloon tips (data-attribute spans)
  * 
- * ✅ UPDATED: Generate data-attribute spans instead of styled HTML
+ * Generate data-attribute spans instead of styled HTML
  * This allows client-side rendering with the BalloonTip component
  */
 

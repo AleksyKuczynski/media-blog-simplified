@@ -4,7 +4,7 @@
 import { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Category } from '@/main/lib/directus/directusInterfaces';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import {
   generateFilterStateData,
   generateFilterUrls,

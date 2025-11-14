@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import dictionary from '@/main/lib/dictionary/dictionary'; // Direct import
+import { dictionary } from '@/main/lib/dictionary';
 import StandardError from '@/main/components/errors/StandardError';
 import { ContentType } from '@/main/lib/errors/errorUtils';
 

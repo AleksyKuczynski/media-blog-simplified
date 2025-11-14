@@ -3,12 +3,12 @@
 
 import { useState } from 'react';
 import { Modal } from '@/main/components/Interface/Modal/Modal';
-import type { FooterContact } from '@/main/lib/dictionary/types';
+import type { Dictionary } from '@/main/lib/dictionary';
 
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
-  dictionary: FooterContact;
+  dictionary: Dictionary;
   fallbackEmail: string;
 }
 
@@ -52,19 +52,19 @@ export function ContactModal({
 
     // Email validation
     if (!formData.email.trim()) {
-      newErrors.email = dictionary.modal.emailRequired;
+      newErrors.email = dictionary.footer.contact.modal.emailRequired;
     } else if (!EMAIL_REGEX.test(formData.email)) {
-      newErrors.email = dictionary.modal.emailInvalid;
+      newErrors.email = dictionary.footer.contact.modal.emailInvalid;
     }
 
     // Subject validation
     if (!formData.subject.trim()) {
-      newErrors.subject = dictionary.modal.subjectRequired;
+      newErrors.subject = dictionary.footer.contact.modal.subjectRequired;
     }
 
     // Message validation
     if (!formData.message.trim()) {
-      newErrors.message = dictionary.modal.messageRequired;
+      newErrors.message = dictionary.footer.contact.modal.messageRequired;
     }
 
     setErrors(newErrors);
@@ -89,7 +89,7 @@ export function ContactModal({
       // Simulate success
       setStatus({
         type: 'success',
-        message: dictionary.modal.successMessage,
+        message: dictionary.footer.contact.modal.successMessage,
       });
 
       // Reset form after success
@@ -103,7 +103,7 @@ export function ContactModal({
     } catch (error) {
       setStatus({
         type: 'error',
-        message: `${dictionary.modal.errorMessage} ${fallbackEmail}`,
+        message: `${dictionary.footer.contact.modal.errorMessage} ${fallbackEmail}`,
       });
     } finally {
       setIsSubmitting(false);
@@ -134,7 +134,7 @@ export function ContactModal({
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      title={dictionary.modal.title}
+      title={dictionary.footer.contact.modal.title}
       size="md"
       position="center"
     >
@@ -161,7 +161,7 @@ export function ContactModal({
             htmlFor="contact-email" 
             className="block text-sm font-medium text-on-sf mb-2"
           >
-            {dictionary.modal.emailLabel}
+            {dictionary.footer.contact.modal.emailLabel}
             <span className="text-red-500 ml-1" aria-label="обязательное поле">*</span>
           </label>
           <input
@@ -170,7 +170,7 @@ export function ContactModal({
             type="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder={dictionary.modal.emailPlaceholder}
+            placeholder={dictionary.footer.contact.modal.emailPlaceholder}
             className={`
               w-full px-4 py-3 
               bg-sf-cont border rounded-lg
@@ -199,7 +199,7 @@ export function ContactModal({
             htmlFor="contact-subject" 
             className="block text-sm font-medium text-on-sf mb-2"
           >
-            {dictionary.modal.subjectLabel}
+            {dictionary.footer.contact.modal.subjectLabel}
             <span className="text-red-500 ml-1" aria-label="обязательное поле">*</span>
           </label>
           <input
@@ -208,7 +208,7 @@ export function ContactModal({
             type="text"
             value={formData.subject}
             onChange={handleChange}
-            placeholder={dictionary.modal.subjectPlaceholder}
+            placeholder={dictionary.footer.contact.modal.subjectPlaceholder}
             maxLength={200}
             className={`
               w-full px-4 py-3 
@@ -238,7 +238,7 @@ export function ContactModal({
             htmlFor="contact-message" 
             className="block text-sm font-medium text-on-sf mb-2"
           >
-            {dictionary.modal.messageLabel}
+            {dictionary.footer.contact.modal.messageLabel}
             <span className="text-red-500 ml-1" aria-label="обязательное поле">*</span>
           </label>
           <textarea
@@ -246,7 +246,7 @@ export function ContactModal({
             name="message"
             value={formData.message}
             onChange={handleChange}
-            placeholder={dictionary.modal.messagePlaceholder}
+            placeholder={dictionary.footer.contact.modal.messagePlaceholder}
             rows={6}
             maxLength={5000}
             className={`
@@ -289,7 +289,7 @@ export function ContactModal({
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
-            {isSubmitting ? 'Отправка...' : dictionary.modal.submitButton}
+            {isSubmitting ? 'Отправка...' : dictionary.footer.contact.modal.submitButton}
           </button>
           <button
             type="button"
@@ -305,7 +305,7 @@ export function ContactModal({
               disabled:opacity-50 disabled:cursor-not-allowed
             "
           >
-            {dictionary.modal.cancelButton}
+            {dictionary.footer.contact.modal.cancelButton}
           </button>
         </div>
       </form>

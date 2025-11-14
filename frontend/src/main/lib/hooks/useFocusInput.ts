@@ -1,10 +1,9 @@
 // src/main/lib/hooks/useFocusInput.ts
-// FIXED: React 19 compatible nullable ref types
 
 import { RefObject, useEffect } from "react";
 
 export function useFocusInput(
-  inputRef: RefObject<HTMLInputElement | null>, // ✅ FIXED: Accept nullable ref
+  inputRef: RefObject<HTMLInputElement | null>,
   shouldFocus: boolean, 
   delay: number = 0
 ): void {

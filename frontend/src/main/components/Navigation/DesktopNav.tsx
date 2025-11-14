@@ -3,11 +3,10 @@
 
 'use client'
 
-import React from 'react'
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
 import ExpandableSearch from '../Search/ExpandableSearch'
-import { Dictionary, Lang } from '@/main/lib/dictionary/types'
+import { Dictionary, Lang } from '@/main/lib/dictionary'
 
 interface DesktopNavProps {
   dictionary: Dictionary

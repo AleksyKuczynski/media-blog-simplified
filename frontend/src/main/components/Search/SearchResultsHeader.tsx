@@ -3,9 +3,8 @@
 // DOES NOT render ArticleList - that stays in server component
 'use client'
 
-import React from 'react';
 import SortingControl from '@/main/components/Navigation/Filter/SortingControl';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { getLocalizedCount } from '@/main/lib/dictionary/helpers/content';
 
 interface SearchResultsHeaderProps {

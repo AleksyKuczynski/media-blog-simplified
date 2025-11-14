@@ -1,7 +1,7 @@
 // src/app/ru/(with-filter)/layout.tsx
 // MIGRATED: Updated to use new dictionary system completely
 import FilterGroup from '@/main/components/Navigation/Filter/FilterGroup';
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { fetchAllCategories } from '@/main/lib/directus';
 import { Suspense } from 'react';

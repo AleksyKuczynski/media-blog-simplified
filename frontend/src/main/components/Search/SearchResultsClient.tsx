@@ -2,11 +2,10 @@
 // SEO-OPTIMIZED: Enhanced semantic structure and accessibility
 'use client'
 
-import React from 'react';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import SortingControl from '@/main/components/Navigation/Filter/SortingControl';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { getLocalizedCount } from '@/main/lib/dictionary/helpers/content';
 

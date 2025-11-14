@@ -1,11 +1,9 @@
 // src/main/components/Article/ArticleContentRenderer.tsx
 
 import { ContentChunk } from '@/main/lib/markdown/markdownTypes';
-import { CustomBlockquote } from '../blocks/Blockquote/CustomBlockquote';
-import InlineArticleCard from '../blocks/InlineArticleCard/InlineArticleCard';
 import { MarkdownContent } from './MarkdownContent';
-import Table from '../blocks/Table/Table';
 import { ImageFrame } from '../media';
+import { CustomBlockquote, InlineArticleCard, Table } from '../blocks';
 
 interface ArticleContentRendererProps {
   chunks: ContentChunk[];

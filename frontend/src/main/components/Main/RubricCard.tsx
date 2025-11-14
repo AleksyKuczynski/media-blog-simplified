@@ -1,10 +1,9 @@
 // src/main/components/Main/RubricCard.tsx
-// FIXED: Generate URL internally, handle Directus data structure directly
 
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 

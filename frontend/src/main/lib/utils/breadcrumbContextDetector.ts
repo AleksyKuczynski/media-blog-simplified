@@ -2,7 +2,7 @@
 // REFACTORED: Removed all hardcoded text and /ru paths, using dictionary and constants
 
 import { headers } from 'next/headers';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { BreadcrumbContext, SmartBreadcrumbItem } from '@/main/components/Navigation/Breadcrumbs/types';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 

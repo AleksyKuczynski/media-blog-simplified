@@ -1,7 +1,6 @@
 // src/main/components/SEO/schemas/RelatedLinksSchema.tsx
-// FIXED: Category URLs use correct route structure /ru/category/ (singular)
 
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { SchemaBuilder, SchemaComposer } from '../core/SchemaBuilder';
 
@@ -20,7 +19,6 @@ interface RelatedLinksSchemaProps {
 
 /**
  * Structured data schema for RelatedLinks component
- * FIXED: Uses correct category route structure
  * Optimized for Google and Yandex SEO with Russian market targeting
  */
 export default function RelatedLinksSchema({
@@ -64,7 +62,7 @@ export default function RelatedLinksSchema({
         collectionType: 'rubrics',
       });
 
-    // FIXED: Add category schemas with correct URL structure
+    // Add category schemas
     if (categories.length > 0) {
       categories.forEach(category => {
         composer.addCustomSchema({

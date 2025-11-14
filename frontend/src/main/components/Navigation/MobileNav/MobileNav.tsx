@@ -10,7 +10,7 @@ import SearchButton from './SearchButton'
 import OffcanvasPanel from './OffcanvasPanel'
 import MobileSearchContent from '../../Search/MobileSearchContent'
 import { useMobilePanel } from './useMobilePanel'
-import { Dictionary, Lang } from '@/main/lib/dictionary/types'
+import { Dictionary, Lang } from '@/main/lib/dictionary'
 import HamburgerButton from './HamburgerButton'
 
 interface MobileNavProps {

@@ -2,7 +2,7 @@
 // REFACTORED: Using SchemaBuilder - Reduced from 200+ to 50 lines
 
 import React from 'react';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { getSafeArticleDates } from '@/main/lib/utils/seoDateUtils';
 import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';
 import { BreadcrumbItem } from '../core/types';

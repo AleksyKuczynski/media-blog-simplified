@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { fetchArticleSlugs, fetchAllCategories } from '@/main/lib/directus';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';

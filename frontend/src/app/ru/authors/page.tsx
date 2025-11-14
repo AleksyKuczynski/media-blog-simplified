@@ -5,7 +5,7 @@ import AuthorCard from '@/main/components/Main/AuthorCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { AuthorCardSkeleton } from '@/main/components/Main/AuthorCardSkeleton';
 

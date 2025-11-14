@@ -1,10 +1,9 @@
 // src/main/components/Navigation/SmartBreadcrumbs.tsx
 // Unified component combining user-facing breadcrumbs with SEO structured data
-// Replaces both SEOBreadcrumbs and Breadcrumbs components
 
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/main/components/Interface/Icons';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { detectBreadcrumbContext, generateContextualBreadcrumbs } from '@/main/lib/utils/breadcrumbContextDetector';
 
 interface SmartBreadcrumbsProps {

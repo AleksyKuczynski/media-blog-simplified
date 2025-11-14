@@ -1,6 +1,5 @@
 // src/main/components/Article/ImageFrameSkeleton.tsx
 
-import React from 'react';
 import { cn } from '@/main/lib/utils/utils';
 import { MEDIA_STYLES } from '../styles';
 

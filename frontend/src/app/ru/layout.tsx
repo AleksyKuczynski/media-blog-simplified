@@ -5,7 +5,7 @@ import React, { Suspense } from 'react'
 import { Metadata } from 'next'
 import Footer from '@/main/components/Footer/Footer'
 import Navigation from '@/main/components/Navigation/Navigation'
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 
 // Generate metadata using dictionary

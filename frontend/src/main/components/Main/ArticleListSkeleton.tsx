@@ -1,6 +1,5 @@
 // src/main/components/Main/ArticleListSkeleton.tsx
 
-import React from 'react';
 import { cn } from '@/main/lib/utils/utils';
 import { ArticleCardSkeletonVariant } from '../ArticleCards/ArticleCardVariant';
 

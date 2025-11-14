@@ -1,7 +1,7 @@
 // src/main/lib/directus/fetchRelatedArticles.ts
 
 import { DIRECTUS_URL } from "./index";
-import { Lang } from '../dictionary/types';
+import { Lang } from '../dictionary';
 
 /**
  * Article with category matching information

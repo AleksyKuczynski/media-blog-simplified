@@ -1,14 +1,11 @@
 // src/main/lib/dictionary/dictionary.ts
-// ENHANCED: Added metadata, errors, and content sections to eliminate hardcoded text
-
-import { Dictionary } from './types';
 
 /**
  * Complete Russian dictionary - enhanced with metadata fallbacks and error handling
  * Uses templates extensively to avoid duplication and support multiple contexts
  * Optimized for both Google and Yandex SEO requirements
  */
-const dictionary: Dictionary = {
+const dictionary = {
   locale: 'ru_RU',
   // ===================================================================
   // CONSENT - Consent banner content
@@ -227,8 +224,9 @@ const dictionary: Dictionary = {
       articles: 'статьи',
       rubrics: 'рубрики',
       authors: 'авторы',
+      categories: 'категории',
       collection: 'коллекция',
-      catalog: 'каталог',
+      //catalog: 'каталог',
     },
     templates: {
       pageTitle: '{section} — {siteName}',
@@ -449,4 +447,6 @@ const dictionary: Dictionary = {
   },
 };
 
+export type Lang = 'ru';
+export type Dictionary = typeof dictionary;
 export default dictionary;

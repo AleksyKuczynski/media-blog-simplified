@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
 import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedLinks, RelatedArticles, TableOfContents } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { processContent } from '@/main/lib/markdown/processContent';

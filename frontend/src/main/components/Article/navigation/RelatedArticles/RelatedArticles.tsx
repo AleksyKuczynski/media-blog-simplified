@@ -1,7 +1,7 @@
 // src/main/components/Article/RelatedArticles/RelatedArticles.tsx
 // PHASE 2A: Production version with carousel display
 
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { fetchRelatedArticles } from '@/main/lib/directus/fetchRelatedArticles';
 import { fetchArticleSlugs, fetchArticleCard, DIRECTUS_URL } from '@/main/lib/directus';
 import RelatedArticlesCarousel, { CarouselArticle } from './RelatedArticlesCarousel';

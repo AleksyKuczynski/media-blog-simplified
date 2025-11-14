@@ -8,7 +8,7 @@ import React, { useEffect } from 'react';
 import { SearchIcon } from '../Interface';
 import SearchInput from './SearchInput';
 import { useSearchLogic } from './useSearchLogic';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { useRouter } from 'next/navigation';
 
 interface MobileSearchContentProps {

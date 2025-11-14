@@ -1,7 +1,6 @@
 // src/main/components/ArticleCards/AdvertisingCard.tsx
 
 import Link from 'next/link';
-import { cn } from '@/main/lib/utils/utils';
 import { AdvertisingCardProps } from './interfaces';
 
 // ✅ EXTRACT ADVERTISING CARD STYLING INTO CONSTANTS - From inline classes

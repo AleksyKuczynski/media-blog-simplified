@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ArticleSlugInfo } from '@/main/lib/directus/index';
 import Section from '@/main/components/Main/Section';

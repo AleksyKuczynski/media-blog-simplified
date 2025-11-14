@@ -8,9 +8,7 @@ import {
   loadConsentPreferences,
   saveConsentPreferences,
   preferencesToConsentState,
-  consentStateToPreferences,
   updateConsentMode,
-  hasConsentChoice,
 } from './consent';
 
 export interface UseConsentReturn {

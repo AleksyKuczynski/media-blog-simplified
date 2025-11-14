@@ -5,7 +5,7 @@ import { SearchProposition } from '@/main/lib/directus'
 import { getSearchSuggestions } from '@/main/lib/actions'
 import { createSearchUrl } from '@/main/lib/utils'
 import { SearchStatus } from './types'
-import { Lang } from '@/main/lib/dictionary/types'
+import { Lang } from '@/main/lib/dictionary'
 
 export function useSearch() {
   const [searchQuery, setSearchQuery] = useState('')

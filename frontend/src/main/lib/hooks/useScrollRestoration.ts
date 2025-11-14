@@ -5,12 +5,8 @@ import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
 /**
- * Fixed Scroll Restoration Hook
- * 
- * ISSUE FIXED: Scroll position was being saved as 0 because it was captured
- * too early (before actual scroll) or after navigation started (when already at 0).
- * 
- * SOLUTION: Use beforeunload and scroll events to continuously update position,
+ * Scroll Restoration Hook
+ * Use beforeunload and scroll events to continuously update position,
  * not just on pathname change which happens too late.
  */
 

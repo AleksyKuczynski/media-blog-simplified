@@ -1,4 +1,4 @@
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import StandardError from '@/main/components/errors/StandardError';
 import { ContentType } from '@/main/lib/errors/errorUtils';
 

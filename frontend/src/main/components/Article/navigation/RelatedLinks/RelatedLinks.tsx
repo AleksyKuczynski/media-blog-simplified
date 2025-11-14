@@ -2,7 +2,7 @@
 // FIXED: Category URLs use correct route structure /ru/category/ (singular)
 
 import Link from 'next/link';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { NAVIGATION_STYLES } from '../../styles';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';

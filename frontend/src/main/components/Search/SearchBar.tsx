@@ -7,7 +7,7 @@ import { SearchIcon, NavButton, CloseIcon } from '../Interface';
 import SearchInput from './SearchInput';
 import SearchDropdown from './SearchDropdown';
 import { useSearchLogic } from './useSearchLogic';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 
 interface SearchBarProps {
   readonly dictionary: Dictionary;
@@ -86,7 +86,7 @@ export default function SearchBar({
 
       <SearchDropdown
         state={state}
-        dict={dictionary.search}
+        dict={dictionary}
         onItemSelect={handlers.handleSelect}
         className="rounded-lg shadow-lg"
         ariaLabel={dictionary.search.accessibility.searchResultsLabel}

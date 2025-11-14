@@ -4,7 +4,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import Section from '@/main/components/Main/Section';
 import Link from 'next/link';

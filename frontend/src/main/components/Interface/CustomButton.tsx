@@ -2,8 +2,6 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/main/lib/utils/utils';
-// ✅ REMOVED: All theme imports - using direct Tailwind classes
 
 type ButtonColor = 'accent' | 'primary';
 

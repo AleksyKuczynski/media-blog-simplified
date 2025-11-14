@@ -1,5 +1,5 @@
 // app/ru/not-found.tsx
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import StandardError from '@/main/components/errors/StandardError';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import { Metadata } from 'next';

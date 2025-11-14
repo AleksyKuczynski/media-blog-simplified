@@ -1,9 +1,6 @@
-// File: src/main/components/Main/HeroArticlesSkeleton.tsx
+// src/main/components/Main/HeroArticlesSkeleton.tsx
 
-import React from 'react';
-// Import from HeroArticles where styling logic lives
 import { HERO_ARTICLES_SKELETON_STYLES } from './HeroArticles';
-// Import skeleton variants we already created
 import { ArticleCardSkeletonVariant } from '../ArticleCards/ArticleCardVariant';
 
 interface HeroArticlesSkeletonProps {

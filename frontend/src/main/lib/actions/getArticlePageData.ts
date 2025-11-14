@@ -3,9 +3,9 @@
 
 import dictionary from '@/main/lib/dictionary/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
-import { Lang } from "../dictionary/types";
+import { Lang } from '../dictionary';
 import { AuthorDetails, fetchAllRubrics, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails } from "../directus";
-import { processContent } from "../markdown/processContent";
+import { processContent } from '../markdown/processContent';
 
 export async function getArticlePageData(params: { rubric: string, slug: string, lang: Lang }, searchParams: { author?: string }) {
   const [article, rubrics, rubricDetails] = await Promise.all([
@@ -29,15 +29,15 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
   if (searchParams.author) {
     const author = await fetchAuthorBySlug(searchParams.author, params.lang);
     breadcrumbItems = [
-      { label: dictionary.sections.authors.ourAuthors, href: '/ru/authors' },
-      { label: author?.name || searchParams.author, href: `/ru/authors/${searchParams.author}` },
-      { label: translation.title, href: `/ru/${params.rubric}/${params.slug}?context=author&author=${searchParams.author}` },
+      { label: dictionary.sections.authors.ourAuthors, href: `/${DEFAULT_LANG}/authors` },
+      { label: author?.name || searchParams.author, href: `/${DEFAULT_LANG}/authors/${searchParams.author}` },
+      { label: translation.title, href: `/${DEFAULT_LANG}/${params.rubric}/${params.slug}?context=author&author=${searchParams.author}` },
     ];
   } else {
     breadcrumbItems = [
-      { label: dictionary.sections.rubrics.allRubrics, href: '/ru/rubrics' },
-      { label: rubricName, href: `/ru/${params.rubric}` },
-      { label: translation.title, href: `/ru/${params.rubric}/${params.slug}` },
+      { label: dictionary.sections.rubrics.allRubrics, href: `/${DEFAULT_LANG}/rubrics` },
+      { label: rubricName, href: `/${DEFAULT_LANG}/${params.rubric}` },
+      { label: translation.title, href: `/${DEFAULT_LANG}/${params.rubric}/${params.slug}` },
     ];
   }
 

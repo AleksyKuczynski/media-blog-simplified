@@ -202,20 +202,33 @@ export const NAVIGATION_STYLES = {
 
   // RelatedLinks
   relatedLinks: {
-    container: 'mt-12 pt-8 border-t border-gray-200',
-    section: 'mb-6',
-    heading: 'text-lg font-semibold mb-3 text-on-sf',
-    linkGrid: 'flex flex-wrap gap-3',
-    link: 'inline-flex items-center px-4 py-2 rounded-lg transition-colors duration-200',
-    // Link variants
-    rubricLink: 'bg-blue-50 hover:bg-blue-100 text-blue-700 hover:text-blue-800 border border-blue-200',
-    categoryLink: 'bg-purple-50 hover:bg-purple-100 text-purple-700 hover:text-purple-800 border border-purple-200',
-    navigationGrid: 'grid grid-cols-2 sm:grid-cols-3 gap-3',
-    navigationLink: 'flex items-center p-3 rounded-lg transition-colors duration-200 border',
-    // Navigation variants
-    articlesNav: 'bg-purple-50 hover:bg-purple-100 text-purple-700 hover:text-purple-800 border-purple-200',
-    rubricsNav: 'bg-indigo-50 hover:bg-indigo-100 text-indigo-700 hover:text-indigo-800 border-indigo-200',
-    authorsNav: 'bg-pink-50 hover:bg-pink-100 text-pink-700 hover:text-pink-800 border-pink-200',
+    quickNav: {
+      container: 'py-4 border-b border-ol-var',
+      nav: 'flex flex-wrap gap-x-4 gap-y-2',
+      link: 'text-on-sf-var hover:text-on-sf hover:underline transition-colors',
+    },
+    
+    categories: {
+      container: 'py-4',
+      nav: 'flex flex-wrap gap-2',
+      tag: 'text-sm text-on-sf-var bg-sf-cont px-3 py-1.5 rounded-lg hover:bg-sf-hi transition-colors',
+    },
+    
+    rubric: {
+      container: 'py-4',
+      link: 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
+      icon: 'relative w-6 h-6',
+      text: 'text-base font-medium text-on-sf',
+    },
+    
+    author: {
+      container: 'w-full py-4 border-t border-ol-var',
+      link: 'inline-flex items-center gap-3 px-4 py-3 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
+      avatar: 'relative w-10 h-10 rounded-full overflow-hidden',
+      info: 'flex flex-col',
+      name: 'text-sm font-medium text-on-sf',
+      label: 'text-xs text-on-sf-var',
+    },
   },
 
   // RelatedArticles

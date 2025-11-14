@@ -7,7 +7,7 @@ import { handleSearchScenario } from './searchScenarios';
 import { createSearchUrl } from '@/main/lib/utils';
 import { useSearch } from './useSearch';
 import { SearchUIState } from './types';
-import { Lang } from '@/main/lib/dictionary/types';
+import { Lang } from '@/main/lib/dictionary';
 
 interface UseSearchLogicProps {
   mode: 'standard' | 'expandable';

@@ -1,5 +1,4 @@
 // src/main/components/Search/SearchDropdownItem.tsx - CLEANED UP
-import React from 'react';
 import { SearchProposition } from '@/main/lib/directus/directusInterfaces';
 
 interface SearchDropdownItemProps {

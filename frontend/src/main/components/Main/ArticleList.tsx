@@ -1,7 +1,7 @@
 // src/main/components/Main/ArticleList.tsx
 
 import { Suspense } from 'react';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import ArticleCard from '../ArticleCards/ArticleCard';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';

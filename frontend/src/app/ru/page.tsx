@@ -4,7 +4,7 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
 import HeroArticles from '@/main/components/Main/HeroArticles';

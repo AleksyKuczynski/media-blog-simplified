@@ -2,7 +2,7 @@
 // REFACTORED: Using SchemaComposer - Reduced from 80+ to 35 lines
 
 import React from 'react';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';

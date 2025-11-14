@@ -1,6 +1,6 @@
 // src/main/components/Logo.tsx - SEO-Enhanced Logo (Non-Destructive)
 import Link from 'next/link';
-import { Lang } from '../lib/dictionary/types';
+import { Lang } from '../lib/dictionary';
 
 interface LogoProps {
   lang: Lang;

@@ -4,7 +4,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import Link from 'next/link';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { ContactModal } from './ContactModal';
@@ -217,7 +217,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
       <ContactModal
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
-        dictionary={footer.contact}
+        dictionary={dictionary}
         fallbackEmail={seo.site.contactEmail}
       />
     </>

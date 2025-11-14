@@ -3,9 +3,8 @@
 
 'use client';
 
-import React from 'react';
 import { Category } from '@/main/lib/directus/directusInterfaces';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { ChevronDownIcon } from '../../Interface/Icons';
 import { getFilterAccessibilityData } from '@/main/lib/dictionary/helpers/filter';
 import { CustomButton, NavButton } from '../../Interface';

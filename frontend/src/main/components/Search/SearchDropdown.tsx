@@ -1,12 +1,11 @@
 // src/main/components/Search/SearchDropdown.tsx - CLEANED UP
-import React from 'react';
 import { SearchUIState } from './types';
 import SearchDropdownItem from './SearchDropdownItem';
-import { SearchDictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 
 interface SearchDropdownProps {
   state: SearchUIState;
-  dict: SearchDictionary;
+  dict: Dictionary;
   onItemSelect: (index: number) => void;
   className?: string;
   ariaLabel?: string; 
@@ -66,11 +65,11 @@ export default function SearchDropdown({
   function renderStatusMessage() {
     switch (state.searchStatus.type) {
       case 'minChars':
-        return dict.labels.minCharacters;
+        return dict.search.labels.minCharacters;
       case 'searching':
-        return dict.labels.searching;
+        return dict.search.labels.searching;
       case 'noResults':
-        return dict.labels.noResults;
+        return dict.search.labels.noResults;
       default:
         return null;
     }

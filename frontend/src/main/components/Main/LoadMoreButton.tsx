@@ -1,11 +1,10 @@
 // src/main/components/Main/LoadMoreButton.tsx
-// ENHANCED: Dictionary-driven, no hardcoded text, improved accessibility
 
 'use client'
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { CustomButton } from '../Interface/CustomButton';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 
 interface LoadMoreButtonProps {
   readonly currentPage: number;

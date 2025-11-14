@@ -1,8 +1,6 @@
 // src/main/components/Main/AuthorCardSkeleton.tsx
 
-import React from 'react';
 import { cn } from '@/main/lib/utils/utils';
-// Import style constants from parent component
 import { AUTHOR_CARD_SKELETON_STYLES } from './AuthorCard';
 
 interface AuthorCardSkeletonProps {

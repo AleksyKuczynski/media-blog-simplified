@@ -1,7 +1,7 @@
 // src/main/lib/directus/fetchFullArticle.ts
 
 import { FullArticle, ArticleBlock, DIRECTUS_URL, fetchAuthorsForArticle, fetchCategoriesForArticle } from "./index";
-import { Lang } from '../dictionary/types';
+import { Lang } from '../dictionary';
 
 export async function fetchFullArticle(slug: string, lang: Lang): Promise<FullArticle | null> {
   try {

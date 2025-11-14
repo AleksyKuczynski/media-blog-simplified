@@ -2,7 +2,7 @@
 // REFACTORED: Using SchemaComposer - Reduced from 120+ to 40 lines
 
 import React from 'react';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
 import { generateNavigationElements } from '@/main/lib/dictionary/helpers/navigation';
 import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';

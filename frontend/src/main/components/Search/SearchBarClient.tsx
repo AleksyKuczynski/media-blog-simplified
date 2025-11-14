@@ -1,8 +1,7 @@
 // src/main/components/Search/SearchBarClient.tsx
 'use client'
 
-import React from 'react';
-import { Dictionary, Lang } from '@/main/lib/dictionary/types';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import SearchBar from './SearchBar';
 
 interface SearchBarClientProps {

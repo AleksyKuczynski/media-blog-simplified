@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Section from '@/main/components/Main/Section';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { createErrorHandler, ContentType } from '@/main/lib/errors/errorUtils';
 
 interface StandardErrorProps {

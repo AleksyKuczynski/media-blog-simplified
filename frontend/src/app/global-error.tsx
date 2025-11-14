@@ -3,8 +3,7 @@
 'use client';
 
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
-
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 
 interface GlobalErrorProps {

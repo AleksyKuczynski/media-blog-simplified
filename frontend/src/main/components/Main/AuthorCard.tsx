@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/main/lib/utils/utils';
 import { DIRECTUS_URL, AuthorDetails } from '@/main/lib/directus/index';
-import { Lang } from '@/main/lib/dictionary/types';
+import { Lang } from '@/main/lib/dictionary';
 
 interface AuthorCardProps {
   author: AuthorDetails;

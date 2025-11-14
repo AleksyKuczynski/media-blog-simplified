@@ -1,6 +1,5 @@
 // src/main/components/ArticleCards/StandardCardSkeleton.tsx
 
-import React from 'react';
 import { cn } from '@/main/lib/utils/utils';
 // ✅ Import from StandardCard where styling logic lives
 import { STANDARD_CARD_SKELETON_STYLES } from './StandardCard';

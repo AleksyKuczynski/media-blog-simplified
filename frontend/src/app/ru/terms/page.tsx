@@ -3,7 +3,7 @@
 
 import { Metadata } from 'next';
 import Link from 'next/link';
-import dictionary from '@/main/lib/dictionary/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 

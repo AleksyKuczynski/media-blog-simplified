@@ -1,8 +1,8 @@
 // src/main/components/SEO/core/SchemaBuilder.tsx
-// FIXED: All TypeScript errors resolved
+// All TypeScript errors resolved
 
 import React from 'react';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { generateCanonicalUrl } from '@/main/lib/dictionary/helpers/seo';
 import { 
   ExtendedSchemaData,
@@ -15,7 +15,7 @@ import {
 
 /**
  * Create standardized Organization schema from dictionary
- * FIXED: Proper handling of readonly arrays
+ * Proper handling of readonly arrays
  */
 export const createStandardOrganizationSchema = (
   dictionary: Dictionary,
@@ -54,12 +54,12 @@ export const createStandardOrganizationSchema = (
       },
     },
     
-    // FIXED: Convert readonly string[] to string[]
+    // Convert readonly string[] to string[]
     ...(seo.site.socialProfiles.length > 0 && {
       sameAs: [...seo.site.socialProfiles], // Convert readonly to mutable
     }),
     
-    // Geographic targeting - FIXED: Proper array handling
+    // Geographic targeting
     areaServed: seo.site.geographicAreas.map(area => ({
       '@type': 'Country' as const,
       name: area,
@@ -127,7 +127,7 @@ export const createStandardWebsiteSchema = (
 
 /**
  * Create standardized Breadcrumb schema from dictionary
- * FIXED: Return type can be null, so use ExtendedSchemaData | null
+ * Return type can be null, so use ExtendedSchemaData | null
  */
 export const createStandardBreadcrumbSchema = (
   breadcrumbs: Array<{ name: string; href?: string }>,
@@ -165,10 +165,10 @@ export const createStandardBreadcrumbSchema = (
 
 /**
  * Create Russian audience targeting schema
- * FIXED: Literal type for '@type'
+ * Literal type for '@type'
  */
 export const createRussianAudienceSchema = (dictionary: Dictionary) => ({
-  '@type': 'Audience' as const, // FIXED: Use literal type
+  '@type': 'Audience' as const, // Use literal type
   geographicArea: dictionary.seo.regional.targetMarkets.map(market => ({
     '@type': 'Country' as const,
     name: market,
@@ -251,7 +251,7 @@ export class SchemaComposer {
 
   /**
    * Add breadcrumb schema
-   * FIXED: Handle null return value
+   * Handle null return value
    */
   addBreadcrumbs(breadcrumbs: Array<{ name: string; href?: string }>): this {
     const breadcrumbSchema = createStandardBreadcrumbSchema(
@@ -271,7 +271,7 @@ export class SchemaComposer {
   addCustomSchema(schema: Partial<ExtendedSchemaData>): this {
     const enhancedSchema: ExtendedSchemaData = {
       '@context': 'https://schema.org',
-      '@type': schema['@type'] || 'Thing', // FIXED: Ensure @type is always present
+      '@type': schema['@type'] || 'Thing', // Ensure @type is always present
       inLanguage: 'ru',
       audience: createRussianAudienceSchema(this.dictionary),
       isPartOf: {
@@ -313,7 +313,7 @@ export class SchemaComposer {
       datePublished: data.publishedAt,
       dateModified: data.modifiedAt,
       
-      // FIXED: Proper author schema with required @context
+      // Proper author schema with required @context
       author: {
         '@context': 'https://schema.org',
         '@type': 'Person',

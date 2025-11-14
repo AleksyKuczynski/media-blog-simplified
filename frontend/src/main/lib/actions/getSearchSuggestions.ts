@@ -1,7 +1,7 @@
 // src/main/lib/actions/getSearchSuggestions.ts
 'use server'
 
-import { Lang } from "../dictionary/types"
+import { Lang } from "../dictionary"
 import { fetchSearchPropositions, SearchProposition } from "../directus"
 
 export async function getSearchSuggestions(query: string, lang: Lang): Promise<SearchProposition[]> {

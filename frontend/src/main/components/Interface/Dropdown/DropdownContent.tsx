@@ -1,7 +1,6 @@
 // src/main/components/Interface/Dropdown/DropdownContent.tsx - CLEANED UP
 'use client';
 
-import React from 'react';
 import { useDropdownContext } from './DropdownContext';
 import type { DropdownContentProps } from './types';
 

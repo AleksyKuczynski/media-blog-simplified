@@ -1,5 +1,5 @@
 // src/main/lib/errors/errorUtils.ts
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 
 export type ContentType = 'article' | 'rubric' | 'author' | 'page' | 'content';
