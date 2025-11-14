@@ -1,30 +1,26 @@
 // src/main/components/Article/navigation/CategoriesSection/CategoriesSection.tsx
 
 import Link from 'next/link';
-import { Dictionary } from '@/main/lib/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { NAVIGATION_STYLES } from '../../styles';
 
 interface CategoriesSectionProps {
-  dictionary: Dictionary;
   categories: Array<{
     slug: string;
     name: string;
   }>;
-  lang?: string;
-  className?: string;
 }
 
 /**
  * Categories section for article page
+ * Static SSR component - imports dictionary directly
  * Displays topic taxonomy as compact horizontal tags
  * Enhances topical relevance signals for SEO
  */
 export default function CategoriesSection({
-  dictionary,
   categories,
-  lang = 'ru',
-  className,
 }: CategoriesSectionProps) {
   if (!categories || categories.length === 0) {
     return null;
@@ -38,18 +34,18 @@ export default function CategoriesSection({
   // Generate heading text
   const headingText = processTemplate(
     dictionary.sections.templates.collectionTitle,
-    { section: dictionary.sections.labels.categories }
+    { section: dictionary.sections.labels.categories || 'Категории' }
   );
 
   return (
-    <section className={className || styles.container} aria-labelledby={headingId}>
+    <section className={styles.container} aria-labelledby={headingId}>
       <h2 id={headingId} className="sr-only">
         {headingText}
       </h2>
       
       <nav className={styles.nav} aria-label={headingText}>
         {categories.map((category) => {
-          const categoryUrl = `/${lang}/category/${category.slug}`;
+          const categoryUrl = `/${DEFAULT_LANG}/category/${category.slug}`;
           
           // Generate aria label for each category
           const ariaLabel = processTemplate(

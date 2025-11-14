@@ -1,29 +1,27 @@
 // src/main/components/SEO/schemas/QuickNavigationSchema.tsx
 
 import React from 'react';
-import { Dictionary } from '@/main/lib/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { SchemaBuilder } from '../core/SchemaBuilder';
 
 interface QuickNavigationSchemaProps {
-  dictionary: Dictionary;
   currentArticleUrl: string;
-  lang?: string;
 }
 
 /**
  * SiteNavigationElement schema for QuickNavigation component
+ * Static SSR component - imports dictionary directly
  * Helps search engines understand site structure and internal linking
  */
 export default function QuickNavigationSchema({
-  dictionary,
   currentArticleUrl,
-  lang = 'ru',
 }: QuickNavigationSchemaProps): React.ReactElement {
   try {
     const baseUrl = dictionary.seo.site.url.replace(/\/$/, '');
     
     const navigationSchema = {
-      '@context': 'https://schema.org',
+      '@context': 'https://schema.org' as const,
       '@type': 'SiteNavigationElement',
       '@id': `${currentArticleUrl}#quick-navigation`,
       name: dictionary.sections.home.quickNavigation,
@@ -31,13 +29,13 @@ export default function QuickNavigationSchema({
         {
           '@type': 'SiteNavigationElement',
           name: dictionary.sections.labels.articles,
-          url: `${baseUrl}/${lang}/articles`,
+          url: `${baseUrl}/${DEFAULT_LANG}/articles`,
           description: dictionary.navigation.descriptions.articles,
         },
         {
           '@type': 'SiteNavigationElement',
           name: dictionary.sections.labels.rubrics,
-          url: `${baseUrl}/${lang}/rubrics`,
+          url: `${baseUrl}/${DEFAULT_LANG}/rubrics`,
           description: dictionary.navigation.descriptions.rubrics,
         },
       ],

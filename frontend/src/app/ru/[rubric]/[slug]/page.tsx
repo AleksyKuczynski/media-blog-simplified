@@ -180,7 +180,6 @@ export default async function ArticlePage({
 
         {/* Related Links Schema for enhanced SEO */}
         <QuickNavigationSchema
-          dictionary={dictionary}
           currentArticleUrl={currentArticleUrl}
         />
 
@@ -236,21 +235,15 @@ export default async function ArticlePage({
                 />
 
                 {/* Related Links for SEO Enhancement */}
-                <QuickNavigation
-                  dictionary={dictionary}
-                  rubric={rubricData}
-                  categories={categoriesData}
-                />
+                <QuickNavigation/>
+
                 <CategoriesSection
-                  dictionary={dictionary}
                   categories={categoriesData}
                 />
                 <RubricSection
-                  dictionary={dictionary}
                   rubric={rubricData}
                 />
                 <AuthorSection
-                  dictionary={dictionary}
                   author={rubricData}
                 />
 

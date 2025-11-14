@@ -2,35 +2,32 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Dictionary } from '@/main/lib/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 import { NAVIGATION_STYLES } from '../../styles';
 
 interface AuthorSectionProps {
-  dictionary: Dictionary;
   author: {
     name: string;
     slug: string;
     avatar?: string;
   };
-  lang?: string;
-  className?: string;
 }
 
 /**
  * Author section for article page
+ * Static SSR component - imports dictionary directly
  * E-A-T signal (Expertise, Authority, Trust)
  * Links to author profile for entity building
  */
 export default function AuthorSection({
-  dictionary,
   author,
-  lang = 'ru',
 }: AuthorSectionProps) {
   const styles = NAVIGATION_STYLES.relatedLinks.author;
   
-  const authorUrl = `/${lang}/authors/${author.slug}`;
+  const authorUrl = `/${DEFAULT_LANG}/authors/${author.slug}`;
   
   // Generate aria label
   const ariaLabel = processTemplate(
@@ -42,7 +39,7 @@ export default function AuthorSection({
   const headingId = `${sectionId}-heading`;
   
   // Label text for "Автор" or equivalent
-  const authorLabel = dictionary.sections.labels.author;
+  const authorLabel = dictionary.sections.labels.author || 'Автор';
 
   return (
     <section className={styles.container} aria-labelledby={headingId}>

@@ -2,36 +2,32 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Dictionary } from '@/main/lib/dictionary';
+import { dictionary } from '@/main/lib/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 import { NAVIGATION_STYLES } from '../../styles';
 
 interface RubricSectionProps {
-  dictionary: Dictionary;
   rubric: {
     slug: string;
     name: string;
     icon?: string;
   };
-  lang?: string;
-  className?: string;
 }
 
 /**
  * Rubric section for article page
+ * Static SSR component - imports dictionary directly
  * Primary content classification with icon
  * Strong internal link signal for SEO
  */
 export default function RubricSection({
-  dictionary,
   rubric,
-  lang = 'ru',
-  className,
 }: RubricSectionProps) {
   const styles = NAVIGATION_STYLES.relatedLinks.rubric;
   
-  const rubricUrl = `/${lang}/${rubric.slug}`;
+  const rubricUrl = `/${DEFAULT_LANG}/${rubric.slug}`;
   
   // Generate aria label
   const ariaLabel = processTemplate(
@@ -52,7 +48,7 @@ export default function RubricSection({
   const headingId = `${sectionId}-heading`;
 
   return (
-    <section className={className || styles.container} aria-labelledby={headingId}>
+    <section className={styles.container} aria-labelledby={headingId}>
       <h2 id={headingId} className="sr-only">
         {dictionary.sections.labels.rubrics}
       </h2>
