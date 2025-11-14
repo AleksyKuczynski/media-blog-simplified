@@ -20,7 +20,6 @@ export default function ArticleContentRenderer({
   const renderChunk = (chunk: ContentChunk, index: number) => {
     switch (chunk.type) {
       case 'markdown':
-        // ✅ FIXED: Use MarkdownContent instead of dangerouslySetInnerHTML
         // This parses HTML and converts it to React components via componentMap
         // Enables custom Tailwind classes in ArticleParagraph and other components
         return (
@@ -66,7 +65,7 @@ export default function ArticleContentRenderer({
         );
 
       case 'article-card':
-        // NEW: Render inline article cards
+        // Render inline article cards
         return chunk.articleCardData ? (
           <InlineArticleCard
             key={index}
@@ -79,7 +78,6 @@ export default function ArticleContentRenderer({
           <Table
             key={index}
             tableData={chunk.tableData}
-            className="my-8"
           />
         ) : null;
 

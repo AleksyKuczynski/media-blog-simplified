@@ -3,6 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/main/lib/directus';
 import { IMAGE_RATIO_STRING } from '../../mainConstants';
+import { LAYOUT_STYLES } from '../styles';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 
 interface HeaderProps {
   title: string;
@@ -13,6 +15,8 @@ interface HeaderProps {
   lead?: string;
 }
 
+const styles = LAYOUT_STYLES.header;
+
 export function Header({ 
   title, 
   publishedDate, 
@@ -22,26 +26,26 @@ export function Header({
   lead
 }: HeaderProps) {
   return (
-    <header className="relative mb-12 lg:grid grid-cols-2 justify-center">
+    <header className={styles.container}>
       
-      <h1 className="mb-8 lg:pl-6 xl:pl-8 font-display text-3xl text-center lg:text-left font-bold text-on-sf">
+      <h1 className={styles.title}>
         {title}
       </h1>
       
       {imagePath && (
-        <div className={`relative mx-auto ${IMAGE_RATIO_STRING} overflow-hidden order-first h-full w-full md:max-lg:w-3/4 rounded-t-2xl lg:rounded-2xl`}>
+        <div className={`${styles.imageContainer} ${IMAGE_RATIO_STRING}`}>
           <Image
             src={`${DIRECTUS_URL}/assets/${imagePath}`}
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, 1200px"
             priority
-            className="w-full h-full object-cover"
+            className={styles.image}
           />
         </div>
       )}
 
-      <div className="font-medium text-sm xl:text-base text-on-sf-var mx-auto flex justify-between col-span-2 w-full lg:max-w-[800px] lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 rounded-b-2xl lg:rounded-2xl lg:mt-8 p-6 shadow-sm">
+      <div className={styles.metadataBox}>
         <p>{publishedDate}</p>
         <p>
           {authors.length > 0 && authors[0].name !== '::EDITORIAL::' ? (
@@ -49,8 +53,8 @@ export function Header({
               <span key={author.slug}>
                 {index > 0 && ", "}
                 <Link 
-                  href={`/ru/authors/${author.slug}`} 
-                  className="text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600"
+                  href={`/${DEFAULT_LANG}/authors/${author.slug}`} 
+                  className={styles.authorLink}
                 >
                   {author.name}
                 </Link>
@@ -63,7 +67,7 @@ export function Header({
       </div>
 
       {lead && (
-        <div className="text-lg xl:text-xl font-light max-w-[800px] mx-auto mb-8 col-span-2 pt-6 text-on-sf">
+        <div className={styles.lead}>
           {lead}
         </div>
       )}

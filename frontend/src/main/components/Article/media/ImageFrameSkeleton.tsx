@@ -12,6 +12,8 @@ interface ImageFrameSkeletonProps {
   showIcon?: boolean;
 }
 
+const styles = MEDIA_STYLES.imageSkeleton;
+
 export function ImageFrameSkeleton({ 
   width = '100%',
   height = 400,
@@ -22,22 +24,22 @@ export function ImageFrameSkeleton({
   return (
     <figure className={MEDIA_STYLES.imageFrame.figure}>
       <div 
-        className={cn(MEDIA_STYLES.imageSkeleton.container, className)}
+        className={cn(styles.container, className)}
         style={{ width, height }}
         role="status"
         aria-label="Loading image..."
       >
         {/* Shimmer effect overlay */}
         {showShimmer && (
-          <div className={MEDIA_STYLES.imageSkeleton.shimmer} />
+          <div className={styles.shimmer} />
         )}
         
         {/* Centered placeholder content */}
-        <div className={MEDIA_STYLES.imageSkeleton.placeholder}>
+        <div className={styles.placeholder}>
           <div className="flex flex-col items-center">
             {showIcon && (
               <svg 
-                className={MEDIA_STYLES.imageSkeleton.iconContainer}
+                className={styles.iconContainer}
                 fill="currentColor" 
                 viewBox="0 0 20 20"
                 aria-hidden="true"
@@ -49,7 +51,7 @@ export function ImageFrameSkeleton({
                 />
               </svg>
             )}
-            <div className={MEDIA_STYLES.imageSkeleton.loadingText}>
+            <div className={styles.loadingText}>
               Loading image...
             </div>
           </div>

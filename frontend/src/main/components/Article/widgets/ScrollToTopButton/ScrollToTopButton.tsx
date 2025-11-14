@@ -4,6 +4,9 @@
 import { useState, useEffect } from 'react';
 import { ChevronUpIcon } from '@/main/components/Interface/Icons';
 import { FloatingButton } from '@/main/components/Interface/FloatingButton';
+import { WIDGETS_STYLES } from '../../styles';
+
+const styles = WIDGETS_STYLES.scrollToTop;
 
 export function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
@@ -23,7 +26,7 @@ export function ScrollToTopButton() {
 
   return (
     <FloatingButton onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-      <ChevronUpIcon className="h-6 w-6" />
+      <ChevronUpIcon className={styles.icon} />
     </FloatingButton>
   );
 }

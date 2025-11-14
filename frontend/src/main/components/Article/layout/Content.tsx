@@ -1,6 +1,7 @@
 // SIMPLEST FIX: Content.tsx - Remove prose classes since components manage their own styling
 import { ContentChunk, TocItem } from '@/main/lib/markdown/markdownTypes';
 import { ArticleContentRenderer } from '../content';
+import { LAYOUT_STYLES } from '../styles';
 
 interface ContentProps {
   chunks: ContentChunk[];
@@ -23,7 +24,7 @@ export function Content({ chunks, toc, title, author, datePublished }: ContentPr
   } : null;
 
   return (
-    <article className="pb-12">
+    <article className={LAYOUT_STYLES.content.container}>
       {structuredData && (
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}

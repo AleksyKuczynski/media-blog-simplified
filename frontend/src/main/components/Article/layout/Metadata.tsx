@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { AuthorDetails } from '@/main/lib/directus/directusInterfaces';
 import { Lang } from '@/main/lib/dictionary/types';
+import { LAYOUT_STYLES } from '../styles';
 
 interface MetadataProps {
   publishedDate: string;
@@ -15,13 +16,7 @@ export function Metadata({ publishedDate, authors, lang, editorialText }: Metada
   const safeAuthors = authors || [];
   
   return (
-    <div className="
-      font-medium text-sm xl:text-base text-on-sf-var 
-      mx-auto flex justify-between col-span-2 
-      w-full lg:max-w-[800px] lg:py-6 xl:py-8
-      bg-sf-cont md:max-lg:w-3/4 rounded-b-2xl lg:rounded-2xl 
-      lg:mt-8 p-6 shadow-sm
-    ">
+    <div className={LAYOUT_STYLES.metadata.container}>
       <p>{publishedDate}</p>
       <p>
         {safeAuthors.length > 0 && safeAuthors[0].name !== '::EDITORIAL::' ? (
@@ -30,11 +25,7 @@ export function Metadata({ publishedDate, authors, lang, editorialText }: Metada
               {index > 0 && ", "}
               <Link 
                 href={`/${lang}/authors/${author.slug}`} 
-                className="
-                  text-pr-cont hover:text-pr-fix 
-                  underline underline-offset-4 
-                  transition-colors duration-600
-                "
+                className={LAYOUT_STYLES.metadata.authorLink}
               >
                 {author.name}
               </Link>

@@ -6,13 +6,15 @@ interface Type2Props {
   author: string;
 }
 
+const styles = BLOCKS_STYLES.blockquote2;
+
 export function Type2Blockquote({ content, author }: Type2Props) {
   return (
-    <blockquote className={BLOCKS_STYLES.blockquote2.container}>
-      <p className={BLOCKS_STYLES.blockquote2.content}>
+    <blockquote className={styles.container}>
+      <p className={styles.content}>
         {content}
       </p>
-      <p className={BLOCKS_STYLES.blockquote2.author}>
+      <p className={styles.author}>
         — {author}
       </p>
     </blockquote>

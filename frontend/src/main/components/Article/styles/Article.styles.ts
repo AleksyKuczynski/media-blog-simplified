@@ -20,28 +20,26 @@
 // ================================================================
 
 export const LAYOUT_STYLES = {
-  // Header component
+  // Header component (actual implementation from Header.tsx)
   header: {
-    container: 'w-full mb-8',
-    title: 'text-3xl md:text-4xl lg:text-5xl font-bold text-on-sf mb-4 font-display',
-    subtitle: 'text-xl md:text-2xl text-on-sf-var mb-6 font-serif',
+    container: 'relative mb-12 lg:grid grid-cols-2 justify-center',
+    title: 'mb-8 lg:pl-6 xl:pl-8 font-display text-3xl text-center lg:text-left font-bold text-on-sf',
+    imageContainer: 'relative mx-auto aspect-[16/9] overflow-hidden order-first h-full w-full md:max-lg:w-3/4 rounded-t-2xl lg:rounded-2xl',
+    image: 'w-full h-full object-cover',
+    metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto flex justify-between col-span-2 w-full lg:max-w-[800px] lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 rounded-b-2xl lg:rounded-2xl lg:mt-8 p-6 shadow-sm',
+    authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
+    lead: 'text-lg xl:text-xl font-light max-w-[800px] mx-auto mb-8 col-span-2 pt-6 text-on-sf',
   },
 
-  // Metadata component
+  // Metadata component (actual implementation from Metadata.tsx)
   metadata: {
-    container: 'flex flex-wrap items-center gap-4 mb-6 text-sm text-on-sf-var',
-    item: 'flex items-center gap-2',
-    icon: 'w-4 h-4',
-    author: 'font-medium hover:text-pr-cont transition-colors',
-    date: 'text-on-sf-var',
-    readTime: 'text-on-sf-var',
-    separator: 'text-on-sf-var/40',
+    container: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto flex justify-between col-span-2 w-full lg:max-w-[800px] lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 rounded-b-2xl lg:rounded-2xl lg:mt-8 p-6 shadow-sm',
+    authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
   },
 
-  // Content wrapper
+  // Content wrapper (actual implementation from Content.tsx)
   content: {
     container: 'pb-12',
-    article: 'max-w-4xl mx-auto',
   },
 } as const;
 
@@ -158,15 +156,12 @@ export const BLOCKS_STYLES = {
   table: {
     wrapper: 'w-full overflow-x-auto my-8',
     container: 'min-w-full border-collapse bg-sf rounded-xl overflow-hidden shadow-md',
+    table: 'w-full min-w-full border-collapse',
     header: 'bg-sf-cont',
     headerCell: 'px-4 py-3 text-left font-semibold text-on-sf border-b-2 border-ol',
     bodyRow: 'border-b border-ol-var last:border-0 hover:bg-sf-hi transition-colors',
     bodyCell: 'px-4 py-3 text-on-sf-var',
     caption: 'mt-2 text-sm text-on-sf-var text-center',
-    // Alignment variants
-    alignLeft: 'text-left',
-    alignCenter: 'text-center',
-    alignRight: 'text-right',
   },
 
   // InlineArticleCard
@@ -183,11 +178,11 @@ export const BLOCKS_STYLES = {
     date: 'text-xs text-on-sf-var mt-1 hidden sm:block',
   },
 
-  // BalloonTip
+  // BalloonTip (actual implementation from BalloonTip.tsx)
   balloonTip: {
     container: 'relative inline-block group',
     trigger: 'cursor-help border-b-2 border-dotted border-pr-cont text-pr-cont hover:text-pr-fix transition-colors',
-    tooltip: 'absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-sf-hst text-on-sf text-sm rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50',
+    tooltip: 'absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-sf-hst text-on-sf text-sm rounded-lg shadow-lg whitespace-nowrap z-50',
   },
 } as const;
 
@@ -202,6 +197,7 @@ export const NAVIGATION_STYLES = {
     title: 'text-xl font-bold mb-4 text-on-sf-var bg-sf-hst py-3 px-6 rounded-lg shadow-sm',
     list: 'space-y-2 pl-6',
     link: 'block text-pr-cont hover:text-pr-fix transition-colors duration-200 py-1',
+    linkActive: 'text-pr-fix font-semibold',
   },
 
   // RelatedLinks
@@ -236,11 +232,13 @@ export const NAVIGATION_STYLES = {
 // ================================================================
 
 export const WIDGETS_STYLES = {
-  // ScrollToTopButton
+  // ScrollToTopButton (uses FloatingButton component)
+  // Note: ScrollToTopButton delegates styling to FloatingButton component
+  // See FloatingButton.tsx for actual styling implementation
   scrollToTop: {
-    button: 'fixed bottom-8 right-8 p-3 rounded-full bg-pr-cont hover:bg-pr-fix text-white shadow-lg transition-all duration-300 z-50 opacity-0 invisible',
-    buttonVisible: 'opacity-100 visible',
-    icon: 'w-6 h-6',
+    // FloatingButton default styling (for reference)
+    button: 'fixed p-2 transition-all duration-200 text-on-pr bg-pr-cont hover:bg-pr-fix rounded-full shadow-lg hover:shadow-xl bottom-4 right-4 z-50',
+    icon: 'h-6 w-6',
   },
 } as const;
 

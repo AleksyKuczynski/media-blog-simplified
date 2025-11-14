@@ -18,6 +18,8 @@ interface ImageFrameProps {
   className?: string;
 }
 
+const styles = MEDIA_STYLES.imageFrame
+
 export const ImageFrame = memo(function ImageFrame({ 
   imageAttributes, 
   caption,
@@ -71,10 +73,10 @@ export const ImageFrame = memo(function ImageFrame({
   const hasCaption = Boolean(processedCaption || caption);
 
   return (
-    <div className={MEDIA_STYLES.imageFrame.wrapper}>
-      <figure className={MEDIA_STYLES.imageFrame.figure}>
+    <div className={styles.wrapper}>
+      <figure className={styles.figure}>
         <div 
-          className={cn(MEDIA_STYLES.imageFrame.container, className)}
+          className={cn(styles.container, className)}
           style={containerStyle}
         >
           <Image
@@ -82,7 +84,7 @@ export const ImageFrame = memo(function ImageFrame({
             alt={imageAttributes.alt || 'Image'}
             width={imageAttributes.width || 1200}
             height={imageAttributes.height || 800}
-            className={MEDIA_STYLES.imageFrame.image}
+            className={styles.image}
             sizes="(max-width: 768px) 95vw, (max-width: 1024px) 90vw, 85vw"
             priority={false}
             quality={90}
@@ -95,7 +97,7 @@ export const ImageFrame = memo(function ImageFrame({
       {/* ✅ NEW: Caption placed outside figure element for better readability */}
       {hasCaption && (
         <figcaption 
-          className={MEDIA_STYLES.imageFrame.caption}
+          className={styles.caption}
           dangerouslySetInnerHTML={{ __html: processedCaption || caption || '' }}
         />
       )}

@@ -5,10 +5,12 @@ interface Type1Props {
   content: string;
 }
 
+const styles = BLOCKS_STYLES.blockquote1;
+
 export function Type1Blockquote({ content }: Type1Props) {
   return (
-    <blockquote className={BLOCKS_STYLES.blockquote1.container}>
-      <p className={BLOCKS_STYLES.blockquote1.content}>
+    <blockquote className={styles.container}>
+      <p className={styles.content}>
         {content}
       </p>
     </blockquote>

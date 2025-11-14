@@ -9,6 +9,8 @@ interface ArticleLinkProps {
   external?: boolean;
 }
 
+const styles = ELEMENTS_STYLES.link;
+
 export const ArticleLink = ({ href, children, external }: ArticleLinkProps) => {
 
   if (external) {
@@ -17,7 +19,7 @@ export const ArticleLink = ({ href, children, external }: ArticleLinkProps) => {
         href={href} 
         target="_blank" 
         rel="noopener noreferrer"
-        className={ELEMENTS_STYLES.link.base}
+        className={styles.base}
       >
         {children}
       </a>
@@ -25,7 +27,7 @@ export const ArticleLink = ({ href, children, external }: ArticleLinkProps) => {
   }
 
   return (
-    <Link href={href} className={ELEMENTS_STYLES.link.base}>
+    <Link href={href} className={styles.base}>
       {children}
     </Link>
   );

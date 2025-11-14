@@ -13,18 +13,20 @@ interface TableOfContentsProps {
   title: string;
 }
 
+const styles = NAVIGATION_STYLES.tableOfContents;
+
 export function TableOfContents({ items, title }: TableOfContentsProps) {
   return (
-    <nav aria-label="Table of contents" className={NAVIGATION_STYLES.tableOfContents.container}>
-      <h2 className={NAVIGATION_STYLES.tableOfContents.title}>
+    <nav aria-label="Table of contents" className={styles.container}>
+      <h2 className={styles.title}>
         {title}
       </h2>
-      <ul className={NAVIGATION_STYLES.tableOfContents.list}>
+      <ul className={styles.list}>
         {items.map((item) => (
           <li key={item.id}>
             <TableOfContentsLink 
               id={item.id}
-              className={NAVIGATION_STYLES.tableOfContents.link}
+              className={styles.link}
             >
               {item.text}
             </TableOfContentsLink>

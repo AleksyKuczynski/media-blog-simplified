@@ -10,6 +10,8 @@ interface InlineArticleCardProps {
   lang?: string;
 }
 
+const styles = BLOCKS_STYLES.inlineArticleCard;
+
 export default function InlineArticleCard({
   articleCardData,
   lang = 'ru'
@@ -32,41 +34,41 @@ export default function InlineArticleCard({
   });
 
   return (
-    <div className={BLOCKS_STYLES.inlineArticleCard.container}>
+    <div className={styles.container}>
       <Link 
         href={articleLink}
-        className={BLOCKS_STYLES.inlineArticleCard.link}
+        className={styles.link}
         aria-label={`Read related article: ${title}`}
       >
-        <article className={BLOCKS_STYLES.inlineArticleCard.card}>
+        <article className={styles.card}>
           {/* Image - Left Side */}
           {imageSrc && (
-            <div className={BLOCKS_STYLES.inlineArticleCard.imageContainer}>
+            <div className={styles.imageContainer}>
               <Image
                 src={imageSrc}
                 alt={title}
                 fill
-                className={BLOCKS_STYLES.inlineArticleCard.image}
+                className={styles.image}
                 sizes="(max-width: 640px) 80px, (max-width: 768px) 112px, 128px"
               />
             </div>
           )}
 
           {/* Content - Right Side */}
-          <div className={BLOCKS_STYLES.inlineArticleCard.content}>
+          <div className={styles.content}>
             {/* Label */}
-            <span className={BLOCKS_STYLES.inlineArticleCard.label}>
+            <span className={styles.label}>
               Читайте также
             </span>
 
             {/* Title */}
-            <h3 className={BLOCKS_STYLES.inlineArticleCard.title}>
+            <h3 className={styles.title}>
               {title}
             </h3>
 
             {/* Description - desktop only */}
             {description && (
-              <p className={BLOCKS_STYLES.inlineArticleCard.description}>
+              <p className={styles.description}>
                 {description}
               </p>
             )}
@@ -74,7 +76,7 @@ export default function InlineArticleCard({
             {/* Date - hidden on mobile */}
             <time 
               dateTime={publishedAt}
-              className={BLOCKS_STYLES.inlineArticleCard.date}
+              className={styles.date}
             >
               {formattedDate}
             </time>

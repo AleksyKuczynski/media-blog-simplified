@@ -21,6 +21,8 @@ interface BalloonTipProps {
   url: string;
 }
 
+const styles = BLOCKS_STYLES.balloonTip;
+
 export function BalloonTip({ text, url }: BalloonTipProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLSpanElement>(null);
@@ -52,7 +54,7 @@ export function BalloonTip({ text, url }: BalloonTipProps) {
   return (
     <span
       ref={containerRef}
-      className={BLOCKS_STYLES.balloonTip.container}
+      className={styles.container}
     >
       {/* Clickable link text */}
       <span
@@ -63,7 +65,7 @@ export function BalloonTip({ text, url }: BalloonTipProps) {
         tabIndex={0}
         aria-expanded={isOpen}
         aria-label={`Show tooltip: ${url}`}
-        className={BLOCKS_STYLES.balloonTip.trigger}
+        className={styles.trigger}
       >
         {text}
       </span>
@@ -71,7 +73,7 @@ export function BalloonTip({ text, url }: BalloonTipProps) {
       {/* Balloon tip popup */}
       {isOpen && (
         <span
-          className={BLOCKS_STYLES.balloonTip.tooltip}
+          className={styles.tooltip}
           role="tooltip"
           onClick={(e) => e.stopPropagation()}
         >

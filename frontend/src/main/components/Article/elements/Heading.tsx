@@ -8,26 +8,28 @@ interface HeadingProps {
   id?: string;
 }
 
+const styles = ELEMENTS_STYLES.heading;
+
 export const ArticleHeading = ({ level, children, id }: HeadingProps) => {
   const Tag = `h${level}` as keyof React.JSX.IntrinsicElements;
 
   // Direct rounded theme styling for all heading levels
   const getHeadingStyles = (level: number) => {
-    const baseStyles = ELEMENTS_STYLES.heading.base;
+    const baseStyles = styles.base;
     
     switch (level) {
       case 1:
-        return `${baseStyles} ${ELEMENTS_STYLES.heading.h1}`;
+        return `${baseStyles} ${styles.h1}`;
       case 2:
-        return `${baseStyles} ${ELEMENTS_STYLES.heading.h2}`;
+        return `${baseStyles} ${styles.h2}`;
       case 3:
-        return `${baseStyles} ${ELEMENTS_STYLES.heading.h3}`;
+        return `${baseStyles} ${styles.h3}`;
       case 4:
-        return `${baseStyles} ${ELEMENTS_STYLES.heading.h4}`;
+        return `${baseStyles} ${styles.h4}`;
       case 5:
-        return `${baseStyles} ${ELEMENTS_STYLES.heading.h5}`;
+        return `${baseStyles} ${styles.h5}`;
       case 6:
-        return `${baseStyles} ${ELEMENTS_STYLES.heading.h6}`;
+        return `${baseStyles} ${styles.h6}`;
       default:
         return baseStyles;
     }

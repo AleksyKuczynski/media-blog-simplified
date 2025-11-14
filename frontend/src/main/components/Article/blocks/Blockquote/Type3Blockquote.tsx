@@ -7,16 +7,18 @@ interface Type3Props {
   source: string;
 }
 
+const styles = BLOCKS_STYLES.blockquote3;
+
 export function Type3Blockquote({ content, author, source }: Type3Props) {
   return (
-    <blockquote className={BLOCKS_STYLES.blockquote3.container}>
-      <p className={BLOCKS_STYLES.blockquote3.content}>
+    <blockquote className={styles.container}>
+      <p className={styles.content}>
         {content}
       </p>
-      <p className={BLOCKS_STYLES.blockquote3.author}>
+      <p className={styles.author}>
         — {author}
       </p>
-      <p className={BLOCKS_STYLES.blockquote3.source}>
+      <p className={styles.source}>
         {source}
       </p>
     </blockquote>
