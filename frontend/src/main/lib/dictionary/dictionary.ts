@@ -223,6 +223,7 @@ const dictionary = {
     labels: {
       articles: 'статьи',
       rubrics: 'рубрики',
+      author: 'автор',
       authors: 'авторы',
       categories: 'категории',
       collection: 'коллекция',

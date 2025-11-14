@@ -3,3 +3,7 @@
 export { RelatedArticles } from './RelatedArticles';
 export { RelatedLinks } from './RelatedLinks';
 export { TableOfContents } from './TableOfContents';
+export { QuickNavigation } from './QuickNavigation';
+export { CategoriesSection } from './CategoriesSection';
+export { RubricSection } from './RubricSection';
+export { AuthorSection } from './AuthorSection';

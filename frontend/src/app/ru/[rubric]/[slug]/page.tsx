@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
-import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedLinks, RelatedArticles, TableOfContents } from '@/main/components/Article';
+import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedArticles, TableOfContents, QuickNavigation, CategoriesSection, RubricSection, AuthorSection } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
 import { dictionary } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
@@ -15,7 +15,7 @@ import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
 import generateArticleMetadata, { generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';
 import ArticleSchema from '@/main/components/SEO/schemas/ArticleSchema';
-import RelatedLinksSchema from '@/main/components/SEO/schemas/RelatedLinksSchema';
+import QuickNavigationSchema from '@/main/components/SEO/schemas/QuickNavigationSchema';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
@@ -179,10 +179,8 @@ export default async function ArticlePage({
         />
 
         {/* Related Links Schema for enhanced SEO */}
-        <RelatedLinksSchema
+        <QuickNavigationSchema
           dictionary={dictionary}
-          rubric={rubricData}
-          categories={categoriesData}
           currentArticleUrl={currentArticleUrl}
         />
 
@@ -238,14 +236,25 @@ export default async function ArticlePage({
                 />
 
                 {/* Related Links for SEO Enhancement */}
-                <RelatedLinks
+                <QuickNavigation
                   dictionary={dictionary}
                   rubric={rubricData}
                   categories={categoriesData}
-                  className="mt-12 pt-8 border-t border-gray-200"
+                />
+                <CategoriesSection
+                  dictionary={dictionary}
+                  categories={categoriesData}
+                />
+                <RubricSection
+                  dictionary={dictionary}
+                  rubric={rubricData}
+                />
+                <AuthorSection
+                  dictionary={dictionary}
+                  author={rubricData}
                 />
 
-                {/* TEST: Related Articles with Tiered Matching */}
+                {/* Related Articles with Tiered Matching */}
                 <RelatedArticles
                   currentArticleSlug={resolvedParams.slug}
                   articleCategories={categoriesData}
