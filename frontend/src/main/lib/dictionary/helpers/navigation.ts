@@ -1,7 +1,8 @@
 // src/main/lib/dictionary/helpers/navigation.ts
 // Enhanced navigation helpers with missing functions for NavLinks and SkipLinks
 
-import { Dictionary } from '../types';
+import { DEFAULT_LANG } from '../../constants/constants';
+import { Dictionary } from '../dictionary';
 import { getPageTitle, getMetaDescription, getKeywords, generateCanonicalUrl } from './seo';
 
 // ===================================================================
@@ -41,7 +42,6 @@ export interface SkipLinksAccessibility {
 
 /**
  * Get navigation links configuration for NavLinks component
- * FIXED: This function was missing - now properly implemented
  */
 export const getNavigationLinksConfig = (dictionary: Dictionary): NavigationLink[] => {
   const { labels, descriptions } = dictionary.navigation;
@@ -79,7 +79,6 @@ export const getNavigationLinksConfig = (dictionary: Dictionary): NavigationLink
 
 /**
  * Get skip links data for SkipLinks component  
- * FIXED: This function was missing - now properly implemented
  */
 export const getSkipLinksData = (dictionary: Dictionary): SkipLinksData => {
   return {
@@ -104,7 +103,6 @@ export const getSkipLinksData = (dictionary: Dictionary): SkipLinksData => {
 
 /**
  * Get skip links accessibility data
- * FIXED: This function was missing - now properly implemented  
  */
 export const getSkipLinksAccessibility = (dictionary: Dictionary): SkipLinksAccessibility => {
   return {
@@ -119,7 +117,6 @@ export const getSkipLinksAccessibility = (dictionary: Dictionary): SkipLinksAcce
 
 /**
  * Generate navigation elements data for components
- * KEEP: Used by navigation components and SEO schemas
  */
 export const generateNavigationElements = (dictionary: Dictionary) => {
   const { labels, descriptions } = dictionary.navigation;
@@ -130,8 +127,8 @@ export const generateNavigationElements = (dictionary: Dictionary) => {
       name: labels.home,
       description: descriptions.home,
       url: `${baseUrl}/ru`,
-      path: '/ru',
-      href: '/ru',
+      path: `/${DEFAULT_LANG}`,
+      href: `/${DEFAULT_LANG}`,
       label: labels.home,
       key: 'home',
     },
@@ -139,35 +136,35 @@ export const generateNavigationElements = (dictionary: Dictionary) => {
       name: labels.articles,
       description: descriptions.articles,
       url: `${baseUrl}/ru/articles`,
-      path: '/ru/articles',
-      href: '/ru/articles',
+      path: `/${DEFAULT_LANG}/articles`,
+      href: `/${DEFAULT_LANG}/articles`,
       label: labels.articles,
       key: 'articles',
     },
     {
       name: labels.rubrics,
       description: descriptions.rubrics,
-      url: `${baseUrl}/ru/rubrics`,
-      path: '/ru/rubrics',
-      href: '/ru/rubrics',
+      url: `${baseUrl}/${DEFAULT_LANG}/rubrics`,
+      path: `/${DEFAULT_LANG}/rubrics`,
+      href: `/${DEFAULT_LANG}/rubrics`,
       label: labels.rubrics,
       key: 'rubrics',
     },
     {
       name: labels.authors,
       description: descriptions.authors,
-      url: `${baseUrl}/ru/authors`,
-      path: '/ru/authors',
-      href: '/ru/authors',
+      url: `${baseUrl}/${DEFAULT_LANG}/authors`,
+      path: `/${DEFAULT_LANG}/authors`,
+      href: `/${DEFAULT_LANG}/authors`,
       label: labels.authors,
       key: 'authors',
     },
     {
       name: labels.search,
       description: descriptions.search,
-      url: `${baseUrl}/ru/search`,
-      path: '/ru/search',
-      href: '/ru/search',
+      url: `${baseUrl}/${DEFAULT_LANG}/search`,
+      path: `/${DEFAULT_LANG}/search`,
+      href: `/${DEFAULT_LANG}/search`,
       label: labels.search,
       key: 'search',
     },
@@ -176,7 +173,6 @@ export const generateNavigationElements = (dictionary: Dictionary) => {
 
 /**
  * Generate breadcrumb data using dictionary
- * KEEP: Used for breadcrumb generation
  */
 export const generateBreadcrumbs = (
   dictionary: Dictionary,
@@ -185,11 +181,11 @@ export const generateBreadcrumbs = (
   const breadcrumbs = [
     {
       name: dictionary.navigation.labels.home,
-      href: '/ru',
+      href: `/${DEFAULT_LANG}`,
     },
   ];
   
-  let currentPath = '/ru';
+  let currentPath = `/${DEFAULT_LANG}`;
   
   pathSegments.forEach(segment => {
     currentPath += `/${segment}`;
@@ -221,7 +217,6 @@ export const generateBreadcrumbs = (
 
 /**
  * Get breadcrumb text with proper separator
- * ESSENTIAL: Used by NavigationMetadata component
  */
 export const getBreadcrumbText = (dictionary: Dictionary, items: string[]): string => {
   return items.join(` ${dictionary.navigation.templates.breadcrumbSeparator} `);
@@ -229,7 +224,6 @@ export const getBreadcrumbText = (dictionary: Dictionary, items: string[]): stri
 
 /**
  * Generate complete navigation SEO data
- * ESSENTIAL: Used by NavigationMetadata component
  */
 export const generateNavigationSEOData = (
   dictionary: Dictionary,
@@ -256,7 +250,6 @@ export const generateNavigationSEOData = (
 
 /**
  * Get navigation Open Graph data
- * KEEP: Used by navigation metadata generation
  */
 export const getNavigationOpenGraphData = (
   dictionary: Dictionary,
@@ -269,7 +262,7 @@ export const getNavigationOpenGraphData = (
     description,
     url: generateCanonicalUrl(currentPath, dictionary.seo.site.url),
     siteName: dictionary.seo.site.name,
-    locale: 'ru_RU',
+    locale: dictionary.locale,
     type: 'website' as const,
   };
 };

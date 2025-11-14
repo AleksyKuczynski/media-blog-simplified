@@ -1,7 +1,6 @@
 // src/main/lib/dictionary/helpers/templates.ts
 // OPTIMIZED: Removed unused template functions, kept essential processTemplate
 
-import { TemplateVariables, TemplateProcessor } from '../types';
 
 /**
  * Process template strings with variable substitution

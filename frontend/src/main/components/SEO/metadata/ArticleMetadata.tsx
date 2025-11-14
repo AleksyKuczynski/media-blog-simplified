@@ -1,6 +1,6 @@
 // src/main/components/SEO/metadata/ArticleMetadata.tsx
 import { Metadata } from 'next';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary/';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { validateSEOContent } from '@/main/lib/dictionary/helpers/validation';
 import { 

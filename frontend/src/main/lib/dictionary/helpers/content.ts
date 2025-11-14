@@ -1,7 +1,6 @@
 // src/main/lib/dictionary/helpers/content.ts
-// OPTIMIZED: Kept only functions used by page components
 
-import { Dictionary } from '../types';
+import { Dictionary } from '../dictionary';
 import { processTemplate } from './templates';
 
 /**

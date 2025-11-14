@@ -2,7 +2,7 @@
 // Rubric-specific metadata generation following established patterns
 
 import { Metadata } from 'next';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { validateSEOContent } from '@/main/lib/dictionary/helpers/validation';
 import { 

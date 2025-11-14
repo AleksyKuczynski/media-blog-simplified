@@ -2,7 +2,7 @@
 // STATIC ONLY: Removed query handling, simplified for three page states
 
 import { Metadata } from 'next';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { 
   buildMetadata, 
   createWebsiteSEOData,

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
-import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedArticles, TableOfContents, QuickNavigation, CategoriesSection, RubricSection, AuthorSection } from '@/main/components/Article';
+import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedArticles, TableOfContents, QuickNavigation, CategoriesSection, RubricSection, AuthorsSection } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
 import { dictionary } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
@@ -16,6 +16,7 @@ import StandardError from '@/main/components/errors/StandardError';
 import generateArticleMetadata, { generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';
 import ArticleSchema from '@/main/components/SEO/schemas/ArticleSchema';
 import QuickNavigationSchema from '@/main/components/SEO/schemas/QuickNavigationSchema';
+import AuthorsSectionSchema from '@/main/components/SEO/schemas/AuthorsSectionSchema';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
@@ -179,7 +180,9 @@ export default async function ArticlePage({
         />
 
         {/* Related Links Schema for enhanced SEO */}
-        <QuickNavigationSchema
+        <QuickNavigationSchema currentArticleUrl={currentArticleUrl} />
+        <AuthorsSectionSchema 
+          authors={authorsWithDetails}
           currentArticleUrl={currentArticleUrl}
         />
 
@@ -234,18 +237,19 @@ export default async function ArticlePage({
                   datePublished={article.published_at}
                 />
 
-                {/* Related Links for SEO Enhancement */}
-                <QuickNavigation/>
+                {/* Quick site navigation links */}
+                <QuickNavigation />
 
-                <CategoriesSection
-                  categories={categoriesData}
-                />
-                <RubricSection
-                  rubric={rubricData}
-                />
-                <AuthorSection
-                  author={rubricData}
-                />
+                {/* Categories taxonomy */}
+                {categoriesData.length > 0 && (
+                  <CategoriesSection categories={categoriesData} />
+                )}
+
+                {/* Rubric classification */}
+                <RubricSection rubric={rubricData} />
+
+                {/* Author(s) cards - handles single or multiple authors */}
+                <AuthorsSection authors={authorsWithDetails} />
 
                 {/* Related Articles with Tiered Matching */}
                 <RelatedArticles

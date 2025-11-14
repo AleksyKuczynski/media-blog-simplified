@@ -1,7 +1,6 @@
 // src/main/lib/dictionary/helpers/filter.ts
-// FIXED: Uses dictionary entries, no hardcoded text, fixed types
 
-import { Dictionary } from '../types';
+import { Dictionary } from '../dictionary';
 import { Category } from '@/main/lib/directus/directusInterfaces';
 import { generateCanonicalUrl } from './seo';
 
@@ -11,7 +10,6 @@ import { generateCanonicalUrl } from './seo';
 
 /**
  * Get filter labels using dictionary entries
- * NO HARDCODED TEXT - uses dictionary.filter section
  */
 export const getFilterLabels = (dictionary: Dictionary) => {
   return {
@@ -26,7 +24,6 @@ export const getFilterLabels = (dictionary: Dictionary) => {
 
 /**
  * Get sorting options using dictionary entries
- * NO HARDCODED TEXT - uses dictionary.filter section
  */
 export const getSortingOptions = (dictionary: Dictionary) => {
   return {
@@ -38,7 +35,6 @@ export const getSortingOptions = (dictionary: Dictionary) => {
 
 /**
  * Generate category dropdown items using existing helpers
- * COMPOSITE function - uses existing patterns, FIXED TYPES
  */
 export const generateCategoryDropdownItems = (
   dictionary: Dictionary,
@@ -65,7 +61,6 @@ export const generateCategoryDropdownItems = (
 
 /**
  * Generate filter navigation URLs using existing helpers
- * NO DUPLICATION - uses existing generateCanonicalUrl
  */
 export const generateFilterUrls = (
   baseUrl: string,
@@ -102,7 +97,6 @@ export const getCurrentCategoryInfo = (pathname: string, categories: Category[])
 
 /**
  * Generate complete filter state data
- * COMPOSITE function - combines existing helpers, FIXED TYPES
  */
 export const generateFilterStateData = (
   dictionary: Dictionary,
@@ -117,7 +111,6 @@ export const generateFilterStateData = (
   const sortingOptions = getSortingOptions(dictionary);
   const categoryItems = generateCategoryDropdownItems(dictionary, categories, currentCategory);
   
-  // FIXED: Ensure selectedCategoryName is always a string
   const selectedCategoryName = currentCategory 
     ? categories.find(c => c.slug === currentCategory)?.name || filterLabels.allCategories
     : filterLabels.allCategories;
@@ -133,14 +126,13 @@ export const generateFilterStateData = (
     sortingOptions,
     categoryItems,
     
-    // Display info - FIXED: always string
+    // Display info
     selectedCategoryName,
   };
 };
 
 /**
  * Validate filter dictionary structure
- * Uses dictionary.filter section
  */
 export const validateFilterDictionary = (dictionary: Dictionary): boolean => {
   try {
@@ -161,7 +153,6 @@ export const validateFilterDictionary = (dictionary: Dictionary): boolean => {
 
 /**
  * Get filter component accessibility data
- * Uses dictionary.filter section - NO HARDCODED TEXT
  */
 export const getFilterAccessibilityData = (dictionary: Dictionary) => {
   return {

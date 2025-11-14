@@ -1,8 +1,7 @@
 // src/main/components/SEO/core/types.ts
-// FIXED: More flexible type definitions to prevent TypeScript errors
 
 import { Metadata } from 'next';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 
 // ===================================================================
 // BASE SEO TYPES - UNCHANGED
@@ -53,7 +52,6 @@ export interface BaseSchemaData {
   inLanguage?: string;
 }
 
-// FIXED: More flexible schema type that prevents type errors
 export interface ExtendedSchemaData extends BaseSchemaData {
   // Common properties - made more flexible
   publisher?: SchemaReference | Record<string, any>;
@@ -61,7 +59,7 @@ export interface ExtendedSchemaData extends BaseSchemaData {
   breadcrumb?: SchemaReference | Record<string, any>;
   mainEntity?: SchemaReference | Record<string, any>;
   isPartOf?: SchemaReference | Record<string, any>;
-  audience?: Record<string, any>; // FIXED: More flexible audience type
+  audience?: Record<string, any>;
   keywords?: string;
   
   // Action-related
@@ -90,7 +88,7 @@ export interface ExtendedSchemaData extends BaseSchemaData {
   
   // Contact-related
   contactPoint?: Record<string, any> | Record<string, any>[];
-  sameAs?: string[]; // FIXED: Allow mutable string arrays
+  sameAs?: string[];
   areaServed?: Record<string, any> | Record<string, any>[];
   
   // Person-related
@@ -120,7 +118,6 @@ export interface SchemaReference {
   url?: string;
 }
 
-// FIXED: Simplified schema types that are easier to work with
 export interface OrganizationSchema extends Record<string, any> {
   '@context': 'https://schema.org';
   '@type': 'Organization';
@@ -233,7 +230,6 @@ export interface PlaceSchema {
   address?: string;
 }
 
-// FIXED: Literal type for @type
 export interface AudienceSchema {
   '@type': 'Audience';
   geographicArea?: Record<string, any> | Record<string, any>[];

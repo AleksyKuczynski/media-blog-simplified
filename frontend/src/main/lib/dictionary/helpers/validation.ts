@@ -1,7 +1,4 @@
 // src/main/lib/dictionary/helpers/validation.ts
-// OPTIMIZED: Kept only essential validation functions used by components
-
-import { Dictionary } from '../types';
 
 /**
  * Check if URL is valid

@@ -1,8 +1,7 @@
 // src/main/components/SEO/metadata/NavigationMetadata.tsx
-// DRY: Uses existing helpers instead of duplicating logic
 
 import { Metadata } from 'next';
-import { Dictionary } from '@/main/lib/dictionary/types';
+import { Dictionary } from '@/main/lib/dictionary';
 import { 
   buildMetadata, 
   createWebsiteSEOData,
@@ -37,7 +36,6 @@ export interface NavigationSEOData {
 
 /**
  * Generate navigation-specific metadata using existing helpers
- * NO DUPLICATION - reuses all existing SEO and navigation functions
  */
 export const generateNavigationMetadata = async ({
   dictionary,

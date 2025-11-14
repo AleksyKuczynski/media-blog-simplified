@@ -1,8 +1,8 @@
 // src/main/lib/dictionary/helpers/seo.ts
 // OPTIMIZED: Kept essential SEO functions used by navigation and metadata components
 
-import { Dictionary, TemplateVariables } from '../types';
-import { processTemplate, createSEOVariables } from './templates';
+import { Dictionary } from '../dictionary';
+import { processTemplate } from './templates';
 
 /**
  * Generate page title using dictionary templates
