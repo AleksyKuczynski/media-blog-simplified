@@ -8,7 +8,7 @@ import YandexMetrikaNoScript from '@/main/components/Analytics/YandexMetrikaNoSc
 import GoogleAnalyticsScript from '@/main/components/Analytics/GoogleAnalyticsScript'
 import GoogleAnalyticsNoScript from '@/main/components/Analytics/GoogleAnalyticsNoScript'
 import ConsentBanner from '@/main/components/Analytics/ConsentBanner'
-import ScrollRestoration from '@/main/lib/hooks/useScrollRestoration'
+import ScrollRestorationClient from '@/main/components/ScrollRestorationClient' // Changed import
 import { dictionary } from '@/main/lib/dictionary';
 
 const fontSans = Jost({
@@ -64,8 +64,8 @@ export default async function RootLayout({
         {/* Cookie Consent Banner - shows if user hasn't made choice */}
         <ConsentBanner dictionary={consentDictionary} />
         
-        {/* ADDED: Scroll Restoration - fixes back navigation scroll position issues */}
-        <ScrollRestoration />
+        {/* FIXED: Client-side wrapper ensures proper hydration */}
+        <ScrollRestorationClient />
         
         {children}
       </body>

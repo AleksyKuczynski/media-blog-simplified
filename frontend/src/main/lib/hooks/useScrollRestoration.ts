@@ -1,18 +1,13 @@
-// src/main/hooks/useScrollRestoration.ts
+// src/main/lib/hooks/useScrollRestoration.ts
 'use client';
 
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
-/**
- * Scroll Restoration Hook
- * Use beforeunload and scroll events to continuously update position,
- * not just on pathname change which happens too late.
- */
-
 const STORAGE_KEY = 'scroll_positions';
-const SCROLL_RESTORATION_DELAY = 100;
-const DEBUG = process.env.NODE_ENV === 'development';
+const SCROLL_DEBOUNCE = 150;
+const MAX_STORED_POSITIONS = 10;
+const CONTENT_WAIT_MAX = 500;
 
 interface ScrollPosition {
   x: number;
@@ -25,38 +20,8 @@ interface ScrollPositions {
 }
 
 function log(...args: any[]) {
-  if (DEBUG) {
-    console.log('[ScrollRestoration]', ...args);
-  }
-}
-
-function waitForContent(callback: () => void, maxWait = 1000) {
-  let lastHeight = document.documentElement.scrollHeight;
-  let stableCount = 0;
-  const startTime = Date.now();
-  
-  const check = () => {
-    const currentHeight = document.documentElement.scrollHeight;
-    
-    if (currentHeight === lastHeight) {
-      stableCount++;
-      if (stableCount >= 3) { // Height stable for 3 checks
-        callback();
-        return;
-      }
-    } else {
-      stableCount = 0;
-      lastHeight = currentHeight;
-    }
-    
-    if (Date.now() - startTime < maxWait) {
-      requestAnimationFrame(check);
-    } else {
-      callback(); // Force after maxWait
-    }
-  };
-  
-  requestAnimationFrame(check);
+  const timestamp = new Date().toISOString().split('T')[1];
+  console.log('[ScrollRestoration]', timestamp, ...args);
 }
 
 function getStoredPositions(): ScrollPositions {
@@ -66,7 +31,7 @@ function getStoredPositions(): ScrollPositions {
     const stored = sessionStorage.getItem(STORAGE_KEY);
     return stored ? JSON.parse(stored) : {};
   } catch (error) {
-    console.warn('[ScrollRestoration] Failed to parse stored positions:', error);
+    console.error('[ScrollRestoration] Failed to parse:', error);
     return {};
   }
 }
@@ -75,22 +40,20 @@ function savePositions(positions: ScrollPositions): void {
   if (typeof window === 'undefined') return;
   
   try {
-    // Clean old entries (older than 1 hour)
-    const now = Date.now();
-    const cleaned = Object.fromEntries(
-      Object.entries(positions).filter(
-        ([, pos]) => now - pos.timestamp < 3600000
-      )
-    );
+    const entries = Object.entries(positions);
+    if (entries.length > MAX_STORED_POSITIONS) {
+      const sorted = entries.sort((a, b) => b[1].timestamp - a[1].timestamp);
+      positions = Object.fromEntries(sorted.slice(0, MAX_STORED_POSITIONS));
+    }
     
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(positions));
+    log('💾 Saved:', positions);
   } catch (error) {
-    console.warn('[ScrollRestoration] Failed to save positions:', error);
+    console.error('[ScrollRestoration] Failed to save:', error);
   }
 }
 
 function getCurrentPosition(): ScrollPosition {
-  // SSR-safe: Check if window exists
   if (typeof window === 'undefined') {
     return { x: 0, y: 0, timestamp: Date.now() };
   }
@@ -102,235 +65,197 @@ function getCurrentPosition(): ScrollPosition {
   };
 }
 
-function restorePosition(position: ScrollPosition, pathname: string): void {
-  log('Attempting to restore position for:', pathname, position);
+function waitForContentStability(callback: () => void, maxWait = CONTENT_WAIT_MAX) {
+  let lastHeight = document.documentElement.scrollHeight;
+  let stableCount = 0;
+  const startTime = Date.now();
   
-  requestAnimationFrame(() => {
-    const maxScrollY = Math.max(
-      0,
-      document.documentElement.scrollHeight - window.innerHeight
-    );
-    const maxScrollX = Math.max(
-      0,
-      document.documentElement.scrollWidth - window.innerWidth
-    );
+  const check = () => {
+    const currentHeight = document.documentElement.scrollHeight;
     
-    const safeY = Math.min(Math.max(0, position.y), maxScrollY);
-    const safeX = Math.min(Math.max(0, position.x), maxScrollX);
-    
-    log('Page dimensions:', {
-      scrollHeight: document.documentElement.scrollHeight,
-      viewportHeight: window.innerHeight,
-      maxScrollY,
-      requestedY: position.y,
-      safeY
-    });
-    
-    window.scrollTo(safeX, safeY);
-    
-    setTimeout(() => {
-      const currentY = window.scrollY || window.pageYOffset || 0;
-      if (Math.abs(currentY - safeY) > 10) {
-        log('Position drift detected, re-applying:', { expected: safeY, actual: currentY });
-        window.scrollTo(safeX, safeY);
-      } else {
-        log('✓ Position restored successfully:', safeY);
+    if (currentHeight === lastHeight) {
+      stableCount++;
+      if (stableCount >= 3) {
+        callback();
+        return;
       }
-    }, 50);
+    } else {
+      stableCount = 0;
+      lastHeight = currentHeight;
+    }
+    
+    if (Date.now() - startTime < maxWait) {
+      requestAnimationFrame(check);
+    } else {
+      callback();
+    }
+  };
+  
+  requestAnimationFrame(check);
+}
+
+function restorePosition(position: ScrollPosition, pathname: string): void {
+  const maxScrollY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  const maxScrollX = Math.max(0, document.documentElement.scrollWidth - window.innerWidth);
+  
+  const safeY = Math.min(Math.max(0, position.y), maxScrollY);
+  const safeX = Math.min(Math.max(0, position.x), maxScrollX);
+  
+  log('🔄 Restoring:', pathname, '→', safeY);
+  
+  window.scrollTo({
+    left: safeX,
+    top: safeY,
+    behavior: 'instant' as ScrollBehavior
   });
+  
+  setTimeout(() => {
+    const actualY = window.scrollY || window.pageYOffset || 0;
+    if (Math.abs(actualY - safeY) > 10) {
+      log('⚠️ Drift, re-applying');
+      window.scrollTo({ left: safeX, top: safeY, behavior: 'instant' as ScrollBehavior });
+    } else {
+      log('✅ Restored');
+    }
+  }, 50);
 }
 
 export function useScrollRestoration() {
   const pathname = usePathname();
+  const pathnameRef = useRef(pathname);  // NEW: Ref for popstate handler
   const previousPathname = useRef<string | null>(null);
-  const isRestoringRef = useRef<boolean>(false);
-  const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const isInitialMount = useRef<boolean>(true);
-  
-  // This ref stores the CURRENT page's scroll position continuously
-  // SSR-safe: Initialize with safe default, will be updated on client
   const currentScrollPositionRef = useRef<ScrollPosition>({ x: 0, y: 0, timestamp: Date.now() });
+  const scrollBeforeJumpRef = useRef<ScrollPosition | null>(null);
+  const scrollTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isRestoringRef = useRef(false);
 
-  // Disable Next.js automatic scroll restoration
+  // Update pathname ref whenever pathname changes
+  useEffect(() => {
+    pathnameRef.current = pathname;
+  }, [pathname]);
+
+  // Disable browser scroll restoration
   useEffect(() => {
     if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
-      const originalScrollRestoration = window.history.scrollRestoration;
       window.history.scrollRestoration = 'manual';
-      log('✓ Disabled browser scroll restoration');
-      
-      // Initialize ref with actual scroll position on client
       currentScrollPositionRef.current = getCurrentPosition();
-      
-      return () => {
-        window.history.scrollRestoration = originalScrollRestoration;
-      };
+      log('✓ Setup complete');
     }
   }, []);
 
-  // CRITICAL: Continuously update current scroll position
+  // Track scroll position
   useEffect(() => {
-    const updateScrollPosition = () => {
-      if (isRestoringRef.current) return;
-      currentScrollPositionRef.current = getCurrentPosition();
-    };
-
-    // Update on every scroll (will be used when navigating away)
     const handleScroll = () => {
-      updateScrollPosition();
-      
-      // Also debounce save to sessionStorage for persistence
-      if (scrollTimerRef.current) {
-        clearTimeout(scrollTimerRef.current);
+      if (isRestoringRef.current) {
+        return;
       }
       
+      const newPosition = getCurrentPosition();
+      const oldPosition = currentScrollPositionRef.current;
+      
+      // Detect jump-to-zero (navigation starting)
+      if (oldPosition.y > 50 && newPosition.y < 50) {
+        log('🔍 Jump detected! Preserving:', oldPosition.y);
+        scrollBeforeJumpRef.current = oldPosition;
+      }
+      
+      currentScrollPositionRef.current = newPosition;
+      
+      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
       scrollTimerRef.current = setTimeout(() => {
-        const positions = getStoredPositions();
-        positions[pathname] = currentScrollPositionRef.current;
-        savePositions(positions);
-        log('Scroll: Updated position for:', pathname, currentScrollPositionRef.current.y);
-      }, 500);
+        log('📜 Settled:', currentScrollPositionRef.current.y);
+      }, SCROLL_DEBOUNCE);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      if (scrollTimerRef.current) {
-        clearTimeout(scrollTimerRef.current);
-      }
+      if (scrollTimerRef.current) clearTimeout(scrollTimerRef.current);
     };
   }, [pathname]);
 
-  // Handle pathname changes (navigation)
+  // Handle navigation
   useEffect(() => {
-    // On initial mount
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
+    if (previousPathname.current === null) {
       previousPathname.current = pathname;
-      log('Initial mount, pathname:', pathname);
-      
-      // Try to restore position if coming from browser back/forward
-      const positions = getStoredPositions();
-      const savedPosition = positions[pathname];
-      if (savedPosition && savedPosition.y > 0) {
-        log('Found saved position on initial mount, restoring...');
-        setTimeout(() => {
-           waitForContent(() => {
-            restorePosition(savedPosition, pathname);
-           });
-        }, SCROLL_RESTORATION_DELAY);
-      }
-      
+      log('🆕 Initial:', pathname);
       return;
     }
 
-    // Navigation detected
-    if (previousPathname.current && previousPathname.current !== pathname) {
-      log('Navigation detected:', previousPathname.current, '→', pathname);
+    if (previousPathname.current !== pathname) {
+      log('🚀 NAVIGATION:', previousPathname.current, '→', pathname);
       
       const positions = getStoredPositions();
       
-      // CRITICAL FIX: Save the CURRENT scroll position (from ref) for the PREVIOUS page
-      // This captures where we were BEFORE navigation started
-      const currentPos = currentScrollPositionRef.current;
-      positions[previousPathname.current] = currentPos;
-      savePositions(positions);
-      log('Saved scroll position for:', previousPathname.current, currentPos);
-
-      // Restore scroll position for current page if exists
-      const savedPosition = positions[pathname];
-      if (savedPosition && !isRestoringRef.current) {
-        if (savedPosition.y > 0) {
-          log('Found saved position, will restore:', savedPosition);
-          isRestoringRef.current = true;
-          
-          setTimeout(() => {
-            restorePosition(savedPosition, pathname);
-            setTimeout(() => {
-              isRestoringRef.current = false;
-              // Reset current position ref for new page
-              currentScrollPositionRef.current = getCurrentPosition();
-            }, 100);
-          }, SCROLL_RESTORATION_DELAY);
-        } else {
-          log('Saved position is 0, scrolling to top');
-          window.scrollTo(0, 0);
-        }
+      // Use preserved position if jump was detected
+      let positionToSave: ScrollPosition;
+      if (scrollBeforeJumpRef.current && scrollBeforeJumpRef.current.y > 50) {
+        positionToSave = scrollBeforeJumpRef.current;
+        log('💡 Using preserved:', positionToSave.y);
       } else {
-        log('No saved position found for:', pathname);
-        window.scrollTo(0, 0);
-      }
-    }
-
-    previousPathname.current = pathname;
-  }, [pathname]);
-
-  // Save position before page unload
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      const positions = getStoredPositions();
-      // Use the ref which has the most recent scroll position
-      const currentPos = currentScrollPositionRef.current;
-      positions[pathname] = currentPos;
-      savePositions(positions);
-      log('beforeunload: Saved position for:', pathname, currentPos);
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      
-      // CRITICAL: On component unmount (navigation), save current position
-      const positions = getStoredPositions();
-      const currentPos = currentScrollPositionRef.current;
-      positions[pathname] = currentPos;
-      savePositions(positions);
-      log('unmount: Saved position for:', pathname, currentPos);
-    };
-  }, [pathname]);
-
-  // Handle browser back/forward buttons
-  useEffect(() => {
-    const handlePopState = (e: PopStateEvent) => {
-      log('popstate event detected');
-      
-      // Save current position before browser navigates
-      const positions = getStoredPositions();
-      const currentPos = currentScrollPositionRef.current;
-      if (previousPathname.current) {
-        positions[previousPathname.current] = currentPos;
-        savePositions(positions);
-        log('popstate: Saved position for previous page:', previousPathname.current, currentPos);
+        positionToSave = currentScrollPositionRef.current;
+        log('📍 Using current:', positionToSave.y);
       }
       
-      // Give Next.js time to process the navigation
+      log('💾 Saving:', previousPathname.current, '→', positionToSave.y);
+      
+      positions[previousPathname.current] = positionToSave;
+      savePositions(positions);
+      
+      previousPathname.current = pathname;
+      scrollBeforeJumpRef.current = null;
+      
       setTimeout(() => {
-        const updatedPositions = getStoredPositions();
-        const savedPosition = updatedPositions[pathname];
+        currentScrollPositionRef.current = getCurrentPosition();
+        log('🔓 Navigation complete');
+      }, 100);
+    }
+  }, [pathname]);
+
+  // FIXED: Handle popstate with empty deps array
+  useEffect(() => {
+    const handlePopState = () => {
+      log('⬅️ POPSTATE FIRED!');
+      
+      setTimeout(() => {
+        const currentPath = pathnameRef.current;  // Use ref instead of pathname
+        const positions = getStoredPositions();
+        const savedPosition = positions[currentPath];
+        
+        log('🔍 Current path:', currentPath);
+        log('📦 Saved position:', savedPosition);
         
         if (savedPosition && savedPosition.y > 0) {
-          log('popstate: Restoring position for:', pathname, savedPosition);
+          log('✅ Restoring:', savedPosition.y);
+          
           isRestoringRef.current = true;
-          restorePosition(savedPosition, pathname);
-          setTimeout(() => {
-            isRestoringRef.current = false;
-            currentScrollPositionRef.current = getCurrentPosition();
-          }, 200);
+          
+          waitForContentStability(() => {
+            restorePosition(savedPosition, currentPath);
+            
+            setTimeout(() => {
+              isRestoringRef.current = false;
+              currentScrollPositionRef.current = getCurrentPosition();
+            }, 100);
+          });
         } else {
-          log('popstate: No saved position for:', pathname);
+          log('❌ No saved position for:', currentPath);
         }
-      }, 50);
+      }, 100);  // Increased delay to ensure pathname has updated
     };
 
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [pathname]);
+    log('✅ Popstate listener attached (permanent)');
+    
+    return () => {
+      log('🧹 Removing popstate listener');
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);  // CRITICAL: Empty deps array - listener stays attached permanently
+
 }
 
-/**
- * Scroll Restoration Component
- */
 export default function ScrollRestoration() {
   useScrollRestoration();
   return null;
