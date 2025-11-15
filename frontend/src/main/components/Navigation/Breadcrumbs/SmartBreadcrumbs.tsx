@@ -223,14 +223,6 @@ export async function enhanceArticleForBreadcrumbs(
   // FIXED: Find rubric by the string slug
   const rubric = rubricBasics.find(r => r.slug === articleRubricSlug);
   
-  // Debug logging to help troubleshoot
-  console.log('[enhanceArticleForBreadcrumbs] Debug:', {
-    articleRubricSlug,
-    rubricBasicsCount: rubricBasics.length,
-    rubricBasicsSlugs: rubricBasics.map(r => r.slug),
-    foundRubric: rubric?.name || 'NOT FOUND'
-  });
-  
   return {
     title: translation?.title || article.slug,
     slug: article.slug,

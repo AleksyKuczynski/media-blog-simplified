@@ -47,14 +47,11 @@ export default async function RelatedArticles({
       lang
     );
 
-    console.log('RelatedArticles: Found', relatedArticles.length, 'related articles');
-
     let finalArticles = [...relatedArticles];
 
     // Step 2: If <10 articles, fetch latest to fill up
     if (finalArticles.length < MINIMUM_ARTICLES) {
       const needed = MINIMUM_ARTICLES - finalArticles.length;
-      console.log('RelatedArticles: Need', needed, 'more articles to reach minimum');
 
       // Collect slugs to exclude (current article + already found articles)
       const excludeSlugs = [
@@ -70,8 +67,6 @@ export default async function RelatedArticles({
         undefined, // no search
         excludeSlugs // exclude current and found articles
       );
-
-      console.log('RelatedArticles: Found', latestSlugs.length, 'latest article slugs');
 
       // Fetch full article card data for latest articles using fetchArticleCard
       if (latestSlugs.length > 0) {
@@ -98,7 +93,6 @@ export default async function RelatedArticles({
 
         // Append to end (after all tiered articles)
         finalArticles = [...finalArticles, ...latestTransformed];
-        console.log('RelatedArticles: Added', latestTransformed.length, 'latest articles');
       }
     }
 
@@ -112,11 +106,8 @@ export default async function RelatedArticles({
       return true;
     });
 
-    console.log('RelatedArticles: Final count after deduplication:', deduplicatedArticles.length);
-
     // Don't render if no articles found (error case)
     if (deduplicatedArticles.length === 0) {
-      console.log('RelatedArticles: No articles to display');
       return null;
     }
 

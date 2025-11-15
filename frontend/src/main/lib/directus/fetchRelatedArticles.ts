@@ -42,12 +42,10 @@ export async function fetchRelatedArticles(
   try {
     // If no categories, return empty array
     if (!articleCategories || articleCategories.length === 0) {
-      console.log('fetchRelatedArticles: No categories provided');
       return [];
     }
 
     const categorySlugs = articleCategories.map(c => c.slug);
-    console.log('fetchRelatedArticles: Looking for articles with categories:', categorySlugs);
 
     // Step 1: Query junction table to find all articles with ANY of these categories
     const junctionFilter = {
@@ -70,7 +68,6 @@ export async function fetchRelatedArticles(
     }
 
     const junctionData = await junctionResponse.json();
-    console.log('fetchRelatedArticles: Found junction entries:', junctionData.data.length);
 
     // Step 2: Group by article slug and count category matches
     const articleMatchCounts = new Map<string, { categories: string[], count: number }>();
@@ -91,8 +88,6 @@ export async function fetchRelatedArticles(
       matchData.categories.push(entry.categories_slug);
       matchData.count = matchData.categories.filter(cat => categorySlugs.includes(cat)).length;
     }
-
-    console.log('fetchRelatedArticles: Articles with matches:', articleMatchCounts.size);
 
     if (articleMatchCounts.size === 0) {
       return [];
@@ -123,7 +118,6 @@ export async function fetchRelatedArticles(
     }
 
     const articlesData = await articlesResponse.json();
-    console.log('fetchRelatedArticles: Fetched article details:', articlesData.data.length);
 
     // Step 4: For each article, fetch its categories
     const relatedArticles: RelatedArticleInfo[] = [];
@@ -204,8 +198,6 @@ export async function fetchRelatedArticles(
       });
     }
 
-    console.log('fetchRelatedArticles: Processed articles:', relatedArticles.length);
-
     // Step 5: Sort by tier (1 → 2 → 3) then by date DESC
     relatedArticles.sort((a, b) => {
       // First, sort by tier (lower tier number = better match)
@@ -216,13 +208,10 @@ export async function fetchRelatedArticles(
       return new Date(b.published_at).getTime() - new Date(a.published_at).getTime();
     });
 
-    console.log('fetchRelatedArticles: Returning', relatedArticles.length, 'sorted articles');
-    
     // Log tier distribution for debugging
     const tier1Count = relatedArticles.filter(a => a.matchTier === 1).length;
     const tier2Count = relatedArticles.filter(a => a.matchTier === 2).length;
     const tier3Count = relatedArticles.filter(a => a.matchTier === 3).length;
-    console.log(`Tier distribution - Tier 1: ${tier1Count}, Tier 2: ${tier2Count}, Tier 3: ${tier3Count}`);
 
     return relatedArticles;
 
