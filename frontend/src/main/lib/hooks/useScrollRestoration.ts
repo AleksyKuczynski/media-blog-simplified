@@ -30,6 +30,35 @@ function log(...args: any[]) {
   }
 }
 
+function waitForContent(callback: () => void, maxWait = 1000) {
+  let lastHeight = document.documentElement.scrollHeight;
+  let stableCount = 0;
+  const startTime = Date.now();
+  
+  const check = () => {
+    const currentHeight = document.documentElement.scrollHeight;
+    
+    if (currentHeight === lastHeight) {
+      stableCount++;
+      if (stableCount >= 3) { // Height stable for 3 checks
+        callback();
+        return;
+      }
+    } else {
+      stableCount = 0;
+      lastHeight = currentHeight;
+    }
+    
+    if (Date.now() - startTime < maxWait) {
+      requestAnimationFrame(check);
+    } else {
+      callback(); // Force after maxWait
+    }
+  };
+  
+  requestAnimationFrame(check);
+}
+
 function getStoredPositions(): ScrollPositions {
   if (typeof window === 'undefined') return {};
   
@@ -186,7 +215,9 @@ export function useScrollRestoration() {
       if (savedPosition && savedPosition.y > 0) {
         log('Found saved position on initial mount, restoring...');
         setTimeout(() => {
-          restorePosition(savedPosition, pathname);
+           waitForContent(() => {
+            restorePosition(savedPosition, pathname);
+           });
         }, SCROLL_RESTORATION_DELAY);
       }
       

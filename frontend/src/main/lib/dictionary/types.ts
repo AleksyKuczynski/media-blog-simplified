@@ -22,9 +22,9 @@ export interface TemplateVariables {
   readonly description?: string;
   readonly year?: string;
   readonly name?: string;
-  readonly contentType?: string;        // NEW
-  readonly minutes?: string;            // NEW
-  readonly rubric?: string;             // NEW
+  readonly contentType?: string; 
+  readonly minutes?: string;     
+  readonly rubric?: string;      
 }
 
 export type TemplateProcessor = (template: string, variables: TemplateVariables) => string;
