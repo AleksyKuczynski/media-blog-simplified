@@ -5,7 +5,6 @@ import { processCaptionLinks } from './processCaptionLinks';
 import { ContentChunk, ImageAttributes } from './markdownTypes';
 import { fetchAssetMetadata } from '../directus';
 import { parseMarkdownImage } from './parseMarkdownImage';
-import { calculateImageFrameDimensions } from '../image-utils/calculateImageFrameDimensions';
 
 /**
  * Processes image chunks and converts them to individual image frames
@@ -49,21 +48,12 @@ export async function parseImageFrames(chunks: ContentChunk[]): Promise<ContentC
           ? convertSimpleMarkdownToHtml(processCaptionLinks(chunk.caption!))
           : '';
 
-        // Calculate optimal dimensions for this single image
-        // Use default viewport dimensions for server-side calculation
-        const dimensions = calculateImageFrameDimensions({
-          imageAttributes: enrichedAttributes,
-          viewportWidth: 1200, // Default desktop width for SSR
-          viewportHeight: 800   // Default desktop height for SSR
-        });
-
         // Create image-frame chunk instead of carousel
         const imageFrameChunk: ContentChunk = {
           type: 'image-frame',
           imageAttributes: enrichedAttributes,
           caption: hasCaption ? chunk.caption : undefined,
           processedCaption,
-          dimensions
         };
 
         processedChunks.push(imageFrameChunk);

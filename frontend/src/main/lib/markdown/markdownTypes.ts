@@ -1,7 +1,5 @@
 // src/main/lib/markdown/markdownTypes.ts
 
-import { ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
-
 export interface ContentChunk {
   type: 'markdown' | 'blockquote' | 'figure' | 'image' | 'image-frame' | 'image-group' | 'table' | 'article-card';
   content?: string;
@@ -11,7 +9,6 @@ export interface ContentChunk {
   processedCaption?: string;
   // Single image frame properties
   imageAttributes?: ImageAttributes;
-  dimensions?: ImageFrameDimensions;
   // Image group properties (for future enhancement)
   images?: ImageFrameItem[];
   // Table properties

@@ -1,14 +1,20 @@
-// src/main/components/Article/ImageFrame.tsx
+// src/main/components/Article/media/ImageFrame.tsx
 
 'use client'
 
-import React, { useState, useEffect, memo } from 'react';
+import React, { memo } from 'react';
 import Image from 'next/image';
 import { cn } from '@/main/lib/utils/utils';
-import { ImageAttributes, ImageFrameDimensions } from '@/main/lib/image-utils/imageFrameTypes';
-import { calculateImageFrameDimensionsClient } from '@/main/lib/image-utils/calculateImageFrameDimensions';
-import { ImageFrameSkeleton } from './ImageFrameSkeleton';
 import { MEDIA_STYLES } from '../styles';
+
+export interface ImageAttributes {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  title?: string;
+  filename?: string;
+}
 
 interface ImageFrameProps {
   imageAttributes: ImageAttributes;
@@ -18,7 +24,7 @@ interface ImageFrameProps {
   className?: string;
 }
 
-const styles = MEDIA_STYLES.imageFrame
+const styles = MEDIA_STYLES.imageFrame;
 
 export const ImageFrame = memo(function ImageFrame({ 
   imageAttributes, 
@@ -27,49 +33,6 @@ export const ImageFrame = memo(function ImageFrame({
   maxWidth,
   className
 }: ImageFrameProps) {
-  const [dimensions, setDimensions] = useState<ImageFrameDimensions | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Calculate dimensions on mount and window resize
-  useEffect(() => {
-    const calculateDimensions = () => {
-      const newDimensions = calculateImageFrameDimensionsClient(
-        imageAttributes,
-        maxWidth
-      );
-      setDimensions(newDimensions);
-      setIsLoading(false);
-    };
-
-    calculateDimensions();
-
-    const handleResize = () => {
-      calculateDimensions();
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [imageAttributes, maxWidth]);
-
-  if (!dimensions || isLoading) {
-    const estimatedHeight = 400;
-    return (
-      <ImageFrameSkeleton 
-        width={maxWidth || '100%'}
-        height={estimatedHeight}
-        className={className}
-        showShimmer={true}
-      />
-    );
-  }
-
-  const containerStyle: React.CSSProperties = {
-    height: dimensions.height,
-    maxHeight: dimensions.maxHeight,
-    aspectRatio: dimensions.ratio,
-    maxWidth: dimensions.width || maxWidth || '100%',
-  };
-
   const hasCaption = Boolean(processedCaption || caption);
 
   return (
@@ -77,7 +40,9 @@ export const ImageFrame = memo(function ImageFrame({
       <figure className={styles.figure}>
         <div 
           className={cn(styles.container, className)}
-          style={containerStyle}
+          style={{
+            maxWidth: maxWidth || '100%'
+          }}
         >
           <Image
             src={imageAttributes.src}
@@ -94,7 +59,6 @@ export const ImageFrame = memo(function ImageFrame({
         </div>
       </figure>
       
-      {/* ✅ NEW: Caption placed outside figure element for better readability */}
       {hasCaption && (
         <figcaption 
           className={styles.caption}

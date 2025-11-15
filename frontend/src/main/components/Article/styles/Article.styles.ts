@@ -87,8 +87,8 @@ export const MEDIA_STYLES = {
   imageFrame: {
     wrapper: 'w-full mb-8',
     figure: 'w-full',
-    container: 'relative mx-auto overflow-hidden bg-sf-cont rounded-2xl shadow-lg',
-    image: 'w-full h-full object-cover',
+    container: 'relative mx-auto overflow-hidden bg-sf-cont rounded-2xl shadow-lg max-h-[90vh] w-auto max-w-full flex items-center justify-center',
+    image: 'h-full w-auto max-w-full object-contain',
     caption: 'prose-sm text-on-sf-var mt-4 text-center px-4',
   },
 
@@ -99,21 +99,6 @@ export const MEDIA_STYLES = {
     placeholder: 'absolute inset-0 flex items-center justify-center text-on-sf-var/50',
     loadingText: 'mt-2 text-sm text-on-sf-var/60',
     iconContainer: 'w-16 h-16 text-on-sf-var/30 mb-2',
-  },
-
-  // Captions
-  captions: {
-    base: 'absolute left-0 right-0 bottom-0 transition-all duration-300 ease-out',
-    
-    // Theme variants
-    themes: {
-      default: 'theme-default:bg-sf/90 theme-default:backdrop-blur-sm theme-default:px-4 theme-default:py-3',
-      rounded: 'theme-rounded:bg-sf/95 theme-rounded:backdrop-blur-md theme-rounded:rounded-t-2xl theme-rounded:px-6 theme-rounded:py-4',
-      sharp: 'theme-sharp:bg-sf theme-sharp:border-t theme-sharp:border-ol theme-sharp:px-4 theme-sharp:py-2',
-    },
-    
-    // Expansion indicator
-    expandIndicator: 'absolute top-2 right-2 w-6 h-6 rounded-full bg-on-sf/20 backdrop-blur-sm flex items-center justify-center transition-all duration-200 text-on-sf text-xs hover:bg-on-sf/30',
   },
 } as const;
 
