@@ -8,6 +8,7 @@ export {
   useEngagement,
   type UseEngagementOptions,
   type UseEngagementReturn,
+  type ShareMethod,
 } from '@/main/lib/hooks/useEngagement';
 
 export {
@@ -22,7 +23,6 @@ export {
   type UseLikeStateReturn,
 } from '@/main/lib/hooks/useLikeState';
 
-// NEW: Share state hook
 export {
   useShareState,
   type UseShareStateOptions,

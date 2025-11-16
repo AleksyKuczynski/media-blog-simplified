@@ -6,7 +6,7 @@
  * - Uses common Modal.tsx component for consistent behavior
  * - Inherits ContactModal's design and horizontal size
  * - Body scroll is blocked when opened (handled by Modal)
- * - Handles Instagram by copying URL (Instagram doesn't support web sharing)
+ * - Instagram: Web Share API on mobile, clipboard fallback on desktop
  */
 
 'use client';
@@ -18,7 +18,7 @@ import type { SharePlatform } from '@/main/lib/engagement';
 export interface SharePopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onShare: (platform: SharePlatform) => Promise<void>;
+  onShare: (platform: SharePlatform) => Promise<'native' | 'copy' | 'window'>;
   showCopySuccess: boolean;
 }
 
@@ -93,12 +93,16 @@ export function SharePopup({ isOpen, onClose, onShare, showCopySuccess }: ShareP
 
   const handlePlatformClick = async (platform: SharePlatform) => {
     setLastPlatform(platform);
-    await onShare(platform);
+    const shareMethod = await onShare(platform);
     
-    // Close popup after sharing (except for copy and instagram, which show success message)
-    if (platform !== 'copy' && platform !== 'instagram') {
+    // Close modal based on share method:
+    // - 'native': Close (user completed share via native sheet)
+    // - 'window': Close (share window opened)
+    // - 'copy': Stay open (show success message)
+    if (shareMethod === 'native' || shareMethod === 'window') {
       onClose();
     }
+    // If 'copy', modal stays open to show success message
   };
 
   // Determine success message based on platform

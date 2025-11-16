@@ -2,7 +2,7 @@
 /**
  * Engagement Module - Public API
  * 
- * UPDATED: Added share delta exports
+ * UPDATED: Added Web Share API exports
  * Centralized exports for all engagement functionality
  */
 
@@ -35,17 +35,19 @@ export {
   removeLikedArticle,
 } from './localStorage';
 
-// LocalStorage - Shares (NEW: delta only)
+// LocalStorage - Shares (delta only)
 export {
   saveShareDelta,
   getShareDelta,
 } from './localStorage';
 
-// Share
+// Share (UPDATED: Added Web Share API functions)
 export {
   getShareUrl,
   copyToClipboard,
   openShareWindow,
+  shareViaWebAPI,
+  canUseWebShare,
 } from './share';
 
 export { checkRateLimit } from './checkRateLimit';

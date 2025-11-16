@@ -6,6 +6,7 @@
  * - Views: Server-tracked on first visit, reconciled via action log
  * - Likes: Debounced (1s), optimistic updates, fire-and-forget API
  * - Shares: Immediate optimistic update, fire-and-forget API
+ * - Instagram: Web Share API on mobile, clipboard fallback on desktop
  */
 
 import { useState, useEffect, useCallback } from 'react';
@@ -13,7 +14,7 @@ import { useLikeState } from './useLikeState';
 import { useShareState } from './useShareState';
 import { useViewTracking } from './useViewTracking';
 import { updateEngagement } from '../engagement/api';
-import { getShareUrl, copyToClipboard, openShareWindow } from '../engagement/share';
+import { getShareUrl, copyToClipboard, openShareWindow, shareViaWebAPI } from '../engagement/share';
 import { logAction, reconcileCounts } from '../engagement/actionLog';
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
@@ -29,13 +30,15 @@ export interface UseEngagementOptions {
   viewWasTrackedByAPI?: boolean;
 }
 
+export type ShareMethod = 'native' | 'copy' | 'window';
+
 export interface UseEngagementReturn {
   engagement: EngagementData;
   hasViewTracked: boolean;
   isLiked: boolean;
   isLikeProcessing: boolean;
   toggleLike: () => void;
-  handleShare: (platform: SharePlatform) => Promise<void>;
+  handleShare: (platform: SharePlatform) => Promise<ShareMethod>;
   showCopySuccess: boolean;
   error: string | null;
   clearError: () => void;
@@ -137,10 +140,11 @@ export function useEngagement({
 
   /**
    * Handle share action
+   * Returns the share method used: 'native', 'copy', or 'window'
    */
-  const handleShare = useCallback(async (platform: SharePlatform) => {
-    // Handle copy and Instagram (both copy to clipboard)
-    if (platform === 'copy' || platform === 'instagram') {
+  const handleShare = useCallback(async (platform: SharePlatform): Promise<ShareMethod> => {
+    // Handle regular copy
+    if (platform === 'copy') {
       const success = await copyToClipboard(url);
       
       if (success) {
@@ -148,17 +152,53 @@ export function useEngagement({
         setTimeout(() => setShowCopySuccess(false), 2000);
 
         trackGAEvent('share', {
-          method: platform,
+          method: 'copy',
           article_slug: slug,
           article_title: title,
         });
-        trackYandexEvent('article_share', { slug, method: platform });
+        trackYandexEvent('article_share', { slug, method: 'copy' });
       } else {
         showError(dictionary.errors.engagement.updateFailed);
       }
-      return;
+      return 'copy';
     }
 
+    // Handle Instagram - try Web Share API first, fallback to clipboard
+    if (platform === 'instagram') {
+      // Try Web Share API (mobile native share sheet)
+      const sharedViaAPI = await shareViaWebAPI({ url, title });
+      
+      if (sharedViaAPI) {
+        // Successfully shared via native share sheet
+        trackGAEvent('share', {
+          method: 'instagram-native',
+          article_slug: slug,
+          article_title: title,
+        });
+        trackYandexEvent('article_share', { slug, method: 'instagram-native' });
+        return 'native'; // Signal that native share was used
+      }
+      
+      // Fallback: Copy to clipboard (desktop or Web Share API unavailable)
+      const success = await copyToClipboard(url);
+      
+      if (success) {
+        setShowCopySuccess(true);
+        setTimeout(() => setShowCopySuccess(false), 2000);
+
+        trackGAEvent('share', {
+          method: 'instagram-copy',
+          article_slug: slug,
+          article_title: title,
+        });
+        trackYandexEvent('article_share', { slug, method: 'instagram-copy' });
+      } else {
+        showError(dictionary.errors.engagement.updateFailed);
+      }
+      return 'copy';
+    }
+
+    // Handle other platforms (Facebook, Twitter, Telegram, WhatsApp)
     // Log action for reconciliation
     logAction(slug, 'share');
     
@@ -181,6 +221,7 @@ export function useEngagement({
     // Open share dialog
     const shareUrl = getShareUrl(platform, { url, title });
     openShareWindow(shareUrl);
+    return 'window';
   }, [slug, title, url, showError]);
 
   return {

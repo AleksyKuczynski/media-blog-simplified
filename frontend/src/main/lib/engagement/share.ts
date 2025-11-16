@@ -3,6 +3,7 @@
  * Share Platform Utilities
  * 
  * Social media sharing URLs and copy-to-clipboard functionality
+ * UPDATED: Added Web Share API support for Instagram on mobile
  */
 
 import { ShareConfig, SharePlatform } from "./types";
@@ -35,6 +36,44 @@ export function getShareUrl(platform: SharePlatform, config: ShareConfig): strin
     
     default:
       return url;
+  }
+}
+
+/**
+ * Check if Web Share API is available
+ */
+export function canUseWebShare(): boolean {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return false;
+  }
+  
+  return 'share' in navigator && navigator.canShare !== undefined;
+}
+
+/**
+ * Share via Web Share API (mobile native share sheet)
+ * Returns true if shared successfully, false if user cancelled or API unavailable
+ */
+export async function shareViaWebAPI(config: ShareConfig): Promise<boolean> {
+  if (!canUseWebShare()) {
+    return false;
+  }
+
+  try {
+    await navigator.share({
+      title: config.title,
+      url: config.url,
+    });
+    return true;
+  } catch (error) {
+    // User cancelled or sharing failed
+    if (error instanceof Error && error.name === 'AbortError') {
+      // User cancelled - this is normal, not an error
+      return false;
+    }
+    // Other errors (e.g., not allowed in this context)
+    console.error('Web Share API error:', error);
+    return false;
   }
 }
 
