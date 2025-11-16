@@ -3,6 +3,7 @@
 
 import { useRef, useCallback, useEffect } from 'react';
 import { useOutsideClick } from '@/main/lib/hooks/useOutsideClick';
+import { lockBodyScroll, unlockBodyScroll } from '@/main/lib/utils/bodyScrollLock';
 
 export type ModalPosition = 'center' | 'bottom-left' | 'bottom-right';
 export type ModalSize = 'sm' | 'md' | 'lg';
@@ -43,6 +44,20 @@ export function Modal({
   closeOnEscape = true,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+
+  // Body scroll lock - lock when modal opens, unlock when it closes
+  useEffect(() => {
+    if (isOpen) {
+      lockBodyScroll();
+    } else {
+      unlockBodyScroll();
+    }
+
+    // Cleanup on unmount
+    return () => {
+      unlockBodyScroll();
+    };
+  }, [isOpen]);
 
   // Handle escape key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
