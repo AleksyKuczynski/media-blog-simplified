@@ -216,6 +216,30 @@ const dictionary = {
     },
   },
 
+
+  // ===================================================================
+  // SHARE - Share popup content
+  // ===================================================================
+  share: {
+    title: 'Поделиться статьей',
+    platforms: {
+      telegram: 'Telegram',
+      whatsapp: 'WhatsApp',
+      twitter: 'Twitter',
+      facebook: 'Facebook',
+      instagram: 'Instagram',
+      copy: 'Copy Link',
+    },
+    messages: {
+      linkCopied: 'Ссылка скопирована!',
+      instagramCopied: 'Ссылка скопирована! Вставьте в приложение Instagram',
+    },
+    accessibility: {
+      shareOn: 'Поделиться через {platform}',
+      closeDialog: 'Закрыть окно поделиться',
+    },
+  },  
+
   // ===================================================================
   // SECTIONS - Template-driven, reusable across content types
   // ===================================================================

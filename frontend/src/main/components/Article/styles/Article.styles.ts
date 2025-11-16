@@ -247,6 +247,38 @@ export const NAVIGATION_STYLES = {
 // ================================================================
 
 export const WIDGETS_STYLES = {
+  // SharePopup
+  sharePopup: {
+    // Container
+    container: 'p-6',
+    
+    // Grid for platform buttons
+    grid: 'grid grid-cols-2 gap-2.5',
+    
+    // Platform button
+    button: {
+      base: 'flex flex-col items-center gap-2 p-3.5 rounded-lg text-on-sf-var transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pr-fix focus:ring-offset-2',
+      iconWrapper: 'flex items-center justify-center',
+      icon: 'w-5 h-5',
+      label: 'text-xs font-medium',
+    },
+    
+    // Platform-specific hover colors
+    colors: {
+      telegram: 'hover:bg-[#0088cc]/10 hover:text-[#0088cc]',
+      whatsapp: 'hover:bg-[#25D366]/10 hover:text-[#25D366]',
+      twitter: 'hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2]',
+      facebook: 'hover:bg-[#1877F2]/10 hover:text-[#1877F2]',
+      instagram: 'hover:bg-gradient-to-tr hover:from-[#fd5949] hover:via-[#d6249f] hover:to-[#285AEB]/10 hover:text-[#d6249f]',
+      copy: 'hover:bg-on-sf-var/10 hover:text-on-sf',
+    },
+    
+    // Success notification
+    success: {
+      wrapper: 'mt-4 pt-4 border-t border-ol-var',
+      message: 'px-3 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800 text-sm rounded-lg text-center font-medium',
+    },
+  },
   // ScrollToTopButton (uses FloatingButton component)
   // Note: ScrollToTopButton delegates styling to FloatingButton component
   // See FloatingButton.tsx for actual styling implementation

@@ -1,12 +1,10 @@
 // src/main/lib/dictionary/helpers/templates.ts
-// OPTIMIZED: Removed unused template functions, kept essential processTemplate
 
 import { TemplateProcessor, TemplateVariables } from "../types";
 
 
 /**
  * Process template strings with variable substitution
- * ESSENTIAL: Used throughout the application - keep this
  */
 export const processTemplate: TemplateProcessor = (template: string, variables: TemplateVariables): string => {
   if (!template || typeof template !== 'string') {
@@ -28,7 +26,6 @@ export const processTemplate: TemplateProcessor = (template: string, variables: 
 
 /**
  * Create standardized SEO variables object
- * KEEP: Used by SEO components
  */
 export const createSEOVariables = (overrides: Partial<TemplateVariables> = {}): TemplateVariables => ({
   siteName: 'EventForMe',
