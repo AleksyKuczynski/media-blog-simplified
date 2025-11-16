@@ -2,12 +2,14 @@
 /**
  * Directus Image Optimization Utility
  * 
- * Provides URL transformations for social sharing and responsive images
- * Uses Directus built-in image transformation via URL parameters
- * Images are generated on-demand and cached by Directus
+ * UPDATED: Uses HTTPS proxy for social media sharing
+ * - Direct Directus URLs for internal use (HTTP OK)
+ * - Proxied URLs for social sharing (HTTPS required)
  */
 
 import { DIRECTUS_URL } from '../directus/directusConstants';
+
+const SITE_URL = process.env.SITE_URL || 'https://event4me.vercel.app';
 
 /**
  * Image transformation presets for different use cases
@@ -66,21 +68,28 @@ export interface ImageTransformOptions {
  * 
  * @param assetId - Directus file UUID or full asset URL
  * @param preset - Predefined preset name
+ * @param useProxy - Use HTTPS proxy (required for social sharing). Default: true
  * @returns Optimized image URL with transformation parameters
  * 
  * @example
  * ```typescript
+ * // For social sharing (HTTPS via proxy):
  * const ogImage = getOptimizedImageUrl(article.image_id, 'og');
- * // Returns: http://directus.com/assets/abc-123?width=1200&height=630&fit=cover&quality=85
+ * // Returns: https://event4me.vercel.app/api/images/assets/abc-123?width=1200&height=630...
+ * 
+ * // For internal use (direct HTTP):
+ * const thumbnail = getOptimizedImageUrl(article.image_id, 'thumbnail', false);
+ * // Returns: http://51.21.135.65:8055/assets/abc-123?width=800&height=450...
  * ```
  */
 export function getOptimizedImageUrl(
   assetId: string | null | undefined,
-  preset: ImagePreset
+  preset: ImagePreset,
+  useProxy: boolean = true
 ): string {
   if (!assetId) {
-    // Return fallback image
-    return `${DIRECTUS_URL}/assets/default-og-image.jpg`;
+    // Return fallback image via proxy
+    return `${SITE_URL}/api/images/assets/default-og-image.jpg`;
   }
 
   // Extract asset ID if full URL provided
@@ -92,7 +101,13 @@ export function getOptimizedImageUrl(
   // Build query parameters
   const params = buildTransformParams(config);
   
-  return `${DIRECTUS_URL}/assets/${cleanAssetId}?${params}`;
+  if (useProxy) {
+    // Use HTTPS proxy for social sharing
+    return `${SITE_URL}/api/images/assets/${cleanAssetId}?${params}`;
+  } else {
+    // Use direct Directus URL for internal use
+    return `${DIRECTUS_URL}/assets/${cleanAssetId}?${params}`;
+  }
 }
 
 /**
@@ -100,29 +115,26 @@ export function getOptimizedImageUrl(
  * 
  * @param assetId - Directus file UUID or full asset URL
  * @param options - Custom transformation options
+ * @param useProxy - Use HTTPS proxy (required for social sharing). Default: true
  * @returns Optimized image URL
- * 
- * @example
- * ```typescript
- * const customImage = getCustomOptimizedImageUrl(imageId, {
- *   width: 600,
- *   quality: 90,
- *   format: 'webp'
- * });
- * ```
  */
 export function getCustomOptimizedImageUrl(
   assetId: string | null | undefined,
-  options: ImageTransformOptions
+  options: ImageTransformOptions,
+  useProxy: boolean = true
 ): string {
   if (!assetId) {
-    return `${DIRECTUS_URL}/assets/default-og-image.jpg`;
+    return `${SITE_URL}/api/images/assets/default-og-image.jpg`;
   }
 
   const cleanAssetId = extractAssetId(assetId);
   const params = buildTransformParams(options);
   
-  return `${DIRECTUS_URL}/assets/${cleanAssetId}?${params}`;
+  if (useProxy) {
+    return `${SITE_URL}/api/images/assets/${cleanAssetId}?${params}`;
+  } else {
+    return `${DIRECTUS_URL}/assets/${cleanAssetId}?${params}`;
+  }
 }
 
 /**
@@ -177,13 +189,7 @@ function buildTransformParams(options: ImageTransformOptions): string {
 
 /**
  * Get all social sharing image variants for an asset
- * Useful for providing multiple og:image tags
- * 
- * @example
- * ```typescript
- * const variants = getSocialImageVariants(article.image_id);
- * // Returns: { og: '...', twitter: '...', vk: '...' }
- * ```
+ * All variants use HTTPS proxy for social media compatibility
  */
 export function getSocialImageVariants(
   assetId: string | null | undefined
@@ -193,9 +199,9 @@ export function getSocialImageVariants(
   vk: string;
 } {
   return {
-    og: getOptimizedImageUrl(assetId, 'og'),
-    twitter: getOptimizedImageUrl(assetId, 'twitter'),
-    vk: getOptimizedImageUrl(assetId, 'vk'),
+    og: getOptimizedImageUrl(assetId, 'og', true),
+    twitter: getOptimizedImageUrl(assetId, 'twitter', true),
+    vk: getOptimizedImageUrl(assetId, 'vk', true),
   };
 }
 
