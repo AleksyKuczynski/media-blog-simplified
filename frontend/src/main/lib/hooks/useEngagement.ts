@@ -139,7 +139,8 @@ export function useEngagement({
    * Handle share action
    */
   const handleShare = useCallback(async (platform: SharePlatform) => {
-    if (platform === 'copy') {
+    // Handle copy and Instagram (both copy to clipboard)
+    if (platform === 'copy' || platform === 'instagram') {
       const success = await copyToClipboard(url);
       
       if (success) {
@@ -147,11 +148,11 @@ export function useEngagement({
         setTimeout(() => setShowCopySuccess(false), 2000);
 
         trackGAEvent('share', {
-          method: 'copy',
+          method: platform,
           article_slug: slug,
           article_title: title,
         });
-        trackYandexEvent('article_share', { slug, method: 'copy' });
+        trackYandexEvent('article_share', { slug, method: platform });
       } else {
         showError(dictionary.errors.engagement.updateFailed);
       }
@@ -179,10 +180,7 @@ export function useEngagement({
 
     // Open share dialog
     const shareUrl = getShareUrl(platform, { url, title });
-    
-    if (platform !== 'instagram') {
-      openShareWindow(shareUrl);
-    }
+    openShareWindow(shareUrl);
   }, [slug, title, url, showError]);
 
   return {

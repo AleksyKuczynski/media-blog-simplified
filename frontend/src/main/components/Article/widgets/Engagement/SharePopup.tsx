@@ -6,12 +6,12 @@
  * - Uses common Modal.tsx component for consistent behavior
  * - Inherits ContactModal's design and horizontal size
  * - Body scroll is blocked when opened (handled by Modal)
- * - Handles outside click to close (handled by Modal)
- * - Escape key to close (handled by Modal)
+ * - Handles Instagram by copying URL (Instagram doesn't support web sharing)
  */
 
 'use client';
 
+import { useState } from 'react';
 import { Modal } from '@/main/components/Interface/Modal/Modal';
 import type { SharePlatform } from '@/main/lib/engagement';
 
@@ -89,13 +89,24 @@ const SHARE_PLATFORMS = [
  * SharePopup Component
  */
 export function SharePopup({ isOpen, onClose, onShare, showCopySuccess }: SharePopupProps) {
+  const [lastPlatform, setLastPlatform] = useState<SharePlatform | null>(null);
+
   const handlePlatformClick = async (platform: SharePlatform) => {
+    setLastPlatform(platform);
     await onShare(platform);
     
-    // Close popup after sharing (except for copy, which shows success message)
-    if (platform !== 'copy') {
+    // Close popup after sharing (except for copy and instagram, which show success message)
+    if (platform !== 'copy' && platform !== 'instagram') {
       onClose();
     }
+  };
+
+  // Determine success message based on platform
+  const getSuccessMessage = () => {
+    if (lastPlatform === 'instagram') {
+      return 'Ссылка скопирована! Вставьте в приложение Instagram';
+    }
+    return 'Ссылка скопирована!';
   };
 
   return (
@@ -132,11 +143,11 @@ export function SharePopup({ isOpen, onClose, onShare, showCopySuccess }: ShareP
           ))}
         </div>
 
-        {/* Copy success notification */}
+        {/* Copy/Instagram success notification */}
         {showCopySuccess && (
           <div className="mt-4 pt-4 border-t border-ol-var">
             <div className="px-3 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800 text-sm rounded-lg text-center font-medium">
-              Ссылка скопирована!
+              {getSuccessMessage()}
             </div>
           </div>
         )}
