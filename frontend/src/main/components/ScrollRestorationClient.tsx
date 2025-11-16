@@ -12,15 +12,12 @@ export default function ScrollRestorationClient() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    console.log('🌐 ScrollRestorationClient mounted on client');
     setIsClient(true);
   }, []);
 
   if (!isClient) {
-    console.log('⏳ ScrollRestorationClient waiting for client mount');
     return null;
   }
 
-  console.log('✅ ScrollRestorationClient rendering ScrollRestoration');
   return <ScrollRestoration />;
 }

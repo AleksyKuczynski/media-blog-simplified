@@ -211,12 +211,10 @@ export default async function SmartBreadcrumbs({
 export async function enhanceArticleForBreadcrumbs(
   article: any,
   rubricBasics: any[],
-  dictionary: Dictionary
 ): Promise<SmartBreadcrumbsProps['articleData']> {
   
   const translation = article.translations?.[0];
   
-  // FIXED: article.rubric_slug is a STRING, not an object
   // The rubric slug is directly available as article.rubric_slug
   const articleRubricSlug = article.rubric_slug || 'общее';
   

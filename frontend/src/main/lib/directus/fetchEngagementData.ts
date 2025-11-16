@@ -15,8 +15,6 @@ export async function fetchEngagementData(slug: string) {
     const timestamp = Date.now();
     const url = `${DIRECTUS_URL}/items/articles_engagement?filter=${filter}&fields=${fields}&limit=1&_=${timestamp}`;
 
-    console.log('📊 Fetching engagement data for:', slug);
-
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${DIRECTUS_API_TOKEN}`,
@@ -36,13 +34,6 @@ export async function fetchEngagementData(slug: string) {
 
     if (data.data && data.data.length > 0) {
       const record = data.data[0];
-      console.log('✅ Found engagement record:', {
-        slug: record.article_slug,
-        views: record.view_count,
-        likes: record.like_count,
-        shares: record.share_count,
-        date_updated: record.date_updated, // NEW: Log timestamp for debugging
-      });
       return record;
     }
 

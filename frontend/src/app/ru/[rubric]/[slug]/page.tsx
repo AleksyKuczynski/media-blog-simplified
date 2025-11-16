@@ -134,7 +134,6 @@ export default async function ArticlePage({
     const articleBreadcrumbData = await enhanceArticleForBreadcrumbs(
       article,
       rubricBasics,
-      dictionary
     );
 
     // Schema data

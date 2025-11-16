@@ -22,6 +22,7 @@ const nextConfig = {
         pathname: '/assets/**',
       },
     ],
+    qualities: [75, 90]
   },
   
   transpilePackages: ['swiper'],
