@@ -267,6 +267,7 @@ export const WIDGETS_STYLES = {
     colors: {
       telegram: 'hover:bg-[#0088cc]/10 hover:text-[#0088cc]',
       whatsapp: 'hover:bg-[#25D366]/10 hover:text-[#25D366]',
+      vk: 'hover:bg-[#0077FF]/10 hover:text-[#0077FF]',
       twitter: 'hover:bg-[#1DA1F2]/10 hover:text-[#1DA1F2]',
       facebook: 'hover:bg-[#1877F2]/10 hover:text-[#1877F2]',
       instagram: 'hover:bg-gradient-to-tr hover:from-[#fd5949] hover:via-[#d6249f] hover:to-[#285AEB]/10 hover:text-[#d6249f]',

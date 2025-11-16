@@ -1,4 +1,13 @@
-// src/main/components/SEO/metadata/ArticleMetadata.tsx
+// frontend/src/main/components/SEO/metadata/ArticleMetadata.tsx
+/**
+ * Article Metadata Generation
+ * 
+ * Enhanced with:
+ * - Optimized social sharing images (OG, Twitter, VK)
+ * - Article-specific OpenGraph fields (tags, dates, author, section)
+ * - Directus image transformations
+ */
+
 import { Metadata } from 'next';
 import { Dictionary } from '@/main/lib/dictionary/';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
@@ -9,6 +18,7 @@ import {
   validateSEOData 
 } from '../core/MetadataBuilder';
 import { getSafeArticleDates } from '@/main/lib/utils/seoDateUtils';
+import { getOptimizedImageUrl } from '@/main/lib/utils/imageOptimization';
 
 export interface ArticleMetadataProps {
   dictionary: Dictionary;
@@ -20,17 +30,18 @@ export interface ArticleMetadataProps {
     lead?: string;
     slug: string;
     rubricSlug: string;
+    rubricName?: string;
     author: string;
     publishedAt: string;
     updatedAt: string | null;
-    imageUrl?: string;
+    imageId?: string | null;
     tags?: string[];
   };
 }
 
 /**
- * FIXED: Made synchronous since dictionary is static
  * Generate comprehensive metadata for individual article pages
+ * with optimized social sharing images
  */
 export const generateArticleMetadata = ({
   dictionary,
@@ -43,11 +54,12 @@ export const generateArticleMetadata = ({
     seoDescription, 
     lead, 
     slug, 
-    rubricSlug, 
+    rubricSlug,
+    rubricName,
     author, 
     publishedAt, 
     updatedAt, 
-    imageUrl, 
+    imageId, 
     tags = [] 
   } = articleData;
 
@@ -60,35 +72,51 @@ export const generateArticleMetadata = ({
   // Use SEO description or fallback hierarchy
   const finalDescription = seoDescription || description || lead || 
     processTemplate(dictionary.content.templates.publishedIn, {
-      rubric: rubricSlug,
+      rubric: rubricName || rubricSlug,
     });
 
   // Generate canonical URL
   const canonicalUrl = `${dictionary.seo.site.url}/ru/${rubricSlug}/${slug}`;
 
-  // Use provided image or fallback to default
-  const finalImageUrl = imageUrl || `${dictionary.seo.site.url}/og-default.jpg`;
+  // ENHANCED: Use optimized image for social sharing
+  // Generates OG-optimized variant (1200x630, cover fit, quality 85)
+  const finalImageUrl = imageId 
+    ? getOptimizedImageUrl(imageId, 'og')
+    : `${dictionary.seo.site.url}/og-default.jpg`;
 
-  // Generate article tags
-  const articleTags = tags.length > 0 ? 
-    tags : [rubricSlug, ...title.split(' ').slice(0, 3)];
+  // Generate article tags for keywords
+  const articleTags = tags.length > 0 
+    ? tags.join(', ')
+    : processTemplate(dictionary.sections.templates.itemInCollection, {
+        item: dictionary.sections.labels.articles,
+        collection: rubricName || rubricSlug,
+      });
 
-  // Create SEO data using established pattern
-  const seoData = createArticleSEOData(
+  // Build comprehensive keywords
+  const keywords = [
+    articleTags,
+    rubricName || rubricSlug,
+    author,
+    dictionary.seo.keywords.articles,
+    dictionary.seo.keywords.base
+  ].filter(Boolean).join(', ');
+
+  // ENHANCED: Create article SEO data with all OpenGraph fields
+  const articleSEOData = createArticleSEOData(
     finalTitle,
     finalDescription,
-    dictionary.seo.keywords.articles,
+    keywords,
     canonicalUrl,
-    safeDates.publishedTime,
-    safeDates.modifiedTime,
-    author,
-    rubricSlug,
-    articleTags,
-    finalImageUrl
+    safeDates.publishedTime,    // publishedTime for og:article:published_time
+    safeDates.modifiedTime,     // modifiedTime for og:article:modified_time
+    author,                 // author for og:article:author
+    rubricName || rubricSlug, // section for og:article:section
+    tags,                   // tags for og:article:tag
+    finalImageUrl          // Optimized OG image
   );
 
   // Validate SEO data
-  if (!validateSEOData(seoData)) {
+  if (!validateSEOData(articleSEOData)) {
     console.warn('SEO data validation failed for article:', slug);
   }
 
@@ -96,22 +124,30 @@ export const generateArticleMetadata = ({
   const contentValidation = validateSEOContent({
     title: finalTitle,
     description: finalDescription,
-    keywords: dictionary.seo.keywords.articles,
+    keywords,
   });
 
   if (!contentValidation.isValid) {
     console.warn('Article SEO content validation warnings:', contentValidation.warnings);
   }
 
-  return buildMetadata(seoData);
+  // Build metadata with enhanced OpenGraph fields
+  // The buildMetadata function automatically handles article-specific fields:
+  // - og:type = "article"
+  // - og:article:published_time
+  // - og:article:modified_time
+  // - og:article:author
+  // - og:article:section
+  // - og:article:tag (for each tag)
+  return buildMetadata(articleSEOData);
 };
 
 /**
- * Generate metadata for article not found cases (already synchronous)
+ * Generate metadata for article not found cases
  */
 export const generateArticleNotFoundMetadata = (
   dictionary: Dictionary,
-  rubricSlug?: string
+  articleSlug?: string
 ): Metadata => {
   const notFoundMeta = dictionary.metadata.notFound.article;
   

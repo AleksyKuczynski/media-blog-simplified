@@ -1,5 +1,4 @@
 // frontend/src/main/lib/engagement/types.ts
-// PHASE 1 - UPDATED: Added last_updated field for timestamp-based reconciliation
 /**
  * Engagement Types
  * 
@@ -15,14 +14,14 @@ export interface EngagementData {
   views: number;
   likes: number;
   shares: number;
-  last_updated?: string | null; // NEW: ISO timestamp from Directus date_updated field
+  last_updated?: string | null;
 }
 
 export interface EngagementResponse {
   success: boolean;
   data: EngagementData;
   action?: EngagementAction;
-  viewTracked?: boolean; // Flag to indicate if view was tracked in this request
+  viewTracked?: boolean;
 }
 
 export interface EngagementError {
@@ -57,7 +56,14 @@ export interface ViewTrackingState {
 // SHARE TYPES
 // ===================================================================
 
-export type SharePlatform = 'copy' | 'facebook' | 'twitter' | 'telegram' | 'whatsapp' | 'instagram';
+export type SharePlatform = 
+  | 'copy' 
+  | 'facebook' 
+  | 'twitter' 
+  | 'telegram' 
+  | 'whatsapp' 
+  | 'instagram' 
+  | 'vk';
 
 export interface ShareConfig {
   url: string;

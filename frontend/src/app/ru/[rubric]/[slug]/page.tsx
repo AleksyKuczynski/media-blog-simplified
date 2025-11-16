@@ -50,13 +50,12 @@ export async function generateMetadata({
       lead: translation.lead,
       slug: resolvedParams.slug,
       rubricSlug: resolvedParams.rubric,
+      rubricName: resolvedParams.rubric, // Add rubricName for better metadata
       author: article.authors[0]?.name || 'EventForMe Editorial',
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
-      imageUrl: article.article_heading_img 
-        ? `${dictionary.seo.site.url.replace(/\/$/, '')}/assets/${article.article_heading_img}`
-        : undefined,
-      tags: [resolvedParams.rubric, ...translation.title.split(' ').slice(0, 3)],
+      imageId: article.article_heading_img || null, // CHANGED: imageId instead of imageUrl
+      tags: article.categories?.map(cat => cat.name) || [resolvedParams.rubric],
     };
 
     return generateArticleMetadata({

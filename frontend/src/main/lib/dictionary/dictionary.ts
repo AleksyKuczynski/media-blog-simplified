@@ -225,6 +225,7 @@ const dictionary = {
     platforms: {
       telegram: 'Telegram',
       whatsapp: 'WhatsApp',
+      vk: 'VK',
       twitter: 'Twitter',
       facebook: 'Facebook',
       instagram: 'Instagram',

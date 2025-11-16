@@ -3,7 +3,8 @@
  * Share Platform Utilities
  * 
  * Social media sharing URLs and copy-to-clipboard functionality
- * UPDATED: Added Web Share API support for Instagram on mobile
+ * - Web Share API support for Instagram on mobile
+ * - VK (VKontakte) support for Russian market
  */
 
 import { ShareConfig, SharePlatform } from "./types";
@@ -26,6 +27,9 @@ export function getShareUrl(platform: SharePlatform, config: ShareConfig): strin
     
     case 'whatsapp':
       return `https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`;
+    
+    case 'vk':
+      return `https://vk.com/share.php?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
     
     case 'instagram':
       // Instagram doesn't support direct web sharing
