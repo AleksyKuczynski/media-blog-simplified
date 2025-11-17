@@ -109,7 +109,7 @@ export function useFilterGroup({
   // Handle category change using existing helper - NO DUPLICATION
   const handleCategoryChange = useCallback((item: DropdownItemType) => {
     try {
-      const baseUrl = dictionary.seo?.site?.url || 'https://event4me.eu';
+      const baseUrl = dictionary.seo.site.url;
       const newUrl = generateFilterUrls(baseUrl, item.value, currentSort);
       
       // Convert absolute URL to relative path for router
@@ -200,7 +200,7 @@ export function useFilterValidation(dictionary: Dictionary, categories: Category
  * Uses existing URL generation helpers
  */
 export function useFilterUrls(dictionary: Dictionary) {
-  const baseUrl = dictionary.seo?.site?.url || 'https://event4me.eu';
+  const baseUrl = dictionary.seo.site.url;
   
   return useMemo(() => ({
     generateCategoryUrl: (categorySlug: string, sort: string = 'desc') =>

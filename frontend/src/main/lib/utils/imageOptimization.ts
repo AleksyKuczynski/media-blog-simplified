@@ -9,7 +9,7 @@
 
 import { DIRECTUS_URL } from '../directus/directusConstants';
 
-const SITE_URL = process.env.SITE_URL || 'https://event4me.vercel.app';
+const SITE_URL = process.env.SITE_URL;
 
 /**
  * Image transformation presets for different use cases

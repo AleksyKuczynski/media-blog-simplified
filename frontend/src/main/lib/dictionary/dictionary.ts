@@ -1,5 +1,7 @@
 // src/main/lib/dictionary/dictionary.ts
 
+import { CONTACT_EMAIL, SITE_URL } from "../constants/constants";
+
 /**
  * Complete Russian dictionary - enhanced with metadata fallbacks and error handling
  * Uses templates extensively to avoid duplication and support multiple contexts
@@ -328,8 +330,8 @@ const dictionary = {
       fullName: 'EventForMe — Медиа о культуре и искусстве',
       description: 'Медиа-платформа о культурных событиях, современном искусстве и творческих инициативах в России и мире',
       organizationDescription: 'EventForMe — независимая медиа-платформа, освещающая актуальные культурные события, художественные проекты и творческие инициативы',
-      url: 'https://event4me.eu',
-      contactEmail: 'contact@event4me.eu',
+      url: SITE_URL,
+      contactEmail: CONTACT_EMAIL,
       socialProfiles: [
         'https://t.me/eventforme',
         'https://vk.com/eventforme',

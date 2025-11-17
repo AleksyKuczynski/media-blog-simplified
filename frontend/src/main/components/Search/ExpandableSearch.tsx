@@ -45,7 +45,7 @@ export default function ExpandableSearch({
       itemScope
       itemType="https://schema.org/SearchAction"
     >
-      <meta itemProp="target" content="https://event4me.eu/ru/search?q={search_term_string}" />
+      <meta itemProp="target" content={`https://${dictionary.seo.site.url}/${lang}/search?q={search_term_string}`} />
       <meta itemProp="query-input" content="required name=search_term_string" />
       
       <div className={`

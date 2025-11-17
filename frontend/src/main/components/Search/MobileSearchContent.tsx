@@ -187,7 +187,7 @@ export default function MobileSearchContent({
       itemScope
       itemType="https://schema.org/SearchAction"
     >
-      <meta itemProp="target" content={`https://event4me.eu/${lang}/search?q={search_term_string}`} />
+      <meta itemProp="target" content={`https://${dictionary.seo.site.url}/${lang}/search?q={search_term_string}`} />
       <meta itemProp="query-input" content="required name=search_term_string" />
       
       {/* Search Input Container - Sticky at top */}

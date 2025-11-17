@@ -64,7 +64,7 @@ export default function Navigation({
       >
         {/* Enhanced site identity for schema with correct property names */}
         <meta itemProp="name" content={dictionary.seo.site.name} />
-        <meta itemProp="url" content="https://event4me.eu" />
+        <meta itemProp="url" content={dictionary.seo.site.url} />
         <meta itemProp="description" content={dictionary.seo.site.description} />
         
         <DesktopNavigation

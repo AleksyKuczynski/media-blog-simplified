@@ -1,6 +1,6 @@
 // src/main/components/Logo.tsx - SEO-Enhanced Logo (Non-Destructive)
 import Link from 'next/link';
-import { Lang } from '../lib/dictionary';
+import { dictionary, Lang } from '../lib/dictionary';
 
 interface LogoProps {
   lang: Lang;
@@ -76,16 +76,16 @@ export default function Logo({
         </svg>
         
         {/* Schema.org metadata - invisible but SEO-helpful */}
-        <meta itemProp="url" content="https://event4me.eu" />
+        <meta itemProp="url" content={`https://${dictionary.seo.site.url}/${lang}`} />
         <meta itemProp="name" content="EventForMe" />
         {variant !== 'mobile' && (
           <>
-            <meta itemProp="sameAs" content="https://event4me.eu/ru" />
-            <meta itemProp="alternateName" content="Event4Me" />
-            <meta itemProp="description" content="Медиа-проект о культурных событиях, музыке и современных идеях" />
-            <meta itemProp="foundingDate" content="2024" />
+            <meta itemProp="sameAs" content={`https://${dictionary.seo.site.url}/${lang}`} />
+            <meta itemProp="alternateName" content={dictionary.seo.site.name} />
+            <meta itemProp="description" content={dictionary.seo.site.description} />
+            <meta itemProp="foundingDate" content="2020" />
             <meta itemProp="areaServed" content="Russia" />
-            <meta itemProp="knowsAbout" content="События, Культура, Музыка, Идеи" />
+            <meta itemProp="knowsAbout" content={dictionary.seo.site.organizationDescription} />
           </>
         )}
       </div>

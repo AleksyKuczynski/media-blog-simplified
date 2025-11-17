@@ -60,7 +60,7 @@ export default function DesktopNavigation({
           {/* FIXED: Use correct dictionary property names */}
           <meta itemProp="name" content={dictionary.seo.site.name} />
           <meta itemProp="description" content={dictionary.seo.site.description} />
-          <meta itemProp="url" content="https://event4me.eu" />
+          <meta itemProp="url" content={dictionary.seo.site.url} />
           <meta itemProp="areaServed" content={dictionary.seo.regional.region} />
           
           <Logo 

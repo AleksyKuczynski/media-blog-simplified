@@ -72,8 +72,8 @@ export const getKeywords = (
  * Generate canonical URL
  * ESSENTIAL: Used by navigation helpers and metadata components
  */
-export const generateCanonicalUrl = (path: string, baseUrl?: string): string => {
-  const url = baseUrl || 'https://event4me.eu';
+export const generateCanonicalUrl = (path: string, baseUrl: string): string => {
+  const url = baseUrl;
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   return `${url}${cleanPath}`;
 };
