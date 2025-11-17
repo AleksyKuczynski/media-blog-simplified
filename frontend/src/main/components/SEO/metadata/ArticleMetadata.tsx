@@ -1,11 +1,12 @@
 // frontend/src/main/components/SEO/metadata/ArticleMetadata.tsx
 /**
- * Article Metadata Generation
+ * Article Metadata Generation with Enhanced Debugging
  * 
  * Enhanced with:
  * - Optimized social sharing images (OG, Twitter, VK)
  * - Article-specific OpenGraph fields (tags, dates, author, section)
  * - Directus image transformations
+ * - DEBUGGING: Comprehensive logging for troubleshooting
  */
 
 import { Metadata } from 'next';
@@ -63,6 +64,13 @@ export const generateArticleMetadata = ({
     tags = [] 
   } = articleData;
 
+  // 🐛 DEBUG: Log image ID
+  console.log('=== Article Metadata Generation ===');
+  console.log('Article:', slug);
+  console.log('Image ID received:', imageId);
+  console.log('Image ID type:', typeof imageId);
+  console.log('Image ID is falsy?', !imageId);
+
   // Handle dates safely
   const safeDates = getSafeArticleDates(publishedAt, updatedAt);
 
@@ -83,6 +91,11 @@ export const generateArticleMetadata = ({
   const finalImageUrl = imageId 
     ? getOptimizedImageUrl(imageId, 'og')
     : `${dictionary.seo.site.url}/og-default.jpg`;
+
+  // 🐛 DEBUG: Log final image URL
+  console.log('Final image URL:', finalImageUrl);
+  console.log('Using fallback image?', !imageId);
+  console.log('SITE_URL:', dictionary.seo.site.url);
 
   // Generate article tags for keywords
   const articleTags = tags.length > 0 
@@ -115,9 +128,17 @@ export const generateArticleMetadata = ({
     finalImageUrl          // Optimized OG image
   );
 
+  // 🐛 DEBUG: Log SEO data
+  console.log('SEO Data created:');
+  console.log('- Title:', articleSEOData.title);
+  console.log('- Image URL:', articleSEOData.imageUrl);
+  console.log('- Type:', articleSEOData.type);
+
   // Validate SEO data
   if (!validateSEOData(articleSEOData)) {
-    console.warn('SEO data validation failed for article:', slug);
+    console.warn('⚠️ SEO data validation failed for article:', slug);
+  } else {
+    console.log('✅ SEO data validation passed');
   }
 
   // Validate content for SEO requirements
@@ -128,18 +149,29 @@ export const generateArticleMetadata = ({
   });
 
   if (!contentValidation.isValid) {
-    console.warn('Article SEO content validation warnings:', contentValidation.warnings);
+    console.warn('⚠️ Article SEO content validation warnings:', contentValidation.warnings);
+  } else {
+    console.log('✅ Content validation passed');
   }
 
   // Build metadata with enhanced OpenGraph fields
-  // The buildMetadata function automatically handles article-specific fields:
-  // - og:type = "article"
-  // - og:article:published_time
-  // - og:article:modified_time
-  // - og:article:author
-  // - og:article:section
-  // - og:article:tag (for each tag)
-  return buildMetadata(articleSEOData);
+  const metadata = buildMetadata(articleSEOData);
+
+  // 🐛 DEBUG: Log final metadata (avoid type issues)
+  console.log('Final metadata:');
+  console.log('- Has OpenGraph?', !!metadata.openGraph);
+  console.log('- Has Twitter?', !!metadata.twitter);
+  if (metadata.openGraph?.images) {
+    const images = metadata.openGraph.images;
+    console.log('- OpenGraph images:', Array.isArray(images) ? `Array(${images.length})` : 'Single image');
+  }
+  if (metadata.twitter?.images) {
+    const images = metadata.twitter.images;
+    console.log('- Twitter images:', Array.isArray(images) ? `Array(${images.length})` : 'Single image');
+  }
+  console.log('====================================\n');
+
+  return metadata;
 };
 
 /**
