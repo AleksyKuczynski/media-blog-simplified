@@ -1,11 +1,13 @@
 // app/api/images/warm/[slug]/route.ts
 /**
- * Image Pre-warming API Route
+ * Image Pre-warming API Route for Directus Flow
  * 
  * Fetches all social media image variants for an article to warm the cache
+ * Called by Directus Flow when article_heading_img changes
  * 
  * Usage:
- * POST /api/images/warm/article-slug
+ * POST /api/images/warm/{article-slug}
+ * Authorization: Bearer {DIRECTUS_API_TOKEN}
  * 
  * This ensures Facebook, Twitter, and other crawlers see cached images
  */
@@ -14,6 +16,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { fetchFullArticle } from '@/main/lib/directus';
 import { getSocialImageVariants } from '@/main/lib/utils/imageOptimization';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
+
+const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
 
 interface WarmResult {
   variant: 'og' | 'twitter' | 'vk';
@@ -25,6 +29,19 @@ interface WarmResult {
   error?: string;
 }
 
+/**
+ * Verify request is authorized (from Directus)
+ */
+function verifyAuth(request: NextRequest): boolean {
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader || !DIRECTUS_API_TOKEN) {
+    return false;
+  }
+  
+  const token = authHeader.replace('Bearer ', '');
+  return token === DIRECTUS_API_TOKEN;
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
@@ -32,15 +49,28 @@ export async function POST(
   const startTime = Date.now();
   
   try {
+    // Verify authentication
+    if (!verifyAuth(request)) {
+      console.warn('[Image Warming] ⚠️ Unauthorized request');
+      return NextResponse.json({
+        success: false,
+        error: 'Unauthorized',
+      }, { status: 401 });
+    }
+
     const resolvedParams = await params;
     const { slug } = resolvedParams;
 
-    console.log(`[Image Warming] Starting for article: ${slug}`);
+    console.log('\n=== IMAGE WARMING START ===');
+    console.log(`Article: ${slug}`);
+    console.log(`Timestamp: ${new Date().toISOString()}`);
 
     // Fetch article to get image ID
     const article = await fetchFullArticle(slug, DEFAULT_LANG);
 
     if (!article) {
+      console.log('❌ Article not found');
+      console.log('=== IMAGE WARMING END ===\n');
       return NextResponse.json({
         success: false,
         error: 'Article not found',
@@ -49,21 +79,29 @@ export async function POST(
     }
 
     const imageId = article.article_heading_img;
+    const title = article.translations[0]?.title || 'Untitled';
+
+    console.log(`Title: ${title}`);
+    console.log(`Image ID: ${imageId || 'none'}`);
 
     if (!imageId) {
+      console.log('ℹ️ Article has no image (will use fallback)');
+      console.log('=== IMAGE WARMING END ===\n');
       return NextResponse.json({
-        success: false,
-        error: 'Article has no image',
-        slug,
-        message: 'Article will use fallback image for social shares',
+        success: true,
+        article: { slug, title },
+        message: 'Article has no image - will use fallback for social shares',
+        results: [],
       }, { status: 200 });
     }
 
     // Get all social image variants
     const variants = getSocialImageVariants(imageId);
     
-    console.log(`[Image Warming] Found image: ${imageId}`);
-    console.log(`[Image Warming] Variants:`, variants);
+    console.log('Warming variants:');
+    console.log(`  - OG: ${variants.og}`);
+    console.log(`  - Twitter: ${variants.twitter}`);
+    console.log(`  - VK: ${variants.vk}`);
 
     // Warm each variant by making HEAD requests
     const results: WarmResult[] = [];
@@ -72,13 +110,11 @@ export async function POST(
       const variantStartTime = Date.now();
       
       try {
-        console.log(`[Image Warming] Fetching ${variant}: ${url}`);
-        
-        // Use HEAD request to minimize bandwidth
+        // Use HEAD request to warm cache without downloading full image
         const response = await fetch(url, {
           method: 'HEAD',
           headers: {
-            'User-Agent': 'Image-Warmer/1.0',
+            'User-Agent': 'Directus-Image-Warmer/1.0',
           },
         });
 
@@ -95,36 +131,41 @@ export async function POST(
         });
 
         if (response.ok) {
-          console.log(`[Image Warming] ✅ ${variant} cached (${duration}ms, ${size} bytes)`);
+          console.log(`✅ ${variant}: cached (${duration}ms, ${(size / 1024).toFixed(1)}KB)`);
         } else {
-          console.error(`[Image Warming] ❌ ${variant} failed: ${response.status}`);
+          console.log(`❌ ${variant}: failed (status ${response.status})`);
         }
 
       } catch (error) {
         const duration = Date.now() - variantStartTime;
+        const errorMsg = error instanceof Error ? error.message : 'Unknown error';
         
         results.push({
           variant: variant as 'og' | 'twitter' | 'vk',
           url,
           success: false,
           duration,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: errorMsg,
         });
 
-        console.error(`[Image Warming] ❌ ${variant} error:`, error);
+        console.log(`❌ ${variant}: error - ${errorMsg}`);
       }
     }
 
     const totalDuration = Date.now() - startTime;
     const successCount = results.filter(r => r.success).length;
+    const totalSize = results.reduce((sum, r) => sum + (r.size || 0), 0);
 
-    console.log(`[Image Warming] Complete: ${successCount}/${results.length} succeeded (${totalDuration}ms)`);
+    console.log(`\nSummary: ${successCount}/${results.length} variants cached`);
+    console.log(`Total size: ${(totalSize / 1024).toFixed(1)}KB`);
+    console.log(`Total time: ${totalDuration}ms`);
+    console.log('=== IMAGE WARMING END ===\n');
 
     return NextResponse.json({
       success: successCount > 0,
       article: {
         slug,
-        title: article.translations[0]?.title,
+        title,
         imageId,
       },
       results,
@@ -133,6 +174,7 @@ export async function POST(
         successful: successCount,
         failed: results.length - successCount,
         totalDuration,
+        totalSize,
       },
     }, {
       status: 200,
@@ -143,12 +185,15 @@ export async function POST(
     });
 
   } catch (error) {
-    console.error('[Image Warming] Error:', error);
+    const totalDuration = Date.now() - startTime;
+    console.error('[Image Warming] ❌ Unexpected error:', error);
+    console.log('=== IMAGE WARMING END ===\n');
     
     return NextResponse.json({
       success: false,
       error: 'Internal server error',
       message: error instanceof Error ? error.message : 'Unknown error',
+      duration: totalDuration,
     }, { 
       status: 500,
       headers: {
@@ -158,10 +203,11 @@ export async function POST(
   }
 }
 
-// Also support GET for easier testing
+// Also support GET for manual testing
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  console.log('[Image Warming] ℹ️ GET request - treating as POST');
   return POST(request, { params });
 }
