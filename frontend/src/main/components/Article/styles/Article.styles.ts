@@ -74,6 +74,8 @@ export const ELEMENTS_STYLES = {
   // Lists
   list: {
     base: 'mb-6 pl-6 space-y-2 text-on-sf-var leading-relaxed',
+    ordered: 'list-decimal list-outside',
+    unordered: 'list-disc list-outside',
     item: 'text-on-sf-var marker:text-pr-cont pl-2 last:mb-0',
   },
 } as const;
