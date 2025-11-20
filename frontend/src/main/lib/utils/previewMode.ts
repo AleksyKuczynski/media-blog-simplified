@@ -21,7 +21,7 @@ export async function validatePreviewMode(
     cookieStore.set('preview-mode', 'true', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: 60 * 60, // 1 hour
     });
     return true;
