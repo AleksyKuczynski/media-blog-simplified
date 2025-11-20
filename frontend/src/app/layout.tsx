@@ -1,5 +1,4 @@
 // src/app/layout.tsx
-import { Jost, Literata, Yeseva_One } from 'next/font/google'
 import './globals.scss'
 import { DEFAULT_LANG } from '@/main/lib/constants/constants'
 import ConsentModeScript from '@/main/components/Analytics/ConsentModeScript'
