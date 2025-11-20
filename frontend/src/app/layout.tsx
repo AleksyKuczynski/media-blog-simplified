@@ -10,25 +10,7 @@ import GoogleAnalyticsNoScript from '@/main/components/Analytics/GoogleAnalytics
 import ConsentBanner from '@/main/components/Analytics/ConsentBanner'
 import ScrollRestorationClient from '@/main/components/ScrollRestorationClient' // Changed import
 import { dictionary } from '@/main/lib/dictionary';
-
-const fontSans = Jost({
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-sans',
-  display: 'swap',
-})
-
-const fontSerif = Literata({
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-serif',
-  display: 'swap',
-})
-
-const fontDisplay = Yeseva_One({
-  weight: '400',
-  subsets: ['latin', 'cyrillic'],
-  variable: '--font-display',
-  display: 'swap',
-})
+import { fontCustom, fontDisplay, fontSans, fontSerif } from './fonts/fonts'
 
 const consentDictionary = dictionary.consent
 
@@ -44,7 +26,7 @@ export default async function RootLayout({
   return (
     <html 
       lang={DEFAULT_LANG} 
-      className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable}`}
+      className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable} ${fontCustom.variable}`}
     >
       <head>
         {/* CRITICAL: Consent Mode must load FIRST, before any analytics */}

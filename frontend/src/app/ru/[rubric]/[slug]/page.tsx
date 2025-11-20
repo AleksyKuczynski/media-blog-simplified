@@ -193,7 +193,7 @@ export default async function ArticlePage({
         {/* Article Content */}
         <article itemScope itemType="https://schema.org/Article">
           <Section className="py-8">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto">
               <Suspense fallback={
                 <div className="text-center py-8">
                   <div className="text-lg">{dictionary.common.status.loading}</div>

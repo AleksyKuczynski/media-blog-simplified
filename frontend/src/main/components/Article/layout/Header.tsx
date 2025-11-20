@@ -46,12 +46,11 @@ export function Header({
       )}
 
       <div className={styles.metadataBox}>
-        <p>{publishedDate}</p>
         <p>
           {authors.length > 0 && authors[0].name !== '::EDITORIAL::' ? (
             authors.map((author, index) => (
               <span key={author.slug}>
-                {index > 0 && ", "}
+                {index > 0 && " & "}
                 <Link 
                   href={`/${DEFAULT_LANG}/authors/${author.slug}`} 
                   className={styles.authorLink}
@@ -64,6 +63,7 @@ export function Header({
             <span>{editorialText}</span>
           )}
         </p>
+        <p>{publishedDate}</p>
       </div>
 
       {lead && (

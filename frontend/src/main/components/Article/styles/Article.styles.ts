@@ -15,6 +15,8 @@
  * <div className={ARTICLE_STYLES.layout.header.container} />
  */
 
+import { IMAGE_RATIO_STRING } from "../../mainConstants";
+
 // ================================================================
 // LAYOUT COMPONENTS
 // ================================================================
@@ -23,12 +25,12 @@ export const LAYOUT_STYLES = {
   // Header component (actual implementation from Header.tsx)
   header: {
     container: 'relative mb-12 lg:grid grid-cols-2 justify-center',
-    title: 'mb-8 lg:pl-6 xl:pl-8 font-display text-3xl text-center lg:text-left font-bold text-on-sf',
-    imageContainer: 'relative mx-auto aspect-[16/9] overflow-hidden order-first h-full w-full md:max-lg:w-3/4 rounded-t-2xl lg:rounded-2xl',
+    title: 'mb-8 lg:pl-6 xl:pl-8 font-custom text-3xl text-center lg:text-left font-bold text-on-sf',
+    imageContainer: `relative mx-auto ${IMAGE_RATIO_STRING} overflow-hidden order-first h-full w-full md:max-lg:w-3/4 lg:rounded-2xl`,
     image: 'w-full h-full object-cover',
-    metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto flex justify-between col-span-2 w-full lg:max-w-[800px] lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 rounded-b-2xl lg:rounded-2xl lg:mt-8 p-6 shadow-sm',
+    metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
     authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
-    lead: 'text-lg xl:text-xl font-light max-w-[800px] mx-auto mb-8 col-span-2 pt-6 text-on-sf',
+    lead: 'text-lg xl:text-xl font-light max-w-[800px] mx-auto mb-8 col-span-2 px-2 pt-6 text-on-sf',
   },
 
   // Metadata component (actual implementation from Metadata.tsx)
@@ -180,7 +182,7 @@ export const BLOCKS_STYLES = {
 export const NAVIGATION_STYLES = {
   // TableOfContents
   tableOfContents: {
-    container: 'w-full max-w-2xl mx-auto mb-16 bg-sf-cont p-8 rounded-2xl shadow-lg',
+    container: 'w-full max-w-2xl mx-auto mb-16',
     title: 'text-xl font-bold mb-4 text-on-sf-var bg-sf-hst py-3 px-6 rounded-lg shadow-sm',
     list: 'space-y-2 pl-6',
     link: 'block text-pr-cont hover:text-pr-fix transition-colors duration-200 py-1',
