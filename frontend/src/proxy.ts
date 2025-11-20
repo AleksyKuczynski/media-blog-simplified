@@ -1,19 +1,33 @@
-// src/middleware.ts
+// src/proxy.ts
 import { NextRequest, NextResponse } from 'next/server'
 
 const PUBLIC_FILE = /\.(.*)$/
 
 export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl;
 
   // Ignore public files
   if (PUBLIC_FILE.test(pathname)) return
 
-  // ✅ REMOVED: All theme management - no longer needed
-  // ✅ REMOVED: Color mode cookies - let Tailwind handle dark mode
-  // ✅ REMOVED: Language detection - already removed
-  
-  // ✅ ULTRA-SIMPLIFIED: Just pass through, no modifications needed
+  // Check for preview mode activation
+  const previewParam = searchParams.get('preview');
+  const secretParam = searchParams.get('secret');
+
+  if (previewParam === 'true' && secretParam) {
+    const validSecret = process.env.PREVIEW_SECRET;
+    
+    if (secretParam === validSecret) {
+      // Set preview cookie
+      const response = NextResponse.next();
+      response.cookies.set('preview-mode', 'true', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 60 * 60,
+      });
+      return response;
+    }
+  }
   return NextResponse.next()
 }
 

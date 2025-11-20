@@ -2,9 +2,11 @@
 
 import { FullArticle, ArticleBlock, DIRECTUS_URL, fetchAuthorsForArticle, fetchCategoriesForArticle } from "./index";
 import { Lang } from '../dictionary';
+import { isPreviewMode } from "../utils/previewMode";
 
 export async function fetchFullArticle(slug: string, lang: Lang): Promise<FullArticle | null> {
   try {
+    const inPreview = await isPreviewMode();
     const fields = [
       'slug',
       'status',
