@@ -1,6 +1,7 @@
-// src/main/lib/directus/fetchArticleSlugs.ts
+// frontend/src/main/lib/directus/fetchArticleSlugs.ts
 
-import { ArticleSlugInfo, DIRECTUS_URL, ITEMS_PER_PAGE } from "./index";
+import { DIRECTUS_URL, ITEMS_PER_PAGE } from "./directusConstants";
+import { ArticleSlugInfo } from "./directusInterfaces";
 
 export async function fetchArticleSlugs(
   page: number = 1, 
@@ -9,14 +10,23 @@ export async function fetchArticleSlugs(
   search?: string,
   excludeSlugs: string[] = [],
   authorSlug?: string,
-  rubricSlug?: string
+  rubricSlug?: string,
+  includesDrafts: boolean = false // NEW PARAMETER
 ): Promise<{ slugs: ArticleSlugInfo[], hasMore: boolean }> {
-
   try {
     const offset = (page - 1) * ITEMS_PER_PAGE;
     const sortQuery = sort === 'asc' ? 'published_at' : '-published_at';
     
     let filter: any = {};
+
+    // Status filter based on preview mode
+    const statusFilter = includesDrafts 
+      ? { status: { _in: ['published', 'draft'] } }
+      : { status: { _eq: 'published' } };
+    
+    filter = { ...filter, ...statusFilter };
+
+    // ... rest of existing filter logic (category, search, etc.) ...
 
     if (category) {
       filter["category_slugs"] = {
@@ -62,10 +72,11 @@ export async function fetchArticleSlugs(
     }
 
     const response = await fetch(url, { 
-      next: { 
-        revalidate: search ? 0 : 300,
+      cache: includesDrafts ? 'no-store' : 'default',
+      next: includesDrafts ? undefined : (search ? { revalidate: 0 } : { 
+        revalidate: 300,
         tags: ['articles', 'article-list']
-      } 
+      })
     });
 
     if (!response.ok) {

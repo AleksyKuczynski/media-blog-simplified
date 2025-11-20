@@ -1,12 +1,16 @@
-// src/main/lib/directus/fetchFullArticle.ts
+// frontend/src/main/lib/directus/fetchFullArticle.ts
 
-import { FullArticle, ArticleBlock, DIRECTUS_URL, fetchAuthorsForArticle, fetchCategoriesForArticle } from "./index";
+import { FullArticle, ArticleBlock, fetchAuthorsForArticle, fetchCategoriesForArticle } from "./index";
 import { Lang } from '../dictionary';
-import { isPreviewMode } from "../utils/previewMode";
 
-export async function fetchFullArticle(slug: string, lang: Lang): Promise<FullArticle | null> {
+const DIRECTUS_URL = process.env.DIRECTUS_URL;
+
+export async function fetchFullArticle(
+  slug: string, 
+  lang: Lang,
+  includesDrafts: boolean = false // NEW PARAMETER
+): Promise<FullArticle | null> {
   try {
-    const inPreview = await isPreviewMode();
     const fields = [
       'slug',
       'status',
@@ -23,17 +27,33 @@ export async function fetchFullArticle(slug: string, lang: Lang): Promise<FullAr
       'translations.body.item.*',
     ].join(',');
 
-    const deepFilter = encodeURIComponent(JSON.stringify({
+    // Build status filter based on preview mode
+    const statusFilter = includesDrafts 
+      ? { status: { _in: ['published', 'draft'] } }
+      : { status: { _eq: 'published' } };
+
+    const filter = {
+      slug: { _eq: slug },
+      ...statusFilter,
+    };
+
+    const deepFilter = {
       translations: {
         _filter: {
           languages_code: { _eq: lang }
         }
       }
-    }));
+    };
 
-    const url = `${DIRECTUS_URL}/items/articles?filter[slug][_eq]=${slug}&fields=${fields}&deep=${deepFilter}`;
+    const encodedFilter = encodeURIComponent(JSON.stringify(filter));
+    const encodedDeepFilter = encodeURIComponent(JSON.stringify(deepFilter));
+
+    const url = `${DIRECTUS_URL}/items/articles?filter=${encodedFilter}&fields=${fields}&deep=${encodedDeepFilter}`;
+
     const response = await fetch(url, { 
-      next: { 
+      // In preview mode, bypass cache
+      cache: includesDrafts ? 'no-store' : 'default',
+      next: includesDrafts ? undefined : { 
         revalidate: 3600,
         tags: ['article', 'stable']
       }
@@ -58,7 +78,7 @@ export async function fetchFullArticle(slug: string, lang: Lang): Promise<FullAr
       return null;
     }
 
-    // Process the article body
+    // Process article body
     const articleBody: ArticleBlock[] = translation.body.map((block: any) => ({
       collection: 'block_markdown',
       item: {
@@ -70,6 +90,7 @@ export async function fetchFullArticle(slug: string, lang: Lang): Promise<FullAr
     // Fetch authors and categories
     const authors = await fetchAuthorsForArticle(slug, lang);
     const categories = await fetchCategoriesForArticle(slug, lang);
+    
     const fullArticle: FullArticle = {
       slug: article.slug,
       status: article.status,

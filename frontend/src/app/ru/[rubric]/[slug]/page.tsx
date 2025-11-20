@@ -17,6 +17,8 @@ import generateArticleMetadata, { generateArticleNotFoundMetadata } from '@/main
 import ArticleSchema from '@/main/components/SEO/schemas/ArticleSchema';
 import QuickNavigationSchema from '@/main/components/SEO/schemas/QuickNavigationSchema';
 import AuthorsSectionSchema from '@/main/components/SEO/schemas/AuthorsSectionSchema';
+import { isPreviewMode } from '@/main/lib/utils/previewMode';
+import PreviewBanner from '@/main/components/Article/PreviewBanner';
 
 // ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
@@ -29,8 +31,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const resolvedParams = await params;
+
+    // Check preview mode at page level
+    const inPreview = await isPreviewMode();
+    
+    // Pass preview state to fetch function
     const [article] = await Promise.all([
-      fetchFullArticle(resolvedParams.slug, DEFAULT_LANG),
+      fetchFullArticle(resolvedParams.slug, DEFAULT_LANG, inPreview),
     ]);
 
     if (!article) {
@@ -50,18 +57,32 @@ export async function generateMetadata({
       lead: translation.lead,
       slug: resolvedParams.slug,
       rubricSlug: resolvedParams.rubric,
-      rubricName: resolvedParams.rubric, // Add rubricName for better metadata
+      rubricName: resolvedParams.rubric,
       author: article.authors[0]?.name || 'EventForMe Editorial',
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
-      imageId: article.article_heading_img || null, // CHANGED: imageId instead of imageUrl
+      imageId: article.article_heading_img || null,
       tags: article.categories?.map(cat => cat.name) || [resolvedParams.rubric],
     };
 
-    return generateArticleMetadata({
+    const metadata = generateArticleMetadata({
       dictionary,
       articleData,
     });
+
+    // Add noindex for preview mode
+    if (inPreview) {
+      return {
+        ...metadata,
+        robots: {
+          index: false,
+          follow: false,
+          nocache: true,
+        },
+      };
+    }
+
+    return metadata;
 
   } catch (error) {
     console.error('Error generating article metadata:', error);
@@ -90,8 +111,11 @@ export default async function ArticlePage({
   try {
     const resolvedParams = await params;
 
+    // Check preview mode at page level
+    const inPreview = await isPreviewMode();
+
     const [article, rubricBasics] = await Promise.all([
-      fetchFullArticle(resolvedParams.slug, DEFAULT_LANG),
+      fetchFullArticle(resolvedParams.slug, DEFAULT_LANG, inPreview),
       fetchRubricBasics(DEFAULT_LANG),
     ]);
 
@@ -170,6 +194,9 @@ export default async function ArticlePage({
 
     return (
       <>
+        {/* Show preview banner if in preview mode */}
+        {inPreview && <PreviewBanner />}
+        
         {/* Structured Data */}
         <ArticleSchema
           dictionary={dictionary}

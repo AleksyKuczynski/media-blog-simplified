@@ -1,17 +1,29 @@
-// src/main/lib/directus/fetchArticles.ts
+// frontend/src/main/lib/directus/fetchArticles.ts
 
-import { ArticleCardType, DIRECTUS_URL } from "./index";
-import { Lang } from '../dictionary';
+import { Lang } from "../dictionary";
+import { DIRECTUS_URL } from "./directusConstants";
+import { ArticleCardType } from "./directusInterfaces";
 
-export async function fetchArticles(slugsAndLayouts: { slug: string; layout: string }[], lang: Lang, sort: string = 'desc'): Promise<ArticleCardType[]> {
+export async function fetchArticles(
+  slugsAndLayouts: { slug: string; layout: string }[], 
+  lang: Lang, 
+  sort: string = 'desc',
+  includesDrafts: boolean = false
+): Promise<ArticleCardType[]> {
   try {
     if (slugsAndLayouts.length === 0) {
-      console.log("fetchArticles: No slugs provided, returning empty array");
       return [];
     }
 
+    const statusFilter = includesDrafts 
+      ? { status: { _in: ['published', 'draft'] } }
+      : { status: { _eq: 'published' } };
+
     const filter = {
-      "_or": slugsAndLayouts.map(({ slug }) => ({ "slug": { "_eq": slug } }))
+      _and: [
+        { _or: slugsAndLayouts.map(({ slug }) => ({ slug: { _eq: slug } })) },
+        statusFilter
+      ]
     };
 
     const encodedFilter = encodeURIComponent(JSON.stringify(filter));
@@ -20,7 +32,8 @@ export async function fetchArticles(slugsAndLayouts: { slug: string; layout: str
     const url = `${DIRECTUS_URL}/items/articles?fields=${fields}&filter=${encodedFilter}&sort=${sortQuery}`;
 
     const response = await fetch(url, { 
-      next: { 
+      cache: includesDrafts ? 'no-store' : 'default',
+      next: includesDrafts ? undefined : { 
         revalidate: 300,
         tags: ['articles', 'article-data']
       }
@@ -38,14 +51,13 @@ export async function fetchArticles(slugsAndLayouts: { slug: string; layout: str
       return { 
         ...article, 
         rubric_slug: article.rubric_slug?.slug || '',
-        authors: [{ last_name: 'Editorial', slug: '' }], // Simplified as we don't have access to author data
+        authors: [{ last_name: 'Editorial', slug: '' }],
         layout: layoutMap.get(article.slug) || article.layout,
         title: translation?.title || '',
         description: translation?.description || '',
       } as ArticleCardType;
     });
 
-    console.log(`fetchArticles: Processed ${articles.length} articles:`, articles);
     return articles;
   } catch (error) {
     console.error('Error in fetchArticles:', error);
