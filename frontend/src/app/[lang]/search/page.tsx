@@ -1,27 +1,22 @@
-// src/app/ru/search/page.tsx
-// FIXED: Separated client UI controls from server-rendered article list
-// ARCHITECTURE: SearchResultsHeader (client) + ArticleList (server) composition
-// DICTIONARY: Uses only existing dictionary entries, no hardcoded text
-
+// src/app/[lang]/search/page.tsx
 import { Suspense } from 'react';
 import { Metadata } from 'next';
+import { getDictionary, type Lang } from '@/main/lib/dictionary';
 import Section from '@/main/components/Main/Section';
 import SearchBarClient from '@/main/components/Search/SearchBarClient';
 import SearchResultsHeader from '@/main/components/Search/SearchResultsHeader';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import { fetchArticleSlugs } from '@/main/lib/directus/index';
+import { fetchArticleSlugs } from '@/main/lib/directus';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { generateSearchMetadataSimple } from '@/main/components/SEO/metadata/SearchMetadata';
 import { SearchSchema } from '@/main/components/SEO/schemas/SearchSchema';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { Lang } from '@/main/lib/dictionary';
 
 // Force dynamic for search functionality
 export const dynamic = 'force-dynamic';
 
 interface SearchPageProps {
-   params:  Promise<{ lang: Lang }>;
+  params: Promise<{ lang: string }>;
   searchParams: Promise<{ 
     search?: string; 
     sort?: string; 
@@ -29,26 +24,33 @@ interface SearchPageProps {
   }>;
 }
 
-// Static metadata generation - NO QUERY HANDLING
-export function generateMetadata(): Metadata {
-  
+// Static metadata generation with lang-aware fallback
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ lang: string }>
+}): Promise<Metadata> {
   try {
+    const { lang } = await params;
+    const dictionary = getDictionary(lang as Lang);
     return generateSearchMetadataSimple(dictionary);
   } catch (error) {
     console.error('Search page metadata generation failed:', error);
-    // Fallback metadata using dictionary only
+    // Emergency fallback
     return {
-      title: processTemplate(dictionary.navigation.templates.pageTitle, {
-        page: dictionary.search.templates.pageTitle,
-        siteName: dictionary.seo.site.name
-      }),
-      description: `${dictionary.search.templates.pageDescription} на ${dictionary.seo.site.name}`,
+      title: 'Search',
+      description: 'Search articles',
     };
   }
 }
 
-export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const dict = dictionary;
+export default async function SearchPage({ 
+  params,
+  searchParams 
+}: SearchPageProps) {
+  // ✅ Extract lang and get dictionary
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
   
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
@@ -82,29 +84,28 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       hasResults = allSlugs.length > 0;
     } catch (error) {
       console.error('Search results fetching failed:', error);
-      // Continue with empty results, component will handle gracefully
     }
   }
 
   // Determine layout state
-  const isEmptyState = !searchQuery; // No query present
-  const isResultsState = hasValidQuery && hasResults; // Valid query with results
-  const isNoResultsState = hasValidQuery && !hasResults; // Valid query with no results
+  const isEmptyState = !searchQuery;
+  const isResultsState = hasValidQuery && hasResults;
+  const isNoResultsState = hasValidQuery && !hasResults;
   
   return (
     <>
       {/* Schema Markup */}
       <SearchSchema
-        dictionary={dict}
+        dictionary={dictionary}
         query={searchQuery}
         resultCount={hasResults ? allSlugs.length : undefined}
       />
 
       {/* Main Search Container */}
       <Section
-        title={dict.search.templates.pageTitle}
+        title={dictionary.search.templates.pageTitle}
         className="min-h-[60vh]"
-        ariaLabel={dict.search.accessibility.searchLabel}
+        ariaLabel={dictionary.search.accessibility.searchLabel}
       >
         <div className="container mx-auto px-4 py-8">
           
@@ -114,8 +115,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               <div className="h-12 bg-sf-hi rounded-lg animate-pulse" />
             }>
               <SearchBarClient
-                dictionary={dict}
-                lang="ru"
+                dictionary={dictionary}
+                lang={lang as Lang}
                 className="w-full"
               />
             </Suspense>
@@ -128,7 +129,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <div 
               className="text-center py-12"
               role="status"
-              aria-label={dict.common.status.empty}
+              aria-label={dictionary.common.status.empty}
             >
               <div className="max-w-md mx-auto">
                 <svg 
@@ -146,10 +147,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   />
                 </svg>
                 <h2 className="text-xl font-semibold text-on-sf mb-2">
-                  {dict.search.templates.pageTitle}
+                  {dictionary.search.templates.pageTitle}
                 </h2>
                 <p className="text-on-sf-var">
-                  {dict.search.templates.pageDescription}
+                  {dictionary.search.templates.pageDescription}
                 </p>
               </div>
             </div>
@@ -164,7 +165,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             >
               <div className="max-w-md mx-auto">
                 <p className="text-on-sf-var">
-                  {dict.search.labels.minCharacters}
+                  {dictionary.search.labels.minCharacters}
                 </p>
               </div>
             </div>
@@ -193,10 +194,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                   />
                 </svg>
                 <h2 className="text-xl font-semibold text-on-sf mb-2">
-                  {dict.search.labels.noResults}
+                  {dictionary.search.labels.noResults}
                 </h2>
                 <p className="text-on-sf-var">
-                  {dict.search.labels.placeholder}
+                  {dictionary.search.labels.placeholder}
                 </p>
               </div>
             </div>
@@ -208,48 +209,32 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
               className="space-y-6"
               aria-labelledby="search-results-heading"
             >
-              {/* Results Header - Client Component for Interactivity */}
+              {/* Results Header with Count and Sorting */}
               <SearchResultsHeader
-                dictionary={dict}
+                dictionary={dictionary}
                 searchQuery={searchQuery}
                 resultsCount={allSlugs.length}
                 currentSort={currentSort}
-                lang="ru"
+                lang={lang as Lang}
               />
 
-              {/* Results List - Server Component (can render async ArticleCard) */}
-              <main role="main" aria-label={dict.search.accessibility.searchResultsLabel}>
-                <Suspense fallback={
-                  <div className="space-y-6">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <div key={i} className="h-48 bg-sf-cont rounded-2xl animate-pulse" />
-                    ))}
-                  </div>
-                }>
-                  <ArticleList
-                    dictionary={dict}
-                    slugInfos={allSlugs}
-                    lang="ru"
-                    className="space-y-6"
-                    ariaLabel={processTemplate(dict.search.templates.resultsFor, { query: searchQuery })}
-                  />
-                </Suspense>
-              </main>
+              {/* Results List */}
+              <ArticleList 
+                slugs={allSlugs}
+                dictionary={dictionary}
+                lang={lang as Lang}
+                currentSort={currentSort}
+              />
 
               {/* Load More Button */}
               {hasMore && (
-                <footer className="text-center pt-6">
-                  <Suspense fallback={
-                    <div className="bg-sf-cont rounded-lg px-6 py-3 animate-pulse">
-                      {dict.common.status.loading}
-                    </div>
-                  }>
-                    <LoadMoreButton
-                      dictionary={dict}
-                      currentPage={currentPage}
-                    />
-                  </Suspense>
-                </footer>
+                <div className="flex justify-center mt-8">
+                  <LoadMoreButton 
+                    dictionary={dictionary}
+                    currentPage={currentPage}
+                    currentSort={currentSort}
+                  />
+                </div>
               )}
             </section>
           )}

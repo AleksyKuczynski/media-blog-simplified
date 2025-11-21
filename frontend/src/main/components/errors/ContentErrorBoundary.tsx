@@ -1,8 +1,9 @@
-// src/components/errors/ContentErrorBoundary.tsx
+// src/main/components/errors/ContentErrorBoundary.tsx
 'use client';
 
 import React from 'react';
-import { dictionary } from '@/main/lib/dictionary';
+import { getDictionary } from '@/main/lib/dictionary';
+import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import StandardError from '@/main/components/errors/StandardError';
 import { ContentType } from '@/main/lib/errors/errorUtils';
 
@@ -15,9 +16,6 @@ interface ErrorBoundaryState {
   hasError: boolean;
 }
 
-/**
- * Simple error boundary with direct dictionary access
- */
 export class ContentErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
@@ -37,6 +35,9 @@ export class ContentErrorBoundary extends React.Component<ErrorBoundaryProps, Er
 
   render() {
     if (this.state.hasError) {
+      // Use DEFAULT_LANG in client component
+      const dictionary = getDictionary(DEFAULT_LANG);
+      
       return (
         <StandardError 
           dictionary={dictionary}
