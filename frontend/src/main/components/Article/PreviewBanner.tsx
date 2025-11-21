@@ -1,11 +1,13 @@
 // frontend/src/main/components/Article/PreviewBanner.tsx
-
 'use client';
 
 export default function PreviewBanner() {
-  const exitPreview = async () => {
-    await fetch('/api/preview/exit', { method: 'POST' });
-    window.location.reload();
+  const exitPreview = () => {
+    // Remove preview params from URL
+    const url = new URL(window.location.href);
+    url.searchParams.delete('preview');
+    url.searchParams.delete('secret');
+    window.location.href = url.toString();
   };
 
   return (

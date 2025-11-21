@@ -24,6 +24,12 @@ import PreviewBanner from '@/main/components/Article/PreviewBanner';
 export const revalidate = 3600;
 export const dynamicParams = true;
 
+// Helper function to validate preview mode from URL params
+function isValidPreview(previewParam: string | undefined, secretParam: string | undefined): boolean {
+  const PREVIEW_SECRET = process.env.PREVIEW_SECRET;
+  return previewParam === 'true' && secretParam === PREVIEW_SECRET;
+}
+
 export async function generateMetadata({ 
   params 
 }: { 
@@ -100,19 +106,24 @@ export async function generateMetadata({
 }
 
 /**
- * Article page with SEO-optimized related links
+ * Article page with preview support
  */
 export default async function ArticlePage({ 
   params,
+  searchParams
 }: { 
   params: Promise<{ rubric: string, slug: string }>,
-  searchParams: Promise<{ author?: string }>
+  searchParams: Promise<{ preview?: string, secret?: string }>
 }) {
   try {
     const resolvedParams = await params;
+    const resolvedSearchParams = await searchParams;
 
-    // Check preview mode at page level
-    const inPreview = await isPreviewMode();
+    // Check preview mode from URL parameters
+    const inPreview = isValidPreview(
+      resolvedSearchParams.preview,
+      resolvedSearchParams.secret
+    );
 
     const [article, rubricBasics] = await Promise.all([
       fetchFullArticle(resolvedParams.slug, DEFAULT_LANG, inPreview),
