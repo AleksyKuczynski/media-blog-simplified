@@ -67,7 +67,7 @@ export function proxy(request: NextRequest) {
 /**
  * Detect user's preferred language based on:
  * 1. Cookie preference (highest priority)
- * 2. Geo-location (Vercel header)
+ * 2. Geo-location header (Vercel-specific)
  * 3. Accept-Language header
  * 4. Default to English
  */
@@ -79,7 +79,8 @@ function detectLanguage(request: NextRequest): string {
   }
 
   // 2. Geo-location (Vercel provides x-vercel-ip-country header)
-  const country = request.geo?.country || request.headers.get('x-vercel-ip-country');
+  // ✅ FIX: Use headers instead of request.geo
+  const country = request.headers.get('x-vercel-ip-country');
   if (country && GEO_LANGUAGE_MAP[country]) {
     return GEO_LANGUAGE_MAP[country];
   }

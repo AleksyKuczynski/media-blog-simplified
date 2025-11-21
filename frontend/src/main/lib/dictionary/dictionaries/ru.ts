@@ -10,6 +10,7 @@ import { CONTACT_EMAIL, SITE_URL } from "../../constants/constants";
  */
 const dictionaryRU = {
   locale: 'ru_RU',
+  
   // ===================================================================
   // CONSENT - Consent banner content
   // ===================================================================

@@ -81,6 +81,39 @@ export const dictionaryEN = {
     },
   },
 
+    // ===================================================================
+  // BREADCRUMB - reusable labels for breadcrumbs
+  // ===================================================================
+  breadcrumb: {
+    contexts: {
+      rubric: 'rubric',
+      author: 'author', 
+      category: 'category',
+      featured: 'featured',
+      search: 'search',
+      external: 'external',
+      direct: 'direct',
+    },
+    contextAria: {
+      rubricPath: 'Navigation through rubric',
+      authorPath: 'Navigation through author',
+      categoryPath: 'Navigation through category',
+      featuredPath: 'Navigation through featured',
+      searchPath: 'Navigation through search',
+      canonicalPath: 'Main navigation',
+    },
+    templates: {
+      rubricLabel: 'Rubric {name}',
+      articleLabel: 'Article: {title}',
+      authorProfile: 'Author profile {name}',
+      categoryLabel: 'Category {name}',
+      fromRubric: 'Article from rubric {rubric}',
+      fromArticles: 'Article from all articles list',
+      fromSearch: 'Article from search: {title}',
+      searchWithQuery: '{search}: {query}',
+    },
+  },
+
   // ===================================================================
   // COMMON - Reusable UI elements
   // ===================================================================
@@ -352,6 +385,65 @@ export const dictionaryEN = {
     accessibility: {
       skipToFooter: 'Skip to footer',
       footerNavigation: 'Footer navigation',
+    },
+  },
+
+  // ===================================================================
+  // METADATA - SEO and metadata templates
+  // ===================================================================
+  metadata: {
+    templates: {
+      articleTitle: '{title} — {rubric} — {siteName}',
+      collectionTitle: '{collection} — {siteName}',
+      authorTitle: '{author} — Authors — {siteName}',
+      searchTitle: 'Search: {query} — {siteName}',
+      notFoundTitle: '404 - Page Not Found — {siteName}',
+    },
+    placeholders: {
+      defaultTitle: 'EventForMe — Media about Culture and Art',
+      defaultDescription: 'Media platform about cultural events, contemporary art, and creative initiatives',
+    },
+  },
+
+  // ===================================================================
+  // CONTENT - Content-specific labels and templates
+  // ===================================================================
+  content: {
+    labels: {
+      tableOfContents: 'Table of Contents',
+      editorial: '{siteName} Editorial',
+      readingTime: 'Reading time: {minutes} min',
+      wordsCount: 'Words: {count}',
+    },
+    templates: {
+      emptyRubric: 'No articles in {name} rubric yet',
+      moreAbout: 'More about {contentType} {name}',
+      writtenBy: 'Author: {author}',
+      publishedIn: 'Published in {rubric}',
+    },
+  },
+
+  // ===================================================================
+  // SHARE - Share popup content
+  // ===================================================================
+  share: {
+    title: 'Share Article',
+    platforms: {
+      telegram: 'Telegram',
+      whatsapp: 'WhatsApp',
+      vk: 'VK',
+      twitter: 'Twitter',
+      facebook: 'Facebook',
+      instagram: 'Instagram',
+      copy: 'Copy Link',
+    },
+    messages: {
+      linkCopied: 'Link copied!',
+      instagramCopied: 'Link copied! Paste it in the Instagram app',
+    },
+    accessibility: {
+      shareOn: 'Share via {platform}',
+      closeDialog: 'Close share dialog',
     },
   },
 };
