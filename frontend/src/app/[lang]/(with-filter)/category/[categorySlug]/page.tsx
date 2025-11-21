@@ -7,8 +7,7 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
+import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics } from '@/main/lib/directus';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
@@ -24,10 +23,11 @@ export const dynamicParams = true;
 export async function generateMetadata({ 
   params 
 }: { 
-  params: Promise<{ categorySlug: string }> 
+  params: Promise<{ lang: Lang; categorySlug: string }> 
 }): Promise<Metadata> {
-  const categories = await fetchAllCategories(DEFAULT_LANG);
   const resolvedParams = await params;
+  const categories = await fetchAllCategories(resolvedParams.lang);
+  const dictionary = getDictionary(resolvedParams.lang as Lang);
   const category = categories.find(cat => cat.slug === resolvedParams.categorySlug);
   
   if (!category) {
@@ -53,7 +53,7 @@ export async function generateMetadata({
     collectionType: 'articles', // Category pages show articles
     items: categoryData,
     totalCount: slugs.length,
-    currentPath: `/${DEFAULT_LANG}/category/${resolvedParams.categorySlug}`,
+    currentPath: `/${resolvedParams.lang}/category/${resolvedParams.categorySlug}`,
     featured: false,
   });
 }
@@ -62,14 +62,17 @@ export default async function CategoryPage({
   params,
   searchParams 
 }: { 
-  params: Promise<{ categorySlug: string }>,
+  params: Promise<{ lang: Lang; categorySlug: string }>,
   searchParams: Promise<{ page?: string, sort?: string }>
 }) {
   const resolvedParams = await params;
-  const categories = await fetchAllCategories('ru');
-  const rubricBasics = await fetchRubricBasics('ru');
+  const lang = resolvedParams.lang;
+  const categorySlug = resolvedParams.categorySlug;
+  const dictionary = getDictionary(lang as Lang);
+  const categories = await fetchAllCategories(lang);
+  const rubricBasics = await fetchRubricBasics(lang);
   
-  const category = categories.find(cat => cat.slug === resolvedParams.categorySlug);
+  const category = categories.find(cat => cat.slug === categorySlug);
   
   if (!category) {
     notFound();
@@ -87,7 +90,7 @@ export default async function CategoryPage({
     const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
       page,
       currentSort,
-      resolvedParams.categorySlug
+      categorySlug
     );
     allSlugs = [...allSlugs, ...slugs];
     hasMore = pageHasMore;
@@ -98,15 +101,15 @@ export default async function CategoryPage({
   const breadcrumbItems = [
     {
       label: dictionary.navigation.labels.home,
-      href: `/${DEFAULT_LANG}`,
+      href: `/${lang}`,
     },
     {
       label: dictionary.navigation.labels.articles,
-      href: `/${DEFAULT_LANG}/articles`,
+      href: `/${lang}/articles`,
     },
     {
       label: category.name,
-      href: `/${DEFAULT_LANG}/category/${resolvedParams.categorySlug}`,
+      href: `/${lang}/category/${categorySlug}`,
     },
   ];
 
@@ -126,7 +129,7 @@ export default async function CategoryPage({
         collectionType="articles"
         items={articleItems}
         totalCount={allSlugs.length}
-        currentPath={`/ru/category/${resolvedParams.categorySlug}`}
+        currentPath={`/${lang}/category/${categorySlug}`}
         featured={false}
       />
 
@@ -134,7 +137,7 @@ export default async function CategoryPage({
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricBasics} 
-        lang="ru"
+        lang={lang}
         translations={{
           home: dictionary.navigation.labels.home,
           allRubrics: dictionary.navigation.labels.rubrics,
@@ -199,9 +202,9 @@ export default async function CategoryPage({
                   <>
                     <ArticleList 
                       slugInfos={allSlugs}
-                      lang="ru"
+                      lang={lang}
                       dictionary={dictionary}
-                      categorySlug={resolvedParams.categorySlug}
+                      categorySlug={categorySlug}
                       showCount={false}
                       ariaLabel={`Статьи в категории ${category.name}`}
                     />
@@ -250,13 +253,13 @@ export default async function CategoryPage({
                       {/* Navigation links for better UX */}
                       <div className="mt-6 flex flex-wrap gap-4 justify-center">
                         <Link 
-                          href={`/${DEFAULT_LANG}/articles`}
+                          href={`/${lang}/articles`}
                           className="inline-flex items-center px-4 py-2 bg-prcolor text-white rounded-lg hover:bg-pr-fix transition-colors"
                         >
                           {dictionary.sections.articles.allArticles}
                         </Link>
                         <Link 
-                          href={`/${DEFAULT_LANG}/rubrics`}
+                          href={`/${lang}/rubrics`}
                           className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                           {dictionary.sections.rubrics.allRubrics}

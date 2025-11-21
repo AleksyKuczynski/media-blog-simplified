@@ -6,17 +6,14 @@ import { notFound } from 'next/navigation';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ArticleSlugInfo } from '@/main/lib/directus/index';
 import Section from '@/main/components/Main/Section';
-
-// FIXED: Import new SEO components with direct imports
 import { generateRubricMetadata } from '@/main/components/SEO/metadata/RubricMetadata';
 import { RubricPageSchema } from '@/main/components/SEO/schemas/RubricPageSchema';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
 import Link from 'next/link';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
+import { getDictionary, Lang } from '@/main/lib/dictionary';
 
 // ISR CONFIGURATION: 5 minutes
 export const revalidate = 300;
@@ -28,10 +25,11 @@ export const dynamicParams = true;
 export async function generateMetadata({ 
   params 
 }: { 
-  params: Promise<{ rubric: string }> 
+  params: Promise<{ lang: Lang, rubric: string }> 
 }): Promise<Metadata> {
   try {
     const resolvedParams = await params;
+    const dictionary = getDictionary(resolvedParams.lang as Lang);
     const [rubricDetails] = await Promise.all([
       fetchRubricDetails(resolvedParams.rubric, 'ru'),
     ]);
@@ -58,7 +56,7 @@ export async function generateMetadata({
         slug: resolvedParams.rubric,
         description: rubricDescription,
         articleCount,
-        path: `/${DEFAULT_LANG}/${resolvedParams.rubric}`,
+        path: `/${resolvedParams.lang}/${resolvedParams.rubric}`,
         featured: false,
       },
     });
@@ -75,24 +73,26 @@ export default async function RubricPage({
   params,
   searchParams 
 }: { 
-  params: Promise<{ rubric: string }>,
+  params: Promise<{ lang: Lang, rubric: string }>,
   searchParams: Promise<{ page?: string }>
 }) {
   try {
     const resolvedParams = await params;
     const resolvedSearchParams = await searchParams;
+    const lang = resolvedParams.lang;
+    const dictionary = getDictionary(lang as Lang);
     const currentPage = Number(resolvedSearchParams.page) || 1;
     
     const [rubricDetails, rubricBasics] = await Promise.all([
-      fetchRubricDetails(resolvedParams.rubric, 'ru'),
-      fetchRubricBasics('ru'),
+      fetchRubricDetails(resolvedParams.rubric, lang),
+      fetchRubricBasics(lang),
     ]);
 
     if (!rubricDetails) {
       notFound();
     }
 
-    const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === 'ru');
+    const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === lang);
     const rubricName = rubricTranslation?.name || resolvedParams.rubric;
     const rubricDescription = rubricTranslation?.description;
 
@@ -119,15 +119,15 @@ export default async function RubricPage({
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
-        href: `/${DEFAULT_LANG}`,
+        href: `/${lang}`,
       },
       {
         label: dictionary.navigation.labels.rubrics,
-        href: `/${DEFAULT_LANG}/rubrics`,
+        href: `/${lang}/rubrics`,
       },
       {
         label: rubricName,
-        href: `/${DEFAULT_LANG}/${resolvedParams.rubric}`,
+        href: `/${lang}/${resolvedParams.rubric}`,
       },
     ];
 
@@ -135,7 +135,7 @@ export default async function RubricPage({
     const articlesForSchema = allSlugInfos.slice(0, 10).map(slugInfo => ({
       title: slugInfo.slug, // Use slug as title fallback since title is not available
       slug: slugInfo.slug,
-      url: `${dictionary.seo.site.url}/${DEFAULT_LANG}/${resolvedParams.rubric}/${slugInfo.slug}`,
+      url: `${dictionary.seo.site.url}/${lang}/${resolvedParams.rubric}/${slugInfo.slug}`,
       // publishedAt is not available in ArticleSlugInfo, so we omit it
     }));
 
@@ -153,13 +153,13 @@ export default async function RubricPage({
             articleCount: allSlugInfos.length,
             articles: articlesForSchema,
           }}
-          currentPath={`/${DEFAULT_LANG}/${resolvedParams.rubric}`}
+          currentPath={`/${lang}/${resolvedParams.rubric}`}
         />
         
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={rubricBasics}
-          lang={DEFAULT_LANG}
+          lang={lang}
           translations={{
             home: dictionary.navigation.labels.home,
             allRubrics: dictionary.navigation.labels.rubrics,
@@ -189,7 +189,7 @@ export default async function RubricPage({
               <>
                 <ArticleList 
                   slugInfos={allSlugInfos} 
-                  lang={DEFAULT_LANG}
+                  lang={lang}
                   dictionary={dictionary}
                   rubricSlug={resolvedParams.rubric}
                   showCount={false}
@@ -213,7 +213,7 @@ export default async function RubricPage({
                   В рубрике {rubricName} пока нет статей
                 </p>
                 <Link 
-                  href={`/${DEFAULT_LANG}/rubrics`}
+                  href={`/${lang}/rubrics`}
                   className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   {dictionary.navigation.labels.rubrics}
@@ -235,13 +235,13 @@ export default async function RubricPage({
                 </p>
                 <div className="flex flex-wrap gap-4 justify-center">
                   <Link 
-                    href={`/${DEFAULT_LANG}/rubrics`}
+                    href={`/${lang}/rubrics`}
                     className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     {dictionary.sections.rubrics.allRubrics}
                   </Link>
                   <Link 
-                    href={`/${DEFAULT_LANG}/articles`}
+                    href={`/${lang}/articles`}
                     className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
                   >
                     {dictionary.sections.articles.allArticles}

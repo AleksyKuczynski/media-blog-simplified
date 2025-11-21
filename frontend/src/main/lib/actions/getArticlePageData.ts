@@ -1,13 +1,16 @@
-// src/main/lib/actions/getArticlePageData.ts - ADD SAFETY CHECKS
+// src/main/lib/actions/getArticlePageData.ts
 'use server'
 
-import dictionary from '@/main/lib/dictionary/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
-import { Lang } from '../dictionary';
+import { getDictionary, Lang } from '../dictionary';
 import { AuthorDetails, fetchAllRubrics, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails } from "../directus";
 import { processContent } from '../markdown/processContent';
 
-export async function getArticlePageData(params: { rubric: string, slug: string, lang: Lang }, searchParams: { author?: string }) {
+export async function getArticlePageData(
+  params: { rubric: string, slug: string, lang: Lang }, 
+  searchParams: { author?: string }
+) {
+  const dictionary = getDictionary(params.lang);
+  
   const [article, rubrics, rubricDetails] = await Promise.all([
     fetchFullArticle(params.slug, params.lang),
     fetchAllRubrics(params.lang),
@@ -18,9 +21,8 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
     return null;
   }
 
-  // ✅ SAFETY CHECK: Ensure we have author details
   const authorDetails: AuthorDetails[] = await fetchAuthorsForArticle(params.slug, params.lang);
-  const safeAuthors = authorDetails || []; // Fallback to empty array
+  const safeAuthors = authorDetails || [];
   
   const translation = article.translations.find(t => t.languages_code === params.lang) || article.translations[0];
   const rubricName = rubricDetails.translations.find(t => t.languages_code === params.lang)?.name || params.rubric;
@@ -29,15 +31,15 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
   if (searchParams.author) {
     const author = await fetchAuthorBySlug(searchParams.author, params.lang);
     breadcrumbItems = [
-      { label: dictionary.sections.authors.ourAuthors, href: `/${DEFAULT_LANG}/authors` },
-      { label: author?.name || searchParams.author, href: `/${DEFAULT_LANG}/authors/${searchParams.author}` },
-      { label: translation.title, href: `/${DEFAULT_LANG}/${params.rubric}/${params.slug}?context=author&author=${searchParams.author}` },
+      { label: dictionary.sections.authors.ourAuthors, href: `/${params.lang}/authors` },
+      { label: author?.name || searchParams.author, href: `/${params.lang}/authors/${searchParams.author}` },
+      { label: translation.title, href: `/${params.lang}/${params.rubric}/${params.slug}?context=author&author=${searchParams.author}` },
     ];
   } else {
     breadcrumbItems = [
-      { label: dictionary.sections.rubrics.allRubrics, href: `/${DEFAULT_LANG}/rubrics` },
-      { label: rubricName, href: `/${DEFAULT_LANG}/${params.rubric}` },
-      { label: translation.title, href: `/${DEFAULT_LANG}/${params.rubric}/${params.slug}` },
+      { label: dictionary.sections.rubrics.allRubrics, href: `/${params.lang}/rubrics` },
+      { label: rubricName, href: `/${params.lang}/${params.rubric}` },
+      { label: translation.title, href: `/${params.lang}/${params.rubric}/${params.slug}` },
     ];
   }
 
@@ -58,7 +60,7 @@ export async function getArticlePageData(params: { rubric: string, slug: string,
   return {
     article: {
       ...article,
-      authors: safeAuthors, // ✅ SAFETY: Ensure authors is never undefined
+      authors: safeAuthors,
     },
     translation,
     breadcrumbItems,

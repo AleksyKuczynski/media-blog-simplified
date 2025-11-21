@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
-import { dictionary } from '@/main/lib/dictionary';
+import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { fetchArticleSlugs, fetchAllCategories } from '@/main/lib/directus';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
@@ -19,16 +19,15 @@ export const revalidate = 300;
 // Allow dynamic params (page, sort, category from searchParams)
 export const dynamicParams = true;
 
-interface ArticlesPageProps {
-  searchParams: Promise<{ 
-    page?: string; 
-    sort?: string;
-    category?: string;
-  }>;
-}
-
 // Generate metadata using CollectionMetadata following established pattern
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
+
   // Fetch articles to get accurate count and items for metadata
   try {
     const { slugs } = await fetchArticleSlugs(1, 'desc');
@@ -69,7 +68,17 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function ArticlesPage({ searchParams }: ArticlesPageProps) {
+export default async function ArticlesPage({ 
+  params,
+  searchParams 
+}: {
+  params: Promise<{ lang: string }>;
+  searchParams: Promise<{ page?: string; sort?: string; category?: string }>;
+}) {
+
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
+
   // Get dictionary and categories for FilterGroup
   const [categories] = await Promise.all([
     fetchAllCategories('ru')

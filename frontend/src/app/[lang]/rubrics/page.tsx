@@ -9,19 +9,21 @@ import CardGrid from '@/main/components/Main/CardGrid';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers/content'; // FIXED: Correct import
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
+import { getDictionary, Lang } from '@/main/lib/dictionary';
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;
 
 /**
  * Generate metadata using clean new dictionary system
  */
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata( params:  Promise<{ lang: Lang }> ): Promise<Metadata> {
+  const resolvedParams = await params;
+  const dictionary = getDictionary(resolvedParams.lang as Lang);
+
   try {
     const [rubrics] = await Promise.all([
-      fetchAllRubrics(DEFAULT_LANG),
+      fetchAllRubrics(resolvedParams.lang),
     ]);
     
     // Transform rubrics data for metadata generation
@@ -40,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
       collectionType: 'rubrics',
       items: rubricsData,
       totalCount: rubrics.length,
-      currentPath: `/${DEFAULT_LANG}/rubrics`,
+      currentPath: `/${resolvedParams.lang}/rubrics`,
       featured: false,
     });
     
@@ -53,7 +55,10 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default async function RubricsPage() {
+export default async function RubricsPage( params:  Promise<{ lang: Lang }> ) {
+  const resolvedParams = await params;
+  const dictionary = getDictionary(resolvedParams.lang as Lang);
+
   try {
     const [rubrics] = await Promise.all([
       fetchAllRubrics('ru'),
@@ -66,7 +71,7 @@ export default async function RubricsPage() {
         ...rubric,
         name: translation?.name || rubric.slug,
         description: translation?.description,
-        url: `/${DEFAULT_LANG}/${rubric.slug}`,
+        url: `/${resolvedParams.lang}/${rubric.slug}`,
       };
     });
 
@@ -74,7 +79,7 @@ export default async function RubricsPage() {
     const schemaItems = transformedRubrics.map(rubric => ({
       name: rubric.name,
       slug: rubric.slug,
-      url: `${dictionary.seo.site.url}/${DEFAULT_LANG}/${rubric.slug}`,
+      url: `${dictionary.seo.site.url}/${resolvedParams.lang}/${rubric.slug}`,
       description: rubric.description,
       articleCount: rubric.articleCount || 0,
     }));
@@ -83,11 +88,11 @@ export default async function RubricsPage() {
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
-        href: `/${DEFAULT_LANG}`,
+        href: `/${resolvedParams.lang}`,
       },
       {
         label: dictionary.navigation.labels.rubrics,
-        href: `/${DEFAULT_LANG}/rubrics`,
+        href: `/${resolvedParams.lang}/rubrics`,
       },
     ];
 

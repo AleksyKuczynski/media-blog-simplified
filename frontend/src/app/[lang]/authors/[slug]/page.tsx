@@ -5,8 +5,6 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { fetchAuthorBySlug, fetchRubricBasics, DIRECTUS_URL, fetchArticleSlugs, ArticleSlugInfo } from '@/main/lib/directus/index';
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import ArticleList from '@/main/components/Main/ArticleList';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
@@ -16,6 +14,7 @@ import generateAuthorMetadata from '@/main/components/SEO/metadata/AuthorMetadat
 import AuthorSchema from '@/main/components/SEO/schemas/AuthorSchema';
 import Link from 'next/link';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
+import { getDictionary, Lang } from '@/main/lib/dictionary';
 
 // ISR CONFIGURATION: 1 hour (author pages stable)
 export const revalidate = 3600;
@@ -24,12 +23,12 @@ export const dynamicParams = true;
 export async function generateMetadata({ 
   params 
 }: { 
-  params: Promise<{ slug: string }> 
+  params: Promise<{ lang: Lang, slug: string }> 
 }): Promise<Metadata> {
   try {
     const resolvedParams = await params;
     const [author] = await Promise.all([
-      fetchAuthorBySlug(resolvedParams.slug, DEFAULT_LANG),
+      fetchAuthorBySlug(resolvedParams.slug, resolvedParams.lang),
     ]);
     
     if (!author) {
@@ -42,6 +41,7 @@ export async function generateMetadata({
     // Get article count for this author
     const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], resolvedParams.slug);
     const articleCount = slugs.length;
+    const dictionary = getDictionary(resolvedParams.lang as Lang);
 
     // Use new AuthorMetadata component
     return await generateAuthorMetadata({
@@ -52,7 +52,7 @@ export async function generateMetadata({
         bio: author.bio,
         avatar: author.avatar,
         articleCount,
-        path: `/${DEFAULT_LANG}/authors/${resolvedParams.slug}`,
+        path: `/${resolvedParams.lang}/authors/${resolvedParams.slug}`,
         featured: false,
       },
     });
@@ -69,14 +69,15 @@ export default async function AuthorPage({
   params, 
   searchParams 
 }: { 
-  params: Promise<{ slug: string }>, 
+  params: Promise<{ lang: Lang, slug: string }>, 
   searchParams: Promise<{ page?: string, sort?: string }>
 }) {
   try {
     const resolvedParams = await params;
+    const dictionary = getDictionary(resolvedParams.lang as Lang);
     const [author, rubricBasics] = await Promise.all([
-      fetchAuthorBySlug(resolvedParams.slug, DEFAULT_LANG),
-      fetchRubricBasics(DEFAULT_LANG),
+      fetchAuthorBySlug(resolvedParams.slug, resolvedParams.lang),
+      fetchRubricBasics(resolvedParams.lang),
     ]);
     
     if (!author) {
@@ -109,15 +110,15 @@ export default async function AuthorPage({
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
-        href: `/${DEFAULT_LANG}`,
+        href: `/${resolvedParams.lang}`,
       },
       {
         label: dictionary.navigation.labels.authors,
-        href: `/${DEFAULT_LANG}/authors`,
+        href: `/${resolvedParams.lang}/authors`,
       },
       {
         label: author.name,
-        href: `/${DEFAULT_LANG}/authors/${resolvedParams.slug}`,
+        href: `/${resolvedParams.lang}/authors/${resolvedParams.slug}`,
       },
     ];
 
@@ -145,7 +146,7 @@ export default async function AuthorPage({
             articleCount: allSlugInfos.length,
             articles: articlesForSchema,
           }}
-          currentPath={`/${DEFAULT_LANG}/authors/${resolvedParams.slug}`}
+          currentPath={`/${resolvedParams.lang}/authors/${resolvedParams.slug}`}
         />
         
         {/* Breadcrumbs using correct interface */}
@@ -203,7 +204,7 @@ export default async function AuthorPage({
                   {/* ArticleList using correct props */}
                   <ArticleList 
                     slugInfos={allSlugInfos}
-                    lang={DEFAULT_LANG}
+                    lang={resolvedParams.lang}
                     dictionary={dictionary}
                     authorSlug={resolvedParams.slug}
                     showCount={false}
@@ -225,7 +226,7 @@ export default async function AuthorPage({
                     {dictionary.common.status.empty}
                   </p>
                   <Link 
-                    href={`/${DEFAULT_LANG}/authors`}
+                    href={`/${resolvedParams.lang}/authors`}
                     className="text-blue-600 hover:text-blue-800"
                   >
                     {dictionary.navigation.labels.authors}

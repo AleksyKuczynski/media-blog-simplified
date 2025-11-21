@@ -14,13 +14,14 @@ import { fetchArticleSlugs } from '@/main/lib/directus/index';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { generateSearchMetadataSimple } from '@/main/components/SEO/metadata/SearchMetadata';
 import { SearchSchema } from '@/main/components/SEO/schemas/SearchSchema';
-import { dictionary } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import { Lang } from '@/main/lib/dictionary';
 
 // Force dynamic for search functionality
 export const dynamic = 'force-dynamic';
 
 interface SearchPageProps {
+   params:  Promise<{ lang: Lang }>;
   searchParams: Promise<{ 
     search?: string; 
     sort?: string; 
@@ -30,6 +31,7 @@ interface SearchPageProps {
 
 // Static metadata generation - NO QUERY HANDLING
 export function generateMetadata(): Metadata {
+  
   try {
     return generateSearchMetadataSimple(dictionary);
   } catch (error) {

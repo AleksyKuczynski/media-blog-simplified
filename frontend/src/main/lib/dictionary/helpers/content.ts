@@ -1,5 +1,5 @@
 // src/main/lib/dictionary/helpers/content.ts
-import { Dictionary } from '..';
+import Dictionary from '../types';
 import { processTemplate } from './templates';
 
 /**

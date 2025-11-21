@@ -1,6 +1,6 @@
 // src/main/lib/dictionary/helpers/templates.ts
 
-import { Dictionary } from "..";
+import Dictionary from "../types";
 
 /**
  * Process template string with variable replacements

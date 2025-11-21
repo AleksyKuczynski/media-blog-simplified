@@ -6,9 +6,8 @@ import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
 import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedArticles, TableOfContents, QuickNavigation, CategoriesSection, RubricSection, AuthorsSection } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
-import { dictionary } from '@/main/lib/dictionary';
+import { dictionary, getDictionary, Lang } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { processContent } from '@/main/lib/markdown/processContent';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
@@ -33,17 +32,19 @@ function isValidPreview(previewParam: string | undefined, secretParam: string | 
 export async function generateMetadata({ 
   params 
 }: { 
-  params: Promise<{ rubric: string, slug: string }> 
+  params: Promise<{ lang: Lang, rubric: string, slug: string }> 
 }): Promise<Metadata> {
   try {
     const resolvedParams = await params;
+    const lang = resolvedParams.lang;
+    const dictionary = getDictionary(lang as Lang);
 
     // Check preview mode at page level
     const inPreview = await isPreviewMode();
     
     // Pass preview state to fetch function
     const [article] = await Promise.all([
-      fetchFullArticle(resolvedParams.slug, DEFAULT_LANG, inPreview),
+      fetchFullArticle(resolvedParams.slug, lang, inPreview),
     ]);
 
     if (!article) {
@@ -95,6 +96,7 @@ export async function generateMetadata({
     
     try {
       const resolvedParams = await params;
+      const dictionary = getDictionary(resolvedParams.lang as Lang);
       return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
 
     } catch (error) {
@@ -112,12 +114,14 @@ export default async function ArticlePage({
   params,
   searchParams
 }: { 
-  params: Promise<{ rubric: string, slug: string }>,
+  params: Promise<{ lang: Lang, rubric: string, slug: string }>,
   searchParams: Promise<{ preview?: string, secret?: string }>
 }) {
   try {
     const resolvedParams = await params;
     const resolvedSearchParams = await searchParams;
+
+    const lang = resolvedParams.lang;
 
     // Check preview mode from URL parameters
     const inPreview = isValidPreview(
@@ -126,8 +130,8 @@ export default async function ArticlePage({
     );
 
     const [article, rubricBasics] = await Promise.all([
-      fetchFullArticle(resolvedParams.slug, DEFAULT_LANG, inPreview),
-      fetchRubricBasics(DEFAULT_LANG),
+      fetchFullArticle(resolvedParams.slug, lang, inPreview),
+      fetchRubricBasics(lang),
     ]);
 
     if (!article) {
@@ -141,7 +145,7 @@ export default async function ArticlePage({
 
     // Format publication date
     const publishedDate = new Date(article.published_at);
-    const formattedDate = publishedDate.toLocaleDateString('ru-RU', {
+    const formattedDate = publishedDate.toLocaleDateString(dictionary.locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -201,7 +205,7 @@ export default async function ArticlePage({
       name: cat.name,
     })) || [];
 
-    const currentArticleUrl = `${dictionary.seo.site.url}/${DEFAULT_LANG}/${resolvedParams.rubric}/${resolvedParams.slug}`;
+    const currentArticleUrl = `${dictionary.seo.site.url}/${lang}/${resolvedParams.rubric}/${resolvedParams.slug}`;
 
     return (
       <>
@@ -291,7 +295,7 @@ export default async function ArticlePage({
                 <RelatedArticles
                   currentArticleSlug={resolvedParams.slug}
                   articleCategories={categoriesData}
-                  lang="ru"
+                  lang={lang}
                   dictionary={dictionary}
                 />
 

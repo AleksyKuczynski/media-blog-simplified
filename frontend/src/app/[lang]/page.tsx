@@ -4,7 +4,7 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { dictionary } from '@/main/lib/dictionary';
+import { dictionary, getDictionary, Lang } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
 import HeroArticles from '@/main/components/Main/HeroArticles';
@@ -15,7 +15,13 @@ import CardGrid from '@/main/components/Main/CardGrid';
 export const dynamic = 'force-dynamic';
 
 // Enhanced SEO metadata generation
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ lang: string }>
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
   
   return {
     title: dictionary.seo.site.fullName,
@@ -60,7 +66,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function HomePage() {
+export default async function HomePage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ lang: string }>;
+  searchParams: Promise<{ page?: string; sort?: string }>;
+}) {
+  // Extract lang from params
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
+
   // Single unified dictionary call with proper error handling
   const [heroSlugs, rubrics] = await Promise.all([
     fetchHeroSlugs(DEFAULT_LANG).catch(error => {

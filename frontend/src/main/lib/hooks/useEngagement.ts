@@ -19,7 +19,7 @@ import { logAction, reconcileCounts } from '../engagement/actionLog';
 import { trackGAEvent } from '../analytics/google';
 import { trackYandexEvent } from '../analytics/yandex';
 import type { EngagementData, SharePlatform } from '../engagement';
-import dictionary from '../dictionary/dictionary';
+import { dictionary } from '../dictionary';
 
 export interface UseEngagementOptions {
   slug: string;

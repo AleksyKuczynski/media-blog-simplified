@@ -2,9 +2,10 @@
 // REFACTORED: Removed all hardcoded text and /ru paths, using dictionary and constants
 
 import { headers } from 'next/headers';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { Lang } from '@/main/lib/dictionary';
 import { BreadcrumbContext, SmartBreadcrumbItem } from '@/main/components/Navigation/Breadcrumbs/types';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import Dictionary from '../dictionary/types';
 
 /**
  * Detect user's navigation context based on referrer and URL patterns
@@ -12,9 +13,8 @@ import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
  * REFACTORED: Uses lang parameter and dictionary entries, no hardcoded text
  */
 export async function detectBreadcrumbContext(
-  currentPath: string,
   dictionary: Dictionary,
-  lang: Lang = 'ru'
+  lang: Lang,
 ): Promise<BreadcrumbContext> {
   try {
     const headersList = await headers();
@@ -161,7 +161,7 @@ export function generateContextualBreadcrumbs(
     categories?: Array<{ name: string; slug: string }>;
   },
   dictionary: Dictionary,
-  lang: Lang = 'ru'
+  lang: Lang,
 ): {
   userPath: SmartBreadcrumbItem[];
   canonicalPath: SmartBreadcrumbItem[];

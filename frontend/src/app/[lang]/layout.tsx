@@ -1,15 +1,25 @@
-// src/app/ru/layout.tsx
-// FIXED: Removed problematic React.cloneElement, simplified prop passing, better type safety
-
+// src/app/[lang]/layout.tsx
 import React, { Suspense } from 'react'
 import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import Footer from '@/main/components/Footer/Footer'
 import Navigation from '@/main/components/Navigation/Navigation'
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
+import { getDictionary, type Lang } from '@/main/lib/dictionary'
+import { SUPPORTED_LANGUAGES } from '@/main/lib/constants/constants'
 
-// Generate metadata using dictionary
-export async function generateMetadata(): Promise<Metadata> {
+interface LayoutProps {
+  children: React.ReactNode
+  params: Promise<{ lang: string }>
+}
+
+// Generate metadata dynamically based on language
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ lang: string }>
+}): Promise<Metadata> {
+  const { lang } = await params
+  const dictionary = getDictionary(lang as Lang)
   
   return {
     title: dictionary.seo.site.name,
@@ -18,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: dictionary.seo.site.fullName,
       description: dictionary.seo.site.description,
       siteName: dictionary.seo.site.name,
-      locale: 'ru_RU',
+      locale: dictionary.locale,
       type: 'website',
     },
     twitter: {
@@ -28,19 +38,31 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     alternates: {
       canonical: dictionary.seo.site.url,
+      languages: {
+        'en': '/en',
+        'ru': '/ru',
+      }
     },
-  };
+  }
 }
 
-export default async function MainLayout({
+export default async function LanguageLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+  params
+}: LayoutProps) {
+  const { lang } = await params
+  
+  // Validate language parameter
+  if (!SUPPORTED_LANGUAGES.includes(lang as Lang)) {
+    notFound()
+  }
+  
+  // Get dictionary for current language
+  const dictionary = getDictionary(lang as Lang)
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Navigation with unified dictionary system */}
+      {/* Navigation */}
       <Suspense fallback={
         <div className="h-16 xl:h-24 bg-white border-b border-gray-200 flex items-center">
           <div className="container mx-auto px-4">
@@ -50,13 +72,13 @@ export default async function MainLayout({
       }>
         <Navigation 
           dictionary={dictionary}
-          lang={DEFAULT_LANG}
+          lang={lang as Lang}
           currentPath=""
           breadcrumbs={[]}
         />
       </Suspense>
       
-      {/* Main content area with proper semantic structure */}
+      {/* Main content */}
       <main 
         id="main-content" 
         className="flex-grow pt-16 xl:pt-24 min-h-screen" 
@@ -64,21 +86,27 @@ export default async function MainLayout({
         tabIndex={-1}
         aria-label={dictionary.navigation.accessibility.skipToContent}
       >        
-        {/* FIXED: Simple children rendering without cloneElement */}
-        <div data-dictionary-available="true">
+        <div data-dictionary-available="true" data-lang={lang}>
           {children}
         </div>
       </main>
       
-      {/* Footer with unified dictionary system */}
+      {/* Footer */}
       <Suspense fallback={
         <div className="h-32 bg-gray-50 border-t border-gray-200" />
       }>
         <Footer
-          lang={DEFAULT_LANG}
+          lang={lang as Lang}
           dictionary={dictionary}
         />
       </Suspense>
     </div>
-  );
+  )
+}
+
+// Generate static params for both languages
+export async function generateStaticParams() {
+  return SUPPORTED_LANGUAGES.map((lang) => ({
+    lang: lang,
+  }))
 }

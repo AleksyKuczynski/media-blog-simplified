@@ -1,6 +1,7 @@
 // src/main/lib/dictionary/helpers/navigation.ts
 
-import { Dictionary, Lang } from "..";
+import { Lang } from "..";
+import Dictionary from "../types";
 
 export interface NavigationItem {
   name: string;

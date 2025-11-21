@@ -5,18 +5,21 @@ import AuthorCard from '@/main/components/Main/AuthorCard';
 import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { AuthorCardSkeleton } from '@/main/components/Main/AuthorCardSkeleton';
+import { getDictionary, Lang } from '@/main/lib/dictionary';
 
 // ISR CONFIGURATION: 1 hour (authors list is structural)
 export const revalidate = 3600;
 
 export default async function AllAuthorsPage({
+  params,
   searchParams
 }: {
+   params:  Promise<{ lang: Lang }> 
   searchParams: Promise<{ page?: string }>
 }) {
+  const resolvedParams = await params;
+  const dictionary = getDictionary(resolvedParams.lang as Lang);
   const rubricBasics = await fetchRubricBasics('ru');
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
@@ -24,7 +27,7 @@ export default async function AllAuthorsPage({
   const authors = await fetchAllAuthors('ru');
 
   const breadcrumbItems = [
-    { label: dictionary.sections.authors.ourAuthors, href: `/${DEFAULT_LANG}/authors` },
+    { label: dictionary.sections.authors.ourAuthors, href: `/${resolvedParams.lang}/authors` },
   ];
 
   return (
@@ -35,7 +38,7 @@ export default async function AllAuthorsPage({
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={rubricBasics}
-          lang={DEFAULT_LANG}
+          lang={resolvedParams.lang}
           translations={{
             home: dictionary.navigation.labels.home,
             allRubrics: dictionary.sections.rubrics.allRubrics,
@@ -68,7 +71,7 @@ export default async function AllAuthorsPage({
                 <AuthorCard 
                   key={author.slug}
                   author={author}
-                  lang={DEFAULT_LANG}
+                  lang={resolvedParams.lang}
                 />
               ))}
             </CardGrid>
