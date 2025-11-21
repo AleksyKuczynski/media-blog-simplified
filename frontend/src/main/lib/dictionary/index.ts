@@ -1,16 +1,16 @@
 // src/main/lib/dictionary/index.ts
-import { dictionaryEN } from './dictionaries/en';
 import type { SupportedLanguage } from '../constants/constants';
-import dictionaryRU from './dictionaries/ru';
 import Dictionary from './types';
+import dictionaryEN from './dictionaries/en';
+import dictionaryRU from './dictionaries/ru';
 
 // Export types
 export type Lang = SupportedLanguage;
 
 // Dictionary registry
 const dictionaries: Record<Lang, Dictionary> = {
+  en: dictionaryEN,
   ru: dictionaryRU,
-  en: dictionaryEN as Dictionary, // Type assertion since both have same structure
 };
 
 /**
@@ -21,6 +21,6 @@ export function getDictionary(lang: Lang): Dictionary {
   return dictionaries[lang] || dictionaries.en;
 }
 
-// Re-export for backward compatibility
-export { dictionaryRU as dictionary };
-export default dictionaryRU;
+// CHANGED: Export English as default (was dictionaryRU)
+export { dictionaryEN as dictionary };
+export default dictionaryEN;

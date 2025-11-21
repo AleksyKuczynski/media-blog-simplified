@@ -75,8 +75,7 @@ export interface NavigationAccessibility {
   readonly closeMenu: string;
   readonly logoAlt: string;
   readonly logoMainPageLabel: string;
-  readonly primarySections: string;
-  readonly mainSectionsLabel: string;
+  readonly primarySectionsLabel: string;
   readonly mainMenuLabel: string;
   readonly searchAndSettingsLabel: string;
   readonly siteSearchLabel: string;

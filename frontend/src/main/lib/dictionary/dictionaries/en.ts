@@ -1,12 +1,13 @@
 // src/main/lib/dictionary/dictionaries/en.ts
 import { CONTACT_EMAIL, SITE_URL } from "../../constants/constants";
+import Dictionary from "../types";
 
 /**
  * Complete English dictionary - exact structural match to Russian version
  * Uses templates extensively to avoid duplication and support multiple contexts
  * Optimized for both Google and Yandex SEO requirements
  */
-export const dictionaryEN = {
+export const dictionaryEN: Dictionary = {
   locale: 'en_US',
   
   // ===================================================================
@@ -75,8 +76,7 @@ export const dictionaryEN = {
       closeMenu: 'Close menu',
       logoAlt: 'EventForMe logo',
       logoMainPageLabel: 'Go to homepage',
-      primarySections: 'Primary sections',
-      mainSectionsLabel: 'Primary sections',
+      primarySectionsLabel: 'Primary sections',
       mainMenuLabel: 'Main menu',
       searchAndSettingsLabel: 'Search and settings',
       siteSearchLabel: 'Site search',

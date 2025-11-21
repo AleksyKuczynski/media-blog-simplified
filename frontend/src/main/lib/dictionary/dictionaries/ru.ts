@@ -1,6 +1,7 @@
 // src/main/lib/dictionary/dictionary.ts
 
 import { CONTACT_EMAIL, SITE_URL } from "../../constants/constants";
+import Dictionary from "../types";
 
 
 /**
@@ -8,9 +9,9 @@ import { CONTACT_EMAIL, SITE_URL } from "../../constants/constants";
  * Uses templates extensively to avoid duplication and support multiple contexts
  * Optimized for both Google and Yandex SEO requirements
  */
-const dictionaryRU = {
+const dictionaryRU: Dictionary = {
   locale: 'ru_RU',
-  
+
   // ===================================================================
   // CONSENT - Consent banner content
   // ===================================================================
