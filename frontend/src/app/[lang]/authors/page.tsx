@@ -1,4 +1,4 @@
-// src/app/ru/authors/page.tsx - FIXED WITH H1
+// src/app/[lang]/authors/page.tsx
 import { Suspense } from 'react';
 import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus';
 import AuthorCard from '@/main/components/Main/AuthorCard';
@@ -13,21 +13,17 @@ export const revalidate = 3600;
 
 export default async function AllAuthorsPage({
   params,
-  searchParams
 }: {
    params:  Promise<{ lang: Lang }> 
-  searchParams: Promise<{ page?: string }>
 }) {
-  const resolvedParams = await params;
-  const dictionary = getDictionary(resolvedParams.lang as Lang);
-  const rubricBasics = await fetchRubricBasics('ru');
-  const resolvedSearchParams = await searchParams;
-  const currentPage = Number(resolvedSearchParams.page) || 1;
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
+  const rubricBasics = await fetchRubricBasics(lang);
   
-  const authors = await fetchAllAuthors('ru');
+  const authors = await fetchAllAuthors(lang);
 
   const breadcrumbItems = [
-    { label: dictionary.sections.authors.ourAuthors, href: `/${resolvedParams.lang}/authors` },
+    { label: dictionary.sections.authors.ourAuthors, href: `/${lang}/authors` },
   ];
 
   return (
@@ -38,7 +34,7 @@ export default async function AllAuthorsPage({
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={rubricBasics}
-          lang={resolvedParams.lang}
+          lang={lang}
           translations={{
             home: dictionary.navigation.labels.home,
             allRubrics: dictionary.sections.rubrics.allRubrics,
@@ -71,7 +67,7 @@ export default async function AllAuthorsPage({
                 <AuthorCard 
                   key={author.slug}
                   author={author}
-                  lang={resolvedParams.lang}
+                  lang={lang}
                 />
               ))}
             </CardGrid>

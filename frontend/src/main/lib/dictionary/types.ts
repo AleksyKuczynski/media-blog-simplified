@@ -297,6 +297,9 @@ export interface SectionTemplates {
   readonly authorWorksDescription: string;
   readonly emptyCollection: string;
   readonly totalCount: string;
+  readonly itemDescription: string;
+  readonly categoryDescription: string;
+  readonly noCategoryArticles: string;
 }
 
 export interface SectionHome {

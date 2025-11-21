@@ -1,4 +1,4 @@
-// src/app/ru/authors/[slug]/page.tsx
+// src/app/[lang]/authors/[slug]/page.tsx
 
 import { Metadata } from 'next';
 import { Suspense } from 'react';
@@ -26,9 +26,9 @@ export async function generateMetadata({
   params: Promise<{ lang: Lang, slug: string }> 
 }): Promise<Metadata> {
   try {
-    const resolvedParams = await params;
+    const { lang, slug } = await params;
     const [author] = await Promise.all([
-      fetchAuthorBySlug(resolvedParams.slug, resolvedParams.lang),
+      fetchAuthorBySlug(slug, lang),
     ]);
     
     if (!author) {
@@ -39,20 +39,20 @@ export async function generateMetadata({
     }
 
     // Get article count for this author
-    const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], resolvedParams.slug);
+    const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], slug);
     const articleCount = slugs.length;
-    const dictionary = getDictionary(resolvedParams.lang as Lang);
+    const dictionary = getDictionary(lang as Lang);
 
     // Use new AuthorMetadata component
     return await generateAuthorMetadata({
       dictionary,
       authorData: {
         name: author.name,
-        slug: resolvedParams.slug,
+        slug: slug,
         bio: author.bio,
         avatar: author.avatar,
         articleCount,
-        path: `/${resolvedParams.lang}/authors/${resolvedParams.slug}`,
+        path: `/${lang}/authors/${slug}`,
         featured: false,
       },
     });
@@ -73,11 +73,11 @@ export default async function AuthorPage({
   searchParams: Promise<{ page?: string, sort?: string }>
 }) {
   try {
-    const resolvedParams = await params;
-    const dictionary = getDictionary(resolvedParams.lang as Lang);
+    const { lang, slug } = await params;
+    const dictionary = getDictionary(lang as Lang);
     const [author, rubricBasics] = await Promise.all([
-      fetchAuthorBySlug(resolvedParams.slug, resolvedParams.lang),
-      fetchRubricBasics(resolvedParams.lang),
+      fetchAuthorBySlug(slug, lang),
+      fetchRubricBasics(lang),
     ]);
     
     if (!author) {
@@ -99,7 +99,7 @@ export default async function AuthorPage({
         undefined,
         undefined,
         [],
-        resolvedParams.slug
+        slug
       );
       allSlugInfos = [...allSlugInfos, ...slugs];
       hasMore = pageHasMore;
@@ -110,15 +110,15 @@ export default async function AuthorPage({
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
-        href: `/${resolvedParams.lang}`,
+        href: `/${lang}`,
       },
       {
         label: dictionary.navigation.labels.authors,
-        href: `/${resolvedParams.lang}/authors`,
+        href: `/${lang}/authors`,
       },
       {
         label: author.name,
-        href: `/${resolvedParams.lang}/authors/${resolvedParams.slug}`,
+        href: `/${lang}/authors/${slug}`,
       },
     ];
 
@@ -140,13 +140,13 @@ export default async function AuthorPage({
           dictionary={dictionary}
           authorData={{
             name: author.name,
-            slug: resolvedParams.slug,
+            slug: slug,
             bio: author.bio,
             avatar: author.avatar,
             articleCount: allSlugInfos.length,
             articles: articlesForSchema,
           }}
-          currentPath={`/${resolvedParams.lang}/authors/${resolvedParams.slug}`}
+          currentPath={`/${lang}/authors/${slug}`}
         />
         
         {/* Breadcrumbs using correct interface */}
@@ -204,9 +204,9 @@ export default async function AuthorPage({
                   {/* ArticleList using correct props */}
                   <ArticleList 
                     slugInfos={allSlugInfos}
-                    lang={resolvedParams.lang}
+                    lang={lang}
                     dictionary={dictionary}
-                    authorSlug={resolvedParams.slug}
+                    authorSlug={slug}
                     showCount={false}
                   />
                   
@@ -226,7 +226,7 @@ export default async function AuthorPage({
                     {dictionary.common.status.empty}
                   </p>
                   <Link 
-                    href={`/${resolvedParams.lang}/authors`}
+                    href={`/${lang}/authors`}
                     className="text-blue-600 hover:text-blue-800"
                   >
                     {dictionary.navigation.labels.authors}

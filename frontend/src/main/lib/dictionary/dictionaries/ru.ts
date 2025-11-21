@@ -269,6 +269,9 @@ const dictionaryRU: Dictionary = {
       authorWorksDescription: 'Работы автора {author} на {siteName}',
       emptyCollection: 'В {collection} пока нет {items}',
       totalCount: 'Всего: {count} {countLabel}',
+      itemDescription: 'Статья {name}',
+      categoryDescription: 'Статьи в категории {categoryName}',
+      noCategoryArticles: 'В категории {categoryName} пока нет статей',
     },
     home: {
       welcomeTitle: 'Добро пожаловать в EventForMe',

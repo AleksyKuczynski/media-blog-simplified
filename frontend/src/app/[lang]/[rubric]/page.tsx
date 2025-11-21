@@ -1,4 +1,4 @@
-// src/app/ru/[rubric]/page.tsx
+// src/app/[lang]/[rubric]/page.tsx
 // FIXED: Correct ArticleSlugInfo usage and proper data handling
 
 import { Metadata } from 'next';
@@ -28,10 +28,10 @@ export async function generateMetadata({
   params: Promise<{ lang: Lang, rubric: string }> 
 }): Promise<Metadata> {
   try {
-    const resolvedParams = await params;
-    const dictionary = getDictionary(resolvedParams.lang as Lang);
+    const { lang, rubric } = await params;
+    const dictionary = getDictionary(lang as Lang);
     const [rubricDetails] = await Promise.all([
-      fetchRubricDetails(resolvedParams.rubric, 'ru'),
+      fetchRubricDetails(rubric, lang),
     ]);
     
     if (!rubricDetails) {
@@ -41,22 +41,22 @@ export async function generateMetadata({
       };
     }
 
-    const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === 'ru');
-    const rubricName = rubricTranslation?.name || resolvedParams.rubric;
+    const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === lang);
+    const rubricName = rubricTranslation?.name || rubric;
     const rubricDescription = rubricTranslation?.description;
 
     // Get article count for this rubric
-    const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], undefined, resolvedParams.rubric);
+    const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], undefined, rubric);
     const articleCount = slugs.length;
 
     return await generateRubricMetadata({
       dictionary,
       rubricData: {
         name: rubricName,
-        slug: resolvedParams.rubric,
+        slug: rubric,
         description: rubricDescription,
         articleCount,
-        path: `/${resolvedParams.lang}/${resolvedParams.rubric}`,
+        path: `/${lang}/${rubric}`,
         featured: false,
       },
     });
@@ -77,14 +77,13 @@ export default async function RubricPage({
   searchParams: Promise<{ page?: string }>
 }) {
   try {
-    const resolvedParams = await params;
+    const { lang, rubric } = await params;
     const resolvedSearchParams = await searchParams;
-    const lang = resolvedParams.lang;
     const dictionary = getDictionary(lang as Lang);
     const currentPage = Number(resolvedSearchParams.page) || 1;
     
     const [rubricDetails, rubricBasics] = await Promise.all([
-      fetchRubricDetails(resolvedParams.rubric, lang),
+      fetchRubricDetails(rubric, lang),
       fetchRubricBasics(lang),
     ]);
 
@@ -93,7 +92,7 @@ export default async function RubricPage({
     }
 
     const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === lang);
-    const rubricName = rubricTranslation?.name || resolvedParams.rubric;
+    const rubricName = rubricTranslation?.name || rubric;
     const rubricDescription = rubricTranslation?.description;
 
     // Fetch article slugs for all pages up to current page
@@ -108,7 +107,7 @@ export default async function RubricPage({
         undefined,
         [],
         undefined,
-        resolvedParams.rubric
+        rubric
       );
       allSlugInfos = [...allSlugInfos, ...slugs];
       hasMore = pageHasMore;
@@ -127,7 +126,7 @@ export default async function RubricPage({
       },
       {
         label: rubricName,
-        href: `/${lang}/${resolvedParams.rubric}`,
+        href: `/${lang}/${rubric}`,
       },
     ];
 
@@ -135,7 +134,7 @@ export default async function RubricPage({
     const articlesForSchema = allSlugInfos.slice(0, 10).map(slugInfo => ({
       title: slugInfo.slug, // Use slug as title fallback since title is not available
       slug: slugInfo.slug,
-      url: `${dictionary.seo.site.url}/${lang}/${resolvedParams.rubric}/${slugInfo.slug}`,
+      url: `${dictionary.seo.site.url}/${lang}/${rubric}/${slugInfo.slug}`,
       // publishedAt is not available in ArticleSlugInfo, so we omit it
     }));
 
@@ -148,12 +147,12 @@ export default async function RubricPage({
           dictionary={dictionary}
           rubricData={{
             name: rubricName,
-            slug: resolvedParams.rubric,
+            slug: rubric,
             description: rubricDescription,
             articleCount: allSlugInfos.length,
             articles: articlesForSchema,
           }}
-          currentPath={`/${lang}/${resolvedParams.rubric}`}
+          currentPath={`/${lang}/${rubric}`}
         />
         
         <Breadcrumbs 
@@ -191,7 +190,7 @@ export default async function RubricPage({
                   slugInfos={allSlugInfos} 
                   lang={lang}
                   dictionary={dictionary}
-                  rubricSlug={resolvedParams.rubric}
+                  rubricSlug={rubric}
                   showCount={false}
                 />
                 

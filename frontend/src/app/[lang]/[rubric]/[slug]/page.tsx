@@ -35,8 +35,7 @@ export async function generateMetadata({
   params: Promise<{ lang: Lang, rubric: string, slug: string }> 
 }): Promise<Metadata> {
   try {
-    const resolvedParams = await params;
-    const lang = resolvedParams.lang;
+    const { lang, rubric, slug } = await params;
     const dictionary = getDictionary(lang as Lang);
 
     // Check preview mode at page level
@@ -44,16 +43,16 @@ export async function generateMetadata({
     
     // Pass preview state to fetch function
     const [article] = await Promise.all([
-      fetchFullArticle(resolvedParams.slug, lang, inPreview),
+      fetchFullArticle(slug, lang, inPreview),
     ]);
 
     if (!article) {
-      return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
+      return generateArticleNotFoundMetadata(dictionary, rubric);
     }
 
     const translation = article.translations[0];
     if (!translation) {
-      return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
+      return generateArticleNotFoundMetadata(dictionary, rubric);
     }
 
     const articleData = {
@@ -62,14 +61,14 @@ export async function generateMetadata({
       description: translation.description,
       seoDescription: translation.seo_description,
       lead: translation.lead,
-      slug: resolvedParams.slug,
-      rubricSlug: resolvedParams.rubric,
-      rubricName: resolvedParams.rubric,
+      slug: slug,
+      rubricSlug: rubric,
+      rubricName: rubric,
       author: article.authors[0]?.name || 'EventForMe Editorial',
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageId: article.article_heading_img || null,
-      tags: article.categories?.map(cat => cat.name) || [resolvedParams.rubric],
+      tags: article.categories?.map(cat => cat.name) || [rubric],
     };
 
     const metadata = generateArticleMetadata({
@@ -95,9 +94,9 @@ export async function generateMetadata({
     console.error('Error generating article metadata:', error);
     
     try {
-      const resolvedParams = await params;
-      const dictionary = getDictionary(resolvedParams.lang as Lang);
-      return generateArticleNotFoundMetadata(dictionary, resolvedParams.rubric);
+      const { lang, rubric } = await params;
+      const dictionary = getDictionary(lang as Lang);
+      return generateArticleNotFoundMetadata(dictionary, rubric);
 
     } catch (error) {
       console.error('Error generating article metadata:', error);
@@ -118,21 +117,16 @@ export default async function ArticlePage({
   searchParams: Promise<{ preview?: string, secret?: string }>
 }) {
   try {
-    const resolvedParams = await params;
-    const resolvedSearchParams = await searchParams;
-
-    const lang = resolvedParams.lang;
-    const dictionary = getDictionary(resolvedParams.lang as Lang);
+    const { lang, rubric, slug } = await params;
+    const { preview, secret } = await searchParams;
+    const dictionary = getDictionary(lang as Lang);
 
 
     // Check preview mode from URL parameters
-    const inPreview = isValidPreview(
-      resolvedSearchParams.preview,
-      resolvedSearchParams.secret
-    );
+    const inPreview = isValidPreview(preview, secret);
 
     const [article, rubricBasics] = await Promise.all([
-      fetchFullArticle(resolvedParams.slug, lang, inPreview),
+      fetchFullArticle(slug, lang, inPreview),
       fetchRubricBasics(lang),
     ]);
 
@@ -181,9 +175,9 @@ export default async function ArticlePage({
       title: translation.title,
       description: translation.description || undefined,
       lead: translation.lead || undefined,
-      slug: resolvedParams.slug,
-      rubricSlug: resolvedParams.rubric,
-      rubricName: resolvedParams.rubric,
+      slug: slug,
+      rubricSlug: rubric,
+      rubricName: rubric,
       author: {
         name: article.authors[0]?.name || 'EventForMe Editorial',
         slug: article.authors[0]?.slug || undefined,
@@ -193,13 +187,13 @@ export default async function ArticlePage({
       imageUrl: article.article_heading_img 
         ? `${dictionary.seo.site.url.replace(/\/$/, '')}/assets/${article.article_heading_img}`
         : undefined,
-      tags: [resolvedParams.rubric, ...translation.title.split(' ').slice(0, 3)],
+      tags: [rubric, ...translation.title.split(' ').slice(0, 3)],
     };
 
     // Prepare related links data for SEO enhancement
     const rubricData = {
-      slug: resolvedParams.rubric,
-      name: resolvedParams.rubric, // Could be enhanced with translated name from rubricBasics
+      slug: rubric,
+      name: rubric, // Could be enhanced with translated name from rubricBasics
     };
 
     const categoriesData = article.categories?.map(cat => ({
@@ -207,7 +201,7 @@ export default async function ArticlePage({
       name: cat.name,
     })) || [];
 
-    const currentArticleUrl = `${dictionary.seo.site.url}/${lang}/${resolvedParams.rubric}/${resolvedParams.slug}`;
+    const currentArticleUrl = `${dictionary.seo.site.url}/${lang}/${rubric}/${slug}`;
 
     return (
       <>
@@ -257,7 +251,7 @@ export default async function ArticlePage({
 
                 {/* Add engagement component */}
                   <ArticleEngagement
-                    slug={resolvedParams.slug}
+                    slug={slug}
                     title={article.translations[0].title}
                     url={currentArticleUrl}
                   />
@@ -295,7 +289,7 @@ export default async function ArticlePage({
 
                 {/* Related Articles with Tiered Matching */}
                 <RelatedArticles
-                  currentArticleSlug={resolvedParams.slug}
+                  currentArticleSlug={slug}
                   articleCategories={categoriesData}
                   lang={lang}
                   dictionary={dictionary}

@@ -267,6 +267,9 @@ export const dictionaryEN: Dictionary = {
       authorWorksDescription: 'Works by {author} on {siteName}',
       emptyCollection: 'No {items} in {collection} yet',
       totalCount: 'Total: {count} {countLabel}',
+      itemDescription: 'Article {name}',
+      categoryDescription: 'Articles in {categoryName} category',
+      noCategoryArticles: 'No articles in {categoryName} category yet',
     },
     home: {
       welcomeTitle: 'Welcome to EventForMe',

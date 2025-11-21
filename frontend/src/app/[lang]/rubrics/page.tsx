@@ -1,4 +1,4 @@
-// src/app/ru/rubrics/page.tsx
+// src/app/[lang]/rubrics/page.tsx
 
 import { Metadata } from 'next';
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
@@ -18,17 +18,17 @@ export const revalidate = 3600;
  * Generate metadata using clean new dictionary system
  */
 export async function generateMetadata( params:  Promise<{ lang: Lang }> ): Promise<Metadata> {
-  const resolvedParams = await params;
-  const dictionary = getDictionary(resolvedParams.lang as Lang);
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
 
   try {
     const [rubrics] = await Promise.all([
-      fetchAllRubrics(resolvedParams.lang),
+      fetchAllRubrics(lang),
     ]);
     
     // Transform rubrics data for metadata generation
     const rubricsData = rubrics.map(rubric => {
-      const translation = rubric.translations?.find(t => t.languages_code === 'ru');
+      const translation = rubric.translations?.find(t => t.languages_code === lang);
       return {
         name: translation?.name || rubric.slug,
         slug: rubric.slug,
@@ -42,7 +42,7 @@ export async function generateMetadata( params:  Promise<{ lang: Lang }> ): Prom
       collectionType: 'rubrics',
       items: rubricsData,
       totalCount: rubrics.length,
-      currentPath: `/${resolvedParams.lang}/rubrics`,
+      currentPath: `/${lang}/rubrics`,
       featured: false,
     });
     
@@ -56,22 +56,22 @@ export async function generateMetadata( params:  Promise<{ lang: Lang }> ): Prom
 }
 
 export default async function RubricsPage( params:  Promise<{ lang: Lang }> ) {
-  const resolvedParams = await params;
-  const dictionary = getDictionary(resolvedParams.lang as Lang);
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
 
   try {
     const [rubrics] = await Promise.all([
-      fetchAllRubrics('ru'),
+      fetchAllRubrics(lang),
     ]);
 
     // Transform rubrics for rendering
     const transformedRubrics = rubrics.map(rubric => {
-      const translation = rubric.translations?.find(t => t.languages_code === 'ru');
+      const translation = rubric.translations?.find(t => t.languages_code === lang);
       return {
         ...rubric,
         name: translation?.name || rubric.slug,
         description: translation?.description,
-        url: `/${resolvedParams.lang}/${rubric.slug}`,
+        url: `/${lang}/${rubric.slug}`,
       };
     });
 
@@ -79,7 +79,7 @@ export default async function RubricsPage( params:  Promise<{ lang: Lang }> ) {
     const schemaItems = transformedRubrics.map(rubric => ({
       name: rubric.name,
       slug: rubric.slug,
-      url: `${dictionary.seo.site.url}/${resolvedParams.lang}/${rubric.slug}`,
+      url: `${dictionary.seo.site.url}/${lang}/${rubric.slug}`,
       description: rubric.description,
       articleCount: rubric.articleCount || 0,
     }));
@@ -88,11 +88,11 @@ export default async function RubricsPage( params:  Promise<{ lang: Lang }> ) {
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
-        href: `/${resolvedParams.lang}`,
+        href: `/${lang}`,
       },
       {
         label: dictionary.navigation.labels.rubrics,
-        href: `/${resolvedParams.lang}/rubrics`,
+        href: `/${lang}/rubrics`,
       },
     ];
 
@@ -103,14 +103,14 @@ export default async function RubricsPage( params:  Promise<{ lang: Lang }> ) {
           collectionType="rubrics"
           items={schemaItems}
           totalCount={rubrics.length}
-          currentPath="/ru/rubrics"
+          currentPath={`/${lang}/rubrics`}
           featured={false}
         />
         
         <Breadcrumbs 
           items={breadcrumbItems} 
           rubrics={[]}
-          lang="ru"
+          lang={lang}
           translations={{
             home: dictionary.navigation.labels.home,
             allRubrics: dictionary.navigation.labels.rubrics,
@@ -142,7 +142,7 @@ export default async function RubricsPage( params:  Promise<{ lang: Lang }> ) {
                 <RubricCard
                   key={rubric.slug}
                   rubric={rubric}
-                  lang="ru"
+                  lang={lang}
                   dictionary={dictionary}
                 />
               ))}

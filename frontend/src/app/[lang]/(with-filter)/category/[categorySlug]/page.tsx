@@ -25,10 +25,10 @@ export async function generateMetadata({
 }: { 
   params: Promise<{ lang: Lang; categorySlug: string }> 
 }): Promise<Metadata> {
-  const resolvedParams = await params;
-  const categories = await fetchAllCategories(resolvedParams.lang);
-  const dictionary = getDictionary(resolvedParams.lang as Lang);
-  const category = categories.find(cat => cat.slug === resolvedParams.categorySlug);
+  const { lang, categorySlug } = await params;
+  const categories = await fetchAllCategories(lang);
+  const dictionary = getDictionary(lang as Lang);
+  const category = categories.find(cat => cat.slug === categorySlug);
   
   if (!category) {
     return {
@@ -38,13 +38,15 @@ export async function generateMetadata({
   }
 
   // Get article count for this category
-  const { slugs } = await fetchArticleSlugs(1, 'desc', resolvedParams.categorySlug);
+  const { slugs } = await fetchArticleSlugs(1, 'desc', categorySlug);
 
   // Transform category data for the collection metadata generator
   const categoryData = [{
     name: category.name,
     slug: category.slug,
-    description: `Статьи в категории ${category.name}`,
+    description: processTemplate(dictionary.sections.templates.categoryDescription, {
+  categoryName: category.name
+}),
   }];
 
   // Use existing generateCollectionMetadata component
@@ -53,7 +55,7 @@ export async function generateMetadata({
     collectionType: 'articles', // Category pages show articles
     items: categoryData,
     totalCount: slugs.length,
-    currentPath: `/${resolvedParams.lang}/category/${resolvedParams.categorySlug}`,
+    currentPath: `/${lang}/category/${categorySlug}`,
     featured: false,
   });
 }
@@ -65,9 +67,7 @@ export default async function CategoryPage({
   params: Promise<{ lang: Lang; categorySlug: string }>,
   searchParams: Promise<{ page?: string, sort?: string }>
 }) {
-  const resolvedParams = await params;
-  const lang = resolvedParams.lang;
-  const categorySlug = resolvedParams.categorySlug;
+  const { lang, categorySlug } = await params;
   const dictionary = getDictionary(lang as Lang);
   const categories = await fetchAllCategories(lang);
   const rubricBasics = await fetchRubricBasics(lang);
@@ -206,7 +206,7 @@ export default async function CategoryPage({
                       dictionary={dictionary}
                       categorySlug={categorySlug}
                       showCount={false}
-                      ariaLabel={`Статьи в категории ${category.name}`}
+                      ariaLabel={`${dictionary.sections.templates.categoryDescription} ${category.name}`}
                     />
                     
                     {/* Load more button with enhanced UX */}
