@@ -29,7 +29,6 @@ interface MobileNavProps {
 export default function MobileNavigation({
   dictionary,
   lang,
-  currentPageTitle,
 }: MobileNavProps) {
   
   // Menu panel state management
@@ -112,8 +111,8 @@ export default function MobileNavigation({
               isOpen={isSearchOpen}
               onClick={toggleSearch}
               ariaControls="mobile-search-content"
-              openLabel={dictionary.search.accessibility.openSearch || 'Open search'}
-              closeLabel={dictionary.search.accessibility.closeSearch || 'Close search'}
+              openLabel={dictionary.search.accessibility.openSearch}
+              closeLabel={dictionary.search.accessibility.closeSearch}
               buttonRef={searchToggleRef}
             />
           )}
@@ -153,7 +152,7 @@ export default function MobileNavigation({
         onClose={() => closeSearch(false)}
         side="right"
         title={dictionary.search.labels.title}
-        ariaLabel={dictionary.search.accessibility.searchLabel || 'Search'}
+        ariaLabel={dictionary.search.accessibility.searchLabel}
         panelRef={searchRef}
       >
         {/* Search Content - Only render when open for performance */}

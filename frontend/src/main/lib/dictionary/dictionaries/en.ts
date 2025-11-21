@@ -82,6 +82,7 @@ export const dictionaryEN: Dictionary = {
       siteSearchLabel: 'Site search',
       skipToContent: 'Skip to main content',
       skipToNavigation: 'Skip to navigation',
+      breadcrumbNavigation: 'Breadcrumb navigation',
     },
   },
   

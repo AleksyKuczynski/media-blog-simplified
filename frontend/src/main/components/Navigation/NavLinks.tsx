@@ -1,10 +1,10 @@
 // src/main/components/Navigation/NavLinks.tsx
-// Enhanced with proper current page link handling for both Mobile and Desktop
+// ✅ FIXED: Uses correct function getNavigationItems with lang parameter
 
 import Link from 'next/link';
 import NavLinksClient from './NavLinksClient';
-import Dictionary from '@/main/lib/dictionary/types';
-import { Lang } from '@/main/lib/dictionary';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { getNavigationItems } from '@/main/lib/dictionary/helpers/navigation';
 
 interface NavLinksProps {
   dictionary: Dictionary;
@@ -13,13 +13,13 @@ interface NavLinksProps {
 }
 
 /**
- * NavLinks component - Enhanced with proper current page link behavior
- * Current page links are non-hoverable, non-clickable, and visually highlighted
- * Works consistently across Mobile and Desktop navigation
+ * NavLinks component - Server-side navigation links
+ * Uses getNavigationItems helper for consistent structure
  */
 export default function NavLinks({ dictionary, lang, className }: NavLinksProps) {
   try {
-    const navigationLinks = getNavigationLinksConfig(dictionary);
+    // ✅ FIXED: Use correct function name and pass both dictionary and lang
+    const navigationLinks = getNavigationItems(dictionary, lang);
 
     return (
       <>
@@ -30,14 +30,12 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
             role="menuitem"
           >
             <Link 
-              href={`/ru${link.href}`}
+              href={link.href} // ✅ Already includes lang prefix from helper
               className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200"
-              aria-label={link.ariaLabel}
-              title={link.title}
-              data-href={link.href}
+              aria-label={`${link.label} - ${link.description}`}
+              title={link.description}
+              data-href={link.path}
               data-nav-section={link.key}
-              data-nav-priority={link.priority}
-              // Enhanced SEO attributes for Russian market (Google + Yandex)
               itemProp="url"
               itemScope
               itemType="https://schema.org/SiteNavigationElement"
@@ -56,7 +54,6 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
           </li>
         ))}
         
-        {/* Enhanced client-side active state management */}
         <NavLinksClient 
           dictionary={dictionary} 
           lang={lang}
@@ -67,12 +64,12 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
   } catch (error) {
     console.error('NavLinks: Error rendering navigation links', error);
     
-    // Enhanced fallback navigation with semantic markup
+    // Fallback navigation using dictionary directly
     return (
       <>
         <li role="menuitem" className={className}>
           <Link 
-            href="/ru/articles" 
+            href={`/${lang}/articles`}
             className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200" 
             data-href="/articles"
             data-nav-section="articles"
@@ -88,7 +85,7 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
         </li>
         <li role="menuitem" className={className}>
           <Link 
-            href="/ru/rubrics" 
+            href={`/${lang}/rubrics`}
             className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200" 
             data-href="/rubrics"
             data-nav-section="rubrics"
@@ -104,7 +101,7 @@ export default function NavLinks({ dictionary, lang, className }: NavLinksProps)
         </li>
         <li role="menuitem" className={className}>
           <Link 
-            href="/ru/authors" 
+            href={`/${lang}/authors`}
             className="nav-link px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200" 
             data-href="/authors"
             data-nav-section="authors"

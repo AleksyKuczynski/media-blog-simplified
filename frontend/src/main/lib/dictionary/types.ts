@@ -81,6 +81,7 @@ export interface NavigationAccessibility {
   readonly siteSearchLabel: string;
   readonly skipToContent: string;
   readonly skipToNavigation: string;
+  readonly breadcrumbNavigation: string;
 }
 
 export interface NavigationDictionary {

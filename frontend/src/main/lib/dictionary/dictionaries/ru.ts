@@ -84,6 +84,7 @@ const dictionaryRU: Dictionary = {
       siteSearchLabel: 'Поиск по сайту',
       skipToContent: 'Перейти к содержимому',
       skipToNavigation: 'Перейти к навигации',
+      breadcrumbNavigation: 'Навигационная цепочка',
     },
   },
   

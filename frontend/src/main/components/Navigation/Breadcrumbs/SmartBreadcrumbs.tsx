@@ -1,9 +1,9 @@
-// src/main/components/Navigation/SmartBreadcrumbs.tsx
-// Unified component combining user-facing breadcrumbs with SEO structured data
+// src/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs.tsx
+// ✅ FIXED: Correct parameter order for detectBreadcrumbContext
 
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/main/components/Interface/Icons';
-import { Dictionary } from '@/main/lib/dictionary';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { detectBreadcrumbContext, generateContextualBreadcrumbs } from '@/main/lib/utils/breadcrumbContextDetector';
 
 interface SmartBreadcrumbsProps {
@@ -23,6 +23,7 @@ interface SmartBreadcrumbsProps {
     }>;
   };
   dictionary: Dictionary;
+  lang: Lang;
   className?: string;
 }
 
@@ -31,25 +32,23 @@ interface SmartBreadcrumbsProps {
  * - Detects user navigation context from referrer
  * - Shows contextual breadcrumbs matching user's journey
  * - Generates multiple SEO schemas for comprehensive coverage
- * - Maintains accessibility and semantic HTML
  */
 export default async function SmartBreadcrumbs({
   articleData,
   dictionary,
+  lang,
   className = "text-sm mb-8 overflow-x-auto"
 }: SmartBreadcrumbsProps) {
   
-  // Detect user's navigation context
-  const context = await detectBreadcrumbContext(
-    `/ru/${articleData.rubricSlug}/${articleData.slug}`,
-    dictionary
-  );
+  // ✅ FIXED: Pass dictionary and lang (no path - function reads referrer internally)
+  const context = await detectBreadcrumbContext(dictionary, lang);
 
   // Generate contextual breadcrumb paths
   const { userPath, canonicalPath, seoAlternatives } = generateContextualBreadcrumbs(
     context,
     articleData,
-    dictionary
+    dictionary,
+    lang
   );
 
   // Determine which path to show users (prioritize contextual over canonical)
@@ -62,7 +61,7 @@ export default async function SmartBreadcrumbs({
   const primaryBreadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "@id": `${baseUrl}/ru/${articleData.rubricSlug}/${articleData.slug}#primary-breadcrumb`,
+    "@id": `${baseUrl}/${lang}/${articleData.rubricSlug}/${articleData.slug}#primary-breadcrumb`,
     "numberOfItems": displayPath.length,
     "itemListElement": displayPath.map((item, index) => ({
       "@type": "ListItem",
@@ -81,7 +80,7 @@ export default async function SmartBreadcrumbs({
   const alternativeSchemas = seoAlternatives.map((altPath, schemaIndex) => ({
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "@id": `${baseUrl}/ru/${articleData.rubricSlug}/${articleData.slug}#alt-breadcrumb-${schemaIndex + 1}`,
+    "@id": `${baseUrl}/${lang}/${articleData.rubricSlug}/${articleData.slug}#alt-breadcrumb-${schemaIndex + 1}`,
     "numberOfItems": altPath.length,
     "itemListElement": altPath.map((item, index) => ({
       "@type": "ListItem",
@@ -102,7 +101,7 @@ export default async function SmartBreadcrumbs({
     canonicalSchema = {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
-      "@id": `${baseUrl}/ru/${articleData.rubricSlug}/${articleData.slug}#canonical-breadcrumb`,
+      "@id": `${baseUrl}/${lang}/${articleData.rubricSlug}/${articleData.slug}#canonical-breadcrumb`,
       "numberOfItems": canonicalPath.length,
       "itemListElement": canonicalPath.map((item, index) => ({
         "@type": "ListItem",
@@ -145,7 +144,7 @@ export default async function SmartBreadcrumbs({
 
       {/* User-facing breadcrumb navigation */}
       <nav 
-        aria-label="Breadcrumb" 
+        aria-label={dictionary.navigation.accessibility.breadcrumbNavigation}
         className={className}
         itemScope 
         itemType="https://schema.org/BreadcrumbList"
@@ -175,26 +174,23 @@ export default async function SmartBreadcrumbs({
                 {/* Breadcrumb item */}
                 {isLast ? (
                   <span 
-                    className="text-pr-accent font-medium"
+                    className="text-on-sf-var line-clamp-1"
                     itemProp="name"
                     aria-current="page"
-                    title={item.ariaLabel || item.label}
                   >
                     {item.label}
                   </span>
                 ) : (
-                  <Link
-                    href={item.href}
-                    className="text-pr-cont hover:text-pr-accent transition-colors duration-200"
+                  <Link 
+                    href={item.href} 
+                    className="text-pr-cont hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200"
                     itemProp="item"
-                    title={item.ariaLabel || item.label}
+                    aria-label={item.ariaLabel}
                   >
                     <span itemProp="name">{item.label}</span>
                   </Link>
                 )}
-
-                {/* Hidden structured data position */}
-                <meta itemProp="position" content={(index + 1).toString()} />
+                <meta itemProp="position" content={`${index + 1}`} />
               </li>
             );
           })}
@@ -205,35 +201,19 @@ export default async function SmartBreadcrumbs({
 }
 
 /**
- * Server-side function to enhance existing article data with breadcrumb context
- * Use this in article pages to prepare data for SmartBreadcrumbs
+ * Helper function to enhance article data for SmartBreadcrumbs
  */
-export async function enhanceArticleForBreadcrumbs(
+export function enhanceArticleForBreadcrumbs(
   article: any,
-  rubricBasics: any[],
-): Promise<SmartBreadcrumbsProps['articleData']> {
-  
-  const translation = article.translations?.[0];
-  
-  // The rubric slug is directly available as article.rubric_slug
-  const articleRubricSlug = article.rubric_slug || 'общее';
-  
-  // FIXED: Find rubric by the string slug
-  const rubric = rubricBasics.find(r => r.slug === articleRubricSlug);
-  
+  rubricName: string,
+  rubricSlug: string
+) {
   return {
-    title: translation?.title || article.slug,
+    title: article.translations[0]?.title || article.slug,
     slug: article.slug,
-    rubricSlug: articleRubricSlug,
-    rubricName: rubric?.name || articleRubricSlug || 'Общее',
-    authorName: article.authors?.[0]?.name,
-    authors: article.authors?.map((author: any) => ({
-      name: author.name,
-      slug: author.slug,
-    })) || [],
-    categories: article.categories?.map((cat: any) => ({
-      name: cat.name,
-      slug: cat.slug,
-    })) || [],
+    rubricSlug: rubricSlug,
+    rubricName: rubricName,
+    authors: article.authors || [],
+    categories: article.categories || [],
   };
 }

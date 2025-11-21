@@ -223,7 +223,8 @@ export default async function ArticlePage({
         />
 
         {/* Breadcrumbs */}
-        <SmartBreadcrumbs 
+        <SmartBreadcrumbs
+          lang={lang} 
           articleData={articleBreadcrumbData}
           dictionary={dictionary}
         />

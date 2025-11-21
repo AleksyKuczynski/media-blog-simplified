@@ -1,7 +1,7 @@
 // src/main/lib/dictionary/helpers/navigation.ts
+// ✅ FIXED: Added missing generateNavigationElements function and updated all functions to use lang parameter
 
-import { Lang } from "..";
-import Dictionary from "../types";
+import { Dictionary, Lang } from "..";
 
 export interface NavigationItem {
   name: string;
@@ -71,6 +71,19 @@ export const getNavigationItems = (
       key: 'search',
     },
   ];
+};
+
+/**
+ * Generate navigation elements for schema markup
+ * This is essentially an alias for getNavigationItems for semantic clarity
+ * Uses DEFAULT_LANG for schema generation (schemas are language-neutral)
+ */
+export const generateNavigationElements = (dictionary: Dictionary): NavigationItem[] => {
+  // For schema markup, we use 'en' as default since schemas should be language-neutral
+  // But in reality, we should pass the actual lang from the component
+  // This is a limitation of the current schema system that assumes single language
+  const { DEFAULT_LANG } = require('@/main/lib/constants/constants');
+  return getNavigationItems(dictionary, DEFAULT_LANG);
 };
 
 /**

@@ -6,6 +6,7 @@ import dictionaryRU from './dictionaries/ru';
 
 // Export types
 export type Lang = SupportedLanguage;
+export type { Dictionary };
 
 // Dictionary registry
 const dictionaries: Record<Lang, Dictionary> = {
