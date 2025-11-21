@@ -1,34 +1,59 @@
 // src/main/lib/dictionary/helpers/templates.ts
 
-import { TemplateProcessor, TemplateVariables } from "../types";
-
+import { Dictionary } from "..";
 
 /**
- * Process template strings with variable substitution
+ * Process template string with variable replacements
+ * Language-agnostic - works with any dictionary
  */
-export const processTemplate: TemplateProcessor = (template: string, variables: TemplateVariables): string => {
-  if (!template || typeof template !== 'string') {
-    return '';
-  }
-
-  let result = template;
-  
-  // Replace all template variables
-  Object.entries(variables).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      const regex = new RegExp(`\\{${key}\\}`, 'g');
-      result = result.replace(regex, String(value));
-    }
-  });
-
-  return result;
+export const processTemplate = (
+  template: string,
+  variables: Record<string, string>
+): string => {
+  return Object.entries(variables).reduce(
+    (result, [key, value]) => result.replace(new RegExp(`\\{${key}\\}`, 'g'), value),
+    template
+  );
 };
 
 /**
- * Create standardized SEO variables object
+ * Get page title using dictionary template
+ * Language-agnostic
  */
-export const createSEOVariables = (overrides: Partial<TemplateVariables> = {}): TemplateVariables => ({
-  siteName: 'EventForMe',
-  year: new Date().getFullYear().toString(),
-  ...overrides,
-});
+export const getPageTitle = (
+  dictionary: Dictionary,
+  pageTitle: string
+): string => {
+  return processTemplate(dictionary.seo.templates.pageTitle, {
+    title: pageTitle,
+    siteName: dictionary.seo.site.name,
+  });
+};
+
+/**
+ * Get meta description using dictionary template
+ * Language-agnostic
+ */
+export const getMetaDescription = (
+  dictionary: Dictionary,
+  description: string
+): string => {
+  return processTemplate(dictionary.seo.templates.metaDescription, {
+    description,
+    siteName: dictionary.seo.site.name,
+  });
+};
+
+/**
+ * Get collection page title using dictionary template
+ * Language-agnostic
+ */
+export const getCollectionTitle = (
+  dictionary: Dictionary,
+  collectionName: string
+): string => {
+  return processTemplate(dictionary.seo.templates.collectionPage, {
+    collection: collectionName,
+    siteName: dictionary.seo.site.name,
+  });
+};
