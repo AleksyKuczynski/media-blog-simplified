@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
 import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedArticles, TableOfContents, QuickNavigation, CategoriesSection, RubricSection, AuthorsSection } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
-import { dictionary, getDictionary, Lang } from '@/main/lib/dictionary';
+import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { processContent } from '@/main/lib/markdown/processContent';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
@@ -122,6 +122,8 @@ export default async function ArticlePage({
     const resolvedSearchParams = await searchParams;
 
     const lang = resolvedParams.lang;
+    const dictionary = getDictionary(resolvedParams.lang as Lang);
+
 
     // Check preview mode from URL parameters
     const inPreview = isValidPreview(
