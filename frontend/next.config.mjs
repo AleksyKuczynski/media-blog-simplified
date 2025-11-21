@@ -48,10 +48,6 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: `frame-ancestors 'self' ${DIRECTUS_URL}`,
           },
-          {
-            key: 'X-Frame-Options',
-            value: 'ALLOW-FROM ' + DIRECTUS_URL,
-          },
         ],
       },
     ];
