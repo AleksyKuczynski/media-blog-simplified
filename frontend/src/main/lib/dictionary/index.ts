@@ -2,10 +2,10 @@
 import { dictionaryEN } from './dictionaries/en';
 import type { SupportedLanguage } from '../constants/constants';
 import dictionaryRU from './dictionaries/ru';
+import Dictionary from './types';
 
 // Export types
 export type Lang = SupportedLanguage;
-export type Dictionary = typeof dictionaryRU; // Use RU as base type structure
 
 // Dictionary registry
 const dictionaries: Record<Lang, Dictionary> = {

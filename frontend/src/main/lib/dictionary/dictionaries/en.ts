@@ -2,14 +2,15 @@
 import { CONTACT_EMAIL, SITE_URL } from "../../constants/constants";
 
 /**
- * Complete English dictionary
- * Translated from Russian version
+ * Complete English dictionary - exact structural match to Russian version
+ * Uses templates extensively to avoid duplication and support multiple contexts
+ * Optimized for both Google and Yandex SEO requirements
  */
 export const dictionaryEN = {
   locale: 'en_US',
   
   // ===================================================================
-  // CONSENT - Cookie banner content
+  // CONSENT - Consent banner content
   // ===================================================================
   consent: {
     title: 'We use cookies',
@@ -75,13 +76,16 @@ export const dictionaryEN = {
       logoAlt: 'EventForMe logo',
       logoMainPageLabel: 'Go to homepage',
       primarySections: 'Primary sections',
-      utilityLinks: 'Utility links',
+      mainSectionsLabel: 'Primary sections',
+      mainMenuLabel: 'Main menu',
+      searchAndSettingsLabel: 'Search and settings',
+      siteSearchLabel: 'Site search',
       skipToContent: 'Skip to main content',
       skipToNavigation: 'Skip to navigation',
     },
   },
-
-    // ===================================================================
+  
+  // ===================================================================
   // BREADCRUMB - reusable labels for breadcrumbs
   // ===================================================================
   breadcrumb: {
@@ -115,134 +119,211 @@ export const dictionaryEN = {
   },
 
   // ===================================================================
-  // COMMON - Reusable UI elements
+  // COMMON - Simple, reusable labels without pluralization
   // ===================================================================
   common: {
-    actions: {
-      readMore: 'Read more',
-      loadMore: 'Load more',
-      showAll: 'Show all',
-      explore: 'Explore',
-      viewAll: 'View all',
-      backTo: 'Back to {target}',
-      goTo: 'Go to {target}',
-      close: 'Close',
-      open: 'Open',
-      filter: 'Filter',
-      sort: 'Sort',
-      reset: 'Reset',
-      apply: 'Apply',
-      cancel: 'Cancel',
-      confirm: 'Confirm',
-      save: 'Save',
-      edit: 'Edit',
-      delete: 'Delete',
-      share: 'Share',
-      copy: 'Copy',
-      download: 'Download',
-      print: 'Print',
-    },
-    status: {
-      loading: 'Loading...',
-      error: 'Error',
-      success: 'Success',
-      notFound: 'Not found',
-      noResults: 'No results',
-      empty: 'Empty',
-      unavailable: 'Unavailable',
-    },
     count: {
       articles: 'Articles:',
       rubrics: 'Rubrics:',
       authors: 'Authors:',
       results: 'Results:',
       items: 'Items:',
-      total: 'Total:',
     },
-    time: {
-      published: 'Published',
-      updated: 'Updated',
-      created: 'Created',
-      edited: 'Edited',
-      ago: '{time} ago',
-      justNow: 'Just now',
-      today: 'Today',
-      yesterday: 'Yesterday',
-      thisWeek: 'This week',
-      thisMonth: 'This month',
+    actions: {
+      loadMore: 'Load More',
+      showMore: 'Show More',
+      showLess: 'Show Less',
+      readMore: 'Read More',
+      explore: 'Explore',
+      viewAll: 'View All',
+      backTo: 'Back to',
+    },
+    status: {
+      loading: 'Loading...',
+      error: 'An error occurred',
+      notFound: 'Not found',
+      empty: 'Nothing here yet',
+      retry: 'Try again',
+    },
+    published: 'Published',
+    updated: 'Updated',
+  },
+
+  // ===================================================================
+  // METADATA - NEW: Structured metadata fallbacks
+  // ===================================================================
+  metadata: {
+    notFound: {
+      article: {
+        title: 'Article not found',
+        description: 'The requested article was not found',
+      },
+      rubric: {
+        title: 'Rubric not found',
+        description: 'The requested rubric was not found',
+      },
+      author: {
+        title: 'Author not found',
+        description: 'The requested author was not found',
+      },
+      page: {
+        title: 'Page not found',
+        description: 'The requested page was not found',
+      },
+      content: {
+      title: 'Content not found',
+      description: 'The requested content was not found',
+      },
     },
   },
 
   // ===================================================================
-  // SECTIONS - Page-specific content
+  // ERRORS - NEW: Template-driven error handling
+  // ===================================================================
+  errors: {
+    engagement: {
+      updateFailed: 'Failed to update counters',
+    },
+    templates: {
+      loadingError: 'Error loading {contentType}',
+      loadingDescription: 'An error occurred while loading {contentType}. Please try refreshing the page.',
+      retryAction: 'Try again',
+      backToHome: 'Back to home',
+      criticalError: 'A critical error occurred',
+      criticalDescription: 'Something went wrong. Please try refreshing the page.',
+    },
+    types: {
+      article: 'article',
+      rubric: 'rubric',
+      author: 'author',
+      page: 'page',
+      content: 'content',
+    },
+  },
+
+  // ===================================================================
+  // CONTENT - NEW: Content-specific labels and templates
+  // ===================================================================
+  content: {
+    labels: {
+      tableOfContents: 'Table of Contents',
+      editorial: '{siteName} Editorial Team',
+      readingTime: 'Reading time: {minutes} min',
+      wordsCount: 'Words: {count}',
+    },
+    templates: {
+      emptyRubric: 'No articles in rubric {name} yet',
+      moreAbout: 'More about {contentType} {name}',
+      writtenBy: 'By: {author}',
+      publishedIn: 'Published in {rubric}',
+    },
+  },
+
+
+  // ===================================================================
+  // SHARE - Share popup content
+  // ===================================================================
+  share: {
+    title: 'Share Article',
+    platforms: {
+      telegram: 'Telegram',
+      whatsapp: 'WhatsApp',
+      vk: 'VK',
+      twitter: 'Twitter',
+      facebook: 'Facebook',
+      instagram: 'Instagram',
+      copy: 'Copy Link',
+    },
+    messages: {
+      linkCopied: 'Link copied!',
+      instagramCopied: 'Link copied! Paste it in the Instagram app',
+    },
+    accessibility: {
+      shareOn: 'Share on {platform}',
+      closeDialog: 'Close share dialog',
+    },
+  },  
+
+  // ===================================================================
+  // SECTIONS - Template-driven, reusable across content types
   // ===================================================================
   sections: {
     labels: {
-      articles: 'Articles',
-      rubrics: 'Rubrics',
-      authors: 'Authors',
-      search: 'Search',
-      featured: 'Featured',
-      latest: 'Latest',
-      popular: 'Popular',
-      recommended: 'Recommended',
+      articles: 'articles',
+      rubrics: 'rubrics',
+      author: 'author',
+      authors: 'authors',
+      categories: 'categories',
+      collection: 'collection',
+      //catalog: 'catalog',
     },
     templates: {
-      sectionTitle: '{section}',
+      pageTitle: '{section} — {siteName}',
       collectionTitle: 'All {section}',
-      totalCount: 'Total {countLabel}: {count}',
-      itemsInSection: '{count} items in {section}',
-      pageNumber: 'Page {current} of {total}',
+      itemInCollection: '{item} in {collection}',
+      itemByAuthor: '{item} by {author}',
+      collectionOf: 'Collection of {items}',
+      itemsInCollectionDescription: '{items} in {collection} on {siteName}',
+      authorWorksDescription: 'Works by {author} on {siteName}',
+      emptyCollection: 'No {items} in {collection} yet',
+      totalCount: 'Total: {count} {countLabel}',
     },
     home: {
-      welcome: 'Welcome to EventForMe',
-      tagline: 'Your source for culture and art news',
-      featuredContent: 'Featured Content',
-      latestArticles: 'Latest Articles',
+      welcomeTitle: 'Welcome to EventForMe',
+      welcomeDescription: 'Media about cultural events, art, and creative initiatives',
+      featuredContent: 'Featured',
+      latestUpdates: 'Latest Updates',
       exploreRubrics: 'Explore Rubrics',
-      rubricsDescription: 'Discover thematic sections covering various aspects of culture and art',
-      viewAllRubrics: 'View all rubrics',
+      viewAllRubrics: 'View All Rubrics',
+      featuredRubrics: 'Featured Rubrics',
+      featuredDescription: 'Recommended materials',
+      rubricsDescription: 'Discover thematic sections',
+      rubricsSectionDescription: 'Our rubrics cover all aspects of cultural life',
+      viewAllRubricsDescription: 'Complete catalog of all available rubrics',
       quickNavigation: 'Quick Navigation',
-      noFeaturedContent: 'No featured content available at the moment',
-      checkBackSoon: 'Check back soon for new content',
     },
-    articles: {
-      allArticles: 'All Articles',
-      latestArticles: 'Latest Articles',
-      articlesByCategory: 'Articles by Category',
-      noArticlesFound: 'No articles found',
-      noArticlesInCategory: 'No articles in this category yet',
-      articlesCount: 'articles',
-      filterByCategory: 'Filter by category',
-      sortBy: 'Sort by',
-      sortOptions: {
-        latest: 'Latest',
-        oldest: 'Oldest',
-        titleAsc: 'Title (A-Z)',
-        titleDesc: 'Title (Z-A)',
-      },
+    authors: {
+      allAuthors: 'All Authors',
+      ourAuthors: 'Our Authors',
+      noAuthorsFound: 'No authors found',
+      moreAuthorsToLoad: 'More authors to load',
+      collectionPageDescription: 'Meet our authors and experts who create content about cultural events and contemporary ideas',
+      profileDescription: 'Author profile and publications',
+      articlesWrittenBy: 'Articles by {author}',
     },
     rubrics: {
       allRubrics: 'All Rubrics',
-      exploreRubrics: 'Explore Rubrics',
-      rubricIcon: '{item} icon',
-      articlesInRubric: 'Articles in rubric',
-      noRubricsAvailable: 'No rubrics available at the moment',
-      checkBackLater: 'Check back later for new content',
+      featuredRubric: 'Featured Rubric',
+      articlesInRubric: 'Articles in Rubric',
+      rubricList: 'Rubric List',
+      rubricsCatalog: 'Rubric Catalog',
+      browseAllRubrics: 'Browse All Rubrics',
+      categoriesDescription: 'Explore our thematic categories',
+      collectionPageDescription: 'Explore our rubrics and find topics of interest about culture and art',
+      noRubricsAvailable: 'No rubrics available yet',
+      checkBackLater: 'Check back later',
+      readMoreAbout: 'Read more about',
+      exploreRubric: 'Explore rubric',
+      iconAltText: 'Rubric icon',
+      noIcon: 'No icon',
+      rubricIcon: 'Rubric icon {item}',
     },
-    authors: {
-      ourAuthors: 'Our Authors',
-      allAuthors: 'All Authors',
-      authorProfile: 'Author Profile',
-      articlesByAuthor: 'Articles by {author}',
-      aboutAuthor: 'About the author',
-      noAuthorsFound: 'No authors found',
-      editorialTeam: 'Editorial Team',
+    articles: {
+      allArticles: 'All Articles',
+      featuredArticles: 'Featured Articles',
+      latestArticles: 'Latest Articles',
+      noArticlesFound: 'No articles found',
+      noFeaturedArticles: 'No featured articles',
+      moreArticlesToLoad: 'More articles to load',
+      loadMore: 'Load More',
+      collectionPageDescription: 'Read our articles about cultural events, art, and creative initiatives',
+      byAuthor: 'by author',
+      inRubric: 'in rubric',
     },
   },
 
   // ===================================================================
-  // SEO - Meta tags and structured data
+  // SEO - Enhanced with not found description
   // ===================================================================
   seo: {
     site: {
@@ -255,7 +336,7 @@ export const dictionaryEN = {
       socialProfiles: [
         'https://t.me/eventforme',
         'https://vk.com/eventforme',
-        'https://instagram.com/eventforme',
+        'https://instagram.com/eventforme'
       ],
       geographicAreas: ['Russia', 'Europe'],
     },
@@ -279,7 +360,7 @@ export const dictionaryEN = {
   },
 
   // ===================================================================
-  // SEARCH - Search functionality
+  // SEARCH - Complete search interface
   // ===================================================================
   search: {
     labels: {
@@ -293,91 +374,97 @@ export const dictionaryEN = {
     },
     templates: {
       resultsFor: 'Search results for "{query}"',
-      pageTitle: 'Search: {query} — {siteName}',
-      foundCount: 'Found {count} results',
-      noResultsFor: 'No results for "{query}"',
+      pageTitle: 'Search',
+      pageDescription: 'Search articles, authors, and rubrics',
+      relatedTo: 'Related to "{query}"',
     },
-    suggestions: {
-      title: 'Suggestions',
-      recentSearches: 'Recent searches',
-      popularSearches: 'Popular searches',
-      noSuggestions: 'No suggestions',
-    },
-    filters: {
-      all: 'All',
-      articles: 'Articles',
-      authors: 'Authors',
-      rubrics: 'Rubrics',
+    accessibility: {
+      searchLabel: 'Site search',
+      searchButtonLabel: 'Execute search',
+      searchInputLabel: 'Enter search query',
+      searchDescription: 'Search all site materials',
+      searchResultsLabel: 'Search results',
+      clearSearchLabel: 'Clear search',
+      openSearch: 'Open search',
+      closeSearch: 'Close search',
+
     },
   },
 
   // ===================================================================
-  // ERRORS - Error messages
+  // FILTER - Filter and sorting interface
   // ===================================================================
-  errors: {
-    general: {
-      title: 'Error',
-      message: 'Something went wrong',
-      retry: 'Try again',
-      goHome: 'Go to homepage',
+  filter: {
+    labels: {
+      sortBy: 'Sort by',
+      category: 'Category',
+      allCategories: 'All Categories',
+      newest: 'Newest First',
+      oldest: 'Oldest First',
+      reset: 'Reset',
+      apply: 'Apply',
     },
-    notFound: {
-      title: '404 - Page Not Found',
-      message: 'The page you are looking for does not exist',
-      suggestion: 'It might have been moved or deleted',
-    },
-    serverError: {
-      title: '500 - Server Error',
-      message: 'Internal server error',
-      suggestion: 'Please try again later',
-    },
-    loading: {
-      title: 'Loading...',
-      message: 'Please wait',
+    accessibility: {
+      categorySelector: 'Category selector',
+      sortingControl: 'Sorting control',
+      resetButton: 'Reset filters',
+      filterGroup: 'Filter group',
+      dropdownLabel: 'Dropdown list',
     },
   },
 
   // ===================================================================
-  // FOOTER - Footer content
+  // ACCESSIBILITY - Universal accessibility labels
+  // ===================================================================
+  accessibility: {
+    iconDescription: 'Icon',
+    decorativeIcon: 'Decorative icon',
+    rubricVisualIndicator: 'Rubric visual indicator',
+    rubricDescription: 'Rubric description',
+    expandDescription: 'Expand description',
+  },
+
+  // ===================================================================
+  // FOOTER - Complete footer structure
   // ===================================================================
   footer: {
-    sections: {
-      about: {
-        title: 'About Us',
-        description: 'EventForMe is a media platform dedicated to culture and art',
-      },
-      navigation: {
-        title: 'Navigation',
-        home: 'Home',
-        articles: 'Articles',
-        rubrics: 'Rubrics',
-        authors: 'Authors',
-      },
-      legal: {
-        title: 'Legal',
-        privacy: 'Privacy Policy',
-        terms: 'Terms of Service',
-        cookies: 'Cookie Policy',
-      },
-      contact: {
-        title: 'Contact',
-        email: 'Email',
-        social: 'Social Media',
-        telegram: 'Telegram',
-        vk: 'VKontakte',
-        instagram: 'Instagram',
-      },
-      form: {
+    about: {
+      title: 'About',
+      description: 'EventForMe — Media about cultural events and contemporary art',
+    },
+    quickLinks: {
+      title: 'Quick Links',
+      ariaLabel: 'Navigation through main site sections',
+    },
+    socialLinks: {
+      title: 'Social Media',
+    },
+    legal: {
+      title: 'Legal Information',
+      copyright: '© {year} {siteName}. All rights reserved.',
+      rights: 'All rights reserved',
+      privacyPolicy: 'Privacy Policy',
+      terms: 'Terms of Use',
+      sitemap: 'Sitemap',
+    },
+    contact: {
+      title: 'Contact Us',
+      buttonLabel: 'Write to Us',
+      emailSubject: 'Message from EventForMe',
+      modal: {
         title: 'Contact Us',
-        namePlaceholder: 'Your name',
-        emailPlaceholder: 'Your email',
-        subjectPlaceholder: 'Subject',
-        messagePlaceholder: 'Your message',
-        submit: 'Send',
-        successMessage: 'Your message has been sent. We will respond shortly.',
-        errorMessage: 'An error occurred. Please try again later or email',
+        emailLabel: 'Your email',
+        emailPlaceholder: 'example@mail.com',
+        subjectLabel: 'Subject',
+        subjectPlaceholder: 'Write the subject of your message',
+        messageLabel: 'Message',
+        messagePlaceholder: 'Tell us how we can help...',
+        submitButton: 'Send',
+        cancelButton: 'Cancel',
+        successMessage: 'Thank you! Your message has been sent. We will respond shortly.',
+        errorMessage: 'An error occurred. Please try again later or write to',
         emailRequired: 'Email is required',
-        emailInvalid: 'Enter a valid email',
+        emailInvalid: 'Please enter a valid email',
         subjectRequired: 'Subject is required',
         messageRequired: 'Message is required',
       },
@@ -385,65 +472,6 @@ export const dictionaryEN = {
     accessibility: {
       skipToFooter: 'Skip to footer',
       footerNavigation: 'Footer navigation',
-    },
-  },
-
-  // ===================================================================
-  // METADATA - SEO and metadata templates
-  // ===================================================================
-  metadata: {
-    templates: {
-      articleTitle: '{title} — {rubric} — {siteName}',
-      collectionTitle: '{collection} — {siteName}',
-      authorTitle: '{author} — Authors — {siteName}',
-      searchTitle: 'Search: {query} — {siteName}',
-      notFoundTitle: '404 - Page Not Found — {siteName}',
-    },
-    placeholders: {
-      defaultTitle: 'EventForMe — Media about Culture and Art',
-      defaultDescription: 'Media platform about cultural events, contemporary art, and creative initiatives',
-    },
-  },
-
-  // ===================================================================
-  // CONTENT - Content-specific labels and templates
-  // ===================================================================
-  content: {
-    labels: {
-      tableOfContents: 'Table of Contents',
-      editorial: '{siteName} Editorial',
-      readingTime: 'Reading time: {minutes} min',
-      wordsCount: 'Words: {count}',
-    },
-    templates: {
-      emptyRubric: 'No articles in {name} rubric yet',
-      moreAbout: 'More about {contentType} {name}',
-      writtenBy: 'Author: {author}',
-      publishedIn: 'Published in {rubric}',
-    },
-  },
-
-  // ===================================================================
-  // SHARE - Share popup content
-  // ===================================================================
-  share: {
-    title: 'Share Article',
-    platforms: {
-      telegram: 'Telegram',
-      whatsapp: 'WhatsApp',
-      vk: 'VK',
-      twitter: 'Twitter',
-      facebook: 'Facebook',
-      instagram: 'Instagram',
-      copy: 'Copy Link',
-    },
-    messages: {
-      linkCopied: 'Link copied!',
-      instagramCopied: 'Link copied! Paste it in the Instagram app',
-    },
-    accessibility: {
-      shareOn: 'Share via {platform}',
-      closeDialog: 'Close share dialog',
     },
   },
 };
