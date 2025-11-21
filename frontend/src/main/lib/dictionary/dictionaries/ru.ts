@@ -1,13 +1,14 @@
 // src/main/lib/dictionary/dictionary.ts
 
-import { CONTACT_EMAIL, SITE_URL } from "../constants/constants";
+import { CONTACT_EMAIL, SITE_URL } from "../../constants/constants";
+
 
 /**
  * Complete Russian dictionary - enhanced with metadata fallbacks and error handling
  * Uses templates extensively to avoid duplication and support multiple contexts
  * Optimized for both Google and Yandex SEO requirements
  */
-const dictionary = {
+const dictionaryRU = {
   locale: 'ru_RU',
   // ===================================================================
   // CONSENT - Consent banner content
@@ -475,6 +476,4 @@ const dictionary = {
   },
 };
 
-export type Lang = 'ru';
-export type Dictionary = typeof dictionary;
-export default dictionary;
+export default dictionaryRU;
