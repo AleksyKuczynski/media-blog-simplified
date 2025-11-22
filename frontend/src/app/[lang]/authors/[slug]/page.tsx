@@ -1,5 +1,4 @@
 // src/app/[lang]/authors/[slug]/page.tsx
-
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
@@ -10,13 +9,12 @@ import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
+import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import generateAuthorMetadata from '@/main/components/SEO/metadata/AuthorMetadata';
 import AuthorSchema from '@/main/components/SEO/schemas/AuthorSchema';
-import Link from 'next/link';
-import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
+import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
 
-// ISR CONFIGURATION: 1 hour (author pages stable)
 export const revalidate = 3600;
 export const dynamicParams = true;
 
@@ -25,26 +23,19 @@ export async function generateMetadata({
 }: { 
   params: Promise<{ lang: Lang, slug: string }> 
 }): Promise<Metadata> {
-  try {
-    const { lang, slug } = await params;
-    const [author] = await Promise.all([
-      fetchAuthorBySlug(slug, lang),
-    ]);
+  return safeGenerateMetadata(params, 'author', async (lang, dictionary, resolvedParams) => {
+    const { slug } = resolvedParams;
+    
+    const author = await fetchAuthorBySlug(slug, lang);
     
     if (!author) {
-      return {
-        title: 'Автор не найден — EventForMe',
-        description: 'Запрашиваемый автор не найден.',
-      };
+      throw new Error('Author not found');
     }
 
-    // Get article count for this author
     const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], slug);
     const articleCount = slugs.length;
-    const dictionary = getDictionary(lang as Lang);
 
-    // Use new AuthorMetadata component
-    return await generateAuthorMetadata({
+    return generateAuthorMetadata({
       dictionary,
       authorData: {
         name: author.name,
@@ -56,13 +47,7 @@ export async function generateMetadata({
         featured: false,
       },
     });
-  } catch (error) {
-    console.error('Error generating author metadata:', error);
-    
-    // Use errorHandler instead of hardcoded fallback
-    const errorHandler = createErrorHandler(dictionary);
-    return errorHandler.generateErrorMetadata('author');
-  }
+  });
 }
 
 export default async function AuthorPage({ 
@@ -74,28 +59,26 @@ export default async function AuthorPage({
 }) {
   try {
     const { lang, slug } = await params;
+    const resolvedSearchParams = await searchParams;
     const dictionary = getDictionary(lang as Lang);
+    const currentPage = Number(resolvedSearchParams.page) || 1;
+
     const [author, rubricBasics] = await Promise.all([
       fetchAuthorBySlug(slug, lang),
       fetchRubricBasics(lang),
     ]);
-    
+
     if (!author) {
       notFound();
     }
-    
-    const resolvedSearchParams = await searchParams;
-    const currentPage = Number(resolvedSearchParams.page) || 1;
-    const currentSort = resolvedSearchParams.sort || 'desc';
 
-    // Fetch articles for all pages up to current page
     let allSlugInfos: ArticleSlugInfo[] = [];
     let hasMore = false;
 
     for (let page = 1; page <= currentPage; page++) {
       const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
         page,
-        currentSort,
+        'desc',
         undefined,
         undefined,
         [],
@@ -106,7 +89,6 @@ export default async function AuthorPage({
       if (!pageHasMore) break;
     }
 
-    // Breadcrumb items using correct interface
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
@@ -122,20 +104,17 @@ export default async function AuthorPage({
       },
     ];
 
-    // Generate simple articles for schema using only available data
     const articlesForSchema = allSlugInfos.slice(0, 10).map(slugInfo => ({
-      title: slugInfo.slug, // Use slug as title fallback since title is not available
+      title: slugInfo.slug,
       slug: slugInfo.slug,
-      url: `${dictionary.seo.site.url}/articles/${slugInfo.slug}`, // Generic article URL
-      // publishedAt is not available in ArticleSlugInfo, so we omit it
+      url: `${dictionary.seo.site.url}/${lang}/authors/${slug}/${slugInfo.slug}`,
     }));
 
-    // Get article count text using helper
     const articleCountText = getLocalizedArticleCount(dictionary, allSlugInfos.length);
 
     return (
       <>
-        {/* Use new AuthorSchema component */}
+        {/* Schema and Breadcrumbs */}
         <AuthorSchema
           dictionary={dictionary}
           authorData={{
@@ -149,59 +128,106 @@ export default async function AuthorPage({
           currentPath={`/${lang}/authors/${slug}`}
         />
         
-        {/* Breadcrumbs using correct interface */}
         <Breadcrumbs 
           items={breadcrumbItems} 
-          rubrics={rubricBasics} 
-          lang="ru"
+          rubrics={rubricBasics}
+          lang={lang}
           translations={{
             home: dictionary.navigation.labels.home,
             allRubrics: dictionary.navigation.labels.rubrics,
             allAuthors: dictionary.navigation.labels.authors,
           }}
         />
-        
-        {/* Author profile section */}
-        <Section className="py-8">
+
+        {/* Author Profile Section */}
+        <Section 
+          className="py-8"
+          ariaLabel={processTemplate(dictionary.breadcrumb.templates.authorProfile, {
+            name: author.name
+          })}
+        >
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-              {author.avatar && (
-                <Image
-                  src={`${DIRECTUS_URL}/assets/${author.avatar}`}
-                  alt={`Фото автора ${author.name}`}
-                  width={200}
-                  height={200}
-                  className="rounded-full"
-                />
+              {/* Avatar */}
+              {author.avatar ? (
+                <div className="relative w-48 h-48 rounded-full overflow-hidden flex-shrink-0">
+                  <Image
+                    src={`${DIRECTUS_URL}/assets/${author.avatar}`}
+                    alt={processTemplate(dictionary.sections.authors.authorPhoto, {
+                      name: author.name
+                    })}
+                    fill
+                    className="object-cover"
+                    sizes="192px"
+                    priority
+                  />
+                </div>
+              ) : (
+                <div className="w-48 h-48 rounded-full bg-gradient-to-br from-pr-cont to-pr-fix flex items-center justify-center flex-shrink-0">
+                  <span className="text-on-pr-cont text-6xl font-bold">
+                    {author.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
               )}
-              <div>
-                <h1 className="text-4xl font-bold mb-4">{author.name}</h1>
+              
+              {/* Author Info */}
+              <div className="flex-1">
+                <h1 
+                  className="text-4xl font-bold mb-4 text-on-sf"
+                  itemProp="name"
+                >
+                  {author.name}
+                </h1>
+                
                 {author.bio && (
-                  <p className="text-lg text-gray-600 mb-4">{author.bio}</p>
+                  <p 
+                    className="text-lg text-on-sf-var mb-4 max-w-3xl"
+                    itemProp="description"
+                  >
+                    {author.bio}
+                  </p>
                 )}
-                <p className="text-sm text-gray-500">
-                  {articleCountText}
+                
+                <p className="text-sm text-muted-foreground">
+                  {processTemplate(dictionary.sections.templates.totalCount, {
+                    count: allSlugInfos.length.toString(),
+                    countLabel: dictionary.common.count.articles
+                  })}
                 </p>
               </div>
             </div>
           </div>
         </Section>
 
-        {/* Articles section */}
-        <Section className="py-8 bg-gray-50">
+        {/* Articles Section */}
+        <Section 
+          className="py-8 bg-muted/30"
+          ariaLabel={processTemplate(dictionary.sections.templates.itemsInCollectionDescription, {
+            items: dictionary.sections.labels.articles,
+            collection: processTemplate(dictionary.sections.templates.itemByAuthor, {
+              item: dictionary.sections.labels.articles,
+              author: author.name
+            }),
+            siteName: dictionary.seo.site.name
+          })}
+        >
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8">
-              {dictionary.sections.authors.articlesWrittenBy.replace('{author}', author.name)}
-            </h2>
+            <header className="mb-8">
+              <h2 className="text-3xl font-bold text-on-sf">
+                {processTemplate(dictionary.sections.authors.articlesWrittenBy, {
+                  author: author.name
+                })}
+              </h2>
+            </header>
             
             <Suspense fallback={
-              <div className="text-center py-8">
-                <div className="text-lg">{dictionary.common.status.loading}</div>
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-prcolor mx-auto mb-4"></div>
+                <p className="text-on-sf-var">{dictionary.common.status.loading}</p>
               </div>
             }>
               {allSlugInfos.length > 0 ? (
                 <>
-                  {/* ArticleList using correct props */}
                   <ArticleList 
                     slugInfos={allSlugInfos}
                     lang={lang}
@@ -210,7 +236,6 @@ export default async function AuthorPage({
                     showCount={false}
                   />
                   
-                  {/* LoadMoreButton using correct props */}
                   {hasMore && (
                     <div className="mt-8 text-center">
                       <LoadMoreButton
@@ -222,15 +247,15 @@ export default async function AuthorPage({
                 </>
               ) : (
                 <div className="text-center py-12">
-                  <p className="text-gray-600 mb-4">
-                    {dictionary.common.status.empty}
+                  <p className="text-lg text-muted-foreground mb-4">
+                    {processTemplate(dictionary.sections.templates.emptyCollection, {
+                      items: dictionary.sections.labels.articles,
+                      collection: processTemplate(dictionary.sections.templates.itemByAuthor, {
+                        item: '',
+                        author: author.name
+                      })
+                    })}
                   </p>
-                  <Link 
-                    href={`/${lang}/authors`}
-                    className="text-blue-600 hover:text-blue-800"
-                  >
-                    {dictionary.navigation.labels.authors}
-                  </Link>
                 </div>
               )}
             </Suspense>
@@ -238,9 +263,9 @@ export default async function AuthorPage({
         </Section>
       </>
     );
-  } catch (error) {
-     console.error('Error in AuthorPage:', error);
     
+  } catch (error) {
+    console.error('Error rendering author page:', error);
     throw error;
   }
 }

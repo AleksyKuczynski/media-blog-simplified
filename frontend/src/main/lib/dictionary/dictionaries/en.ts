@@ -294,6 +294,7 @@ export const dictionaryEN: Dictionary = {
       collectionPageDescription: 'Meet our authors and experts who create content about cultural events and contemporary ideas',
       profileDescription: 'Author profile and publications',
       articlesWrittenBy: 'Articles by {author}',
+      authorPhoto: 'Author avatar'
     },
     rubrics: {
       allRubrics: 'All Rubrics',

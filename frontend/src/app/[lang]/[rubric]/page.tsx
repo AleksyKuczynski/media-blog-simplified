@@ -1,6 +1,4 @@
 // src/app/[lang]/[rubric]/page.tsx
-// FIXED: Correct ArticleSlugInfo usage and proper data handling
-
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ArticleList from '@/main/components/Main/ArticleList';
@@ -11,45 +9,39 @@ import Section from '@/main/components/Main/Section';
 import { generateRubricMetadata } from '@/main/components/SEO/metadata/RubricMetadata';
 import { RubricPageSchema } from '@/main/components/SEO/schemas/RubricPageSchema';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
-import Link from 'next/link';
-import { createErrorHandler } from '@/main/lib/errors/errorUtils';
+import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
+import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
 
-// ISR CONFIGURATION: 5 minutes
 export const revalidate = 300;
 export const dynamicParams = true;
 
-/**
- * Generate metadata using new RubricMetadata component
- */
 export async function generateMetadata({ 
   params 
 }: { 
   params: Promise<{ lang: Lang, rubric: string }> 
 }): Promise<Metadata> {
-  try {
-    const { lang, rubric } = await params;
-    const dictionary = getDictionary(lang as Lang);
-    const [rubricDetails] = await Promise.all([
-      fetchRubricDetails(rubric, lang),
-    ]);
+  return safeGenerateMetadata(params, 'rubric', async (lang, dictionary, resolvedParams) => {
+    const { rubric } = resolvedParams;
+    
+    const rubricDetails = await fetchRubricDetails(rubric, lang);
     
     if (!rubricDetails) {
-      return {
-        title: 'Рубрика не найдена — EventForMe',
-        description: 'Запрашиваемая рубрика не найдена.',
-      };
+      throw new Error('Rubric not found');
     }
 
     const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === lang);
-    const rubricName = rubricTranslation?.name || rubric;
-    const rubricDescription = rubricTranslation?.description;
+    if (!rubricTranslation) {
+      throw new Error('Rubric translation not found');
+    }
 
-    // Get article count for this rubric
+    const rubricName = rubricTranslation.name;
+    const rubricDescription = rubricTranslation.description;
+
     const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], undefined, rubric);
     const articleCount = slugs.length;
 
-    return await generateRubricMetadata({
+    return generateRubricMetadata({
       dictionary,
       rubricData: {
         name: rubricName,
@@ -60,13 +52,7 @@ export async function generateMetadata({
         featured: false,
       },
     });
-  } catch (error) {
-    console.error('Error generating rubric metadata:', error);
-    
-    // Fallback metadata
-    const errorHandler = createErrorHandler(dictionary);
-    return errorHandler.generateErrorMetadata('rubric');
-  }
+  });
 }
 
 export default async function RubricPage({ 
@@ -74,7 +60,7 @@ export default async function RubricPage({
   searchParams 
 }: { 
   params: Promise<{ lang: Lang, rubric: string }>,
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; sort?: string }>
 }) {
   try {
     const { lang, rubric } = await params;
@@ -95,7 +81,6 @@ export default async function RubricPage({
     const rubricName = rubricTranslation?.name || rubric;
     const rubricDescription = rubricTranslation?.description;
 
-    // Fetch article slugs for all pages up to current page
     let allSlugInfos: ArticleSlugInfo[] = [];
     let hasMore = false;
 
@@ -114,7 +99,6 @@ export default async function RubricPage({
       if (!pageHasMore) break;
     }
 
-    // FIXED: Breadcrumb items using correct interface
     const breadcrumbItems = [
       {
         label: dictionary.navigation.labels.home,
@@ -130,19 +114,17 @@ export default async function RubricPage({
       },
     ];
 
-    // Generate simple articles for schema using only available data
     const articlesForSchema = allSlugInfos.slice(0, 10).map(slugInfo => ({
-      title: slugInfo.slug, // Use slug as title fallback since title is not available
+      title: slugInfo.slug,
       slug: slugInfo.slug,
       url: `${dictionary.seo.site.url}/${lang}/${rubric}/${slugInfo.slug}`,
-      // publishedAt is not available in ArticleSlugInfo, so we omit it
     }));
 
-    // Get article count text using helper
     const articleCountText = getLocalizedArticleCount(dictionary, allSlugInfos.length);
 
     return (
       <>
+        {/* Schema and Breadcrumbs */}
         <RubricPageSchema
           dictionary={dictionary}
           rubricData={{
@@ -166,23 +148,51 @@ export default async function RubricPage({
           }}
         />
         
-        <header className="mb-8 container mx-auto px-4">
-          <h1 className="text-4xl font-bold mb-4">
-            {rubricName}
-          </h1>
-          
-          {rubricDescription && (
-            <p className="text-lg text-gray-600 mb-4 max-w-3xl">
-              {rubricDescription}
-            </p>
-          )}
-          
-          <p className="text-sm text-gray-500">
-            {articleCountText}
-          </p>
-        </header>
+        {/* Rubric Header Section */}
+        <Section 
+          className="py-8"
+          ariaLabel={processTemplate(dictionary.sections.templates.itemInCollection, {
+            item: dictionary.sections.labels.articles,
+            collection: rubricName
+          })}
+        >
+          <div className="container mx-auto px-4">
+            <header className="mb-8">
+              <h1 
+                className="text-4xl font-bold mb-4 text-on-sf"
+                itemProp="name"
+              >
+                {rubricName}
+              </h1>
+              
+              {rubricDescription && (
+                <p 
+                  className="text-lg text-on-sf-var mb-4 max-w-3xl"
+                  itemProp="description"
+                >
+                  {rubricDescription}
+                </p>
+              )}
+              
+              <p className="text-sm text-muted-foreground">
+                {processTemplate(dictionary.sections.templates.totalCount, {
+                  count: allSlugInfos.length.toString(),
+                  countLabel: dictionary.common.count.articles
+                })}
+              </p>
+            </header>
+          </div>
+        </Section>
 
-        <Section className="py-0">
+        {/* Articles Section */}
+        <Section 
+          className="py-0"
+          ariaLabel={processTemplate(dictionary.sections.templates.itemsInCollectionDescription, {
+            items: dictionary.sections.labels.articles,
+            collection: rubricName,
+            siteName: dictionary.seo.site.name
+          })}
+        >
           <div className="container mx-auto px-4">
             {allSlugInfos.length > 0 ? (
               <>
@@ -193,68 +203,30 @@ export default async function RubricPage({
                   rubricSlug={rubric}
                   showCount={false}
                 />
-                
                 {hasMore && (
-                  <div className="mt-8 text-center">
-                    <LoadMoreButton
-                      currentPage={currentPage}
-                      dictionary={dictionary}
-                    />
-                  </div>
+                  <LoadMoreButton 
+                    currentPage={currentPage}
+                    dictionary={dictionary}
+                  />
                 )}
               </>
             ) : (
               <div className="text-center py-12">
-                <h2 className="text-xl font-semibold mb-4">
-                  {dictionary.common.status.empty}
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  В рубрике {rubricName} пока нет статей
+                <p className="text-lg text-muted-foreground mb-4">
+                  {processTemplate(dictionary.sections.templates.emptyCollection, {
+                    items: dictionary.sections.labels.articles,
+                    collection: rubricName
+                  })}
                 </p>
-                <Link 
-                  href={`/${lang}/rubrics`}
-                  className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  {dictionary.navigation.labels.rubrics}
-                </Link>
               </div>
             )}
           </div>
         </Section>
-        
-        {allSlugInfos.length > 0 && (
-          <Section className="py-8 bg-gray-50">
-            <div className="container mx-auto px-4">
-              <div className="text-center max-w-3xl mx-auto">
-                <h2 className="text-2xl font-bold mb-4">
-                  Больше о рубрике {rubricName}
-                </h2>
-                <p className="text-gray-600 mb-6">
-                  {dictionary.sections.rubrics.categoriesDescription}
-                </p>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <Link 
-                    href={`/${lang}/rubrics`}
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    {dictionary.sections.rubrics.allRubrics}
-                  </Link>
-                  <Link 
-                    href={`/${lang}/articles`}
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    {dictionary.sections.articles.allArticles}
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </Section>
-        )}
       </>
     );
-  } catch (error) {
-    console.error('Error in RubricPage:', error);
     
+  } catch (error) {
+    console.error('Error rendering rubric page:', error);
     throw error;
   }
 }

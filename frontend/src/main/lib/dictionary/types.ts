@@ -326,6 +326,7 @@ export interface SectionAuthors {
   readonly collectionPageDescription: string;
   readonly profileDescription: string;
   readonly articlesWrittenBy: string;
+  readonly authorPhoto: string;
 }
 
 export interface SectionRubrics {

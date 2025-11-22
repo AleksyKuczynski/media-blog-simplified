@@ -126,11 +126,11 @@ const dictionaryRU: Dictionary = {
   // ===================================================================
   common: {
     count: {
-      articles: 'Статей:',
-      rubrics: 'Рубрик:',
-      authors: 'Авторов:',
-      results: 'Результатов:',
-      items: 'Элементов:',
+      articles: 'статей:',
+      rubrics: 'рубрик:',
+      authors: 'авторов:',
+      results: 'результатов:',
+      items: 'элементов:',
     },
     actions: {
       loadMore: 'Загрузить еще',
@@ -269,7 +269,7 @@ const dictionaryRU: Dictionary = {
       itemsInCollectionDescription: '{items} в коллекции {collection} на {siteName}',
       authorWorksDescription: 'Работы автора {author} на {siteName}',
       emptyCollection: 'В {collection} пока нет {items}',
-      totalCount: 'Всего: {count} {countLabel}',
+      totalCount: 'Всего {countLabel} {count}',
       itemDescription: 'Статья {name}',
       categoryDescription: 'Статьи в категории {categoryName}',
       noCategoryArticles: 'В категории {categoryName} пока нет статей',
@@ -296,6 +296,7 @@ const dictionaryRU: Dictionary = {
       collectionPageDescription: 'Познакомьтесь с нашими авторами и экспертами, которые создают контент о культурных событиях и современных идеях',
       profileDescription: 'Профиль автора и его публикации',
       articlesWrittenBy: 'Статьи автора {author}',
+      authorPhoto: 'Аватар автора'
     },
     rubrics: {
       allRubrics: 'Все рубрики',
