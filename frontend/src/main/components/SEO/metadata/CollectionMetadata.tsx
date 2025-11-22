@@ -95,12 +95,9 @@ export const generateCollectionNotFoundMetadata = (
 ): Metadata => {
   const notFoundMeta = dictionary.metadata.notFound.page;
   
-  const collectionName = dictionary.sections.labels[collectionType];
-  const title = `${collectionName} не найдены`;
-  
   return {
     title: processTemplate(dictionary.seo.templates.pageTitle, {
-      title,
+      title: notFoundMeta.title,
       siteName: dictionary.seo.site.name
     }),
     description: notFoundMeta.description,
@@ -137,3 +134,5 @@ export const validateCollectionMetadata = (
     errors,
   };
 };
+
+export default generateCollectionMetadata;

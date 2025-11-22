@@ -1,4 +1,4 @@
-// src/app/ru/(with-filter)/articles/page.tsx
+// src/app/[lang]/(with-filter)/articles/page.tsx
 
 import { Suspense } from 'react';
 import { Metadata } from 'next';
@@ -6,206 +6,121 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
-import { fetchArticleSlugs, fetchAllCategories } from '@/main/lib/directus';
+import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics } from '@/main/lib/directus';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
+import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
+import FilterGroup from '@/main/components/Navigation/Filter/FilterGroup';
 
-// ISR CONFIGURATION: Revalidate every 5 minutes
 export const revalidate = 300;
-
-// Allow dynamic params (page, sort, category from searchParams)
 export const dynamicParams = true;
 
-// Generate metadata using CollectionMetadata following established pattern
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
-  const { lang } = await params;
-  const dictionary = getDictionary(lang as Lang);
-
-  // Fetch articles to get accurate count and items for metadata
-  try {
+  return safeGenerateMetadata(params, 'page', async (lang, dictionary) => {
     const { slugs } = await fetchArticleSlugs(1, 'desc');
     
-    // Transform article data using only available properties (slug, layout)
     const articleItems = slugs.slice(0, 5).map(slug => ({
-      name: slug.slug, // Use slug as name since title is not available
+      name: slug.slug,
       slug: slug.slug,
-      description: `Статья ${slug.slug}`, // Generate description from slug
+      description: processTemplate(dictionary.sections.templates.itemDescription, {
+        name: slug.slug,
+      }),
     }));
 
-    // Use proper CollectionMetadata instead of PageMetadata
     return await generateCollectionMetadata({
       dictionary,
       collectionType: 'articles',
       items: articleItems,
-      totalCount: slugs.length, // Use slugs.length, not totalCount property
-      currentPath: `/${DEFAULT_LANG}/articles`,
+      totalCount: slugs.length,
+      currentPath: `/${lang}/articles`,
       featured: false,
     });
-    
-  } catch (error) {
-    console.error('Error generating articles metadata:', error);
-    
-    // Fallback metadata using dictionary entries (no hardcoded text)
-    return {
-      title: processTemplate(dictionary.seo.templates.collectionPage, {
-        collection: processTemplate(dictionary.sections.templates.collectionTitle, {
-          section: dictionary.sections.labels.articles,
-        }),
-        siteName: dictionary.seo.site.name,
-      }),
-      description: processTemplate(dictionary.seo.templates.metaDescription, {
-        description: dictionary.sections.articles.collectionPageDescription,
-        siteName: dictionary.seo.site.name,
-      }),
-    };
-  }
+  });
 }
 
 export default async function ArticlesPage({ 
   params,
   searchParams 
 }: {
-  params: Promise<{ lang: string }>;
+  params: Promise<{ lang: Lang }>;
   searchParams: Promise<{ page?: string; sort?: string; category?: string }>;
 }) {
-
   const { lang } = await params;
   const dictionary = getDictionary(lang as Lang);
-
-  // Get dictionary and categories for FilterGroup
-  const [categories] = await Promise.all([
-    fetchAllCategories('ru')
-  ]);
   
-  // Await searchParams Promise
   const resolvedSearchParams = await searchParams;
-  
-  // Parse parameters (preserve existing logic)
   const currentPage = Number(resolvedSearchParams.page) || 1;
   const currentSort = resolvedSearchParams.sort || 'desc';
-  const categoryFilter = resolvedSearchParams.category;
-  
-  // Fetch articles for all pages up to current (simplified - no hero logic)
-  let allSlugs: ArticleSlugInfo[] = [];
-  let hasMore = false;
-  
-  try {
-    // Get regular articles (no hero article filtering)
-    for (let page = 1; page <= currentPage; page++) {
-      const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
-        page,
-        currentSort,
-        categoryFilter
-      );
-      
-      allSlugs = [...allSlugs, ...slugs];
-      hasMore = pageHasMore;
-      
-      if (!pageHasMore) break;
-    }
-  } catch (error) {
-    console.error('Error fetching articles:', error);
-    // Handle error state gracefully
-  }
+  const categorySlug = resolvedSearchParams.category;
 
-  // Prepare data for structured schema using available properties
-  const articleItems = allSlugs.slice(0, 10).map(slug => ({
-    name: slug.slug, // Use slug as name since title is not available
-    slug: slug.slug,
-    url: `${dictionary.seo.site.url}/ru/articles/${slug.slug}`,
-    description: `Статья ${slug.slug}`, // Generate description from slug
-  }));
+  let allSlugInfos: ArticleSlugInfo[] = [];
+  let hasMore = false;
+
+  for (let page = 1; page <= currentPage; page++) {
+    const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
+      page,
+      currentSort,
+      categorySlug
+    );
+    allSlugInfos = [...allSlugInfos, ...slugs];
+    hasMore = pageHasMore;
+    if (!pageHasMore) break;
+  }
 
   return (
     <>
-      {/* Schema & Breadcrumbs at top (following RubricPage pattern) */}
       <CollectionPageSchema
         dictionary={dictionary}
         collectionType="articles"
-        items={articleItems}
-        totalCount={allSlugs.length}
-        currentPath="/ru/articles"
+        items={allSlugInfos.slice(0, 10).map(slugInfo => ({
+          name: slugInfo.slug,
+          slug: slugInfo.slug,
+          url: `${dictionary.seo.site.url}/${lang}/${slugInfo.slug}`,
+          description: processTemplate(dictionary.sections.templates.itemDescription, {
+            name: slugInfo.slug,
+          }),
+        }))}
+        totalCount={allSlugInfos.length}
+        currentPath={`/${lang}/articles`}
         featured={false}
       />
 
-      {/* FilterGroup replaces header section (following RubricPage structure) */}
-      <div className="mb-8 container mx-auto px-4">
-        {/* SEO Text section (replaces description paragraph from RubricPage pattern) */}
-        <div className="mt-6">
-          <p className="text-lg text-on-sf-var mb-4 max-w-3xl">
-            {dictionary.sections.articles.collectionPageDescription}
-          </p>
-          
-          {/* Article count display (following RubricPage pattern) */}
-          {allSlugs.length > 0 && (
-            <p className="text-sm text-muted-foreground">
-              {processTemplate(dictionary.sections.templates.totalCount, {
-                count: allSlugs.length.toString(),
-                countLabel: dictionary.common.count.articles
-              })}
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* Main Articles Section (following RubricPage pattern exactly) */}
-      <Section 
-        className="py-0"
+      <Section
         ariaLabel={dictionary.sections.articles.allArticles}
+        className="py-8"
       >
         <div className="container mx-auto px-4">
-          {allSlugs.length > 0 ? (
-            <>
-              {/* Enhanced ArticleList (preserve existing) */}
-              <ArticleList 
-                slugInfos={allSlugs} 
-                lang={DEFAULT_LANG} 
-                dictionary={dictionary}
-                categorySlug={categoryFilter}
-                showCount={true}
-                ariaLabel={`${dictionary.sections.articles.allArticles}. Показано статей: ${allSlugs.length}`}
-              />
-              
-              {/* Enhanced LoadMoreButton (preserve existing) */}
-              {hasMore && (
-                <div className="mt-12">
-                  <Suspense fallback={
-                    <div className="text-center">
-                      <div className="bg-gray-200 dark:bg-gray-700 rounded-lg px-6 py-3 animate-pulse">
-                        {dictionary.common.status.loading}
-                      </div>
-                    </div>
-                  }>
-                    <LoadMoreButton 
-                      currentPage={currentPage}
-                      dictionary={dictionary}
-                      disabled={false}
-                    />
-                  </Suspense>
-                </div>
-              )}
-            </>
-          ) : (
-            <div 
-              className="text-center py-12"
-              role="status"
-              aria-label={dictionary.common.status.empty}
-            >
-              <p className="text-on-sf-var">
-                {categoryFilter 
-                  ? `${dictionary.sections.articles.noArticlesFound} в этой категории`
-                  : dictionary.sections.articles.noArticlesFound
-                }
-              </p>
-            </div>
-          )}
+          <Suspense fallback={<div>{dictionary.common.status.loading}</div>}>
+            {allSlugInfos.length > 0 ? (
+              <>
+                <ArticleList 
+                  slugInfos={allSlugInfos} 
+                  lang={lang as Lang}
+                  dictionary={dictionary}
+                  showCount={false}
+                />
+                
+                {hasMore && (
+                  <LoadMoreButton
+                    currentPage={currentPage}
+                    dictionary={dictionary}
+                  />
+                )}
+              </>
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-lg text-muted-foreground">
+                  {dictionary.sections.articles.noArticlesFound}
+                </p>
+              </div>
+            )}
+          </Suspense>
         </div>
       </Section>
     </>

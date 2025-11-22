@@ -12,9 +12,9 @@ export default async function WithFilterLayout({
    params:  Promise<{ lang: Lang }> 
   children: React.ReactNode;
 }) {
-  const categories = await fetchAllCategories('ru');
-  const resolvedParams = await params;
-  const dictionary = getDictionary(resolvedParams.lang as Lang);
+  const { lang } = await params;
+  const dictionary = getDictionary(lang);
+  const categories = await fetchAllCategories(lang);
 
   return (
     <>
@@ -49,7 +49,7 @@ export default async function WithFilterLayout({
         <FilterGroup
           categories={categories}
           dictionary={dictionary}
-          lang={resolvedParams.lang}
+          lang={lang}
         />
       </Suspense>      
       {children}
