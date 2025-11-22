@@ -8,7 +8,7 @@ import Dictionary from "../types";
  * Optimized for both Google and Yandex SEO requirements
  */
 export const dictionaryEN: Dictionary = {
-  locale: 'en_US',
+  locale: 'en-US',
   
   // ===================================================================
   // CONSENT - Consent banner content

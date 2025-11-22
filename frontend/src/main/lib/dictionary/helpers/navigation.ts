@@ -135,3 +135,37 @@ export const generateBreadcrumbs = (
   
   return breadcrumbs;
 };
+
+/**
+ * Get skip links data for accessibility navigation
+ */
+export const getSkipLinksData = (dictionary: Dictionary) => {
+  return {
+    skipToContent: {
+      href: '#main-content',
+      label: dictionary.navigation.accessibility.skipToContent,
+    },
+    skipToNavigation: {
+      href: '#main-navigation',
+      label: dictionary.navigation.accessibility.skipToNavigation,
+    },
+    skipToSearch: {
+      href: '#site-search',
+      label: dictionary.search.accessibility.searchLabel,
+    },
+    skipToFooter: {
+      href: '#site-footer',
+      label: dictionary.footer.accessibility.skipToFooter,
+    },
+  };
+};
+
+/**
+ * Get skip links accessibility labels
+ */
+export const getSkipLinksAccessibility = (dictionary: Dictionary) => {
+  return {
+    skipLinksDescription: dictionary.navigation.accessibility.mainNavigation,
+    keyboardNavigationLabel: dictionary.navigation.accessibility.mainMenuLabel,
+  };
+};

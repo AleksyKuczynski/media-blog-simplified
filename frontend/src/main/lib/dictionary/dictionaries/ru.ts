@@ -10,7 +10,7 @@ import Dictionary from "../types";
  * Optimized for both Google and Yandex SEO requirements
  */
 const dictionaryRU: Dictionary = {
-  locale: 'ru_RU',
+  locale: 'ru-RU',
 
   // ===================================================================
   // CONSENT - Consent banner content

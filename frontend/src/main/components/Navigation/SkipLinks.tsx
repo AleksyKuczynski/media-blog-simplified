@@ -4,10 +4,7 @@
 'use client';
 
 import { Dictionary } from '@/main/lib/dictionary';
-import { 
-  getSkipLinksData, 
-  getSkipLinksAccessibility 
-} from '@/main/lib/dictionary/helpers/navigation';
+import { getSkipLinksAccessibility, getSkipLinksData } from '@/main/lib/dictionary/helpers/navigation';
 
 interface SkipLinksProps {
   dictionary: Dictionary;
