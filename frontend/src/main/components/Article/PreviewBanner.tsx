@@ -1,6 +1,8 @@
 // frontend/src/main/components/Article/PreviewBanner.tsx
 'use client';
 
+import { Dictionary } from "@/main/lib/dictionary";
+
 export default function PreviewBanner() {
   const exitPreview = () => {
     // Remove preview params from URL

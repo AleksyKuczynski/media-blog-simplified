@@ -1,11 +1,12 @@
 // src/main/components/SEO/schemas/QuickNavigationSchema.tsx
 
 import React from 'react';
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { SchemaBuilder } from '../core/SchemaBuilder';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 
 interface QuickNavigationSchemaProps {
+  lang: Lang;
+  dictionary: Dictionary;
   currentArticleUrl: string;
 }
 
@@ -15,6 +16,8 @@ interface QuickNavigationSchemaProps {
  * Helps search engines understand site structure and internal linking
  */
 export default function QuickNavigationSchema({
+  lang,
+  dictionary,
   currentArticleUrl,
 }: QuickNavigationSchemaProps): React.ReactElement {
   try {
@@ -29,13 +32,13 @@ export default function QuickNavigationSchema({
         {
           '@type': 'SiteNavigationElement',
           name: dictionary.sections.labels.articles,
-          url: `${baseUrl}/${DEFAULT_LANG}/articles`,
+          url: `${baseUrl}/${lang}/articles`,
           description: dictionary.navigation.descriptions.articles,
         },
         {
           '@type': 'SiteNavigationElement',
           name: dictionary.sections.labels.rubrics,
-          url: `${baseUrl}/${DEFAULT_LANG}/rubrics`,
+          url: `${baseUrl}/${lang}/rubrics`,
           description: dictionary.navigation.descriptions.rubrics,
         },
       ],

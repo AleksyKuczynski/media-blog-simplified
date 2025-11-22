@@ -1,17 +1,17 @@
 // src/main/components/SEO/schemas/AuthorSectionSchema.tsx
 
 import React from 'react';
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { SchemaBuilder } from '../core/SchemaBuilder';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 
 interface AuthorSectionSchemaProps {
+  lang: Lang;
+  dictionary: Dictionary;
   author: {
     name: string;
     slug: string;
     avatar?: string;
   };
-  currentArticleUrl: string;
 }
 
 /**
@@ -21,12 +21,13 @@ interface AuthorSectionSchemaProps {
  * Links author entity to profile page
  */
 export default function AuthorSectionSchema({
+  lang,
+  dictionary,
   author,
-  currentArticleUrl,
 }: AuthorSectionSchemaProps): React.ReactElement {
   try {
     const baseUrl = dictionary.seo.site.url.replace(/\/$/, '');
-    const authorProfileUrl = `${baseUrl}/${DEFAULT_LANG}/authors/${author.slug}`;
+    const authorProfileUrl = `${baseUrl}/${lang}/authors/${author.slug}`;
     
     const personSchema = {
       '@context': 'https://schema.org' as const,

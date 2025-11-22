@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/main/lib/utils/utils';
+import { Lang } from '@/main/lib/dictionary';
 
 interface RelatedArticleCardProps {
   slug: string;
@@ -11,7 +12,7 @@ interface RelatedArticleCardProps {
   imageSrc?: string; // Full URL constructed in server component
   rubricSlug: string;
   formattedDate: string;
-  lang: 'ru';
+  lang: Lang;
 }
 
 /**

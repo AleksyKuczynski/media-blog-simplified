@@ -1,92 +1,28 @@
-// src/main/components/SEO/core/MetadataBuilder.tsx
-// FIXED: Only the Next.js Metadata type issue, nothing else
-
+// frontend/src/main/components/SEO/core/MetadataBuilder.tsx
 import { Metadata } from 'next';
 import { 
   SEOData, 
   ArticleSEOData, 
   WebsiteSEOData, 
-  CollectionSEOData,
+  CollectionSEOData 
 } from './types';
 
-/**
- * Helper function to validate URLs
- */
-const isValidUrl = (url: string): boolean => {
-  try {
-    new URL(url);
-    return true;
-  } catch {
-    return false;
-  }
-};
-
-/**
- * FIXED: Filter undefined values and ensure proper Next.js Metadata types
- */
-const filterDefinedValues = (obj: Record<string, any>): Record<string, string | number | (string | number)[]> => {
-  const result: Record<string, string | number | (string | number)[]> = {};
-  
-  for (const [key, value] of Object.entries(obj)) {
-    if (value !== undefined && value !== null) {
-      if (typeof value === 'string' || typeof value === 'number') {
-        result[key] = value;
-      } else if (Array.isArray(value)) {
-        result[key] = value.filter(v => v !== undefined && v !== null);
-      } else {
-        result[key] = String(value);
-      }
-    }
-  }
-  
-  return result;
-};
-
-/**
- * Validate SEO data before building metadata
- */
-export const validateSEOData = (seoData: SEOData): boolean => {
-  if (!seoData.title || seoData.title.trim().length === 0) {
-    console.warn('SEO: Title is required');
-    return false;
-  }
-  
-  if (!seoData.description || seoData.description.trim().length === 0) {
-    console.warn('SEO: Description is required');
-    return false;
-  }
-  
-  if (!seoData.canonicalUrl || !isValidUrl(seoData.canonicalUrl)) {
-    console.warn('SEO: Valid canonical URL is required');
-    return false;
-  }
-
-  return true;
-};
-
-/**
- * Core metadata building function
- */
 export const buildMetadata = (seoData: SEOData): Metadata => {
   const baseMetadata: Metadata = {
     title: seoData.title,
     description: seoData.description,
     keywords: seoData.keywords,
-    
+
     alternates: {
       canonical: seoData.canonicalUrl,
-      languages: {
-        'ru': seoData.canonicalUrl,
-        'ru-RU': seoData.canonicalUrl,
-      },
     },
 
     openGraph: {
       title: seoData.title,
       description: seoData.description,
       url: seoData.canonicalUrl,
-      siteName: seoData.siteName || 'EventForMe',
-      locale: seoData.locale || 'ru_RU',
+      siteName: seoData.siteName,
+      locale: seoData.locale || 'en_US',
       type: seoData.type === 'article' ? 'article' : 'website',
       images: seoData.imageUrl ? [
         {
@@ -118,15 +54,14 @@ export const buildMetadata = (seoData: SEOData): Metadata => {
     },
   };
 
-  // FIXED: Build other metadata properly to avoid Next.js type issues
-  const otherMetadata: Record<string, string | number | (string | number)[]> = {
-    'DC.language': 'ru',
-    'DC.coverage': 'Russia',
-    'geo.region': 'RU',
-    'geo.placename': 'Russia',
+  const langCode = (seoData.locale || 'en_US').split('_')[0];
+  const otherMetadata: Record<string, string | number> = {
+    'DC.language': langCode,
+    'DC.coverage': langCode === 'ru' ? 'Russia' : 'Europe',
+    'geo.region': langCode === 'ru' ? 'RU' : 'EU',
+    'geo.placename': langCode === 'ru' ? 'Russia' : 'Europe',
   };
 
-  // Article-specific metadata
   if (seoData.type === 'article') {
     const articleData = seoData as ArticleSEOData;
     
@@ -137,28 +72,26 @@ export const buildMetadata = (seoData: SEOData): Metadata => {
     otherMetadata['article:tag'] = articleData.tags.join(', ');
     otherMetadata['DC.type'] = 'Text.Article';
   }
-  // Collection-specific metadata  
   else if (seoData.type === 'collection') {
     const collectionData = seoData as CollectionSEOData;
     
     otherMetadata['DC.type'] = 'Text.Collection';
     otherMetadata['collection:type'] = collectionData.collectionType;
     otherMetadata['collection:itemCount'] = collectionData.itemCount.toString();
-    otherMetadata['collection:language'] = 'ru';
+    otherMetadata['collection:language'] = langCode;
   }
 
-  // FIXED: Assign filtered metadata to avoid type issues
-  baseMetadata.other = filterDefinedValues(otherMetadata);
+  baseMetadata.other = otherMetadata;
 
   return baseMetadata;
 };
 
-// Factory functions
 export const createWebsiteSEOData = (
   title: string,
   description: string,
   keywords: string,
   canonicalUrl: string,
+  locale: string,
   imageUrl?: string
 ): WebsiteSEOData => ({
   type: 'website',
@@ -167,7 +100,7 @@ export const createWebsiteSEOData = (
   keywords,
   canonicalUrl,
   imageUrl,
-  locale: 'ru_RU',
+  locale,
   siteName: 'EventForMe',
 });
 
@@ -176,6 +109,7 @@ export const createArticleSEOData = (
   description: string,
   keywords: string,
   canonicalUrl: string,
+  locale: string,
   publishedTime: string,
   modifiedTime: string,
   author: string,
@@ -189,7 +123,7 @@ export const createArticleSEOData = (
   keywords,
   canonicalUrl,
   imageUrl,
-  locale: 'ru_RU',
+  locale,
   siteName: 'EventForMe',
   publishedTime,
   modifiedTime,
@@ -203,6 +137,7 @@ export const createCollectionSEOData = (
   description: string,
   keywords: string,
   canonicalUrl: string,
+  locale: string,
   collectionType: string,
   itemCount: number,
   imageUrl?: string
@@ -213,13 +148,34 @@ export const createCollectionSEOData = (
   keywords,
   canonicalUrl,
   imageUrl,
-  locale: 'ru_RU',
+  locale,
   siteName: 'EventForMe',
   collectionType,
   itemCount,
 });
 
-// Public API
+export const validateSEOData = (seoData: SEOData): boolean => {
+  if (!seoData.title || !seoData.description) {
+    console.warn('SEO data missing required fields');
+    return false;
+  }
+  
+  if (!seoData.canonicalUrl) {
+    console.warn('SEO data missing canonical URL');
+    return false;
+  }
+
+  if (seoData.title.length > 60) {
+    console.warn('SEO title too long (>60 chars):', seoData.title.length);
+  }
+
+  if (seoData.description.length > 160) {
+    console.warn('SEO description too long (>160 chars):', seoData.description.length);
+  }
+
+  return true;
+};
+
 export const MetadataBuilder = {
   build: buildMetadata,
   validate: validateSEOData,

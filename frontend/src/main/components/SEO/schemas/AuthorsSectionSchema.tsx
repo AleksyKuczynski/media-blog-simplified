@@ -2,14 +2,16 @@
 
 import React from 'react';
 import AuthorSectionSchema from './AuthorSectionSchema';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 
 interface AuthorsSectionSchemaProps {
+  lang: Lang;
+  dictionary: Dictionary;
   authors: Array<{
     name: string;
     slug: string;
     avatar?: string;
   }>;
-  currentArticleUrl: string;
 }
 
 /**
@@ -19,8 +21,9 @@ interface AuthorsSectionSchemaProps {
  * Each author entity linked to their profile page
  */
 export default function AuthorsSectionSchema({
+  lang,
+  dictionary,
   authors,
-  currentArticleUrl,
 }: AuthorsSectionSchemaProps): React.ReactElement {
   // Filter out editorial/placeholder authors
   const realAuthors = authors.filter(
@@ -36,9 +39,10 @@ export default function AuthorsSectionSchema({
     <>
       {realAuthors.map((author) => (
         <AuthorSectionSchema
+          lang={lang}
+          dictionary={dictionary}
           key={author.slug}
           author={author}
-          currentArticleUrl={currentArticleUrl}
         />
       ))}
     </>

@@ -1,9 +1,8 @@
 // src/main/components/Article/navigation/QuickNavigation/QuickNavigation.tsx
 
 import Link from 'next/link';
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { NAVIGATION_STYLES } from '../../styles';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 
 /**
  * Quick navigation links for article page
@@ -11,11 +10,17 @@ import { NAVIGATION_STYLES } from '../../styles';
  * Provides internal site structure links for SEO and UX
  * Implements SiteNavigationElement schema
  */
-export default function QuickNavigation() {
+export default function QuickNavigation({
+  lang,
+  dictionary
+}: {
+  lang: Lang,
+  dictionary: Dictionary 
+}) {
   const styles = NAVIGATION_STYLES.relatedLinks.quickNav;
   
-  const articlesUrl = `/${DEFAULT_LANG}/articles`;
-  const rubricsUrl = `/${DEFAULT_LANG}/rubrics`;
+  const articlesUrl = `/${lang}/articles`;
+  const rubricsUrl = `/${lang}/rubrics`;
   
   // Generate aria labels
   const articlesLabel = dictionary.navigation.descriptions.articles;

@@ -1,6 +1,6 @@
 // src/main/components/Article/navigation/AuthorsSection/AuthorsSection.tsx
 
-import { dictionary } from '@/main/lib/dictionary';
+import { Dictionary } from '@/main/lib/dictionary';
 import { NAVIGATION_STYLES } from '../../styles';
 import AuthorSection from '../AuthorSection/AuthorSection';
 
@@ -11,6 +11,7 @@ interface AuthorsSectionProps {
     avatar?: string;
   }>;
   className?: string;
+  dictionary: Dictionary;
 }
 
 /**
@@ -22,6 +23,7 @@ interface AuthorsSectionProps {
 export default function AuthorsSection({
   authors,
   className,
+  dictionary
 }: AuthorsSectionProps) {
   // Filter out editorial/placeholder authors
   const realAuthors = authors.filter(

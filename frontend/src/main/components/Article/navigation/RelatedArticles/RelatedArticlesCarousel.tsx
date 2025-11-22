@@ -5,6 +5,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import RelatedArticleCard, { RelatedArticleCardSkeleton } from './RelatedArticleCard';
+import { Lang } from '@/main/lib/dictionary';
 
 export interface CarouselArticle {
   slug: string;
@@ -17,7 +18,7 @@ export interface CarouselArticle {
 
 interface RelatedArticlesCarouselProps {
   articles: CarouselArticle[];
-  lang: 'ru';
+  lang: Lang;
   isLoading?: boolean;
 }
 

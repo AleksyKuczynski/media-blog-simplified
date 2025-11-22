@@ -2,11 +2,10 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 import { NAVIGATION_STYLES } from '../../styles';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 
 interface RubricSectionProps {
   rubric: {
@@ -14,6 +13,8 @@ interface RubricSectionProps {
     name: string;
     icon?: string;
   };
+  lang: Lang;
+  dictionary: Dictionary; 
 }
 
 /**
@@ -24,10 +25,12 @@ interface RubricSectionProps {
  */
 export default function RubricSection({
   rubric,
+  lang,
+  dictionary
 }: RubricSectionProps) {
   const styles = NAVIGATION_STYLES.relatedLinks.rubric;
   
-  const rubricUrl = `/${DEFAULT_LANG}/${rubric.slug}`;
+  const rubricUrl = `/${lang}/${rubric.slug}`;
   
   // Generate aria label
   const ariaLabel = processTemplate(

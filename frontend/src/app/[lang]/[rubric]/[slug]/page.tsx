@@ -1,5 +1,4 @@
-// src/app/ru/[rubric]/[slug]/page.tsx
-
+// frontend/src/app/[lang]/[rubric]/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
@@ -10,20 +9,17 @@ import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { processContent } from '@/main/lib/markdown/processContent';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs';
-import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import StandardError from '@/main/components/errors/StandardError';
-import generateArticleMetadata, { generateArticleNotFoundMetadata } from '@/main/components/SEO/metadata/ArticleMetadata';
+import generateArticleMetadata from '@/main/components/SEO/metadata/ArticleMetadata';
 import ArticleSchema from '@/main/components/SEO/schemas/ArticleSchema';
 import QuickNavigationSchema from '@/main/components/SEO/schemas/QuickNavigationSchema';
 import AuthorsSectionSchema from '@/main/components/SEO/schemas/AuthorsSectionSchema';
-import { isPreviewMode } from '@/main/lib/utils/previewMode';
 import PreviewBanner from '@/main/components/Article/PreviewBanner';
+import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
 
-// ISR CONFIGURATION: 1 hour (articles rarely change after publish)
 export const revalidate = 3600;
 export const dynamicParams = true;
 
-// Helper function to validate preview mode from URL params
 function isValidPreview(previewParam: string | undefined, secretParam: string | undefined): boolean {
   const PREVIEW_SECRET = process.env.PREVIEW_SECRET;
   return previewParam === 'true' && secretParam === PREVIEW_SECRET;
@@ -32,27 +28,23 @@ function isValidPreview(previewParam: string | undefined, secretParam: string | 
 export async function generateMetadata({ 
   params 
 }: { 
-  params: Promise<{ lang: Lang, rubric: string, slug: string }> 
+  params: Promise<{ lang: string; rubric: string; slug: string }> 
 }): Promise<Metadata> {
-  try {
-    const { lang, rubric, slug } = await params;
-    const dictionary = getDictionary(lang as Lang);
-
-    // Check preview mode at page level
-    const inPreview = await isPreviewMode();
+  return safeGenerateMetadata(params, 'article', async (lang, dictionary, resolvedParams) => {
+    const { rubric, slug } = resolvedParams;
     
-    // Pass preview state to fetch function
-    const [article] = await Promise.all([
-      fetchFullArticle(slug, lang, inPreview),
-    ]);
+    // Check for preview mode - read from headers/cookies
+    const inPreview = false; // TODO: Implement proper preview detection
+    
+    const article = await fetchFullArticle(slug, lang, inPreview);
 
     if (!article) {
-      return generateArticleNotFoundMetadata(dictionary, rubric);
+      throw new Error('Article not found');
     }
 
     const translation = article.translations[0];
     if (!translation) {
-      return generateArticleNotFoundMetadata(dictionary, rubric);
+      throw new Error('Translation not found');
     }
 
     const articleData = {
@@ -64,7 +56,7 @@ export async function generateMetadata({
       slug: slug,
       rubricSlug: rubric,
       rubricName: rubric,
-      author: article.authors[0]?.name || 'EventForMe Editorial',
+      author: article.authors?.[0]?.name || 'EventForMe Editorial',
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageId: article.article_heading_img || null,
@@ -76,7 +68,6 @@ export async function generateMetadata({
       articleData,
     });
 
-    // Add noindex for preview mode
     if (inPreview) {
       return {
         ...metadata,
@@ -89,26 +80,9 @@ export async function generateMetadata({
     }
 
     return metadata;
-
-  } catch (error) {
-    console.error('Error generating article metadata:', error);
-    
-    try {
-      const { lang, rubric } = await params;
-      const dictionary = getDictionary(lang as Lang);
-      return generateArticleNotFoundMetadata(dictionary, rubric);
-
-    } catch (error) {
-      console.error('Error generating article metadata:', error);
-      const errorHandler = createErrorHandler(dictionary);
-      return errorHandler.generateErrorMetadata('article');
-    }
-  }
+  });
 }
 
-/**
- * Article page with preview support
- */
 export default async function ArticlePage({ 
   params,
   searchParams
@@ -116,13 +90,11 @@ export default async function ArticlePage({
   params: Promise<{ lang: Lang, rubric: string, slug: string }>,
   searchParams: Promise<{ preview?: string, secret?: string }>
 }) {
+  const { lang, rubric, slug } = await params;
+  const dictionary = getDictionary(lang as Lang);
+
   try {
-    const { lang, rubric, slug } = await params;
     const { preview, secret } = await searchParams;
-    const dictionary = getDictionary(lang as Lang);
-
-
-    // Check preview mode from URL parameters
     const inPreview = isValidPreview(preview, secret);
 
     const [article, rubricBasics] = await Promise.all([
@@ -139,7 +111,6 @@ export default async function ArticlePage({
       notFound();
     }
 
-    // Format publication date
     const publishedDate = new Date(article.published_at);
     const formattedDate = publishedDate.toLocaleDateString(dictionary.locale, {
       year: 'numeric',
@@ -147,53 +118,56 @@ export default async function ArticlePage({
       day: 'numeric',
     });
 
-    // Process content
     const rawContent = translation.article_body
-      ? translation.article_body.map(block => block.item.content).join('\n\n')
-      : '';
-
+      ?.map((block: any) => block.item?.content || '')
+      .join('\n\n') || '';
+    
     const processedContent = await processContent(rawContent);
     const { chunks: contentChunks, toc: tocItems } = processedContent;
 
-    // Transform basic author data to AuthorDetails interface
-    // The Header component needs full AuthorDetails for creating author profile links
-    const authorsWithDetails = article.authors.map(author => ({
+    const authorsWithDetails = article.authors?.map(author => ({
       name: author.name || 'EventForMe Editorial',
       slug: author.slug || '',
-      avatar: '', // Default for missing avatar
-      bio: '',    // Required by AuthorDetails interface
+      avatar: '',
+      bio: '',
     }));
 
-    // Build breadcrumbs
-    const articleBreadcrumbData = await enhanceArticleForBreadcrumbs(
+    // Get rubric name from rubricBasics
+    const rubricDetails = rubricBasics.find(r => r.slug === rubric);
+    const rubricName = rubricDetails?.name || rubric;
+
+    // FIX: Call enhanceArticleForBreadcrumbs with correct parameters
+    const articleBreadcrumbData = enhanceArticleForBreadcrumbs(
       article,
-      rubricBasics,
+      rubricName,
+      rubric
     );
+
+    const currentArticleUrl = `${dictionary.seo.site.url}/${lang}/${rubric}/${slug}`;
 
     // Schema data
     const articleSchemaData = {
       title: translation.title,
-      description: translation.description || undefined,
-      lead: translation.lead || undefined,
+      description: translation.description || translation.lead,
       slug: slug,
       rubricSlug: rubric,
-      rubricName: rubric,
+      rubricName: rubricName,
       author: {
-        name: article.authors[0]?.name || 'EventForMe Editorial',
-        slug: article.authors[0]?.slug || undefined,
+        name: article.authors?.[0]?.name || 'EventForMe Editorial',
+        slug: article.authors?.[0]?.slug,
       },
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageUrl: article.article_heading_img 
-        ? `${dictionary.seo.site.url.replace(/\/$/, '')}/assets/${article.article_heading_img}`
+        ? `${dictionary.seo.site.url}/assets/${article.article_heading_img}`
         : undefined,
-      tags: [rubric, ...translation.title.split(' ').slice(0, 3)],
+      tags: article.categories?.map(cat => cat.name) || [],
+      wordCount: rawContent.split(/\s+/).length,
     };
 
-    // Prepare related links data for SEO enhancement
     const rubricData = {
       slug: rubric,
-      name: rubric, // Could be enhanced with translated name from rubricBasics
+      name: rubricName,
     };
 
     const categoriesData = article.categories?.map(cat => ({
@@ -201,35 +175,33 @@ export default async function ArticlePage({
       name: cat.name,
     })) || [];
 
-    const currentArticleUrl = `${dictionary.seo.site.url}/${lang}/${rubric}/${slug}`;
-
     return (
       <>
-        {/* Show preview banner if in preview mode */}
         {inPreview && <PreviewBanner />}
         
-        {/* Structured Data */}
         <ArticleSchema
           dictionary={dictionary}
           articleData={articleSchemaData}
-          breadcrumbs={[]} 
         />
 
-        {/* Related Links Schema for enhanced SEO */}
-        <QuickNavigationSchema currentArticleUrl={currentArticleUrl} />
-        <AuthorsSectionSchema 
-          authors={authorsWithDetails}
+        <QuickNavigationSchema 
+          lang={lang}
+          dictionary={dictionary}
           currentArticleUrl={currentArticleUrl}
         />
+        
+        <AuthorsSectionSchema
+          lang={lang}
+          dictionary={dictionary}
+          authors={authorsWithDetails}
+        />
 
-        {/* Breadcrumbs */}
         <SmartBreadcrumbs
-          lang={lang} 
+          lang={lang}
           articleData={articleBreadcrumbData}
           dictionary={dictionary}
         />
 
-        {/* Article Content */}
         <article itemScope itemType="https://schema.org/Article">
           <Section className="py-8">
             <div className="container mx-auto">
@@ -238,26 +210,24 @@ export default async function ArticlePage({
                   <div className="text-lg">{dictionary.common.status.loading}</div>
                 </div>
               }>
-                {/* Article Header with Author Links */}
                 <Header
                   title={translation.title}
                   lead={translation.lead}
                   imagePath={article.article_heading_img}
-                  authors={authorsWithDetails} // Creates clickable author profile links
+                  authors={authorsWithDetails}
                   publishedDate={formattedDate}
+                  lang={lang}
                   editorialText={processTemplate(dictionary.content.labels.editorial, {
                     siteName: dictionary.seo.site.name
                   })}
                 />
 
-                {/* Add engagement component */}
-                  <ArticleEngagement
-                    slug={slug}
-                    title={article.translations[0].title}
-                    url={currentArticleUrl}
-                  />
+                <ArticleEngagement
+                  slug={slug}
+                  title={translation.title}
+                  url={currentArticleUrl}
+                />
 
-                {/* Table of Contents */}
                 {tocItems.length > 0 && (
                   <TableOfContents
                     items={tocItems}
@@ -265,30 +235,40 @@ export default async function ArticlePage({
                   />
                 )}
 
-                {/* Article Body */}
                 <Content
                   chunks={contentChunks}
                   toc={tocItems}
                   title={translation.title}
-                  author={article.authors[0]?.name || 'EventForMe Editorial'}
+                  author={article.authors?.[0]?.name || 'EventForMe Editorial'}
                   datePublished={article.published_at}
                 />
 
-                {/* Quick site navigation links */}
-                <QuickNavigation />
+                <QuickNavigation 
+                  lang={lang}
+                  dictionary={dictionary}
+                />
 
-                {/* Categories taxonomy */}
                 {categoriesData.length > 0 && (
-                  <CategoriesSection categories={categoriesData} />
+                  <CategoriesSection 
+                    categories={categoriesData}
+                    lang={lang}
+                    dictionary={dictionary}
+                  />
                 )}
 
-                {/* Rubric classification */}
-                <RubricSection rubric={rubricData} />
+                <RubricSection 
+                  rubric={rubricData}
+                  lang={lang}
+                  dictionary={dictionary}
+                />
 
-                {/* Author(s) cards - handles single or multiple authors */}
-                <AuthorsSection authors={authorsWithDetails} />
+                {authorsWithDetails.length > 0 && (
+                  <AuthorsSection 
+                    authors={authorsWithDetails}
+                    dictionary={dictionary}
+                  />
+                )}
 
-                {/* Related Articles with Tiered Matching */}
                 <RelatedArticles
                   currentArticleSlug={slug}
                   articleCategories={categoriesData}
@@ -296,7 +276,6 @@ export default async function ArticlePage({
                   dictionary={dictionary}
                 />
 
-                {/* Scroll to Top Button */}
                 <ScrollToTopButton />
               </Suspense>
             </div>

@@ -4,9 +4,10 @@ import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/main/lib/directus';
 import { IMAGE_RATIO_STRING } from '../../mainConstants';
 import { LAYOUT_STYLES } from '../styles';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
+import { Lang } from '@/main/lib/dictionary';
 
 interface HeaderProps {
+  lang: Lang;
   title: string;
   publishedDate: string;
   authors: AuthorDetails[];
@@ -18,6 +19,7 @@ interface HeaderProps {
 const styles = LAYOUT_STYLES.header;
 
 export function Header({ 
+  lang,
   title, 
   publishedDate, 
   authors, 
@@ -52,7 +54,7 @@ export function Header({
               <span key={author.slug}>
                 {index > 0 && " & "}
                 <Link 
-                  href={`/${DEFAULT_LANG}/authors/${author.slug}`} 
+                  href={`/${lang}/authors/${author.slug}`} 
                   className={styles.authorLink}
                 >
                   {author.name}
