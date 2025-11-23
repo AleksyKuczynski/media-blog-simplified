@@ -1,12 +1,13 @@
 // src/main/components/Main/HeroArticles.tsx
 
 import { Suspense } from 'react';
-import { Dictionary } from '@/main/lib/dictionary';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import ArticleCard from '../ArticleCards/ArticleCard';
 import { HeroArticlesSkeleton } from './HeroArticlesSkeleton';
 
 interface HeroArticlesProps {
   slugs: string[];
+  lang: Lang;
   dictionary: Dictionary;
   rubricSlug?: string;
 }
@@ -36,7 +37,7 @@ export const HERO_ARTICLES_SKELETON_STYLES = {
   latest: HERO_ARTICLES_STYLES.latest,
 } as const;
 
-export default function HeroArticles({ slugs, dictionary, rubricSlug }: HeroArticlesProps) {
+export default function HeroArticles({ slugs, lang, dictionary, rubricSlug }: HeroArticlesProps) {
   if (slugs.length === 0) {
     return (
       <div className={HERO_ARTICLES_STYLES.empty}>
@@ -56,7 +57,7 @@ export default function HeroArticles({ slugs, dictionary, rubricSlug }: HeroArti
         <div className={HERO_ARTICLES_STYLES.promoted.wrapper}>
           <ArticleCard 
             slug={promotedSlug} 
-            lang="ru"
+            lang={lang}
             rubricSlug={rubricSlug} 
             layout="promoted"
             dictionary={dictionary}
@@ -69,7 +70,7 @@ export default function HeroArticles({ slugs, dictionary, rubricSlug }: HeroArti
             <ArticleCard 
               key={slug} 
               slug={slug} 
-              lang="ru"
+              lang={lang}
               rubricSlug={rubricSlug} 
               layout="latest"
               dictionary={dictionary}

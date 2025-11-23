@@ -198,7 +198,8 @@ export default async function HomePage({
                   </div>
                 }>
                   <HeroArticles 
-                    slugs={heroSlugs} 
+                    slugs={heroSlugs}
+                    lang={lang} 
                     dictionary={dictionary}
                   />
                 </Suspense>
