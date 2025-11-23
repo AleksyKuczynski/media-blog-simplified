@@ -86,7 +86,7 @@ export default async function HomePage({
     })
   ]);
 
-  // COMPLETE: Transform rubrics with proper typing and error handling
+  // Transform rubrics with proper typing and error handling
   const transformedRubrics = rubrics.map((rubric: Rubric) => {
     const translation = rubric.translations?.find(t => t.languages_code === lang);
     return {
@@ -94,7 +94,7 @@ export default async function HomePage({
       name: translation?.name || rubric.slug,
       description: translation?.description || '',
       icon: rubric.nav_icon, // Map nav_icon to expected icon property
-      url: `/ru/${rubric.slug}`, // Add required url property
+      url: `/${lang}/${rubric.slug}`, // Add required url property
     };
   }).slice(0, 6); // Show only first 6 rubrics on home page
 
@@ -219,7 +219,7 @@ export default async function HomePage({
                 {dictionary.sections.home.rubricsDescription}
               </p>
               <Link 
-                href="/ru/rubrics"
+                href={`/${lang}/rubrics`}
                 className="
                   inline-flex items-center gap-2 
                   text-pr-cont hover:text-pr-fix 
@@ -253,6 +253,7 @@ export default async function HomePage({
                   <RubricCard 
                     key={rubric.slug}
                     rubric={rubric}
+                    lang={lang}
                     dictionary={dictionary}
                   />
                 ))}
@@ -278,7 +279,7 @@ export default async function HomePage({
             </h2>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                href="/ru/articles"
+                href={`/${lang}/articles`}
                 className="
                   px-6 py-3 bg-on-pr-cont text-pr-cont rounded-lg
                   hover:bg-on-pr-cont/90 transition-colors duration-200
@@ -288,7 +289,7 @@ export default async function HomePage({
                 {dictionary.navigation.labels.articles}
               </Link>
               <Link
-                href="/ru/authors"
+                href={`/${lang}/authors`}
                 className="
                   px-6 py-3 bg-transparent border-2 border-on-pr-cont text-on-pr-cont rounded-lg
                   hover:bg-on-pr-cont hover:text-pr-cont transition-colors duration-200
@@ -298,7 +299,7 @@ export default async function HomePage({
                 {dictionary.navigation.labels.authors}
               </Link>
               <Link
-                href="/ru/search"
+                href={`/${lang}/search`}
                 className="
                   px-6 py-3 bg-transparent border-2 border-on-pr-cont text-on-pr-cont rounded-lg
                   hover:bg-on-pr-cont hover:text-pr-cont transition-colors duration-200

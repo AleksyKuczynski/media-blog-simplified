@@ -11,15 +11,21 @@ import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPa
 import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers/content'; // FIXED: Correct import
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
+import { Rubric } from '@/main/lib/directus';
+
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;
 
 /**
  * Generate metadata using clean new dictionary system
  */
-export async function generateMetadata( params:  Promise<{ lang: Lang }> ): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: Lang }>;
+}): Promise<Metadata> {
   const { lang } = await params;
-  const dictionary = getDictionary(lang as Lang);
+  const dictionary = getDictionary(lang);
 
   try {
     const [rubrics] = await Promise.all([
@@ -27,14 +33,16 @@ export async function generateMetadata( params:  Promise<{ lang: Lang }> ): Prom
     ]);
     
     // Transform rubrics data for metadata generation
-    const rubricsData = rubrics.map(rubric => {
-      const translation = rubric.translations?.find(t => t.languages_code === lang);
-      return {
-        name: translation?.name || rubric.slug,
-        slug: rubric.slug,
-        description: translation?.description,
-      };
-    });
+    const rubricsData = rubrics.map((rubric: Rubric) => {
+    const translation = rubric.translations?.find(t => t.languages_code === lang);
+    return {
+      ...rubric, // Spread all original Rubric properties (includes any id if present)
+      name: translation?.name || rubric.slug,
+      description: translation?.description || '',
+      icon: rubric.nav_icon, // Map nav_icon to expected icon property
+      url: `/${lang}/${rubric.slug}`, // Add required url property
+    };
+  });
 
     // Clean metadata generation
     return await generateCollectionMetadata({
@@ -55,17 +63,21 @@ export async function generateMetadata( params:  Promise<{ lang: Lang }> ): Prom
   }
 }
 
-export default async function RubricsPage( params:  Promise<{ lang: Lang }> ) {
+export default async function RubricsPage({
+  params,
+}: {
+  params: Promise<{ lang: Lang }>;
+}) {
   const { lang } = await params;
-  const dictionary = getDictionary(lang as Lang);
-
+  const dictionary = getDictionary(lang);
+        console.log(lang)
   try {
     const [rubrics] = await Promise.all([
       fetchAllRubrics(lang),
     ]);
 
     // Transform rubrics for rendering
-    const transformedRubrics = rubrics.map(rubric => {
+    const transformedRubrics = rubrics.map((rubric: Rubric) => {
       const translation = rubric.translations?.find(t => t.languages_code === lang);
       return {
         ...rubric,
@@ -74,6 +86,9 @@ export default async function RubricsPage( params:  Promise<{ lang: Lang }> ) {
         url: `/${lang}/${rubric.slug}`,
       };
     });
+
+        console.log(lang)
+
 
     // Transform rubrics for schema
     const schemaItems = transformedRubrics.map(rubric => ({

@@ -7,7 +7,6 @@ import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 
-// Updated interface to match actual Directus Rubric structure
 export interface RubricCardProps {
   rubric: {
     slug: string;
@@ -35,9 +34,6 @@ const generateRubricUrl = (slug: string, lang: Lang): string => {
   return `/${lang}/${slug}`;
 };
 
-/**
- * Clean RubricCard component - FIXED to handle Directus data directly
- */
 export const RubricCard: React.FC<RubricCardProps> = ({
   rubric,
   lang,
