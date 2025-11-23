@@ -26,20 +26,14 @@ interface FilterGroupProps {
 // MAIN FILTERGROUP COMPONENT - FIXED
 // ===================================================================
 
-/**
- * FilterGroup - FIXED: Follows React hooks rules, uses dictionary entries
- * NO DUPLICATION - uses useFilterGroup hook and existing helper patterns
- */
 export default function FilterGroup({
   categories,
   dictionary,
   lang
 }: FilterGroupProps) {
-  // FIXED: All hooks called at top level - no conditional calls
   const validation = useFilterValidation(dictionary, categories);
   
   const {
-    currentCategory,
     currentSort,
     categoryItems,
     filterLabels,
@@ -148,7 +142,7 @@ export default function FilterGroup({
         <div className="flex flex-col justify-end">
           <CustomButton
             color="primary"
-            onClick={() => window.location.href = '/ru/articles'}
+            onClick={() => window.location.href = `/${lang}/articles`}
           >
             {filterLabels.reset}
           </CustomButton>
@@ -203,7 +197,7 @@ export function MinimalFilterGroup({
     return (
       <div className="mb-4 flex items-center justify-between px-4">
         <span className="text-sm text-prcolor">{filterLabels.allCategories}</span>
-        <button onClick={() => window.location.href = '/ru/articles'}>
+        <button onClick={() => window.location.href = `/${lang}/articles`}>
           {filterLabels.reset}
         </button>
       </div>

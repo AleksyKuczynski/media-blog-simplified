@@ -29,7 +29,6 @@ interface UseFilterGroupReturn {
   currentCategory: string;
   currentSort: string;
   isArticlesPath: boolean;
-  // UI data - FIXED: ensure all strings are non-undefined
   categoryItems: DropdownItemType[];
   filterLabels: ReturnType<typeof getFilterLabels>;
   sortingOptions: ReturnType<typeof getSortingOptions>;
@@ -43,11 +42,6 @@ interface UseFilterGroupReturn {
 // MAIN USEFILTERGROUP HOOK - FIXED
 // ===================================================================
 
-/**
- * useFilterGroup - FIXED: Type-safe hook using dictionary entries
- * NO DUPLICATION - uses generateFilterStateData and generateFilterUrls
- * FOLLOWS HOOKS RULES - hooks called at top level
- */
 export function useFilterGroup({ 
   categories, 
   dictionary,
@@ -57,8 +51,6 @@ export function useFilterGroup({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // FIXED: All hooks called at top level, no conditional calls
-  
   // Validate dictionary structure
   const isDictionaryValid = useMemo(() => 
     validateFilterDictionary(dictionary), 
@@ -103,27 +95,27 @@ export function useFilterGroup({
     filterLabels,
     sortingOptions,
     categoryItems,
-    selectedCategoryName, // FIXED: guaranteed to be string
+    selectedCategoryName,
   } = filterState;
 
-  // Handle category change using existing helper - NO DUPLICATION
+  // Handle category change using existing helper
   const handleCategoryChange = useCallback((item: DropdownItemType) => {
     try {
       const baseUrl = dictionary.seo.site.url;
       const newUrl = generateFilterUrls(baseUrl, item.value, currentSort);
       
       // Convert absolute URL to relative path for router
-      const relativePath = newUrl.replace(baseUrl, '').replace('/ru', '');
-      router.push(`/ru${relativePath}`);
+      const relativePath = newUrl.replace(baseUrl, '').replace(`/${lang}`, '');
+      router.push(`/${lang}${relativePath}`);
       
     } catch (error) {
       console.error('useFilterGroup: Error handling category change', error);
       
       // Fallback navigation
       if (item.value) {
-        router.push(`/ru/category/${item.value}?sort=${currentSort}`);
+        router.push(`/${lang}/category/${item.value}?sort=${currentSort}`);
       } else {
-        router.push(`/ru/articles?sort=${currentSort}`);
+        router.push(`/${lang}/articles?sort=${currentSort}`);
       }
     }
   }, [router, currentSort, dictionary.seo?.site?.url]);
@@ -137,12 +129,12 @@ export function useFilterGroup({
       }
       
       // Reset to default articles page
-      router.push('/ru/articles');
+      router.push(`/${lang}/articles`);
       
     } catch (error) {
       console.error('useFilterGroup: Error handling reset', error);
       // Fallback reset
-      router.push('/ru/articles');
+      router.push(`/${lang}/articles`);
     }
   }, [router, isArticlesPath, currentCategory, currentSort]);
 
@@ -152,11 +144,11 @@ export function useFilterGroup({
     currentSort,
     isArticlesPath,
     
-    // UI data - FIXED: all properly typed
+    // UI data
     categoryItems,
     filterLabels,
     sortingOptions,
-    selectedCategoryName, // FIXED: guaranteed string
+    selectedCategoryName,
     
     // Actions
     handleCategoryChange,
