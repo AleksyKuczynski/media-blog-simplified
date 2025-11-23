@@ -6,13 +6,12 @@ import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics } from '@/main/lib/directus';
+import { fetchArticleSlugs } from '@/main/lib/directus';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
-import FilterGroup from '@/main/components/Navigation/Filter/FilterGroup';
 
 export const revalidate = 300;
 export const dynamicParams = true;

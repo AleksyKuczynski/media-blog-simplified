@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Dictionary } from '@/main/lib/dictionary';
+import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 
@@ -24,14 +24,14 @@ export interface RubricCardProps {
       title: string;
     } | null;
   };
-  lang?: string;
+  lang: Lang;
   dictionary: Dictionary;
 }
 
 /**
  * Generate rubric URL from slug and language
  */
-const generateRubricUrl = (slug: string, lang: string = 'ru'): string => {
+const generateRubricUrl = (slug: string, lang: Lang): string => {
   return `/${lang}/${slug}`;
 };
 
@@ -40,7 +40,7 @@ const generateRubricUrl = (slug: string, lang: string = 'ru'): string => {
  */
 export const RubricCard: React.FC<RubricCardProps> = ({
   rubric,
-  lang = 'ru',
+  lang,
   dictionary,
 }) => {
   // Generate URL internally from slug
