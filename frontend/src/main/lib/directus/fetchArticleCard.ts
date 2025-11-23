@@ -18,7 +18,8 @@ export async function fetchArticleCard(slug: string, lang: Lang): Promise<Articl
       'rubric_slug',
       'translations.languages_code',
       'translations.title',
-      'translations.description'
+      'translations.description',
+      'translations.local_slug'
     ].join(',');
 
     const filter = encodeURIComponent(JSON.stringify({ slug: { _eq: slug } }));
@@ -70,7 +71,8 @@ export async function fetchArticleCard(slug: string, lang: Lang): Promise<Articl
       translations: [{
         languages_code: translation.languages_code,
         title: translation.title,
-        description: translation.description
+        description: translation.description,
+        local_slug: translation.local_slug
       }],
       authors: authors.length > 0 ? authors : [{ name: 'Editorial Team', slug: '' }],
       link: `/${lang}/${article.rubric_slug?.slug || 'articles'}/${article.slug}`

@@ -65,6 +65,7 @@ export interface ArticleCardTranslation {
   languages_code: string;
   title: string;
   description: string;
+  local_slug?: string;
 }
 
 export interface ArticleCardAuthor {
@@ -99,9 +100,10 @@ export interface ArticleTranslation {
   title: string;
   description: string;
   lead: string;
+  article_body: ArticleBlock[];
   seo_title?: string;
   seo_description?: string;
-  article_body: ArticleBlock[];
+  local_slug?: string;
 }
 
 export interface ArticleBlockItem {

@@ -30,7 +30,7 @@ export default async function ArticleCard({
   });
 
   const articleLink = rubricSlug
-    ? generateArticleLink(rubricSlug, slug, lang)
+    ? generateArticleLink(rubricSlug, slug, lang, translation.local_slug)
     : await generateArticleLinkAsync(slug, lang, authorSlug);
 
   const cardLayout = layout || article.layout || 'regular';

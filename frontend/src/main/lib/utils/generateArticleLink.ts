@@ -1,8 +1,14 @@
 // src/main/lib/utils/generateArticleLink.ts
+
+/**
+ * Generate article link using local_slug if available, otherwise main slug
+ */
 export function generateArticleLink(
   rubricSlug: string,
   articleSlug: string, 
-  lang: string
+  lang: string,
+  localSlug?: string
 ): string {
-  return `/${lang}/${rubricSlug}/${articleSlug}`;
+  const displaySlug = localSlug || articleSlug;
+  return `/${lang}/${rubricSlug}/${displaySlug}`;
 }
