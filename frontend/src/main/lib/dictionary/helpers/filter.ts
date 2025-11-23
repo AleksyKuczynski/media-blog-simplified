@@ -1,8 +1,8 @@
 // src/main/lib/dictionary/helpers/filter.ts
 
-import { Dictionary } from '../dictionary';
 import { Category } from '@/main/lib/directus/directusInterfaces';
 import { generateCanonicalUrl } from './seo';
+import Dictionary from '../types';
 
 // ===================================================================
 // FILTER HELPERS - Uses dictionary entries, no hardcoded text

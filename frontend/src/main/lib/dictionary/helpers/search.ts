@@ -1,7 +1,7 @@
 // src/main/lib/dictionary/helpers/search.ts
 // OPTIMIZED: Kept only essential search functions for SEO and search pages
 
-import { Dictionary } from '../dictionary';
+import Dictionary from '../types';
 import { getPageTitle, getMetaDescription, getKeywords, generateCanonicalUrl } from './seo';
 import { processTemplate } from './templates';
 

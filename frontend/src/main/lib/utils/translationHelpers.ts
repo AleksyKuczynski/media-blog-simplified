@@ -110,12 +110,12 @@ export function extractTranslationFields<
     return fields; // Return defaults
   }
   
-  const result = { ...fields };
+  const result = { ...fields } as Record<string, string>;
   for (const key in fields) {
     result[key] = (translation[key] as string) || fields[key];
   }
   
-  return result;
+  return result as F;
 }
 
 /**
