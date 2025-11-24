@@ -4,13 +4,10 @@
 import { Lang } from '../dictionary'
 import { DIRECTUS_URL } from '../directus'
 
-interface AlternateUrlResult {
-  url: string | null
-  exists: boolean
-}
-
 /**
  * Resolves the alternate language URL for current page
+ * Always returns a URL - falls back to home page if content doesn't exist
+ * 
  * Handles:
  * - Home pages: /{lang}
  * - Collection pages: /{lang}/rubrics, /{lang}/authors
@@ -22,7 +19,7 @@ export async function resolveAlternateLanguageUrl(
   currentPath: string,
   currentLang: Lang,
   targetLang: Lang
-): Promise<AlternateUrlResult> {
+): Promise<string> {
   // Parse path segments
   const segments = currentPath.split('/').filter(Boolean)
   
@@ -33,17 +30,17 @@ export async function resolveAlternateLanguageUrl(
   
   // Home page
   if (segments.length === 0) {
-    return { url: `/${targetLang}`, exists: true }
+    return `/${targetLang}`
   }
   
   // Collection pages (rubrics, authors, search)
   if (segments.length === 1) {
-    return { url: `/${targetLang}/${segments[0]}`, exists: true }
+    return `/${targetLang}/${segments[0]}`
   }
   
   // Author page: /authors/{slug}
   if (segments.length === 2 && segments[0] === 'authors') {
-    return { url: `/${targetLang}/authors/${segments[1]}`, exists: true }
+    return `/${targetLang}/authors/${segments[1]}`
   }
   
   // Article page: /{rubric}/{slug}
@@ -51,38 +48,37 @@ export async function resolveAlternateLanguageUrl(
     const [rubric, slugOrLocalSlug] = segments
     
     // Resolve article slug
-    const articleResult = await resolveArticleAlternateUrl(
+    const articleUrl = await resolveArticleAlternateUrl(
       rubric,
       slugOrLocalSlug,
       currentLang,
       targetLang
     )
     
-    return articleResult
+    // Fallback to home if article doesn't exist in target language
+    return articleUrl || `/${targetLang}`
   }
   
-  // Fallback: simple path replacement
-  return { 
-    url: `/${targetLang}/${segments.join('/')}`, 
-    exists: false // uncertain
-  }
+  // Fallback: home page for unknown routes
+  return `/${targetLang}`
 }
 
 /**
  * Resolve article URL with proper local_slug handling
+ * Returns null if article doesn't exist in target language
  */
 async function resolveArticleAlternateUrl(
   rubric: string,
   slugParam: string,
   currentLang: Lang,
   targetLang: Lang
-): Promise<AlternateUrlResult> {
+): Promise<string | null> {
   try {
     // First, resolve the main article slug from current URL
     const mainSlug = await findMainSlugFromParam(slugParam, currentLang)
     
     if (!mainSlug) {
-      return { url: null, exists: false }
+      return null
     }
     
     // Now find the target language slug (local_slug or main slug)
@@ -90,16 +86,13 @@ async function resolveArticleAlternateUrl(
     
     if (!targetSlug) {
       // Article doesn't have translation in target language
-      return { url: null, exists: false }
+      return null
     }
     
-    return {
-      url: `/${targetLang}/${rubric}/${targetSlug}`,
-      exists: true
-    }
+    return `/${targetLang}/${rubric}/${targetSlug}`
   } catch (error) {
     console.error('Error resolving article alternate URL:', error)
-    return { url: null, exists: false }
+    return null
   }
 }
 

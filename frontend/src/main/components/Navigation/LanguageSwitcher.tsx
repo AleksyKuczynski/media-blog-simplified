@@ -13,8 +13,7 @@ interface LanguageSwitcherProps {
 
 export default function LanguageSwitcher({ currentLang }: LanguageSwitcherProps) {
   const pathname = usePathname()
-  const [alternateUrl, setAlternateUrl] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [alternateUrl, setAlternateUrl] = useState<string>(`/${currentLang === 'en' ? 'ru' : 'en'}`)
   
   const alternateLang: Lang = currentLang === 'en' ? 'ru' : 'en'
   const label = currentLang === 'en' ? 'РУС' : 'EN'
@@ -23,12 +22,10 @@ export default function LanguageSwitcher({ currentLang }: LanguageSwitcherProps)
     let mounted = true
     
     async function resolveUrl() {
-      setIsLoading(true)
-      const result = await resolveAlternateLanguageUrl(pathname, currentLang, alternateLang)
+      const url = await resolveAlternateLanguageUrl(pathname, currentLang, alternateLang)
       
       if (mounted) {
-        setAlternateUrl(result.url)
-        setIsLoading(false)
+        setAlternateUrl(url)
       }
     }
     
@@ -41,19 +38,6 @@ export default function LanguageSwitcher({ currentLang }: LanguageSwitcherProps)
   
   const handleClick = () => {
     document.cookie = `preferred-language=${alternateLang}; path=/; max-age=31536000; SameSite=Lax`
-  }
-  
-  // Don't render if no alternate URL found or still loading
-  if (isLoading) {
-    return (
-      <div className="px-3 py-1.5 text-sm text-on-sf-var/50">
-        {label}
-      </div>
-    )
-  }
-  
-  if (!alternateUrl) {
-    return null
   }
 
   return (
