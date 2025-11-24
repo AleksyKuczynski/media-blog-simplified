@@ -22,4 +22,5 @@ export { fetchRubricSlug } from './fetchRubricSlug';
 export { fetchSearchPropositions } from './fetchSearchPropositions';
 export { fetchEngagementData } from './fetchEngagementData'
 export { fetchRelatedArticles } from './fetchRelatedArticles';
+export { resolveArticleSlug } from './resolveArticleSlug';
 export type { RelatedArticleInfo } from './fetchRelatedArticles';

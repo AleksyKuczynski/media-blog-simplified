@@ -1,5 +1,4 @@
 // src/app/[lang]/page.tsx
-// COMPLETE FIX: Unified dictionary system, complete implementation, proper SEO integration
 
 import { Suspense } from 'react';
 import { Metadata } from 'next';

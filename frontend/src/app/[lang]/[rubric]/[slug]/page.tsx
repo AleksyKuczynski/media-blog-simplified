@@ -2,7 +2,7 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { fetchFullArticle, fetchRubricBasics } from '@/main/lib/directus';
+import { fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/main/lib/directus';
 import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedArticles, TableOfContents, QuickNavigation, CategoriesSection, RubricSection, AuthorsSection } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
@@ -32,11 +32,18 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   return safeGenerateMetadata(params, 'article', async (lang, dictionary, resolvedParams) => {
     const { rubric, slug } = resolvedParams;
+
+    // Resolve slug first
+    const articleSlug = await resolveArticleSlug(slug, lang);
+    if (!articleSlug) {
+      // Neither main slug nor local_slug found
+      throw new Error('Article not found');
+    }
     
     // Check for preview mode - read from headers/cookies
     const inPreview = false; // TODO: Implement proper preview detection
     
-    const article = await fetchFullArticle(slug, lang, inPreview);
+    const article = await fetchFullArticle(articleSlug, lang, inPreview);
 
     if (!article) {
       throw new Error('Article not found');
@@ -93,12 +100,20 @@ export default async function ArticlePage({
   const { lang, rubric, slug } = await params;
   const dictionary = getDictionary(lang as Lang);
 
+  // Resolve slug first
+  const articleSlug = await resolveArticleSlug(slug, lang);
+  if (!articleSlug) {
+    // Neither main slug nor local_slug found
+    throw new Error('Article not found');
+  }
+
+
   try {
     const { preview, secret } = await searchParams;
     const inPreview = isValidPreview(preview, secret);
 
     const [article, rubricBasics] = await Promise.all([
-      fetchFullArticle(slug, lang, inPreview),
+      fetchFullArticle(articleSlug, lang, inPreview),
       fetchRubricBasics(lang),
     ]);
 
@@ -149,7 +164,7 @@ export default async function ArticlePage({
     const articleSchemaData = {
       title: translation.title,
       description: translation.description || translation.lead,
-      slug: slug,
+      slug: articleSlug,
       rubricSlug: rubric,
       rubricName: rubricName,
       author: {
@@ -223,7 +238,7 @@ export default async function ArticlePage({
                 />
 
                 <ArticleEngagement
-                  slug={slug}
+                  slug={articleSlug}
                   title={translation.title}
                   url={currentArticleUrl}
                 />
@@ -270,7 +285,7 @@ export default async function ArticlePage({
                 )}
 
                 <RelatedArticles
-                  currentArticleSlug={slug}
+                  currentArticleSlug={articleSlug}
                   articleCategories={categoriesData}
                   lang={lang}
                   dictionary={dictionary}
