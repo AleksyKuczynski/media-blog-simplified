@@ -1,5 +1,7 @@
+// src/main/components/Navigation/Breadcrumbs/types.ts
+
 export interface BreadcrumbContext {
-  type: 'rubric' | 'author' | 'category' | 'featured' | 'search' | 'external' | 'direct' | 'articles';
+  type: 'rubric' | 'author' | 'category' | 'featured' | 'search' | 'external' | 'direct' | 'articles' | 'language-switch';
   referrerPath?: string;
   contextData?: {
     authorName?: string;
@@ -9,6 +11,7 @@ export interface BreadcrumbContext {
     searchQuery?: string;
     rubricName?: string;
     rubricSlug?: string;
+    previousLang?: string;
   };
 }
 

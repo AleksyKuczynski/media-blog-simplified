@@ -1,5 +1,5 @@
 // src/main/lib/utils/breadcrumbContextDetector.ts
-// REFACTORED: Removed all hardcoded text and /ru paths, using dictionary and constants
+// Detects breadcrumb context and handles language switching
 
 import { headers } from 'next/headers';
 import { Lang } from '@/main/lib/dictionary';
@@ -9,8 +9,7 @@ import Dictionary from '../dictionary/types';
 
 /**
  * Detect user's navigation context based on referrer and URL patterns
- * SECURITY: Validates referrer headers to prevent manipulation
- * REFACTORED: Uses lang parameter and dictionary entries, no hardcoded text
+ * SPECIAL HANDLING: Detects language switching and shows simplified breadcrumbs
  */
 export async function detectBreadcrumbContext(
   dictionary: Dictionary,
@@ -37,7 +36,22 @@ export async function detectBreadcrumbContext(
     // Extract referrer path for pattern matching
     const referrerPath = new URL(referrer).pathname;
     
-    // FIXED: Language-agnostic pattern matching using lang parameter
+    // Check if referrer is from a different language (language switch scenario)
+    const referrerLangMatch = referrerPath.match(/^\/([a-z]{2})\//);
+    const referrerLang = referrerLangMatch ? referrerLangMatch[1] : null;
+    
+    if (referrerLang && referrerLang !== lang) {
+      // User switched languages - show simplified breadcrumbs
+      return {
+        type: 'language-switch',
+        referrerPath,
+        contextData: {
+          previousLang: referrerLang,
+        },
+      };
+    }
+    
+    // Language-aware pattern matching
     const patterns = {
       author: new RegExp(`\\/${lang}\\/authors\\/([^\\/]+)$`),
       category: new RegExp(`\\/${lang}\\/category\\/([^\\/]+)$`),
@@ -48,7 +62,7 @@ export async function detectBreadcrumbContext(
       featured: new RegExp(`\\/${lang}$`),
     };
 
-    // Author context detection (highest priority for specific pages)
+    // Author context detection
     const authorMatch = referrerPath.match(patterns.author);
     if (authorMatch) {
       return {
@@ -110,11 +124,10 @@ export async function detectBreadcrumbContext(
       };
     }
 
-    // Specific rubric page detection (must come after other specific patterns)
+    // Specific rubric page detection
     const rubricMatch = referrerPath.match(patterns.specificRubric);
     if (rubricMatch) {
       const rubricSlug = rubricMatch[1];
-      // Exclude known non-rubric paths
       const excludedPaths = ['authors', 'rubrics', 'articles', 'search', 'category'];
       if (!excludedPaths.includes(rubricSlug)) {
         return {
@@ -127,7 +140,7 @@ export async function detectBreadcrumbContext(
       }
     }
 
-    // Default fallback - direct navigation
+    // Default fallback
     return {
       type: 'direct',
       referrerPath,
@@ -135,8 +148,6 @@ export async function detectBreadcrumbContext(
 
   } catch (error) {
     console.error('Error detecting breadcrumb context:', error);
-    
-    // Safe fallback
     return {
       type: 'direct',
     };
@@ -145,7 +156,6 @@ export async function detectBreadcrumbContext(
 
 /**
  * Generate context-aware breadcrumb paths
- * REFACTORED: Uses dictionary templates for all text, lang parameter for paths
  */
 export function generateContextualBreadcrumbs(
   context: BreadcrumbContext,
@@ -168,7 +178,6 @@ export function generateContextualBreadcrumbs(
   seoAlternatives: SmartBreadcrumbItem[][];
 } {
   
-  // FIXED: Use lang parameter instead of hardcoded '/ru'
   const baseHome: SmartBreadcrumbItem = {
     label: dictionary.navigation.labels.home,
     href: `/${lang}`,
@@ -176,7 +185,6 @@ export function generateContextualBreadcrumbs(
   };
 
   // Canonical path (always rubric-based for SEO consistency)
-  // FIXED: All text from dictionary, all paths use lang parameter
   const canonicalPath: SmartBreadcrumbItem[] = [
     baseHome,
     {
@@ -203,9 +211,23 @@ export function generateContextualBreadcrumbs(
   let userPath: SmartBreadcrumbItem[];
   const seoAlternatives: SmartBreadcrumbItem[][] = [];
 
+  // Handle language switching with simplified breadcrumbs
+  if (context.type === 'language-switch') {
+    userPath = [
+      baseHome,
+      {
+        label: articleData.title,
+        href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
+        ariaLabel: processTemplate(dictionary.breadcrumb.templates.articleLabel, {
+          title: articleData.title
+        }),
+      },
+    ];
+    return { userPath, canonicalPath, seoAlternatives };
+  }
+
   switch (context.type) {
     case 'rubric':
-      // Handle navigation from rubric pages
       if (context.contextData?.rubricSlug) {
         userPath = [
           baseHome,
@@ -231,22 +253,18 @@ export function generateContextualBreadcrumbs(
             }),
           },
         ];
-        
         seoAlternatives.push(userPath);
       } else {
-        // Came from rubrics listing page, use canonical path
         userPath = canonicalPath;
       }
       break;
 
     case 'author':
-      // Match the author from context with the article's authors array
       if (context.contextData?.authorSlug && articleData.authors && articleData.authors.length > 0) {
         const matchedAuthor = articleData.authors.find(
           author => author.slug === context.contextData?.authorSlug
         );
         
-        // Only show author breadcrumb if we found the matching author
         if (matchedAuthor) {
           userPath = [
             baseHome,
@@ -271,10 +289,8 @@ export function generateContextualBreadcrumbs(
               ariaLabel: dictionary.navigation.descriptions.fromAuthor,
             },
           ];
-          
           seoAlternatives.push(userPath);
         } else {
-          console.warn(`Author ${context.contextData.authorSlug} not found in article authors`);
           userPath = canonicalPath;
         }
       } else {
@@ -312,10 +328,8 @@ export function generateContextualBreadcrumbs(
               ariaLabel: dictionary.navigation.descriptions.fromCategory,
             },
           ];
-          
           seoAlternatives.push(userPath);
         } else {
-          console.warn(`Category ${context.contextData.categorySlug} not found in article categories`);
           userPath = canonicalPath;
         }
       } else {
@@ -324,7 +338,6 @@ export function generateContextualBreadcrumbs(
       break;
 
     case 'articles':
-      // Handle /lang/articles referrer
       userPath = [
         baseHome,
         {
@@ -340,7 +353,6 @@ export function generateContextualBreadcrumbs(
           ariaLabel: processTemplate(dictionary.breadcrumb.templates.fromArticles, {}),
         },
       ];
-      
       seoAlternatives.push(userPath);
       break;
 
@@ -354,13 +366,13 @@ export function generateContextualBreadcrumbs(
           ariaLabel: dictionary.navigation.descriptions.fromFeatured,
         },
       ];
-      
       seoAlternatives.push(userPath);
       break;
 
     case 'search':
       const searchLabel = context.contextData?.searchQuery 
         ? processTemplate(dictionary.breadcrumb.templates.searchWithQuery, {
+            search: dictionary.navigation.labels.search,
             query: context.contextData.searchQuery
           })
         : dictionary.navigation.labels.search;
@@ -385,7 +397,6 @@ export function generateContextualBreadcrumbs(
       break;
 
     default:
-      // Use canonical path for external/direct/unknown contexts
       userPath = canonicalPath;
       break;
   }
