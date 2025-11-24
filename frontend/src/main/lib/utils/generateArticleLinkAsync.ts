@@ -1,19 +1,25 @@
 // src/main/lib/utils/generateArticleLinkAsync.ts
-import { fetchRubricSlug } from "../directus";
+import { Lang } from "../dictionary";
+import { fetchRubricSlug, fetchLocalSlug } from "../directus";
 
 export async function generateArticleLinkAsync(
   articleSlug: string, 
-  lang: string,
+  lang: Lang,
   authorSlug?: string
 ): Promise<string> {
-  const rubricSlug = await fetchRubricSlug(articleSlug);
+  const [rubricSlug, localSlug] = await Promise.all([
+    fetchRubricSlug(articleSlug),
+    fetchLocalSlug(articleSlug, lang)
+  ]);
 
   if (!rubricSlug) {
     console.error(`Unable to generate link for article: ${articleSlug}`);
     return `/${lang}`; // Fallback to home page
   }
 
-  const basePath = `/${lang}/${rubricSlug}/${articleSlug}`;
+  // Use local_slug if available, otherwise main slug
+  const displaySlug = localSlug || articleSlug;
+  const basePath = `/${lang}/${rubricSlug}/${displaySlug}`;
   
   if (authorSlug) {
     return `${basePath}?context=author&author=${authorSlug}`;

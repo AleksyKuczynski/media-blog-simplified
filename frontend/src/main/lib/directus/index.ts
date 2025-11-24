@@ -15,6 +15,7 @@ export { fetchAllCategories } from './fetchAllCategories';
 export { fetchCategoriesForArticle } from './fetchCategoriesForArticle';
 export { fetchFullArticle } from './fetchFullArticle';
 export { fetchHeroSlugs } from './fetchHeroSlugs';
+export { fetchLocalSlug } from './fetchLocalSlug';
 export { fetchPromotedSlug } from './fetchPromotedSlug';
 export { fetchRubricBasics } from './fetchRubricBasics';
 export { fetchRubricDetails } from './fetchRubricDetails';

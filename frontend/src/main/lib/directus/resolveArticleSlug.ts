@@ -7,25 +7,29 @@ import { Lang } from '../dictionary';
  * Resolves URL slug param to main article slug
  * 
  * Logic:
- * 1. Check if slugParam exists as main article slug
- * 2. If yes → return slugParam
- * 3. If no → search in local_slugs for this language
- * 4. If found → return the main article slug
- * 5. If not found → return null
+ * 1. Normalize Unicode (handles accented characters like ú)
+ * 2. Check if slugParam exists as main article slug
+ * 3. If yes -> return slugParam
+ * 4. If no -> search in local_slugs for this language
+ * 5. If found -> return the main article slug
+ * 6. If not found -> return null
  */
 export async function resolveArticleSlug(
   slugParam: string,
   lang: Lang
 ): Promise<string | null> {
+  // Normalize Unicode: u + combining accent -> single ú character
+  const normalizedSlug = slugParam.normalize('NFC');
+  
   // Step 1: Check if it's a main article slug
-  const existsAsMainSlug = await checkMainSlugExists(slugParam);
+  const existsAsMainSlug = await checkMainSlugExists(normalizedSlug);
   
   if (existsAsMainSlug) {
-    return slugParam;
+    return normalizedSlug;
   }
   
   // Step 2: Check if it's a local_slug, get corresponding main slug
-  const mainSlug = await findMainSlugByLocalSlug(slugParam, lang);
+  const mainSlug = await findMainSlugByLocalSlug(normalizedSlug, lang);
   
   return mainSlug;
 }
