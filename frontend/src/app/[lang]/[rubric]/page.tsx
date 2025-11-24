@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
+import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ArticleSlugInfo } from '@/main/lib/directus/index';
 import Section from '@/main/components/Main/Section';
 import { generateRubricMetadata } from '@/main/components/SEO/metadata/RubricMetadata';

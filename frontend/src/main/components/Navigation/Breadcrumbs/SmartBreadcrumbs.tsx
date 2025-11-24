@@ -1,5 +1,5 @@
 // src/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs.tsx
-// ✅ FIXED: Correct parameter order for detectBreadcrumbContext
+// Ensures all text comes from dictionary and all paths use correct lang parameter
 
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/main/components/Interface/Icons';
@@ -11,7 +11,7 @@ interface SmartBreadcrumbsProps {
     title: string;
     slug: string;
     rubricSlug: string;
-    rubricName: string;
+    rubricName: string; // Should already be translated from fetchRubricBasics
     authorName?: string;
     authors?: Array<{
       name: string;
@@ -32,6 +32,8 @@ interface SmartBreadcrumbsProps {
  * - Detects user navigation context from referrer
  * - Shows contextual breadcrumbs matching user's journey
  * - Generates multiple SEO schemas for comprehensive coverage
+ * 
+ * IMPORTANT: articleData.rubricName must be already translated
  */
 export default async function SmartBreadcrumbs({
   articleData,
@@ -40,7 +42,7 @@ export default async function SmartBreadcrumbs({
   className = "text-sm mb-8 overflow-x-auto"
 }: SmartBreadcrumbsProps) {
   
-  // ✅ FIXED: Pass dictionary and lang (no path - function reads referrer internally)
+  // Detect context from referrer
   const context = await detectBreadcrumbContext(dictionary, lang);
 
   // Generate contextual breadcrumb paths
@@ -202,17 +204,18 @@ export default async function SmartBreadcrumbs({
 
 /**
  * Helper function to enhance article data for SmartBreadcrumbs
+ * IMPORTANT: rubricName must be already translated before calling this
  */
 export function enhanceArticleForBreadcrumbs(
   article: any,
-  rubricName: string,
+  rubricName: string, // Already translated
   rubricSlug: string
 ) {
   return {
     title: article.translations[0]?.title || article.slug,
     slug: article.slug,
     rubricSlug: rubricSlug,
-    rubricName: rubricName,
+    rubricName: rubricName, // Pass through the already-translated name
     authors: article.authors || [],
     categories: article.categories || [],
   };

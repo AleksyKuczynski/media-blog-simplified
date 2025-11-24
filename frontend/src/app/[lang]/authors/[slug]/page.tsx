@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { fetchAuthorBySlug, fetchRubricBasics, DIRECTUS_URL, fetchArticleSlugs, ArticleSlugInfo } from '@/main/lib/directus/index';
 import ArticleList from '@/main/components/Main/ArticleList';
-import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
+import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
 import Section from '@/main/components/Main/Section';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';

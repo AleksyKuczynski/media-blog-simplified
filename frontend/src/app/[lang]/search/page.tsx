@@ -4,7 +4,7 @@ import { Metadata } from 'next';
 import { getDictionary, type Lang } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import Section from '@/main/components/Main/Section';
-import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
+import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
 import SearchBarClient from '@/main/components/Search/SearchBarClient';
 import SearchResultsHeader from '@/main/components/Search/SearchResultsHeader';
 import ArticleList from '@/main/components/Main/ArticleList';

@@ -1,4 +1,4 @@
-// src/main/components/Breadcrumbs.tsx
+// src/main/components/Main/Breadcrumbs.tsx
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/main/components/Interface/Icons';
 import { RubricBasic } from '@/main/lib/directus/directusInterfaces';
@@ -27,7 +27,6 @@ const Chevron = () => (
 );
 
 export default function Breadcrumbs({ items, rubrics, lang, translations }: BreadcrumbsProps) {
-  const rubricMap = new Map(rubrics.map(r => [r.slug, r.name]));
   const fullPath: BreadcrumbItem[] = [
     { label: translations.home, href: `/${lang}` },
   ];
@@ -48,13 +47,10 @@ export default function Breadcrumbs({ items, rubrics, lang, translations }: Brea
     }
   }
 
+  // Add items as-is since labels are already translated when passed in
   items.forEach(item => {
     if (!fullPath.some(existingItem => existingItem.href === item.href)) {
-      const newItem = {
-        ...item,
-        label: rubricMap.get(item.label) || item.label
-      };
-      fullPath.push(newItem);
+      fullPath.push(item);
     }
   });
 
@@ -77,22 +73,22 @@ export default function Breadcrumbs({ items, rubrics, lang, translations }: Brea
             {index > 0 && <Chevron />}
             {index === fullPath.length - 1 ? (
               <span 
-                className="text-on-sf-var line-clamp-1"
-                itemProp="name"
+                className="font-medium text-on-sf" 
                 aria-current="page"
+                itemProp="name"
               >
                 {item.label}
               </span>
             ) : (
-              <Link 
-                href={item.href} 
-                className="text-pr-cont hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200 capitalize"
+              <Link
+                href={item.href}
+                className="text-on-sf-var hover:text-on-sf transition-colors duration-200"
                 itemProp="item"
               >
                 <span itemProp="name">{item.label}</span>
               </Link>
             )}
-            <meta itemProp="position" content={`${index + 1}`} />
+            <meta itemProp="position" content={String(index + 1)} />
           </li>
         ))}
       </ol>

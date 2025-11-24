@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import ArticleList from '@/main/components/Main/ArticleList';
 import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import Breadcrumbs from '@/main/components/Main/Breadcrumbs';
+import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
 import Section from '@/main/components/Main/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics } from '@/main/lib/directus';
