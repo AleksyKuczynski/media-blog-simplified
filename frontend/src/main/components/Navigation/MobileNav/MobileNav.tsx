@@ -1,7 +1,4 @@
-// src/main/components/Navigation/MobileNav.tsx
-// Refactored mobile navigation with unified offcanvas panels
-// Manages state for both menu and search panels
-
+// src/main/components/Navigation/MobileNav/MobileNav.tsx
 'use client'
 
 import Logo from '../../Logo'
@@ -9,6 +6,7 @@ import NavLinks from '../NavLinks'
 import SearchButton from './SearchButton'
 import OffcanvasPanel from './OffcanvasPanel'
 import MobileSearchContent from '../../Search/MobileSearchContent'
+import LanguageSwitcher from '../LanguageSwitcher'
 import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/main/lib/dictionary'
 import HamburgerButton from './HamburgerButton'
@@ -21,11 +19,6 @@ interface MobileNavProps {
   currentPath?: string
 }
 
-/**
- * MobileNavigation - Unified mobile navigation coordinator
- * Manages both menu and search offcanvas panels
- * Uses unified OffcanvasPanel component for consistent behavior
- */
 export default function MobileNavigation({
   dictionary,
   lang,
@@ -43,7 +36,7 @@ export default function MobileNavigation({
     side: 'left',
     panelId: 'mobile-menu-content',
     historyStateKey: 'mobileMenuOpen',
-    onOtherPanelOpen: undefined, // Menu doesn't auto-close search
+    onOtherPanelOpen: undefined,
     focusSelector: 'a, button:not([aria-hidden="true"])'
   })
 
@@ -60,7 +53,6 @@ export default function MobileNavigation({
     panelId: 'mobile-search-content',
     historyStateKey: 'mobileSearchOpen',
     onOtherPanelOpen: () => {
-      // Close menu when search opens
       if (isMenuOpen) {
         closeMenu(false)
       }
@@ -79,7 +71,7 @@ export default function MobileNavigation({
       >
         <div className="flex items-center justify-between h-16 px-4">
           
-          {/* Hamburger Menu Button - Left (hidden when search is open) */}
+          {/* Hamburger Menu Button - Left */}
           {!isSearchOpen && (
             <HamburgerButton
               isOpen={isMenuOpen}
@@ -91,7 +83,6 @@ export default function MobileNavigation({
             />
           )}
           
-          {/* Spacer when hamburger is hidden */}
           {isSearchOpen && <div className="w-12" />}
           
           {/* Logo - Center */}
@@ -102,67 +93,75 @@ export default function MobileNavigation({
             aria-label={dictionary.navigation.accessibility.logoAlt}
           />
           
-          {/* Spacer when search is hidden */}
-          {isMenuOpen && <div className="w-12" />}
-          
-          {/* Search Button - Right (hidden when menu is open) */}
-          {!isMenuOpen && (
-            <SearchButton
-              isOpen={isSearchOpen}
-              onClick={toggleSearch}
-              ariaControls="mobile-search-content"
-              openLabel={dictionary.search.accessibility.openSearch}
-              closeLabel={dictionary.search.accessibility.closeSearch}
-              buttonRef={searchToggleRef}
-            />
-          )}
+          {/* Right side: Language Switcher + Search Button */}
+          <div className="flex items-center gap-2">
+            {!isMenuOpen && <LanguageSwitcher currentLang={lang} />}
+            
+            {!isMenuOpen && (
+              <SearchButton
+                isOpen={isSearchOpen}
+                onClick={toggleSearch}
+                ariaControls="mobile-search-content"
+                openLabel={dictionary.search.accessibility.openSearch}
+                closeLabel={dictionary.search.accessibility.closeSearch}
+                buttonRef={searchToggleRef}
+              />
+            )}
+            
+            {isMenuOpen && <div className="w-12" />}
+          </div>
         </div>
       </nav>
 
-      {/* Mobile Menu Offcanvas Panel - Slides from LEFT */}
+      {/* Menu Offcanvas Panel */}
       <OffcanvasPanel
         id="mobile-menu-content"
         isOpen={isMenuOpen}
-        onClose={() => closeMenu(false)}
+        onClose={closeMenu}
         side="left"
         title={dictionary.navigation.accessibility.menuTitle}
         ariaLabel={dictionary.navigation.accessibility.menuDescription}
         panelRef={menuRef}
       >
-        {/* Menu Navigation Links */}
-        <div className="px-6 py-6">
-          <ul 
-            className="space-y-4"
-            role="menu"
-            aria-label={dictionary.navigation.accessibility.mainMenuLabel}
-          >
-            <NavLinks 
-              dictionary={dictionary}
-              lang={lang}
-              className="mobile-nav-links"
-            />
-          </ul>
+        <div className="flex flex-col h-full bg-sf-cont">
+          <div className="flex-1 overflow-y-auto py-6">
+            <nav 
+              className="space-y-1 px-4"
+              role="menu"
+              aria-label={dictionary.navigation.accessibility.mainMenuLabel}
+              onTransitionEnd={handleMenuComplete}
+            >
+              <ul className="space-y-1">
+                <NavLinks 
+                  dictionary={dictionary}
+                  lang={lang}
+                  className="block w-full text-left"
+                />
+              </ul>
+            </nav>
+          </div>
         </div>
       </OffcanvasPanel>
 
-      {/* Mobile Search Offcanvas Panel - Slides from RIGHT */}
+      {/* Search Offcanvas Panel */}
       <OffcanvasPanel
         id="mobile-search-content"
         isOpen={isSearchOpen}
-        onClose={() => closeSearch(false)}
+        onClose={closeSearch}
         side="right"
         title={dictionary.search.labels.title}
-        ariaLabel={dictionary.search.accessibility.searchLabel}
+        ariaLabel={dictionary.search.accessibility.searchDescription}
         panelRef={searchRef}
       >
-        {/* Search Content - Only render when open for performance */}
-        {isSearchOpen && (
-          <MobileSearchContent
+        <div 
+          className="h-full bg-sf-cont"
+          onTransitionEnd={handleSearchComplete}
+        >
+          <MobileSearchContent 
             dictionary={dictionary}
             lang={lang}
-            onSearchComplete={handleSearchComplete}
           />
-        )}
+        </div>
       </OffcanvasPanel>
     </>
   )

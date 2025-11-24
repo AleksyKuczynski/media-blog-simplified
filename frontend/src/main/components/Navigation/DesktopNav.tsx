@@ -1,11 +1,10 @@
 // src/main/components/Navigation/DesktopNav.tsx
-// Fixed to use correct dictionary entry names
-
 'use client'
 
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
 import ExpandableSearch from '../Search/ExpandableSearch'
+import LanguageSwitcher from './LanguageSwitcher'
 import { Dictionary, Lang } from '@/main/lib/dictionary'
 
 interface DesktopNavProps {
@@ -57,7 +56,6 @@ export default function DesktopNavigation({
           itemScope
           itemType="https://schema.org/Organization"
         >
-          {/* FIXED: Use correct dictionary property names */}
           <meta itemProp="name" content={dictionary.seo.site.name} />
           <meta itemProp="description" content={dictionary.seo.site.description} />
           <meta itemProp="url" content={dictionary.seo.site.url} />
@@ -71,12 +69,14 @@ export default function DesktopNavigation({
           />
         </div>
         
-        {/* Right: Enhanced Search */}
+        {/* Right: Language Switcher + Search */}
         <div 
           className="flex items-center justify-end space-x-4"
           role="group"
           aria-label={dictionary.navigation.accessibility.searchAndSettingsLabel}
         >
+          <LanguageSwitcher currentLang={lang} />
+          
           <div 
             id="site-search"
             role="search"
