@@ -63,6 +63,7 @@ export default async function RelatedArticles({
       const { slugs: latestSlugs } = await fetchArticleSlugs(
         1, // page 1
         'desc', // newest first
+        lang,
         undefined, // no category filter
         undefined, // no search
         excludeSlugs // exclude current and found articles
