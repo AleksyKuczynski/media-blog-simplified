@@ -46,6 +46,7 @@ export default async function RubricPage({
     const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
       currentPage,
       'desc',
+      lang,
       undefined,
       undefined,
       [],

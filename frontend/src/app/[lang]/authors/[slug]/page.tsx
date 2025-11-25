@@ -32,7 +32,7 @@ export async function generateMetadata({
       throw new Error('Author not found');
     }
 
-    const { slugs } = await fetchArticleSlugs(1, 'desc', undefined, undefined, [], slug);
+    const { slugs } = await fetchArticleSlugs(1, 'desc', lang, undefined, undefined, [], slug);
     const articleCount = slugs.length;
 
     return generateAuthorMetadata({
@@ -79,6 +79,7 @@ export default async function AuthorPage({
       const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
         page,
         'desc',
+        lang,
         undefined,
         undefined,
         [],

@@ -61,6 +61,7 @@ export default async function SearchPage({
       const result = await fetchArticleSlugs(
         currentPage,
         currentSort,
+        lang,
         '',
         searchQuery,
         []

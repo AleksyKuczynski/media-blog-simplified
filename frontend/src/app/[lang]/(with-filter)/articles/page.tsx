@@ -24,7 +24,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   return safeGenerateMetadata(params, 'page', async (lang, dictionary) => {
-    const { slugs } = await fetchArticleSlugs(1, 'desc');
+    const { slugs } = await fetchArticleSlugs(1, lang, 'desc');
     
     const articleItems = slugs.slice(0, 5).map(slug => ({
       name: slug.slug,
@@ -64,6 +64,7 @@ export default async function ArticlesPage({
   const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
     currentPage,
     currentSort,
+    lang,
     categorySlug
   );
 

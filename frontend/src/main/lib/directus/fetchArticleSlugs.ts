@@ -1,19 +1,19 @@
 // frontend/src/main/lib/directus/fetchArticleSlugs.ts
-// DEBUG VERSION - with comprehensive logging
+// FINAL: Uses Directus deep filter to fetch only requested language translation
 
 import { DIRECTUS_URL, ITEMS_PER_PAGE } from "./directusConstants";
 import { ArticleSlugInfo } from "./directusInterfaces";
 
 export async function fetchArticleSlugs(
   page: number = 1, 
-  sort: string = 'desc', 
+  sort: string = 'desc',
+  lang: string,
   category?: string, 
   search?: string,
   excludeSlugs: string[] = [],
   authorSlug?: string,
   rubricSlug?: string,
-  includesDrafts: boolean = false,
-  lang?: string
+  includesDrafts: boolean = false
 ): Promise<{ slugs: ArticleSlugInfo[], hasMore: boolean, totalCount: number }> {
   try {
     console.log('🔍 fetchArticleSlugs called with:', { page, sort, category, search, lang });
@@ -64,10 +64,23 @@ export async function fetchArticleSlugs(
     const encodedFilter = encodeURIComponent(JSON.stringify(filter));
     const sortQuery = sort === 'asc' ? 'published_at' : '-published_at';
     
+    // Build URL with translation fields
     let slugUrl = `${DIRECTUS_URL}/items/articles?fields=slug,layout,translations.languages_code,translations.title,translations.local_slug&sort=${sortQuery}&limit=-1`;
     
     if (Object.keys(filter).length > 0) {
       slugUrl += `&filter=${encodedFilter}`;
+    }
+
+    // Add deep filter for language if specified
+    if (lang) {
+      const deepFilter = encodeURIComponent(JSON.stringify({
+        translations: {
+          _filter: {
+            languages_code: { _eq: lang }
+          }
+        }
+      }));
+      slugUrl += `&deep=${deepFilter}`;
     }
 
     console.log('📡 Fetching URL:', slugUrl);
@@ -88,41 +101,30 @@ export async function fetchArticleSlugs(
     
     console.log(`📦 Fetched ${slugsData.data.length} articles from Directus`);
 
-    // Debug: Log first 3 articles to see structure
-    if (slugsData.data.length > 0) {
-      console.log('📋 Sample article structure (first 3):');
-      slugsData.data.slice(0, 3).forEach((item: any, idx: number) => {
-        console.log(`  Article ${idx + 1}: ${item.slug}`);
-        console.log(`    Translations:`, item.translations?.map((t: any) => ({
-          lang: t.languages_code,
-          title: t.title,
-          local_slug: t.local_slug
-        })));
-      });
-    }
-
+    // Filter and map articles
     let allFilteredSlugs: ArticleSlugInfo[] = slugsData.data
       .filter((item: any) => {
         if (!lang) {
           console.log(`  ✅ ${item.slug}: No lang filter, including`);
-          return true;
+          return true; // No language filter
         }
         
+        // Check if translations exist and have the requested language with non-null title
         if (!item.translations || item.translations.length === 0) {
-          console.log(`  ❌ ${item.slug}: No translations at all`);
+          console.log(`  ❌ ${item.slug}: No translations returned (deep filter excluded it or no translation exists)`);
           return false;
         }
         
-        const translation = item.translations.find((t: any) => t.languages_code === lang);
+        // Deep filter should return only requested language
+        const translation = item.translations[0]; // Should be only one due to deep filter
         
-        if (!translation) {
-          console.log(`  ❌ ${item.slug}: No ${lang} translation found`);
+        if (translation.languages_code !== lang) {
+          console.log(`  ⚠️ ${item.slug}: Unexpected - translation language is ${translation.languages_code}, expected ${lang}`);
           return false;
         }
         
         if (!translation.title) {
-          console.log(`  ❌ ${item.slug}: ${lang} translation exists but title is null`);
-          console.log(`      Translation data:`, translation);
+          console.log(`  ❌ ${item.slug}: Translation exists but title is null`);
           return false;
         }
         
@@ -132,9 +134,10 @@ export async function fetchArticleSlugs(
       .map((item: any) => {
         let slugToUse = item.slug;
         
-        if (lang && item.translations) {
-          const translation = item.translations.find((t: any) => t.languages_code === lang);
-          if (translation && translation.local_slug) {
+        // Use local_slug if available
+        if (lang && item.translations && item.translations.length > 0) {
+          const translation = item.translations[0];
+          if (translation.local_slug) {
             console.log(`    🔄 ${item.slug} → ${translation.local_slug} (using local_slug)`);
             slugToUse = translation.local_slug;
           }
@@ -149,6 +152,7 @@ export async function fetchArticleSlugs(
     console.log(`\n✨ After filtering: ${allFilteredSlugs.length} articles for lang=${lang}`);
     console.log(`📝 Filtered slugs:`, allFilteredSlugs.map(s => s.slug).join(', '));
 
+    // Paginate
     const totalCount = allFilteredSlugs.length;
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
