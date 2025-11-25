@@ -82,6 +82,8 @@ export interface NavigationAccessibility {
   readonly skipToContent: string;
   readonly skipToNavigation: string;
   readonly breadcrumbNavigation: string;
+  readonly paginationNavigation: string;
+  readonly pageNavigation: string;
 }
 
 export interface NavigationDictionary {
@@ -143,6 +145,17 @@ export interface CommonCount {
   readonly items: string;
 }
 
+export interface CommonPagination {
+    readonly previous: string;
+    readonly next: string;
+    readonly page: string;
+    readonly of: string;
+    readonly goToPage: string;
+    readonly currentPage: string;
+    readonly firstPage: string;
+    readonly lastPage: string;
+}
+
 export interface CommonActions {
   readonly loadMore: string;
   readonly showMore: string;
@@ -163,6 +176,7 @@ export interface CommonStatus {
 
 export interface CommonDictionary {
   readonly count: CommonCount;
+  readonly pagination: CommonPagination;
   readonly actions: CommonActions;
   readonly status: CommonStatus;
   readonly published: string;

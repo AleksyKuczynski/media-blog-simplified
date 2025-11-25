@@ -1,70 +1,27 @@
 // src/app/[lang]/(with-filter)/category/[categorySlug]/page.tsx
+// FIXED: Uses totalCount, proper totalPages calculation
 
-import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import ArticleList from '@/main/components/Main/ArticleList';
-import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
+import Pagination from '@/main/components/Main/Pagination';
 import Section from '@/main/components/Main/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics } from '@/main/lib/directus';
-import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
+import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
-import Link from 'next/link';
+import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
+import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
 
-// ISR CONFIGURATION: 10 minutes (categories change less frequently)
-export const revalidate = 600;
-export const dynamicParams = true;
-
-// Generate SEO-optimized metadata using existing CollectionMetadata component
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: Promise<{ lang: Lang; categorySlug: string }> 
-}): Promise<Metadata> {
-  const { lang, categorySlug } = await params;
-  const categories = await fetchAllCategories(lang);
-  const dictionary = getDictionary(lang as Lang);
-  const category = categories.find(cat => cat.slug === categorySlug);
-  
-  if (!category) {
-    return {
-      title: processTemplate(dictionary.metadata.notFound.page.title, {}),
-      description: processTemplate(dictionary.metadata.notFound.page.description, {}),
-    };
-  }
-
-  // Get article count for this category
-  const { slugs } = await fetchArticleSlugs(1, 'desc', categorySlug);
-
-  // Transform category data for the collection metadata generator
-  const categoryData = [{
-    name: category.name,
-    slug: category.slug,
-    description: processTemplate(dictionary.sections.templates.categoryDescription, {
-  categoryName: category.name
-}),
-  }];
-
-  // Use existing generateCollectionMetadata component
-  return await generateCollectionMetadata({
-    dictionary,
-    collectionType: 'articles', // Category pages show articles
-    items: categoryData,
-    totalCount: slugs.length,
-    currentPath: `/${lang}/category/${categorySlug}`,
-    featured: false,
-  });
-}
+export const revalidate = 300;
 
 export default async function CategoryPage({ 
   params,
   searchParams 
-}: { 
-  params: Promise<{ lang: Lang; categorySlug: string }>,
+}: {
+  params: Promise<{ lang: Lang; categorySlug: string }>;
   searchParams: Promise<{ page?: string, sort?: string }>
 }) {
   const { lang, categorySlug } = await params;
@@ -82,22 +39,16 @@ export default async function CategoryPage({
   const currentPage = Number(resolvedSearchParams.page) || 1;
   const currentSort = resolvedSearchParams.sort || 'desc';
 
-  // Fetch articles for all pages up to current page
-  let allSlugs: ArticleSlugInfo[] = [];
-  let hasMore = false;
+  // FIXED: Get totalCount
+  const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
+    currentPage,
+    currentSort,
+    categorySlug
+  );
 
-  for (let page = 1; page <= currentPage; page++) {
-    const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
-      page,
-      currentSort,
-      categorySlug
-    );
-    allSlugs = [...allSlugs, ...slugs];
-    hasMore = pageHasMore;
-    if (!pageHasMore) break;
-  }
+  // FIXED: Calculate totalPages correctly
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-  // Generate breadcrumb items using dictionary
   const breadcrumbItems = [
     {
       label: dictionary.navigation.labels.home,
@@ -113,9 +64,8 @@ export default async function CategoryPage({
     },
   ];
 
-  // Prepare article data for CollectionPageSchema
-  const articleItems = allSlugs.slice(0, 10).map(slug => ({
-    name: slug.slug, // Using slug as name fallback since title not available
+  const articleItems = currentPageSlugs.slice(0, 10).map(slug => ({
+    name: slug.slug,
     slug: slug.slug,
     url: `${dictionary.seo.site.url}/articles/${slug.slug}`,
     description: `Статья ${slug.slug}`,
@@ -123,17 +73,15 @@ export default async function CategoryPage({
 
   return (
     <>
-      {/* Use existing CollectionPageSchema component */}
       <CollectionPageSchema
         dictionary={dictionary}
         collectionType="articles"
         items={articleItems}
-        totalCount={allSlugs.length}
+        totalCount={totalCount}
         currentPath={`/${lang}/category/${categorySlug}`}
         featured={false}
       />
 
-      {/* Breadcrumbs for better navigation and SEO */}
       <Breadcrumbs 
         items={breadcrumbItems} 
         rubrics={rubricBasics} 
@@ -145,14 +93,12 @@ export default async function CategoryPage({
         }}
       />
 
-      {/* Main content with semantic HTML for SEO */}
       <article itemScope itemType="https://schema.org/CollectionPage">
         <Section 
           title={category.name}
           className="py-8"
         >
           <div className="container mx-auto px-4">
-            {/* Enhanced page header with semantic markup */}
             <header className="mb-8">
               <h1 
                 className="text-3xl font-bold mb-4 text-on-sf"
@@ -171,18 +117,17 @@ export default async function CategoryPage({
                 })}
               </p>
               
-              {/* Article count display */}
-              {allSlugs.length > 0 && (
+              {/* FIXED: Show total count */}
+              {totalCount > 0 && (
                 <div className="mt-4 text-sm text-on-sf-var">
                   {processTemplate(dictionary.sections.templates.totalCount, {
-                    count: allSlugs.length.toString(),
+                    count: totalCount.toString(),
                     countLabel: dictionary.common.count.articles
                   })}
                 </div>
               )}
             </header>
 
-            {/* Main content area */}
             <main role="main" itemProp="mainEntity">
               <Suspense fallback={
                 <div 
@@ -198,10 +143,10 @@ export default async function CategoryPage({
                   </div>
                 </div>
               }>
-                {allSlugs.length > 0 ? (
+                {currentPageSlugs.length > 0 ? (
                   <>
                     <ArticleList 
-                      slugInfos={allSlugs}
+                      slugInfos={currentPageSlugs}
                       lang={lang}
                       dictionary={dictionary}
                       categorySlug={categorySlug}
@@ -209,15 +154,13 @@ export default async function CategoryPage({
                       ariaLabel={`${dictionary.sections.templates.categoryDescription} ${category.name}`}
                     />
                     
-                    {/* Load more button with enhanced UX */}
-                    {hasMore && (
-                      <footer className="mt-8 text-center">
-                        <LoadMoreButton 
-                          currentPage={currentPage}
-                          dictionary={dictionary}
-                        />
-                      </footer>
-                    )}
+                    <div className="mt-12">
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        dictionary={dictionary}
+                      />
+                    </div>
                   </>
                 ) : (
                   <div 
@@ -226,45 +169,7 @@ export default async function CategoryPage({
                     aria-label={dictionary.common.status.empty}
                   >
                     <div className="text-gray-600 dark:text-gray-400">
-                      <svg 
-                        className="mx-auto h-12 w-12 mb-4 opacity-50" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                        aria-hidden="true"
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={1}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
-                        />
-                      </svg>
-                      <p className="text-lg mb-2">
-                        {dictionary.sections.articles.noArticlesFound}
-                      </p>
-                      <p className="text-sm opacity-75">
-                        {processTemplate(dictionary.sections.templates.emptyCollection, {
-                          collection: category.name,
-                          items: dictionary.sections.labels.articles
-                        })}
-                      </p>
-                      
-                      {/* Navigation links for better UX */}
-                      <div className="mt-6 flex flex-wrap gap-4 justify-center">
-                        <Link 
-                          href={`/${lang}/articles`}
-                          className="inline-flex items-center px-4 py-2 bg-prcolor text-white rounded-lg hover:bg-pr-fix transition-colors"
-                        >
-                          {dictionary.sections.articles.allArticles}
-                        </Link>
-                        <Link 
-                          href={`/${lang}/rubrics`}
-                          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors"
-                        >
-                          {dictionary.sections.rubrics.allRubrics}
-                        </Link>
-                      </div>
+                      <p>{dictionary.sections.articles.noArticlesFound}</p>
                     </div>
                   </div>
                 )}

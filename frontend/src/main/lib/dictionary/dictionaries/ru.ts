@@ -85,6 +85,8 @@ const dictionaryRU: Dictionary = {
       skipToContent: 'Перейти к содержимому',
       skipToNavigation: 'Перейти к навигации',
       breadcrumbNavigation: 'Навигационная цепочка',
+      paginationNavigation: 'Навигация по страницам',
+      pageNavigation: 'Страница {current} из {total}',
     },
   },
   
@@ -131,6 +133,16 @@ const dictionaryRU: Dictionary = {
       authors: 'авторов:',
       results: 'результатов:',
       items: 'элементов:',
+    },
+    pagination: {
+      previous: 'Назад',
+      next: 'Вперёд',
+      page: 'Страница',
+      of: 'из',
+      goToPage: 'Перейти на страницу {page}',
+      currentPage: 'Текущая страница, страница {page}',
+      firstPage: 'Перейти на первую страницу',
+      lastPage: 'Перейти на последнюю страницу',
     },
     actions: {
       loadMore: 'Загрузить еще',

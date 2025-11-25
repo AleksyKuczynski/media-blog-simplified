@@ -83,6 +83,8 @@ export const dictionaryEN: Dictionary = {
       skipToContent: 'Skip to main content',
       skipToNavigation: 'Skip to navigation',
       breadcrumbNavigation: 'Breadcrumb navigation',
+      paginationNavigation: 'Pagination navigation',
+      pageNavigation: 'Page {current} of {total}',
     },
   },
   
@@ -129,6 +131,16 @@ export const dictionaryEN: Dictionary = {
       authors: 'Authors:',
       results: 'Results:',
       items: 'Items:',
+    },
+    pagination: {
+      previous: 'Previous',
+      next: 'Next',
+      page: 'Page',
+      of: 'of',
+      goToPage: 'Go to page {page}',
+      currentPage: 'Current page, page {page}',
+      firstPage: 'Go to first page',
+      lastPage: 'Go to last page',
     },
     actions: {
       loadMore: 'Load More',

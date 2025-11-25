@@ -1,4 +1,5 @@
 // frontend/src/main/lib/directus/fetchArticleSlugs.ts
+// FIXED: Added totalCount to return value
 
 import { DIRECTUS_URL, ITEMS_PER_PAGE } from "./directusConstants";
 import { ArticleSlugInfo } from "./directusInterfaces";
@@ -11,22 +12,19 @@ export async function fetchArticleSlugs(
   excludeSlugs: string[] = [],
   authorSlug?: string,
   rubricSlug?: string,
-  includesDrafts: boolean = false // NEW PARAMETER
-): Promise<{ slugs: ArticleSlugInfo[], hasMore: boolean }> {
+  includesDrafts: boolean = false
+): Promise<{ slugs: ArticleSlugInfo[], hasMore: boolean, totalCount: number }> {
   try {
     const offset = (page - 1) * ITEMS_PER_PAGE;
     const sortQuery = sort === 'asc' ? 'published_at' : '-published_at';
     
     let filter: any = {};
 
-    // Status filter based on preview mode
     const statusFilter = includesDrafts 
       ? { status: { _in: ['published', 'draft'] } }
       : { status: { _eq: 'published' } };
     
     filter = { ...filter, ...statusFilter };
-
-    // ... rest of existing filter logic (category, search, etc.) ...
 
     if (category) {
       filter["category_slugs"] = {
@@ -65,13 +63,14 @@ export async function fetchArticleSlugs(
 
     const encodedFilter = encodeURIComponent(JSON.stringify(filter));
     
-    let url = `${DIRECTUS_URL}/items/articles?fields=slug,layout&sort=${sortQuery}&limit=${ITEMS_PER_PAGE + 1}&offset=${offset}`;
+    // Fetch slugs with +1 to check hasMore AND meta for filtered count
+    let slugUrl = `${DIRECTUS_URL}/items/articles?fields=slug,layout&sort=${sortQuery}&limit=${ITEMS_PER_PAGE + 1}&offset=${offset}&meta=filter_count`;
     
     if (Object.keys(filter).length > 0) {
-      url += `&filter=${encodedFilter}`;
+      slugUrl += `&filter=${encodedFilter}`;
     }
 
-    const response = await fetch(url, { 
+    const slugsResponse = await fetch(slugUrl, { 
       cache: includesDrafts ? 'no-store' : 'default',
       next: includesDrafts ? undefined : (search ? { revalidate: 0 } : { 
         revalidate: 300,
@@ -79,11 +78,12 @@ export async function fetchArticleSlugs(
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch article slugs. Status: ${response.status}`);
+    if (!slugsResponse.ok) {
+      throw new Error(`Failed to fetch article data. Status: ${slugsResponse.status}`);
     }
 
-    const slugsData = await response.json();
+    const slugsData = await slugsResponse.json();
+
     let slugs: ArticleSlugInfo[] = slugsData.data.map((item: { slug: string, layout: string }) => ({
       slug: item.slug,
       layout: item.layout
@@ -95,7 +95,10 @@ export async function fetchArticleSlugs(
       slugs = slugs.slice(0, ITEMS_PER_PAGE);
     }
 
-    return { slugs, hasMore };
+    // Extract filtered count from meta (respects all filters)
+    const totalCount = slugsData.meta?.filter_count || 0;
+
+    return { slugs, hasMore, totalCount };
   } catch (error) {
     console.error('Error in fetchArticleSlugs:', error);
     throw error;

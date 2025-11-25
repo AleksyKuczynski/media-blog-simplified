@@ -1,65 +1,112 @@
 // src/main/components/Search/SearchResultsClient.tsx
-// SEO-OPTIMIZED: Enhanced semantic structure and accessibility
+// FIXED: Uses totalCount instead of allSlugs.length
+
 'use client'
 
-import ArticleList from '@/main/components/Main/ArticleList';
-import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
-import SortingControl from '@/main/components/Navigation/Filter/SortingControl';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
-import { getLocalizedCount } from '@/main/lib/dictionary/helpers/content';
+import ArticleList from '@/main/components/Main/ArticleList';
+import Pagination from '@/main/components/Main/Pagination';
+import SortingControl from '../Navigation/Filter/SortingControl';
 
 interface SearchResultsClientProps {
   readonly dictionary: Dictionary;
-  readonly searchQuery: string;
   readonly allSlugs: ArticleSlugInfo[];
-  readonly hasMore: boolean;
+  readonly lang: Lang;
+  readonly searchQuery: string;
   readonly currentPage: number;
   readonly currentSort: string;
+  readonly totalCount: number; // FIXED: Added totalCount
+  readonly totalPages: number;
+  readonly isEmptyState: boolean;
+  readonly isResultsState: boolean;
+  readonly isNoResultsState: boolean;
+  readonly hasInvalidQuery: boolean;
 }
 
-/**
- * SearchResultsClient - SEO-optimized results display
- * SEMANTIC: Enhanced heading structure and schema markup
- */
 export default function SearchResultsClient({
   dictionary,
-  searchQuery,
   allSlugs,
-  hasMore,
+  lang,
+  searchQuery,
   currentPage,
-  currentSort
+  currentSort,
+  totalCount, // FIXED
+  totalPages,
+  isEmptyState,
+  isNoResultsState,
+  hasInvalidQuery,
 }: SearchResultsClientProps) {
-  const lang: Lang = 'ru';
-
-  if (allSlugs.length === 0) {
-    return null;
+  
+  if (isEmptyState) {
+    return (
+      <div 
+        className="text-center py-12"
+        role="status"
+        aria-label={dictionary.search.accessibility.openSearch}
+      >
+        <h1 className="text-2xl font-bold mb-4 text-on-sf">
+          {dictionary.search.labels.title}
+        </h1>
+        <p className="text-on-sf-var">
+          {dictionary.search.accessibility.openSearch}
+        </p>
+      </div>
+    );
   }
 
-  const resultsCountText = getLocalizedCount(dictionary, allSlugs.length, 'results');
+  if (hasInvalidQuery) {
+    return (
+      <div 
+        className="text-center py-12"
+        role="alert"
+        aria-live="polite"
+      >
+        <h1 className="text-2xl font-bold mb-4 text-on-sf">
+          {dictionary.search.labels.results}
+        </h1>
+        <p className="text-on-sf-var">
+          {dictionary.search.labels.minCharacters}
+        </p>
+      </div>
+    );
+  }
+
+  if (isNoResultsState) {
+    return (
+      <div 
+        className="text-center py-12"
+        role="status"
+        aria-live="polite"
+      >
+        <h1 className="text-2xl font-bold mb-4 text-on-sf">
+          {dictionary.search.labels.noResults}
+        </h1>
+        <p className="text-on-sf-var">
+          {dictionary.search.labels.noResults}
+        </p>
+      </div>
+    );
+  }
+
+  // FIXED: Use totalCount instead of allSlugs.length
+  const resultsCountText = `${dictionary.common.count.results} ${totalCount}`;
 
   return (
     <section 
       className="space-y-6"
-      itemScope
-      itemType="https://schema.org/SearchResultsPage"
-      aria-labelledby="search-results-heading"
+      role="region"
+      aria-label={dictionary.search.accessibility.searchResultsLabel}
     >
-      <meta itemProp="query" content={searchQuery} />
-      <meta itemProp="numberOfItems" content={allSlugs.length.toString()} />
-      
-      {/* Results Header with Semantic Structure */}
-      <header className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+      {/* Search Results Header */}
+      <header className="flex justify-between items-center gap-4 flex-wrap">
         <div>
-          <h1 
-            id="search-results-heading"
-            className="text-lg font-semibold text-txcolor-primary mb-2"
-            itemProp="headline"
-          >
-            {dictionary.search.templates.pageTitle}: <span className="font-normal">{searchQuery}</span>
+          <h1 className="text-2xl font-bold mb-2 text-on-sf">
+            {dictionary.search.labels.results}
           </h1>
           <p 
-            className="text-txcolor-secondary"
+            className="text-sm text-on-sf-var"
+            role="status"
             aria-live="polite"
             itemProp="description"
           >
@@ -67,7 +114,6 @@ export default function SearchResultsClient({
           </p>
         </div>
 
-        {/* Sorting Control */}
         <aside aria-label={dictionary.filter.accessibility.sortingControl}>
           <SortingControl
             dictionary={dictionary}
@@ -77,7 +123,7 @@ export default function SearchResultsClient({
         </aside>
       </header>
 
-      {/* Results List with Enhanced Semantics */}
+      {/* Results List */}
       <main role="main" aria-label={dictionary.search.accessibility.searchResultsLabel}>
         <ArticleList
           dictionary={dictionary}
@@ -88,12 +134,13 @@ export default function SearchResultsClient({
         />
       </main>
 
-      {/* Load More Button */}
-      {hasMore && (
-        <footer className="text-center pt-6">
-          <LoadMoreButton
-            dictionary={dictionary}
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <footer className="pt-6">
+          <Pagination
             currentPage={currentPage}
+            totalPages={totalPages}
+            dictionary={dictionary}
           />
         </footer>
       )}
