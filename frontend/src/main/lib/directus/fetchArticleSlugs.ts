@@ -1,5 +1,4 @@
 // frontend/src/main/lib/directus/fetchArticleSlugs.ts
-// FINAL: Uses Directus deep filter to fetch only requested language translation
 
 import { DIRECTUS_URL, ITEMS_PER_PAGE } from "./directusConstants";
 import { ArticleSlugInfo } from "./directusInterfaces";
@@ -16,8 +15,6 @@ export async function fetchArticleSlugs(
   includesDrafts: boolean = false
 ): Promise<{ slugs: ArticleSlugInfo[], hasMore: boolean, totalCount: number }> {
   try {
-    console.log('🔍 fetchArticleSlugs called with:', { page, sort, category, search, lang });
-
     let filter: any = {};
 
     const statusFilter = includesDrafts 
@@ -83,8 +80,6 @@ export async function fetchArticleSlugs(
       slugUrl += `&deep=${deepFilter}`;
     }
 
-    console.log('📡 Fetching URL:', slugUrl);
-
     const slugsResponse = await fetch(slugUrl, { 
       cache: includesDrafts ? 'no-store' : 'default',
       next: includesDrafts ? undefined : (search ? { revalidate: 0 } : { 
@@ -97,46 +92,35 @@ export async function fetchArticleSlugs(
       throw new Error(`Failed to fetch article data. Status: ${slugsResponse.status}`);
     }
 
-const slugsData = await slugsResponse.json();
+    const slugsData = await slugsResponse.json();
 
-console.log(`📦 Fetched ${slugsData.data.length} articles from Directus`);
-
-// Filter and map articles
-let allFilteredSlugs: ArticleSlugInfo[] = slugsData.data
-  .filter((item: any) => {
-    if (!lang) {
-      console.log(`  ✅ ${item.slug}: No lang filter, including`);
-      return true;
-    }
-    
-    if (!item.translations || item.translations.length === 0) {
-      console.log(`  ❌ ${item.slug}: No translations returned`);
-      return false;
-    }
-    
-    const translation = item.translations[0];
-    
-    if (translation.languages_code !== lang) {
-      console.log(`  ⚠️ ${item.slug}: Wrong language ${translation.languages_code}`);
-      return false;
-    }
-    
-    if (!translation.title) {
-      console.log(`  ❌ ${item.slug}: Translation exists but title is null`);
-      return false;
-    }
-    
-    console.log(`  ✅ ${item.slug}: Valid ${lang} translation`);
-    return true;
-  })
-  .map((item: any) => ({
-    slug: item.slug,  // Always main slug
-    layout: item.layout
-  }));
-
-console.log(`\n✨ Filtered: ${allFilteredSlugs.length} articles`);    
-    console.log(`\n✨ After filtering: ${allFilteredSlugs.length} articles for lang=${lang}`);
-    console.log(`📝 Filtered slugs:`, allFilteredSlugs.map(s => s.slug).join(', '));
+    // Filter and map articles
+    let allFilteredSlugs: ArticleSlugInfo[] = slugsData.data
+      .filter((item: any) => {
+        if (!lang) {
+          return true;
+        }
+        
+        if (!item.translations || item.translations.length === 0) {
+          return false;
+        }
+        
+        const translation = item.translations[0];
+        
+        if (translation.languages_code !== lang) {
+          return false;
+        }
+        
+        if (!translation.title) {
+          return false;
+        }
+        
+        return true;
+      })
+      .map((item: any) => ({
+        slug: item.slug,  // Always main slug
+        layout: item.layout
+      }));
 
     // Paginate
     const totalCount = allFilteredSlugs.length;
@@ -146,13 +130,8 @@ console.log(`\n✨ Filtered: ${allFilteredSlugs.length} articles`);
     const slugs = allFilteredSlugs.slice(startIndex, endIndex);
     const hasMore = endIndex < totalCount;
 
-    console.log(`\n📄 Page ${page}: Returning ${slugs.length} items (total: ${totalCount}, hasMore: ${hasMore})`);
-    console.log(`📍 Slugs on this page:`, slugs.map(s => s.slug).join(', '));
-    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-
     return { slugs, hasMore, totalCount };
   } catch (error) {
-    console.error('❌ Error in fetchArticleSlugs:', error);
     throw error;
   }
 }

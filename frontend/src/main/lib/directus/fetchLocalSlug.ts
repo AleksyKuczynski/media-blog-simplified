@@ -33,7 +33,6 @@ export async function fetchLocalSlug(
     const data = await response.json();
     return data.data?.[0]?.local_slug || null;
   } catch (error) {
-    console.error('Error fetching local_slug:', error);
     return null;
   }
 }

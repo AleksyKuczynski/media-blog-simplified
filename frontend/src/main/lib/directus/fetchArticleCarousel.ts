@@ -18,7 +18,6 @@ export async function fetchArticleCarousel(id: string): Promise<ArticleCarousel 
       const data = await response.json();
       return data.data;
     } catch (error) {
-      console.error(`Error fetching article carousel ${id}:`, error);
       return null;
     }
   }

@@ -20,7 +20,6 @@ export async function fetchAssetMetadata(assetId: string): Promise<Asset | null>
       title: data.title || data.filename_download
     };
   } catch (error) {
-    console.error('Error fetching asset metadata:', error);
     return null;
   }
 }

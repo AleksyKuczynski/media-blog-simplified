@@ -16,7 +16,6 @@ export async function fetchPromotedSlug(): Promise<string | null> {
       const data: { data: PromotedArticle } = await response.json();
       return data.data.article;
     } catch (error) {
-      console.error('Error fetching promoted article:', error);
       return null;
     }
   }

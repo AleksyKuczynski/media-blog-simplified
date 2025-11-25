@@ -139,7 +139,6 @@ export async function fetchRelatedArticles(
       });
 
       if (!articleCategoriesResponse.ok) {
-        console.warn(`Failed to fetch categories for article ${article.slug}`);
         continue;
       }
 
@@ -216,7 +215,6 @@ export async function fetchRelatedArticles(
     return relatedArticles;
 
   } catch (error) {
-    console.error('Error in fetchRelatedArticles:', error);
     return []; // Return empty array on error (component will not render)
   }
 }

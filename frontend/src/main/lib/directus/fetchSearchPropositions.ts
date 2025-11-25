@@ -68,7 +68,6 @@ export async function fetchSearchPropositions(search: string, lang: Lang): Promi
       };
     }).filter((item: SearchProposition | null) => item !== null) as SearchProposition[];
   } catch (error) {
-    console.error('Error fetching search propositions:', error);
     return [];
   }
 }

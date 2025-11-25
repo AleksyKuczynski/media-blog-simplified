@@ -60,7 +60,6 @@ export async function fetchArticles(
 
     return articles;
   } catch (error) {
-    console.error('Error in fetchArticles:', error);
     throw error;
   }
 }

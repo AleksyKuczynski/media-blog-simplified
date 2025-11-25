@@ -42,7 +42,6 @@ export async function fetchCategoriesForArticle(slug: string, lang: Lang): Promi
         const categories = await Promise.all(categoriesPromises);
         return categories;
     } catch (error) {
-        console.error(`Error fetching categories for article ${slug}:`, error);
         return [];
     }
 }

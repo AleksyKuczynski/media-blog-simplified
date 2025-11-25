@@ -47,7 +47,6 @@ export async function fetchRubricBasics(lang: Lang, includeSEO: boolean = false)
       };
     });
   } catch (error) {
-    console.error('Error fetching rubric basics:', error);
     return [];
   }
 }

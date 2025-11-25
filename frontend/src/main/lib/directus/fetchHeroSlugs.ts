@@ -58,7 +58,6 @@ export async function fetchHeroSlugs(lang: Lang): Promise<string[]> {
     return heroSlugs;
   
   } catch (error) {
-    console.error('Error in fetchHeroArticles:', error);
     return [];
   }
 }

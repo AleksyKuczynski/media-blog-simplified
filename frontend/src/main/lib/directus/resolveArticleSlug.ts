@@ -81,7 +81,6 @@ async function findMainSlugByLocalSlug(
     });
 
     if (!response.ok) {
-      console.log(`Could not search local_slug: ${localSlug}, status: ${response.status}`);
       return null;
     }
 
@@ -93,7 +92,6 @@ async function findMainSlugByLocalSlug(
 
     return null;
   } catch (error) {
-    console.error('Error finding main slug by local_slug:', error);
     return null;
   }
 }

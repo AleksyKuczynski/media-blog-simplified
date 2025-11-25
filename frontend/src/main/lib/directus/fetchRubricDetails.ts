@@ -77,7 +77,6 @@ export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubr
 
     return rubricDetails;
   } catch (error) {
-    console.error(`Error fetching rubric details for ${slug}:`, error);
     return null;
   }
 }

@@ -26,7 +26,6 @@ export async function fetchEngagementData(slug: string) {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Directus API Error:', errorText);
       throw new Error(`Directus API error: ${response.status}`);
     }
 
@@ -38,7 +37,6 @@ export async function fetchEngagementData(slug: string) {
     }
 
     // If no record exists, return defaults (Flow will create it)
-    console.warn('⚠️ No record found - returning defaults');
     return {
       article_slug: slug,
       view_count: 0,
@@ -47,7 +45,6 @@ export async function fetchEngagementData(slug: string) {
       date_updated: null, // NEW: No timestamp for non-existent records
     };
   } catch (error) {
-    console.error('❌ Error fetching engagement data:', error);
     throw error;
   }
 }

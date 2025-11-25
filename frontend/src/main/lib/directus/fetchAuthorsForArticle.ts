@@ -50,7 +50,6 @@ export async function fetchAuthorsForArticle(slug: string, lang: Lang): Promise<
 
     return authors;
   } catch (error) {
-    console.error(`Error fetching authors for article ${slug}:`, error);
     return [];
   }
 }

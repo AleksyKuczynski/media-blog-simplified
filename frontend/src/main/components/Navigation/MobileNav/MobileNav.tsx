@@ -153,13 +153,11 @@ export default function MobileNavigation({
         ariaLabel={dictionary.search.accessibility.searchDescription}
         panelRef={searchRef}
       >
-        <div 
-          className="h-full bg-sf-cont"
-          onTransitionEnd={handleSearchComplete}
-        >
+        <div className="h-full bg-sf-cont">
           <MobileSearchContent 
             dictionary={dictionary}
             lang={lang}
+            onSearchComplete={closeSearch}
           />
         </div>
       </OffcanvasPanel>

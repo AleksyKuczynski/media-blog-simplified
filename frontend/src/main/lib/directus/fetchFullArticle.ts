@@ -66,7 +66,6 @@ export async function fetchFullArticle(
     const data = await response.json();
 
     if (!data.data || data.data.length === 0) {
-      console.log('No article found for slug:', slug);
       return null;
     }
 
@@ -74,7 +73,6 @@ export async function fetchFullArticle(
     const translation = article.translations[0];
 
     if (!translation) {
-      console.log(`No translation found for article ${slug} in language ${lang}`);
       return null;
     }
 
@@ -115,7 +113,6 @@ export async function fetchFullArticle(
 
     return fullArticle;
   } catch (error) {
-    console.error('Error fetching full article:', error);
     return null;
   }
 }

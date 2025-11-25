@@ -45,13 +45,11 @@ export async function fetchArticleCard(slug: string, lang: Lang): Promise<Articl
     const data = await response.json();
     
     if (!data.data || data.data.length === 0) {
-      console.log(`fetchArticleCard: No data found for slug: ${slug}`);
       return null;
     }
 
     const article = data.data[0];
     if (!article.translations || article.translations.length === 0) {
-      console.log(`fetchArticleCard: No translation found for ${slug} in language ${lang}.`);
       return null;
     }
 
@@ -80,7 +78,6 @@ export async function fetchArticleCard(slug: string, lang: Lang): Promise<Articl
 
     return articleCard;
   } catch (error) {
-    console.error(`Error in fetchArticleCard for slug ${slug}:`, error);
     return null;
   }
 }

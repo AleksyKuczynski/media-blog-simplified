@@ -47,7 +47,6 @@ export async function fetchAuthorBySlug(slug: string, lang: Lang): Promise<Autho
       bio: translation ? translation.bio : ''
     };
   } catch (error) {
-    console.error(`Error fetching author details for slug ${slug}:`, error);
     return null;
   }
 }

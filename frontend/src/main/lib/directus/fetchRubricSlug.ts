@@ -16,7 +16,6 @@ export async function fetchRubricSlug(articleSlug: string): Promise<string | nul
       const data = await response.json();
       return data.data[0]?.rubric_slug || null;
     } catch (error) {
-      console.error('Error fetching rubric slug:', error);
       return null;
     }
   }
