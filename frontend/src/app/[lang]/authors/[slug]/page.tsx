@@ -6,8 +6,9 @@ import Image from 'next/image';
 import { fetchAuthorBySlug, fetchRubricBasics, DIRECTUS_URL, fetchArticleSlugs, ArticleSlugInfo } from '@/main/lib/directus/index';
 import ArticleList from '@/main/components/Main/ArticleList';
 import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
-import LoadMoreButton from '@/main/components/Main/LoadMoreButton';
+import Pagination from '@/main/components/Main/Pagination';
 import Section from '@/main/components/Main/Section';
+import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import generateAuthorMetadata from '@/main/components/SEO/metadata/AuthorMetadata';
@@ -32,8 +33,7 @@ export async function generateMetadata({
       throw new Error('Author not found');
     }
 
-    const { slugs } = await fetchArticleSlugs(1, 'desc', lang, undefined, undefined, [], slug);
-    const articleCount = slugs.length;
+    const { totalCount } = await fetchArticleSlugs(1, 'desc', lang, undefined, undefined, [], slug);
 
     return generateAuthorMetadata({
       dictionary,
@@ -42,7 +42,7 @@ export async function generateMetadata({
         slug: slug,
         bio: author.bio,
         avatar: author.avatar,
-        articleCount,
+        articleCount: totalCount,
         path: `/${lang}/authors/${slug}`,
         featured: false,
       },
@@ -62,6 +62,7 @@ export default async function AuthorPage({
     const resolvedSearchParams = await searchParams;
     const dictionary = getDictionary(lang as Lang);
     const currentPage = Number(resolvedSearchParams.page) || 1;
+    const currentSort = resolvedSearchParams.sort || 'desc';
 
     const [author, rubricBasics] = await Promise.all([
       fetchAuthorBySlug(slug, lang),
@@ -72,23 +73,19 @@ export default async function AuthorPage({
       notFound();
     }
 
-    let allSlugInfos: ArticleSlugInfo[] = [];
-    let hasMore = false;
+    // Fetch only current page
+    const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
+      currentPage,
+      currentSort,
+      lang,
+      undefined,
+      undefined,
+      [],
+      slug
+    );
 
-    for (let page = 1; page <= currentPage; page++) {
-      const { slugs, hasMore: pageHasMore } = await fetchArticleSlugs(
-        page,
-        'desc',
-        lang,
-        undefined,
-        undefined,
-        [],
-        slug
-      );
-      allSlugInfos = [...allSlugInfos, ...slugs];
-      hasMore = pageHasMore;
-      if (!pageHasMore) break;
-    }
+    // Calculate total pages
+    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
     const breadcrumbItems = [
       {
@@ -105,13 +102,11 @@ export default async function AuthorPage({
       },
     ];
 
-    const articlesForSchema = allSlugInfos.slice(0, 10).map(slugInfo => ({
+    const articlesForSchema = currentPageSlugs.slice(0, 10).map(slugInfo => ({
       title: slugInfo.slug,
       slug: slugInfo.slug,
       url: `${dictionary.seo.site.url}/${lang}/authors/${slug}/${slugInfo.slug}`,
     }));
-
-    const articleCountText = getLocalizedArticleCount(dictionary, allSlugInfos.length);
 
     return (
       <>
@@ -123,7 +118,7 @@ export default async function AuthorPage({
             slug: slug,
             bio: author.bio,
             avatar: author.avatar,
-            articleCount: allSlugInfos.length,
+            articleCount: totalCount,
             articles: articlesForSchema,
           }}
           currentPath={`/${lang}/authors/${slug}`}
@@ -191,7 +186,7 @@ export default async function AuthorPage({
                 
                 <p className="text-sm text-muted-foreground">
                   {processTemplate(dictionary.sections.templates.totalCount, {
-                    count: allSlugInfos.length.toString(),
+                    count: totalCount.toString(),
                     countLabel: dictionary.common.count.articles
                   })}
                 </p>
@@ -227,24 +222,23 @@ export default async function AuthorPage({
                 <p className="text-on-sf-var">{dictionary.common.status.loading}</p>
               </div>
             }>
-              {allSlugInfos.length > 0 ? (
+              {currentPageSlugs.length > 0 ? (
                 <>
                   <ArticleList 
-                    slugInfos={allSlugInfos}
+                    slugInfos={currentPageSlugs}
                     lang={lang}
                     dictionary={dictionary}
                     authorSlug={slug}
                     showCount={false}
                   />
                   
-                  {hasMore && (
-                    <div className="mt-8 text-center">
-                      <LoadMoreButton
-                        currentPage={currentPage}
-                        dictionary={dictionary}
-                      />
-                    </div>
-                  )}
+                  <div className="mt-12">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      dictionary={dictionary}
+                    />
+                  </div>
                 </>
               ) : (
                 <div className="text-center py-12">

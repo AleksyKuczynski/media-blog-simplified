@@ -2,6 +2,7 @@
 
 import { Lang } from '../dictionary';
 import { DIRECTUS_URL, Rubric, fetchAssetMetadata } from './index';
+import { fetchArticleSlugs } from './fetchArticleSlugs';
 
 export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubric | null> {
   try {
@@ -54,30 +55,24 @@ export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubr
       iconMetadata = await fetchAssetMetadata(rubric.nav_icon);
     }
 
-    // FIXED: Use cached fetch for article count instead of no-store
-    // This allows static generation while still getting fresh data
-    const articleCountResponse = await fetch(
-      `${DIRECTUS_URL}/items/articles?aggregate[count]=*&filter[rubric_slug][_eq]=${slug}&filter[status][_eq]=published`,
-      { 
-        next: { 
-          revalidate: 3600, // Cache for 1 hour instead of no-store
-          tags: ['articles', `rubric-${slug}-articles`]
-        }
-      }
+    // FIXED: Use fetchArticleSlugs to get proper language-filtered count
+    const { totalCount } = await fetchArticleSlugs(
+      1,
+      'desc',
+      lang,
+      undefined,
+      undefined,
+      [],
+      undefined,
+      slug
     );
-    
-    let articleCount = 0;
-    if (articleCountResponse.ok) {
-      const countData = await articleCountResponse.json();
-      articleCount = countData.data?.[0]?.count || 0;
-    }
 
     const rubricDetails: Rubric = {
       slug: rubric.slug,
       nav_icon: rubric.nav_icon || undefined,
       iconMetadata,
       translations: rubric.translations || [],
-      articleCount
+      articleCount: totalCount
     };
 
     return rubricDetails;

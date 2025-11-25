@@ -43,6 +43,7 @@ export default async function CategoryPage({
   const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
     currentPage,
     currentSort,
+    lang,
     categorySlug
   );
 
