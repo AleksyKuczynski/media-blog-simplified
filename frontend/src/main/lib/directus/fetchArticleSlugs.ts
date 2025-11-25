@@ -1,5 +1,5 @@
 // frontend/src/main/lib/directus/fetchArticleSlugs.ts
-// FIXED: Added totalCount to return value
+// DEBUG VERSION - with comprehensive logging
 
 import { DIRECTUS_URL, ITEMS_PER_PAGE } from "./directusConstants";
 import { ArticleSlugInfo } from "./directusInterfaces";
@@ -12,12 +12,12 @@ export async function fetchArticleSlugs(
   excludeSlugs: string[] = [],
   authorSlug?: string,
   rubricSlug?: string,
-  includesDrafts: boolean = false
+  includesDrafts: boolean = false,
+  lang?: string
 ): Promise<{ slugs: ArticleSlugInfo[], hasMore: boolean, totalCount: number }> {
   try {
-    const offset = (page - 1) * ITEMS_PER_PAGE;
-    const sortQuery = sort === 'asc' ? 'published_at' : '-published_at';
-    
+    console.log('🔍 fetchArticleSlugs called with:', { page, sort, category, search, lang });
+
     let filter: any = {};
 
     const statusFilter = includesDrafts 
@@ -62,13 +62,15 @@ export async function fetchArticleSlugs(
     }
 
     const encodedFilter = encodeURIComponent(JSON.stringify(filter));
+    const sortQuery = sort === 'asc' ? 'published_at' : '-published_at';
     
-    // Fetch slugs with +1 to check hasMore AND meta for filtered count
-    let slugUrl = `${DIRECTUS_URL}/items/articles?fields=slug,layout&sort=${sortQuery}&limit=${ITEMS_PER_PAGE + 1}&offset=${offset}&meta=filter_count`;
+    let slugUrl = `${DIRECTUS_URL}/items/articles?fields=slug,layout,translations.languages_code,translations.title,translations.local_slug&sort=${sortQuery}&limit=-1`;
     
     if (Object.keys(filter).length > 0) {
       slugUrl += `&filter=${encodedFilter}`;
     }
+
+    console.log('📡 Fetching URL:', slugUrl);
 
     const slugsResponse = await fetch(slugUrl, { 
       cache: includesDrafts ? 'no-store' : 'default',
@@ -83,24 +85,84 @@ export async function fetchArticleSlugs(
     }
 
     const slugsData = await slugsResponse.json();
+    
+    console.log(`📦 Fetched ${slugsData.data.length} articles from Directus`);
 
-    let slugs: ArticleSlugInfo[] = slugsData.data.map((item: { slug: string, layout: string }) => ({
-      slug: item.slug,
-      layout: item.layout
-    }));
-    
-    const hasMore = slugs.length > ITEMS_PER_PAGE;
-    
-    if (hasMore) {
-      slugs = slugs.slice(0, ITEMS_PER_PAGE);
+    // Debug: Log first 3 articles to see structure
+    if (slugsData.data.length > 0) {
+      console.log('📋 Sample article structure (first 3):');
+      slugsData.data.slice(0, 3).forEach((item: any, idx: number) => {
+        console.log(`  Article ${idx + 1}: ${item.slug}`);
+        console.log(`    Translations:`, item.translations?.map((t: any) => ({
+          lang: t.languages_code,
+          title: t.title,
+          local_slug: t.local_slug
+        })));
+      });
     }
 
-    // Extract filtered count from meta (respects all filters)
-    const totalCount = slugsData.meta?.filter_count || 0;
+    let allFilteredSlugs: ArticleSlugInfo[] = slugsData.data
+      .filter((item: any) => {
+        if (!lang) {
+          console.log(`  ✅ ${item.slug}: No lang filter, including`);
+          return true;
+        }
+        
+        if (!item.translations || item.translations.length === 0) {
+          console.log(`  ❌ ${item.slug}: No translations at all`);
+          return false;
+        }
+        
+        const translation = item.translations.find((t: any) => t.languages_code === lang);
+        
+        if (!translation) {
+          console.log(`  ❌ ${item.slug}: No ${lang} translation found`);
+          return false;
+        }
+        
+        if (!translation.title) {
+          console.log(`  ❌ ${item.slug}: ${lang} translation exists but title is null`);
+          console.log(`      Translation data:`, translation);
+          return false;
+        }
+        
+        console.log(`  ✅ ${item.slug}: Valid ${lang} translation (title: "${translation.title?.substring(0, 30)}...")`);
+        return true;
+      })
+      .map((item: any) => {
+        let slugToUse = item.slug;
+        
+        if (lang && item.translations) {
+          const translation = item.translations.find((t: any) => t.languages_code === lang);
+          if (translation && translation.local_slug) {
+            console.log(`    🔄 ${item.slug} → ${translation.local_slug} (using local_slug)`);
+            slugToUse = translation.local_slug;
+          }
+        }
+        
+        return {
+          slug: slugToUse,
+          layout: item.layout
+        };
+      });
+    
+    console.log(`\n✨ After filtering: ${allFilteredSlugs.length} articles for lang=${lang}`);
+    console.log(`📝 Filtered slugs:`, allFilteredSlugs.map(s => s.slug).join(', '));
+
+    const totalCount = allFilteredSlugs.length;
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    
+    const slugs = allFilteredSlugs.slice(startIndex, endIndex);
+    const hasMore = endIndex < totalCount;
+
+    console.log(`\n📄 Page ${page}: Returning ${slugs.length} items (total: ${totalCount}, hasMore: ${hasMore})`);
+    console.log(`📍 Slugs on this page:`, slugs.map(s => s.slug).join(', '));
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
     return { slugs, hasMore, totalCount };
   } catch (error) {
-    console.error('Error in fetchArticleSlugs:', error);
+    console.error('❌ Error in fetchArticleSlugs:', error);
     throw error;
   }
 }
