@@ -16,6 +16,7 @@ import QuickNavigationSchema from '@/main/components/SEO/schemas/QuickNavigation
 import AuthorsSectionSchema from '@/main/components/SEO/schemas/AuthorsSectionSchema';
 import PreviewBanner from '@/main/components/Article/PreviewBanner';
 import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
+import Collapsible from '@/main/components/Interface/Collapsible';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -244,10 +245,12 @@ export default async function ArticlePage({
                 />
 
                 {tocItems.length > 0 && (
-                  <TableOfContents
-                    items={tocItems}
+                  <Collapsible
                     title={dictionary.content.labels.tableOfContents}
-                  />
+                    ariaLabel={dictionary.content.labels.tableOfContents}
+                  >
+                    <TableOfContents items={tocItems} />
+                  </Collapsible>
                 )}
 
                 <Content

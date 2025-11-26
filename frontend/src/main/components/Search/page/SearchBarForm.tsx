@@ -6,7 +6,6 @@ import SearchDropdown from '../common/SearchDropdown';
 import SearchInput from '../common/SearchInput';
 import { useSearchLogic } from '../common/useSearchLogic';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { useRouter } from 'next/navigation';
 
 interface SearchBarFormProps {
   readonly dictionary: Dictionary;
@@ -15,35 +14,24 @@ interface SearchBarFormProps {
   readonly className?: string;
 }
 
-/**
- * SearchBarForm - Search interface for search page
- * Uses existing SearchBar logic with form submission
- */
 export default function SearchBarForm({
   dictionary,
   lang,
   currentQuery = '',
   className = ''
 }: SearchBarFormProps) {
-  const router = useRouter();
-  
   const {
     state,
     handlers,
     refs,
   } = useSearchLogic({
     mode: 'standard',
-    lang,
-    onSearchComplete: (query: string) => {
-      if (query) {
-        router.push(`/${lang}/search?search=${encodeURIComponent(query)}`);
-      }
-    }
+    lang
   });
 
   return (
     <search 
-      ref={refs.containerRef as React.RefObject<HTMLElement>}
+      ref={refs.containerRef}
       className={`w-full ${className}`}
       role="search"
       aria-label={dictionary.search.accessibility.searchLabel}
@@ -74,7 +62,7 @@ export default function SearchBarForm({
             onChange={handlers.handleInputChange}
             onKeyDown={handlers.handleKeyDown}
             onFocus={handlers.handleFocus}
-            inputRef={refs.inputRef as React.RefObject<HTMLInputElement>}
+            inputRef={refs.inputRef}
             ariaLabel={dictionary.search.accessibility.searchInputLabel}
             ariaDescription={dictionary.search.accessibility.searchDescription}
           />

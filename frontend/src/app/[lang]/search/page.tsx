@@ -7,12 +7,13 @@ import RubricsSection from '@/main/components/Main/RubricsSection';
 import Section from '@/main/components/Main/Section';
 import { RelatedArticlesCarousel } from '@/main/components/Main/RelatedArticles';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { fetchArticleSlugs, fetchAllRubrics } from '@/main/lib/directus';
+import { fetchArticleSlugs, fetchAllRubrics, fetchArticleCard, DIRECTUS_URL } from '@/main/lib/directus';
 import { ArticleSlugInfo, Rubric } from '@/main/lib/directus/directusInterfaces';
 import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
 import { SearchSchema } from '@/main/components/SEO/schemas/SearchSchema';
 import { generateSearchMetadataSimple } from '@/main/components/SEO/metadata/SearchMetadata';
 import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
+import { CarouselArticle } from '@/main/components/Main/RelatedArticles/RelatedArticlesCarousel';
 
 export const revalidate = 0;
 
@@ -53,7 +54,7 @@ export default async function SearchPage({
   let currentPageSlugs: ArticleSlugInfo[] = [];
   let totalCount = 0;
   let totalPages = 1;
-  let recentSlugs: ArticleSlugInfo[] = [];
+  let carouselArticles: CarouselArticle[] = [];
   let rubrics: Rubric[] = [];
 
   // Fetch search results if valid query
@@ -82,8 +83,37 @@ export default async function SearchPage({
       fetchAllRubrics(lang)
     ]);
     
-    recentSlugs = recentResult.slugs;
+    const recentSlugs = recentResult.slugs;
     rubrics = allRubrics;
+
+    // Transform recent slugs to CarouselArticle format
+    if (recentSlugs.length > 0) {
+      const articleCardsPromises = recentSlugs.map(s => fetchArticleCard(s.slug, lang));
+      const articleCards = await Promise.all(articleCardsPromises);
+
+      carouselArticles = articleCards
+        .filter(article => article !== null)
+        .map(article => {
+          const formattedDate = new Date(article!.published_at).toLocaleDateString(lang, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+
+          const imageSrc = article!.article_heading_img 
+            ? `${DIRECTUS_URL}/assets/${article!.article_heading_img}`
+            : undefined;
+
+          return {
+            slug: article!.slug,
+            title: article!.translations[0]?.title || '',
+            publishedAt: article!.published_at,
+            rubricSlug: article!.rubric_slug || 'articles',
+            imageSrc,
+            formattedDate,
+          };
+        });
+    }
   } catch (error) {
     console.error('Error fetching search hub content:', error);
   }
@@ -158,16 +188,14 @@ export default async function SearchPage({
           />
         )}
 
-        {recentSlugs.length > 0 && dictionary.search.hub && (
+        {carouselArticles.length > 0 && dictionary.search.hub && (
           <Section className="mb-12">
             <h2 className="text-2xl font-bold mb-6 text-on-sf text-center">
               {dictionary.search.hub.exploreHeading}
             </h2>
             <RelatedArticlesCarousel
-              slugs={recentSlugs}
-              dictionary={dictionary}
+              articles={carouselArticles}
               lang={lang}
-              showAll={true}
             />
           </Section>
         )}

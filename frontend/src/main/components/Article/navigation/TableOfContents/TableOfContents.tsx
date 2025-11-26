@@ -1,4 +1,4 @@
-// src/main/components/Article/TableOfContents.tsx
+// src/main/components/Article/navigation/TableOfContents/TableOfContents.tsx
 
 import { NAVIGATION_STYLES } from "../../styles";
 import { TableOfContentsLink } from "./TableOfContentsLink";
@@ -10,17 +10,13 @@ interface TocItem {
 
 interface TableOfContentsProps {
   items: TocItem[];
-  title: string;
 }
 
 const styles = NAVIGATION_STYLES.tableOfContents;
 
-export function TableOfContents({ items, title }: TableOfContentsProps) {
+export function TableOfContents({ items }: TableOfContentsProps) {
   return (
-    <nav aria-label="Table of contents" className={styles.container}>
-      <h2 className={styles.title}>
-        {title}
-      </h2>
+    <nav aria-label="Table of contents">
       <ul className={styles.list}>
         {items.map((item) => (
           <li key={item.id}>
