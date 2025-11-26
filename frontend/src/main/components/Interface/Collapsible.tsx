@@ -71,7 +71,7 @@ export default function Collapsible({
         onClick={toggleOpen}
         aria-expanded={isOpen}
         aria-controls={contentId}
-        aria-label={ariaLabel || `${isOpen ? 'Свернуть' : 'Развернуть'} ${title}`}
+        aria-label={ariaLabel || title}
         className={`
           flex items-center justify-between w-full
           px-4 py-3

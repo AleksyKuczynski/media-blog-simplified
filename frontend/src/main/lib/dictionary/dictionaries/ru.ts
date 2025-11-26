@@ -390,7 +390,23 @@ const dictionaryRU: Dictionary = {
       searching: 'Поиск...',
       submit: 'Найти',
       minCharacters: 'Введите минимум 3 символа',
+      searchButton: 'Найти',
     },
+    hub: {  // NEW SECTION
+    tipsTitle: 'Советы по поиску',
+    tips: [
+      'Используйте минимум 3 символа для поиска',
+      'Вводите ключевые слова для лучших результатов',
+      'Попробуйте разные формулировки вашего запроса',
+      'Поиск работает по статьям, авторам и рубрикам',
+    ],
+    exploreHeading: 'Начните изучение',
+    exploreDescription: 'Популярные статьи для начала',
+    browseCategories: 'Обзор категорий',
+    browseCategoriesDescription: 'Найдите интересующую вас тему',
+    noResultsSuggestion: 'Попробуйте изменить запрос или изучите популярные статьи ниже',
+    emptyStateMessage: 'Введите запрос для начала поиска',
+  },
     templates: {
       resultsFor: 'Результаты поиска для "{query}"',
       pageTitle: 'Поиск',

@@ -437,6 +437,18 @@ export interface SearchLabels {
   readonly searching: string;
   readonly submit: string;
   readonly minCharacters: string;
+  readonly searchButton: string;
+}
+
+export interface SearchHub {
+  readonly tipsTitle: string;
+  readonly tips: readonly string[];
+  readonly exploreHeading: string;
+  readonly exploreDescription: string;
+  readonly browseCategories: string;
+  readonly browseCategoriesDescription: string;
+  readonly noResultsSuggestion: string;
+  readonly emptyStateMessage: string;
 }
 
 export interface SearchTemplates {
@@ -459,6 +471,7 @@ export interface SearchAccessibility {
 
 export interface SearchDictionary {
   readonly labels: SearchLabels;
+  readonly hub: SearchHub;
   readonly templates: SearchTemplates;
   readonly accessibility: SearchAccessibility;
 }

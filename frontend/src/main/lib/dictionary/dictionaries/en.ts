@@ -388,6 +388,22 @@ export const dictionaryEN: Dictionary = {
       searching: 'Searching...',
       submit: 'Search',
       minCharacters: 'Enter at least 3 characters',
+      searchButton: 'Search',
+    },
+    hub: {  // NEW SECTION
+      tipsTitle: 'Search tips',
+      tips: [
+        'Используйте минимум 3 символа для поиска',
+        'Use keywords for better results',
+        'Try something different',
+        'Searching in articles, authors and rubrics',
+      ],
+      exploreHeading: 'Start exploring',
+      exploreDescription: 'Popular articles for start',
+      browseCategories: 'Categories review',
+      browseCategoriesDescription: 'Find something interesting',
+      noResultsSuggestion: 'Try to change the query or explore the articles below',
+      emptyStateMessage: 'Input a query to start searching',
     },
     templates: {
       resultsFor: 'Search results for "{query}"',
