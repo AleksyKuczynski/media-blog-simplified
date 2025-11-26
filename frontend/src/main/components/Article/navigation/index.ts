@@ -1,6 +1,6 @@
 // src/main/components/Article/navigation/index.ts
 
-export { RelatedArticles } from './RelatedArticles';
+export { RelatedArticles } from '../../Main/RelatedArticles';
 export { TableOfContents } from './TableOfContents';
 export { QuickNavigation } from './QuickNavigation';
 export { CategoriesSection } from './CategoriesSection';
