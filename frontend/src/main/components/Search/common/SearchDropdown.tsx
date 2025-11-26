@@ -1,5 +1,5 @@
 // src/main/components/Search/SearchDropdown.tsx - CLEANED UP
-import { SearchUIState } from './types';
+import { SearchUIState } from '../types';
 import SearchDropdownItem from './SearchDropdownItem';
 import { Dictionary } from '@/main/lib/dictionary';
 

@@ -3,7 +3,7 @@
 
 import Logo from '../Logo'
 import NavLinks from './NavLinks'
-import ExpandableSearch from '../Search/ExpandableSearch'
+import ExpandableSearch from '../Search/desktop/ExpandableSearch'
 import LanguageSwitcher from './LanguageSwitcher'
 import { Dictionary, Lang } from '@/main/lib/dictionary'
 

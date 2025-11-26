@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 import Section from '@/main/components/Main/Section';
 import ArticleList from '@/main/components/Main/ArticleList';
 import Pagination from '@/main/components/Main/Pagination';
-import SearchResultsHeader from '@/main/components/Search/SearchResultsHeader';
+import SearchResultsHeader from '@/main/components/Search/page/SearchResultsHeader';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs } from '@/main/lib/directus';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';

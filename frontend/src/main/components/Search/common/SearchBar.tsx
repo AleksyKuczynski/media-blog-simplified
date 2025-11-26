@@ -3,7 +3,7 @@
 'use client'
 
 import React from 'react';
-import { SearchIcon, NavButton, CloseIcon } from '../Interface';
+import { SearchIcon, NavButton, CloseIcon } from '@/main/components/Interface';
 import SearchInput from './SearchInput';
 import SearchDropdown from './SearchDropdown';
 import { useSearchLogic } from './useSearchLogic';

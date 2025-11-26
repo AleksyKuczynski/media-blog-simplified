@@ -2,7 +2,7 @@
 'use client'
 
 import { Dictionary, Lang } from '@/main/lib/dictionary';
-import SearchBar from './SearchBar';
+import SearchBar from '../common/SearchBar';
 
 interface SearchBarClientProps {
   dictionary: Dictionary;
@@ -15,7 +15,7 @@ interface SearchBarClientProps {
  * Client wrapper for SearchBar to handle client-side hooks
  * This allows SearchBar to be used in server components
  */
-export default function SearchBarClient({
+export default function IntegratedSearchBar({
   dictionary,
   lang,
   className = '',

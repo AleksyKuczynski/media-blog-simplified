@@ -7,7 +7,7 @@ import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import ArticleList from '@/main/components/Main/ArticleList';
 import Pagination from '@/main/components/Main/Pagination';
-import SortingControl from '../Navigation/Filter/SortingControl';
+import SortingControl from '../../Navigation/Filter/SortingControl';
 
 interface SearchResultsClientProps {
   readonly dictionary: Dictionary;

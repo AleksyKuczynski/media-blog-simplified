@@ -1,13 +1,12 @@
 // src/main/components/Search/searchScenarios.ts
-// FIXED: React 19 compatible nullable ref types
 
-import { ANIMATION_DURATION } from '../Interface/constants';
-import { ComponentMode, SearchScenario, SearchStepAction } from './types';
+import { ANIMATION_DURATION } from '../../Interface/constants';
+import { ComponentMode, SearchScenario, SearchStepAction } from '../types';
 
 export function executeExpandSearch(
   dispatch: (action: SearchStepAction) => void,
   mode: ComponentMode,
-  inputRef: React.RefObject<HTMLInputElement | null> // ✅ FIXED: Accept nullable ref
+  inputRef: React.RefObject<HTMLInputElement | null>
 ) {
 
   console.log('executeExpandSearch called with:', { mode, inputRef });
@@ -35,7 +34,6 @@ export function executeExpandSearch(
       setTimeout(() => {
         if (inputRef?.current) {
           inputRef.current.focus();
-          console.log('Trying to focus input:', inputRef.current); // debug
         }
       }, 300);
 

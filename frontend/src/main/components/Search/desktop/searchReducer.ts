@@ -1,6 +1,6 @@
 // src/main/components/Search/searchReducer.ts
 
-import { SearchUIState, SearchStepAction, SearchScenario, ComponentMode } from './types';
+import { SearchUIState, SearchStepAction, SearchScenario, ComponentMode } from '../types';
 
 export const getInitialState = (mode: ComponentMode = 'expandable'): SearchUIState => ({
   mode,

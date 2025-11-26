@@ -1,5 +1,5 @@
 // src/main/lib/utils/index.ts
-export { createSearchUrl } from '@/main/lib/utils/createSearchUrl';
+export { createSearchUrl } from '@/main/components/Search/common/createSearchUrl';
 export { generateArticleLinkAsync } from '@/main/lib/utils/generateArticleLinkAsync';
 export { generateArticleLink } from '@/main/lib/utils/generateArticleLink';
 export { parseMarkdownImage } from '@/main/lib/markdown/parseMarkdownImage';
