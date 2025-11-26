@@ -1,4 +1,4 @@
-// src/main/components/Interface/Dropdown/DropdownItem.tsx - CLEANED UP
+// src/main/components/Interface/Dropdown/DropdownItem.tsx
 'use client';
 
 import React from 'react';
@@ -12,14 +12,18 @@ export default function DropdownItem({
   isSelected,
   onSelect
 }: DropdownItemProps) {
-  const { itemRefs, handleKeyDown, selectedIndex } = useDropdownContext();
+  const { itemRefs, handleKeyDown, selectedIndex, close } = useDropdownContext();
   const isFocused = selectedIndex === index;
 
   const handleItemKeyDown = (e: React.KeyboardEvent) => {
     handleKeyDown(e as unknown as KeyboardEvent);
   };
 
-  // Combined styling logic with inline classes - hardcoded rounded theme
+  const handleClick = () => {
+    onSelect();
+    close(); // Close dropdown after selection
+  };
+
   const getItemClasses = () => {
     const baseClasses = "flex items-center justify-between transition-colors duration-200 outline-none cursor-default px-4 py-2 mx-2 first:mt-2 last:mb-2";
     
@@ -41,7 +45,7 @@ export default function DropdownItem({
       }}
       role="option"
       className={getItemClasses()}
-      onClick={() => onSelect()}
+      onClick={handleClick}
       onKeyDown={handleItemKeyDown}
       aria-selected={isSelected}
       tabIndex={0}

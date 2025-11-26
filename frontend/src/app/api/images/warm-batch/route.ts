@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
       const limit = recentParam ? parseInt(recentParam) : (body.limit || 20);
       console.log(`[Batch Warming] Fetching ${limit} recent articles`);
       
-      const { slugs } = await fetchArticleSlugs(1, 'desc');
+      const { slugs } = await fetchArticleSlugs(1, 'desc', DEFAULT_LANG);
       slugsToWarm = slugs.slice(0, limit).map(s => s.slug);
       
     } else {

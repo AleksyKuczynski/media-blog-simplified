@@ -1,18 +1,18 @@
 // src/app/[lang]/search/page.tsx
-// FIXED: Uses totalCount, proper totalPages
 
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import SearchResultsClient from '@/main/components/Search/SearchResultsClient';
 import Section from '@/main/components/Main/Section';
+import ArticleList from '@/main/components/Main/ArticleList';
+import Pagination from '@/main/components/Main/Pagination';
+import SearchResultsHeader from '@/main/components/Search/SearchResultsHeader';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { fetchArticleSlugs, fetchRubricBasics } from '@/main/lib/directus';
+import { fetchArticleSlugs } from '@/main/lib/directus';
+import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
 import { SearchSchema } from '@/main/components/SEO/schemas/SearchSchema';
 import { generateSearchMetadataSimple } from '@/main/components/SEO/metadata/SearchMetadata';
-import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
-import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
 
 export const revalidate = 0;
 
@@ -50,10 +50,8 @@ export default async function SearchPage({
   const hasValidQuery = searchQuery.length >= 3;
   const hasInvalidQuery = searchQuery.length > 0 && searchQuery.length < 3;
   
-  // FIXED: Get totalCount
   let currentPageSlugs: ArticleSlugInfo[] = [];
   let totalCount = 0;
-  let hasResults = false;
   let totalPages = 1;
 
   if (hasValidQuery) {
@@ -68,30 +66,16 @@ export default async function SearchPage({
       );
       currentPageSlugs = result.slugs;
       totalCount = result.totalCount;
-      hasResults = currentPageSlugs.length > 0;
       totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
     } catch (error) {
-      console.error('Search results fetching failed:', error);
+      console.error('Search error:', error);
     }
   }
 
-  const rubricBasics = await fetchRubricBasics(lang as Lang);
-
+  const hasResults = currentPageSlugs.length > 0;
   const isEmptyState = !searchQuery;
-  const isResultsState = hasValidQuery && hasResults;
   const isNoResultsState = hasValidQuery && !hasResults;
 
-  const breadcrumbItems = [
-    {
-      label: dictionary.navigation.labels.home,
-      href: `/${lang}`,
-    },
-    {
-      label: dictionary.search.templates.pageTitle,
-      href: `/${lang}/search`,
-    },
-  ];
-  
   return (
     <>
       <SearchSchema
@@ -100,45 +84,88 @@ export default async function SearchPage({
         resultCount={totalCount}
       />
 
-      <Breadcrumbs 
-        items={breadcrumbItems}
-        rubrics={rubricBasics}
-        lang={lang}
-        translations={{
-          home: dictionary.navigation.labels.home,
-          allRubrics: dictionary.navigation.labels.rubrics,
-          allAuthors: dictionary.navigation.labels.authors,
-        }}
-      />
-
       <Section
-        ariaLabel={dictionary.search.labels.results}
+        ariaLabel={dictionary.search.accessibility.searchResultsLabel}
         className="py-8"
       >
         <div className="container mx-auto px-4">
-          <Suspense fallback={
-            <div className="text-center py-8" role="status">
-              <div className="flex flex-col items-center gap-3">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-prcolor" />
-                <p className="text-on-sf-var">{dictionary.common.status.loading}</p>
-              </div>
+          {isEmptyState && (
+            <div 
+              className="text-center py-12"
+              role="status"
+              aria-label={dictionary.search.accessibility.openSearch}
+            >
+              <h1 className="text-2xl font-bold mb-4 text-on-sf">
+                {dictionary.search.labels.title}
+              </h1>
+              <p className="text-on-sf-var">
+                {dictionary.search.accessibility.openSearch}
+              </p>
             </div>
-          }>
-            <SearchResultsClient
-              dictionary={dictionary}
-              allSlugs={currentPageSlugs}
-              lang={lang}
-              searchQuery={searchQuery}
-              currentPage={currentPage}
-              currentSort={currentSort}
-              totalCount={totalCount}
-              totalPages={totalPages}
-              isEmptyState={isEmptyState}
-              isResultsState={isResultsState}
-              isNoResultsState={isNoResultsState}
-              hasInvalidQuery={hasInvalidQuery}
-            />
-          </Suspense>
+          )}
+
+          {hasInvalidQuery && (
+            <div 
+              className="text-center py-12"
+              role="alert"
+              aria-live="polite"
+            >
+              <h1 className="text-2xl font-bold mb-4 text-on-sf">
+                {dictionary.search.labels.results}
+              </h1>
+              <p className="text-on-sf-var">
+                {dictionary.search.labels.minCharacters}
+              </p>
+            </div>
+          )}
+
+          {isNoResultsState && (
+            <div 
+              className="text-center py-12"
+              role="status"
+              aria-live="polite"
+            >
+              <h1 className="text-2xl font-bold mb-4 text-on-sf">
+                {dictionary.search.labels.noResults}
+              </h1>
+              <p className="text-on-sf-var">
+                {dictionary.search.labels.noResults}
+              </p>
+            </div>
+          )}
+
+          {hasResults && (
+            <section 
+              className="space-y-6"
+              role="region"
+              aria-label={dictionary.search.accessibility.searchResultsLabel}
+            >
+              <SearchResultsHeader
+                dictionary={dictionary}
+                searchQuery={searchQuery}
+                resultsCount={totalCount}
+                currentSort={currentSort}
+                lang={lang}
+              />
+
+              <Suspense fallback={<div>{dictionary.common.status.loading}</div>}>
+                <ArticleList
+                  dictionary={dictionary}
+                  slugInfos={currentPageSlugs}
+                  lang={lang}
+                  className="space-y-6"
+                />
+              </Suspense>
+
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  dictionary={dictionary}
+                />
+              )}
+            </section>
+          )}
         </div>
       </Section>
     </>
