@@ -1,7 +1,7 @@
 // src/main/components/Search/useSearch.ts
 import { useState, useCallback } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
-import { SearchProposition } from '@/main/lib/directus'
+import { SearchResult } from '@/main/lib/directus'
 import { getSearchSuggestions } from '@/main/lib/actions'
 import { createSearchUrl } from '@/main/lib/utils'
 import { Lang } from '@/main/lib/dictionary'
@@ -9,7 +9,7 @@ import { SearchStatus } from '../types'
 
 export function useSearch() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [suggestions, setSuggestions] = useState<SearchProposition[]>([])
+  const [suggestions, setSuggestions] = useState<SearchResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [searchStatus, setSearchStatus] = useState<SearchStatus>({ type: 'idle' })
   
@@ -41,7 +41,7 @@ export function useSearch() {
     return false
   }, [searchQuery, pathname, router, searchParams])
 
-  const handleSearch = useCallback(async (term: string): Promise<SearchProposition[]> => {
+  const handleSearch = useCallback(async (term: string): Promise<SearchResult[]> => {
     if (term.length >= 3) {
       setIsSearching(true);
       setSearchStatus({ type: 'searching' });
@@ -72,7 +72,7 @@ export function useSearch() {
     setSuggestions,
     handleSearch,
     handleSearchSubmit,
-    handleSelect, // Added handleSelect to the return object
+    handleSelect,
 
     // Animation-related states
     animation: {
