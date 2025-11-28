@@ -1,7 +1,7 @@
 // src/main/components/Main/HeroArticles.tsx
 
 import { Suspense } from 'react';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { Dictionary, Lang } from '@/config/i18n';
 import ArticleCard from './ArticleCard';
 import { HeroArticlesSkeleton } from './HeroArticlesSkeleton';
 

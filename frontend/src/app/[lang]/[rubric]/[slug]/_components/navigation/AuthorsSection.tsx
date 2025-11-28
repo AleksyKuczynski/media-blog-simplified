@@ -24,7 +24,7 @@
  * @param dictionary - Translations
  */
 
-import { Dictionary } from '@/main/lib/dictionary';
+import { Dictionary } from '@/config/i18n';
 import { NAVIGATION_STYLES } from '../article.styles';
 import AuthorSection from './AuthorSection';
 

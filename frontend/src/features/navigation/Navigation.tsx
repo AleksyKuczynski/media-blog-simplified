@@ -7,8 +7,8 @@ import { usePathname } from 'next/navigation'
 import DesktopNavigation from './DesktopNav'
 import MobileNavigation from './MobileNav/MobileNav'
 import SkipLinks from './SkipLinks'
-import { Dictionary, Lang } from '@/main/lib/dictionary'
-import { CompleteNavigationSchema } from '@/features/seo'
+import { Dictionary, Lang } from '@/config/i18n'
+import { CompleteNavigationSchema } from '@/shared/seo'
 
 interface NavigationProps {
   dictionary: Dictionary

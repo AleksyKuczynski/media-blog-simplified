@@ -1,6 +1,6 @@
-import { fetchEngagementData } from '@/main/lib/directus';
+import { fetchEngagementData } from '@/api/directus';
 import { checkRateLimit, hasRecentlyViewed, triggerEngagementFlow } from '@/app/[lang]/[rubric]/[slug]/_components/engagement/lib';
-import { getClientIP, validateArticleSlug } from '@/main/lib/utils';
+import { getClientIP, validateArticleSlug } from '@/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;

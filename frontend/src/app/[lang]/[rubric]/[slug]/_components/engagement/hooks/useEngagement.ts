@@ -47,7 +47,7 @@ import { useViewTracking } from './useViewTracking';
 import { useShareState } from './useShareState';
 import { trackGAEvent } from '@/features/analytics/lib/google';
 import { trackYandexEvent } from '@/features/analytics/lib/yandex';
-import { dictionary } from '@/main/lib/dictionary';
+import { dictionary } from '@/config/i18n';
 
 export interface UseEngagementOptions {
   slug: string;

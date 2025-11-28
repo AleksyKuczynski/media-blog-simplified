@@ -1,6 +1,6 @@
 // src/main/components/ArticleCards/StandardCardSkeleton.tsx
 
-import { cn } from '@/main/lib/utils/utils';
+import { cn } from '@/lib/utils/utils';
 // ✅ Import from StandardCard where styling logic lives
 import { STANDARD_CARD_SKELETON_STYLES } from './StandardCard';
 

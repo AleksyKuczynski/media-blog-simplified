@@ -20,17 +20,17 @@
  * Dependencies:
  * - ./markdownTypes (ContentChunk, ArticleCardData)
  * - @/main/lib/utils/validateArticleSlug
- * - @/main/lib/directus/fetchArticleCard
+ * - @/api/directus/fetchArticleCard
  * - @/main/lib/directus/directusConstants (DIRECTUS_URL)
  * 
  * @param chunks - Markdown content chunks
  * @returns {ContentChunk[]} Chunks with article-card insertions
  */
 
-import { validateArticleSlug } from '@/main/lib/utils';
+import { validateArticleSlug } from '@/lib/utils';
 import { ContentChunk, ArticleCardData } from './markdownTypes';
-import { DIRECTUS_URL, fetchArticleCard } from '@/main/lib/directus';
-import { Lang } from '@/main/lib/dictionary';
+import { DIRECTUS_URL, fetchArticleCard } from '@/api/directus';
+import { Lang } from '@/config/i18n';
 
 export async function processArticleCards(
   chunks: ContentChunk[],

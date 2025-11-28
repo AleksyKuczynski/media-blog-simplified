@@ -20,8 +20,8 @@
  */
 
 import Link from 'next/link';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { processTemplate } from '@/config/i18n/helpers/templates';
+import { Dictionary, Lang } from '@/config/i18n';
 import { NAVIGATION_STYLES } from '../article.styles';
 
 interface CategoriesSectionProps {

@@ -1,8 +1,8 @@
 // src/main/components/Main/Breadcrumbs.tsx
 import Link from 'next/link';
-import { ChevronRightIcon } from '@/features/primitives/Icons';
-import { RubricBasic } from '@/main/lib/directus/directusInterfaces';
-import { Lang } from '@/main/lib/dictionary';
+import { ChevronRightIcon } from '@/shared/primitives/Icons';
+import { RubricBasic } from '@/api/directus';
+import { Lang } from '@/config/i18n';
 
 export interface BreadcrumbItem {
   label: string;

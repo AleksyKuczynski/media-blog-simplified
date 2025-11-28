@@ -1,7 +1,7 @@
 // src/main/components/ArticleCards/interfaces.ts
 // MIGRATED: Clean interfaces using new dictionary system
-import { Dictionary, Lang } from "@/main/lib/dictionary";
-import { ArticleCardType } from "@/main/lib/directus";
+import { Dictionary, Lang } from "@/config/i18n";
+import { ArticleCardType } from "@/api/directus";
 
 // Enhanced ImageProps with proper Next.js Image support
 export interface ImageProps {

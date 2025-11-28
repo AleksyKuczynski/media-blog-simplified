@@ -1,8 +1,8 @@
 // app/not-found.tsx
-import { getDictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
-import StandardError from '@/features/errors/StandardError';
-import { createErrorHandler } from '@/features/errors/lib/errorUtils';
+import { getDictionary } from '@/config/i18n';
+import { DEFAULT_LANG } from '@/config/constants/constants';
+import StandardError from '@/shared/errors/StandardError';
+import { createErrorHandler } from '@/shared/errors/lib/errorUtils';
 
 export default function NotFound() {
   // Use DEFAULT_LANG (English)

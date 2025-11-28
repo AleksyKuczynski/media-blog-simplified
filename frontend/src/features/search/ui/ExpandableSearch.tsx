@@ -5,10 +5,10 @@
 import React from 'react';
 import SearchInput from './SearchInput';
 import SearchDropdown from './SearchDropdown';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { Dictionary, Lang } from '@/config/i18n';
 import { useSearchLogic } from '../logic/useSearchLogic';
-import { NavButton } from '@/features/primitives/NavButton';
-import { CloseIcon, SearchIcon } from '@/features/primitives/Icons';
+import { NavButton } from '@/shared/primitives/NavButton';
+import { CloseIcon, SearchIcon } from '@/shared/primitives/Icons';
 
 interface ExpandableSearchProps {
   readonly dictionary: Dictionary;

@@ -3,8 +3,8 @@ import React, { Suspense } from 'react'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Navigation from '@/features/navigation/Navigation'
-import { getDictionary, type Lang } from '@/main/lib/dictionary'
-import { SUPPORTED_LANGUAGES } from '@/main/lib/constants/constants'
+import { getDictionary, type Lang } from '@/config/i18n'
+import { SUPPORTED_LANGUAGES } from '@/config/constants/constants'
 import Footer from '@/features/layout/Footer'
 
 interface LayoutProps {

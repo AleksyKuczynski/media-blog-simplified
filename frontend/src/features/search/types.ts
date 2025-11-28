@@ -1,7 +1,7 @@
 // src/main/components/Search/types.ts
 // FIXED: React 19 compatible nullable ref types
 
-import { SearchResult } from '@/main/lib/directus';
+import { SearchResult } from '@/api/directus';
 
 export type ComponentMode = 'expandable' | 'standard';
 export type ComponentVisibility = 'hidden' | 'animating-in' | 'visible' | 'animating-out';

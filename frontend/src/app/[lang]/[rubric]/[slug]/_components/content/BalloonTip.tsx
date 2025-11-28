@@ -13,7 +13,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useOutsideClick } from '@/main/lib/hooks/useOutsideClick';
+import { useOutsideClick } from '@/lib/hooks/useOutsideClick';
 import { BLOCKS_STYLES } from '../article.styles';
 
 interface BalloonTipProps {

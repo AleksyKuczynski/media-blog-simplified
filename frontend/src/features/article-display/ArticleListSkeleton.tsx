@@ -1,6 +1,6 @@
 // src/main/components/Main/ArticleListSkeleton.tsx
 
-import { cn } from '@/main/lib/utils/utils';
+import { cn } from '@/lib/utils/utils';
 import { ArticleCardSkeletonVariant } from './ArticleCardVariant';
 
 interface ArticleListSkeletonProps {

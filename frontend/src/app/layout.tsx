@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import './globals.scss'
-import { DEFAULT_LANG } from '@/main/lib/constants/constants'
+import { DEFAULT_LANG } from '@/config/constants/constants'
 import ConsentModeScript from '@/features/analytics/ConsentModeScript'
 import YandexMetrikaScript from '@/features/analytics/YandexMetrikaScript'
 import YandexMetrikaNoScript from '@/features/analytics/YandexMetrikaNoScript'
@@ -8,7 +8,7 @@ import GoogleAnalyticsScript from '@/features/analytics/GoogleAnalyticsScript'
 import GoogleAnalyticsNoScript from '@/features/analytics/GoogleAnalyticsNoScript'
 import ConsentBanner from '@/features/analytics/ConsentBanner'
 import ScrollRestorationClient from '@/features/navigation/ScrollRestorationClient' // Changed import
-import { dictionary } from '@/main/lib/dictionary';
+import { dictionary } from '@/config/i18n';
 import { fontCustom, fontDisplay, fontSans, fontSerif } from './fonts/fonts'
 
 const consentDictionary = dictionary.consent

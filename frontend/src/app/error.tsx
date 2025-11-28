@@ -2,11 +2,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { getDictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
+import { getDictionary } from '@/config/i18n';
+import { DEFAULT_LANG } from '@/config/constants/constants';
 import Section from '@/features/layout/Section';
 import Link from 'next/link';
-import { createErrorHandler } from '@/features/errors/lib/errorUtils';
+import { createErrorHandler } from '@/shared/errors/lib/errorUtils';
 
 interface ErrorProps {
   error: Error & { digest?: string };

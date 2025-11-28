@@ -28,7 +28,7 @@
  * @param showCaption - Show caption placeholder (default: false)
  */
 
-import { cn } from '@/main/lib/utils/utils';
+import { cn } from '@/lib/utils/utils';
 import { MEDIA_STYLES } from './article.styles';
 
 interface ImageFrameSkeletonProps {

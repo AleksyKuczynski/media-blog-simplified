@@ -1,11 +1,11 @@
 // src/main/components/Search/page/SearchResults.tsx
 import { Suspense } from 'react';
-import Section from '../../layout/Section';
-import ArticleList from '../../article-display/ArticleList';
-import Pagination from '../../ui/Pagination';
+import Pagination from '@/shared/ui/Pagination';
 import SearchResultsHeader from './SearchResultsHeader';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
+import { Dictionary, Lang } from '@/config/i18n';
+import { ArticleSlugInfo } from '@/api/directus';
+import Section from '@/features/layout/Section';
+import ArticleList from '@/features/article-display/ArticleList';
 
 interface SearchResultsProps {
   readonly dictionary: Dictionary;

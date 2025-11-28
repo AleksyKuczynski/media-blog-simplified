@@ -1,12 +1,12 @@
 // src/main/components/Search/useSearchLogic.ts
 import { useReducer, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useOutsideClick } from '@/main/lib/hooks';
+import { useOutsideClick } from '@/lib/hooks';
 import { searchReducer, getInitialState } from './searchReducer';
 import { handleSearchScenario } from './searchScenarios';
 import { useSearch } from './useSearch';
 import { SearchUIState } from '../types';
-import { Lang } from '@/main/lib/dictionary';
+import { Lang } from '@/config/i18n';
 import { createSearchUrl } from '../utils/createSearchUrl';
 
 interface UseSearchLogicProps {

@@ -22,10 +22,10 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { dictionary } from '@/main/lib/dictionary';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { DIRECTUS_URL } from '@/main/lib/directus';
+import { dictionary } from '@/config/i18n';
+import { DEFAULT_LANG } from '@/config/constants/constants';
+import { processTemplate } from '@/config/i18n/helpers/templates';
+import { DIRECTUS_URL } from '@/api/directus';
 import { NAVIGATION_STYLES } from '../article.styles';
 
 interface AuthorSectionProps {

@@ -1,8 +1,8 @@
 // src/main/lib/actions/getSearchSuggestions.ts
 'use server'
 
-import { Lang } from "../../../main/lib/dictionary"
-import { fetchSearchPropositions, SearchResult } from "../../../main/lib/directus"
+import { Lang } from "../../../config/i18n"
+import { fetchSearchPropositions, SearchResult } from "@/api/directus"
 
 export async function getSearchSuggestions(query: string, lang: Lang): Promise<SearchResult[]> {
   if (query.length < 3) return []

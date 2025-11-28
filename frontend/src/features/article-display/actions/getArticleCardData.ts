@@ -1,8 +1,8 @@
 // src/main/lib/actions/getArticleCardData.ts
 'use server'
 
-import { Lang } from "@/main/lib/dictionary";
-import { fetchArticleCard } from "@/main/lib/directus";
+import { Lang } from "@/config/i18n";
+import { fetchArticleCard } from "@/api/directus";
 
 
 export async function getArticleCardData(slug: string, lang: Lang) {

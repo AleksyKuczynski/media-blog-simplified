@@ -33,8 +33,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Modal } from '@/features/ui/Modal/Modal';
-import { dictionary } from '@/main/lib/dictionary';
+import { Modal } from '@/shared/ui/Modal/Modal';
+import { dictionary } from '@/config/i18n';
 import {
   TelegramIcon,
   WhatsAppIcon,

@@ -4,8 +4,8 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Lang } from '@/main/lib/dictionary'
-import { resolveAlternateLanguageUrl } from '@/main/lib/actions/resolveAlternateLanguageUrl'
+import { Lang } from '@/config/i18n'
+import { resolveAlternateLanguageUrl } from '@/lib/actions/resolveAlternateLanguageUrl'
 
 interface LanguageSwitcherProps {
   currentLang: Lang

@@ -4,8 +4,8 @@
 'use client'
 
 import SortingControl from '@/features/navigation/Filter/SortingControl';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { getLocalizedCount } from '@/main/lib/dictionary/helpers/content';
+import { Dictionary, Lang } from '@/config/i18n';
+import { getLocalizedCount } from '@/config/i18n/helpers/content';
 
 interface SearchResultsHeaderProps {
   readonly dictionary: Dictionary;

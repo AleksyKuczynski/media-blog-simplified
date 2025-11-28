@@ -2,9 +2,9 @@
 
 'use client';
 
-import { createErrorHandler } from '@/features/errors/lib/errorUtils';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
-import { dictionary } from '@/main/lib/dictionary';
+import { createErrorHandler } from '@/shared/errors/lib/errorUtils';
+import { DEFAULT_LANG } from '@/config/constants/constants';
+import { dictionary } from '@/config/i18n';
 
 interface GlobalErrorProps {
   error: Error & { digest?: string };

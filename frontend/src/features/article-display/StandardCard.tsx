@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { cn } from '@/main/lib/utils/utils';
-import { ChevronRightIcon } from '../primitives/Icons';
+import { cn } from '@/lib/utils/utils';
+import { ChevronRightIcon } from '../../shared/primitives/Icons';
 import { StandardCardProps, getImageDimensions } from './interfaces';
 
 // ✅ EXTRACT CURRENT STYLING INTO CONSTANTS - From StandardCard's inline classes

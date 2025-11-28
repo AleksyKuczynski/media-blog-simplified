@@ -2,9 +2,9 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Section from '@/features/layout/Section';
-import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { safeGenerateMetadata } from '@/features/errors/lib/metadataErrorHandler';
+import { getDictionary, Lang } from '@/config/i18n';
+import { processTemplate } from '@/config/i18n/helpers/templates';
+import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 
 export const revalidate = 86400; // 24 hours
 

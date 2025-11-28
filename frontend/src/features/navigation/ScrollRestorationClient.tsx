@@ -2,7 +2,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import ScrollRestoration from '@/main/lib/hooks/useScrollRestoration';
+import ScrollRestoration from '@/lib/hooks/useScrollRestoration';
 
 /**
  * Client-side wrapper to ensure ScrollRestoration only runs in browser

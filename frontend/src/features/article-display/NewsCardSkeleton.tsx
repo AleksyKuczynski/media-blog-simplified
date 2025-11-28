@@ -1,6 +1,6 @@
 // src/main/components/ArticleCards/NewsCardSkeleton.tsx
 
-import { cn } from '@/main/lib/utils/utils';
+import { cn } from '@/lib/utils/utils';
 // ✅ Import style constants from parent component
 import { NEWS_CARD_SKELETON_STYLES } from './NewsCard';
 

@@ -4,9 +4,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { Dictionary, Lang } from '@/config/i18n';
 import Link from 'next/link';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import { processTemplate } from '@/config/i18n/helpers/templates';
 import { ContactModal } from './ContactModal';
 
 interface FooterProps {

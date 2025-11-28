@@ -4,8 +4,8 @@
 import SearchDropdown from '../ui/SearchDropdown';
 import SearchInput from '../ui/SearchInput';
 import { useSearchLogic } from '../logic/useSearchLogic';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { SearchIcon } from '@/features/primitives/Icons';
+import { Dictionary, Lang } from '@/config/i18n';
+import { SearchIcon } from '@/shared/primitives/Icons';
 
 interface SearchBarFormProps {
   readonly dictionary: Dictionary;

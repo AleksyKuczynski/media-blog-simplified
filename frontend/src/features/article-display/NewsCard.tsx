@@ -1,7 +1,7 @@
 // src/main/components/ArticleCards/NewsCard.tsx
 
 import Link from 'next/link';
-import { cn } from '@/main/lib/utils/utils';
+import { cn } from '@/lib/utils/utils';
 import { NewsCardProps } from './interfaces';
 
 // ✅ EXTRACT NEWSCARD STYLING INTO CONSTANTS - From inline classes

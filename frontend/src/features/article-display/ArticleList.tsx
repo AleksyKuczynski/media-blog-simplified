@@ -1,10 +1,10 @@
 // src/main/components/Main/ArticleList.tsx
 
 import { Suspense } from 'react';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
+import { Dictionary, Lang } from '@/config/i18n';
+import { ArticleSlugInfo } from '@/api/directus';
 import ArticleCard from './ArticleCard';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
+import { processTemplate } from '@/config/i18n/helpers/templates';
 import { ArticleCardSkeletonVariant } from './ArticleCardVariant';
 
 interface ArticleListProps {

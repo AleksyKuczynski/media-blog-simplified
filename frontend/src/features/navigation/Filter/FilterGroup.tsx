@@ -3,15 +3,15 @@
 
 'use client';
 
-import { Category } from '@/main/lib/directus/directusInterfaces';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { ChevronDownIcon } from '../../primitives/Icons';
-import { getFilterAccessibilityData } from '@/main/lib/dictionary/helpers/filter';
-import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../../ui/Dropdown';
+import { Category } from '@/api/directus';
+import { Dictionary, Lang } from '@/config/i18n';
+import { ChevronDownIcon } from '../../../shared/primitives/Icons';
+import { getFilterAccessibilityData } from '@/config/i18n/helpers/filter';
+import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '@/shared/ui/Dropdown';
 import { useFilterGroup, useFilterValidation } from './useFilterGroup';
 import SortingControl from './SortingControl';
-import { NavButton } from '@/features/primitives/NavButton';
-import { CustomButton } from '@/features/primitives/CustomButton';
+import { NavButton } from '@/shared/primitives/NavButton';
+import { CustomButton } from '@/shared/primitives/CustomButton';
 
 // ===================================================================
 // TYPES - Simple and clean

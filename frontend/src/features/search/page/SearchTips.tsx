@@ -1,9 +1,9 @@
 // src/main/components/Search/page/SearchTips.tsx
 'use client'
 
-import { SearchIcon } from '@/features/primitives/Icons';
-import Collapsible from '../../ui/Collapsible';
-import { Dictionary } from '@/main/lib/dictionary';
+import { SearchIcon } from '@/shared/primitives/Icons';
+import Collapsible from '@/shared/ui/Collapsible';
+import { Dictionary } from '@/config/i18n';
 
 interface SearchTipsProps {
   readonly dictionary: Dictionary;

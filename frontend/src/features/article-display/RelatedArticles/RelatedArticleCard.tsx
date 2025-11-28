@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { cn } from '@/main/lib/utils/utils';
-import { Lang } from '@/main/lib/dictionary';
+import { cn } from '@/lib/utils/utils';
+import { Lang } from '@/config/i18n';
 
 interface RelatedArticleCardProps {
   slug: string;

@@ -5,7 +5,7 @@
 
 import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import { Dictionary, Lang } from '@/main/lib/dictionary'
+import { Dictionary, Lang } from '@/config/i18n'
 
 interface NavLinksClientProps {
   dictionary: Dictionary

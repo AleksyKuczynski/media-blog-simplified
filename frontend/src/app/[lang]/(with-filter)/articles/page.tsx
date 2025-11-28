@@ -4,15 +4,14 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import ArticleList from '@/features/article-display/ArticleList';
-import Pagination from '@/features/ui/Pagination';
+import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
-import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { fetchArticleSlugs } from '@/main/lib/directus';
-import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
-import { generateCollectionMetadata } from '@/features/seo/metadata/CollectionMetadata';
-import { CollectionPageSchema } from '@/features/seo/schemas/CollectionPageSchema';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { safeGenerateMetadata } from '@/features/errors/lib/metadataErrorHandler';
+import { getDictionary, Lang } from '@/config/i18n';
+import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMetadata';
+import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
+import { processTemplate } from '@/config/i18n/helpers/templates';
+import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
+import { fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus';
 
 export const revalidate = 300;
 export const dynamicParams = true;

@@ -3,12 +3,12 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
+import { getDictionary, Lang } from '@/config/i18n';
+import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/api/directus/index';
 import HeroArticles from '@/features/article-display/HeroArticles';
-import { RubricCard } from '@/main/components/Main/RubricCard';
 import Section from '@/features/layout/Section';
-import CardGrid from '@/main/components/Main/CardGrid';
+import CardGrid from '@/features/layout/CardGrid';
+import RubricCard from '@/features/rubric-display/RubricCard';
 
 export const dynamic = 'force-dynamic';
 
@@ -249,7 +249,7 @@ export default async function HomePage({
                 className="max-w-6xl mx-auto"
               >
                 {transformedRubrics.map((rubric) => (
-                  <RubricCard 
+                  <RubricCard
                     key={rubric.slug}
                     rubric={rubric}
                     lang={lang}

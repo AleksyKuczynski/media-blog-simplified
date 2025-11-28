@@ -48,7 +48,7 @@ import { convertMarkdownToHtmlSync } from './markdownToHtml';
 import { createAddHeadingIds } from './addHeadingIds';
 import { processLinks } from './processLinks';
 import { processArticleCards } from './processArticleCards';
-import { Lang } from '@/main/lib/dictionary';
+import { Lang } from '@/config/i18n';
 
 export async function processContent(
   content: string,

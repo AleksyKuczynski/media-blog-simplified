@@ -1,10 +1,10 @@
 // src/main/components/Navigation/DesktopNav.tsx
 'use client'
 
-import Logo from '../primitives/Logo'
+import Logo from '../../shared/primitives/Logo'
 import NavLinks from './NavLinks'
 import LanguageSwitcher from './LanguageSwitcher'
-import { Dictionary, Lang } from '@/main/lib/dictionary'
+import { Dictionary, Lang } from '@/config/i18n'
 import { ExpandableSearch } from '../search'
 
 interface DesktopNavProps {

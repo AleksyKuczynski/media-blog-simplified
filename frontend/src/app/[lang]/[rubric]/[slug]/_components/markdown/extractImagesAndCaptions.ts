@@ -24,7 +24,7 @@
 import { ContentChunk, ImageAttributes } from './markdownTypes';
 import { extractCaption } from './captionUtils';
 import { parseMarkdownImage } from './parseMarkdownImage';
-import { fetchAssetMetadata } from '@/main/lib/directus';
+import { fetchAssetMetadata } from '@/api/directus';
 
 async function getImageAttributes(markdown: string): Promise<ImageAttributes | undefined> {
   const parsed = parseMarkdownImage(markdown);

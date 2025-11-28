@@ -2,8 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Modal } from '@/features/ui/Modal/Modal';
-import type { Dictionary } from '@/main/lib/dictionary';
+import type { Dictionary } from '@/config/i18n';
+import { Modal } from '@/shared/ui/Modal/Modal';
 
 interface ContactModalProps {
   isOpen: boolean;

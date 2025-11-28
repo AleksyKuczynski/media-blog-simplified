@@ -5,7 +5,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import RelatedArticleCard, { RelatedArticleCardSkeleton } from './RelatedArticleCard';
-import { Lang } from '@/main/lib/dictionary';
+import { Lang } from '@/config/i18n';
 
 export interface CarouselArticle {
   slug: string;

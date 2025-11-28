@@ -3,8 +3,8 @@
 
 'use client';
 
-import { Dictionary } from '@/main/lib/dictionary';
-import { getSkipLinksAccessibility, getSkipLinksData } from '@/main/lib/dictionary/helpers/navigation';
+import { Dictionary } from '@/config/i18n';
+import { getSkipLinksAccessibility, getSkipLinksData } from '@/config/i18n/helpers/navigation';
 
 interface SkipLinksProps {
   dictionary: Dictionary;

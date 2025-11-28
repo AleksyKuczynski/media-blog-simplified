@@ -21,9 +21,9 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { DIRECTUS_URL } from '@/main/lib/directus';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { processTemplate } from '@/config/i18n/helpers/templates';
+import { DIRECTUS_URL } from '@/api/directus';
+import { Dictionary, Lang } from '@/config/i18n';
 import { NAVIGATION_STYLES } from '../article.styles';
 
 interface RubricSectionProps {

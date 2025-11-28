@@ -3,17 +3,15 @@ import { Metadata } from 'next';
 import SearchTips from '@/features/search/page/SearchTips';
 import SearchBarForm from '@/features/search/page/SearchBarForm';
 import SearchResults from '@/features/search/page/SearchResults';
-import RubricsSection from '@/main/components/Main/RubricsSection';
 import Section from '@/features/layout/Section';
 import { RelatedArticlesCarousel } from '@/features/article-display/RelatedArticles';
-import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { fetchArticleSlugs, fetchAllRubrics, fetchArticleCard, DIRECTUS_URL } from '@/main/lib/directus';
-import { ArticleSlugInfo, Rubric } from '@/main/lib/directus/directusInterfaces';
-import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
-import { SearchSchema } from '@/features/seo/schemas/SearchSchema';
-import { generateSearchMetadataSimple } from '@/features/seo/metadata/SearchMetadata';
+import { getDictionary, Lang } from '@/config/i18n';
+import { fetchArticleSlugs, fetchAllRubrics, fetchArticleCard, DIRECTUS_URL, ArticleSlugInfo, Rubric, ITEMS_PER_PAGE } from '@/api/directus';
+import { SearchSchema } from '@/shared/seo/schemas/SearchSchema';
+import { generateSearchMetadataSimple } from '@/shared/seo/metadata/SearchMetadata';
 import { CarouselArticle } from '@/features/article-display/RelatedArticles/RelatedArticlesCarousel';
-import { safeGenerateMetadata } from '@/features/errors/lib/metadataErrorHandler';
+import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
+import RubricsSection from '@/features/rubric-display/RubricsSection';
 
 export const revalidate = 0;
 

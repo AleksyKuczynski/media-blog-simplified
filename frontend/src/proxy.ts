@@ -1,6 +1,6 @@
 // src/proxy.ts
 import { NextRequest, NextResponse } from 'next/server'
-import { SUPPORTED_LANGUAGES, DEFAULT_LANG, GEO_LANGUAGE_MAP } from '@/main/lib/constants/constants'
+import { SUPPORTED_LANGUAGES, DEFAULT_LANG, GEO_LANGUAGE_MAP } from '@/config/constants/constants'
 
 const PUBLIC_FILE = /\.(.*)$/
 

@@ -1,17 +1,16 @@
 // src/app/[lang]/rubrics/page.tsx
 
 import { Metadata } from 'next';
-import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
-import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import Section from '@/features/layout/Section';
-import CardGrid from '@/main/components/Main/CardGrid';
-import { generateCollectionMetadata } from '@/features/seo/metadata/CollectionMetadata';
-import { CollectionPageSchema } from '@/features/seo/schemas/CollectionPageSchema';
-import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers/content'; // FIXED: Correct import
-import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { Rubric } from '@/main/lib/directus';
-import { createErrorHandler } from '@/features/errors/lib/errorUtils';
+import CardGrid from '@/features/layout/CardGrid';
+import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMetadata';
+import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
+import { getLocalizedRubricCount } from '@/config/i18n/helpers/content'; // FIXED: Correct import
+import { getDictionary, Lang } from '@/config/i18n';
+import { Rubric, fetchAllRubrics } from '@/api/directus';
+import { createErrorHandler } from '@/shared/errors/lib/errorUtils';
+import RubricCard from '@/features/rubric-display/RubricCard';
 
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;

@@ -1,6 +1,6 @@
 // src/main/components/Search/common/SearchDropdownItem.tsx
-import { Dictionary } from '@/main/lib/dictionary';
-import { SearchResult } from '@/main/lib/directus/directusInterfaces';
+import { Dictionary } from '@/config/i18n';
+import { SearchResult } from '@/api/directus';
 
 interface SearchDropdownItemProps {
   suggestion: SearchResult;

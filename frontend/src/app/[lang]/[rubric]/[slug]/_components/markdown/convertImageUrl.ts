@@ -25,7 +25,7 @@
  * @returns {string} Full Directus asset URL
  */
 
-import { DIRECTUS_URL } from "@/main/lib/directus";
+import { DIRECTUS_URL } from "@/api/directus";
 
 export function convertImageUrl(url: string): string {
   if (!url) return '';

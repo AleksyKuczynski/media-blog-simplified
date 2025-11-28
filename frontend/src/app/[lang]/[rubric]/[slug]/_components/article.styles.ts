@@ -20,7 +20,7 @@
  * @see Header.tsx, Content.tsx for usage examples
  */
 
-import { IMAGE_RATIO_STRING } from "@/main/components/mainConstants";
+import { IMAGE_RATIO_STRING } from "@/features/mainConstants";
 
 
 // ================================================================

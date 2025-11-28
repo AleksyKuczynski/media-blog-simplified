@@ -3,8 +3,8 @@
 
 import Link from 'next/link';
 import NavLinksClient from './NavLinksClient';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { getNavigationItems } from '@/main/lib/dictionary/helpers/navigation';
+import { Dictionary, Lang } from '@/config/i18n';
+import { getNavigationItems } from '@/config/i18n/helpers/navigation';
 
 interface NavLinksProps {
   dictionary: Dictionary;

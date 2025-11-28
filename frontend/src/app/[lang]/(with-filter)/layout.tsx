@@ -1,8 +1,8 @@
 // src/app/ru/(with-filter)/layout.tsx
 // MIGRATED: Updated to use new dictionary system completely
 import FilterGroup from '@/features/navigation/Filter/FilterGroup';
-import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { fetchAllCategories } from '@/main/lib/directus';
+import { getDictionary, Lang } from '@/config/i18n';
+import { fetchAllCategories } from '@/api/directus';
 import { Suspense } from 'react';
 
 export default async function WithFilterLayout({

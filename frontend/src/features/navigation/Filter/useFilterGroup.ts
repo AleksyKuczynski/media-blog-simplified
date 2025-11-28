@@ -3,16 +3,16 @@
 
 import { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { Category } from '@/main/lib/directus/directusInterfaces';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { Category } from '@/api/directus';
+import { Dictionary, Lang } from '@/config/i18n';
 import {
   generateFilterStateData,
   generateFilterUrls,
   validateFilterDictionary,
   getFilterLabels,
   getSortingOptions,
-} from '@/main/lib/dictionary/helpers/filter';
-import type { DropdownItemType } from '../../ui/Dropdown/types';
+} from '@/config/i18n/helpers/filter';
+import type { DropdownItemType } from '@/shared/ui/Dropdown/types';
 
 // ===================================================================
 // TYPES - Simplified and clean, FIXED TYPES

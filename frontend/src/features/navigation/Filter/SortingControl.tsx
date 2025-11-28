@@ -3,11 +3,11 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { ChevronDownIcon } from '../../primitives/Icons';
-import type { DropdownItemType } from '../../ui/Dropdown/types';
-import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../../ui/Dropdown';
-import { NavButton } from '@/features/primitives/NavButton';
+import { Dictionary, Lang } from '@/config/i18n';
+import { ChevronDownIcon } from '@/shared/primitives/Icons';
+import type { DropdownItemType } from '@/shared/ui/Dropdown/types';
+import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '@/shared/ui/Dropdown';
+import { NavButton } from '@/shared/primitives/NavButton';
 
 interface SortingControlProps {
   readonly dictionary: Dictionary;

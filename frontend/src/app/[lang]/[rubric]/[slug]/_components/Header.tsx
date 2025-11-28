@@ -13,7 +13,7 @@
  * 
  * Dependencies:
  * - article.styles.ts (LAYOUT_STYLES.header)
- * - @/main/lib/directus (DIRECTUS_URL, AuthorDetails)
+ * - @/api/directus (DIRECTUS_URL, AuthorDetails)
  * 
  * @param lang - Language code for author links
  * @param title - Article title
@@ -26,10 +26,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { DIRECTUS_URL, AuthorDetails } from '@/main/lib/directus';
-import { Lang } from '@/main/lib/dictionary';
+import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
+import { Lang } from '@/config/i18n';
 import { LAYOUT_STYLES } from './article.styles';
-import { IMAGE_RATIO_STRING } from '@/main/components/mainConstants';
+import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
 
 interface HeaderProps {
   lang: Lang;

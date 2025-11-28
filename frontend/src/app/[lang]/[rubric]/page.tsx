@@ -1,17 +1,15 @@
 // src/app/[lang]/[rubric]/page.tsx
-// FIXED: Uses totalCount, proper totalPages
 
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import ArticleList from '@/features/article-display/ArticleList';
-import Pagination from '@/features/ui/Pagination';
+import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
-import { getDictionary, Lang } from '@/main/lib/dictionary';
-import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics } from '@/main/lib/directus';
-import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
-import { RubricPageSchema } from '@/features/seo/schemas/RubricPageSchema';
-import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
+import { getDictionary, Lang } from '@/config/i18n';
+import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ITEMS_PER_PAGE } from '@/api/directus';
+import { RubricPageSchema } from '@/shared/seo/schemas/RubricPageSchema';
+import { processTemplate } from '@/config/i18n/helpers/templates';
+import { getLocalizedArticleCount } from '@/config/i18n/helpers/content';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 
 export const revalidate = 300;

@@ -16,7 +16,7 @@
  */
 
 import Link from 'next/link';
-import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { Dictionary, Lang } from '@/config/i18n';
 import { NAVIGATION_STYLES } from '../article.styles';
 
 /**

@@ -1,12 +1,12 @@
 // src/app/[lang]/authors/page.tsx
 import { Suspense } from 'react';
-import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus';
-import AuthorCard from '@/main/components/Main/AuthorCard';
+import { fetchAllAuthors, fetchRubricBasics } from '@/api/directus';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import Section from '@/features/layout/Section';
-import CardGrid from '@/main/components/Main/CardGrid';
-import { AuthorCardSkeleton } from '@/main/components/Main/AuthorCardSkeleton';
-import { getDictionary, Lang } from '@/main/lib/dictionary';
+import CardGrid from '@/features/layout/CardGrid';
+import { AuthorCardSkeleton } from '@/features/author-display/AuthorCardSkeleton';
+import { getDictionary, Lang } from '@/config/i18n';
+import AuthorCard from '@/features/author-display/AuthorCard';
 
 // ISR CONFIGURATION: 1 hour (authors list is structural)
 export const revalidate = 3600;

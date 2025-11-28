@@ -20,7 +20,7 @@
  * - ./markdownToHtml (convertSimpleMarkdownToHtml)
  * - ./processCaptionLinks (caption link handling)
  * - ./markdownTypes (ContentChunk, ImageAttributes)
- * - @/main/lib/directus (fetchAssetMetadata)
+ * - @/api/directus (fetchAssetMetadata)
  * - ./parseMarkdownImage (image syntax parser)
  * 
  * @param chunks - Content chunks with image markdown
@@ -31,7 +31,7 @@ import { convertSimpleMarkdownToHtml } from './markdownToHtml';
 import { processCaptionLinks } from './processCaptionLinks';
 import { ContentChunk, ImageAttributes } from './markdownTypes';
 import { parseMarkdownImage } from './parseMarkdownImage';
-import { fetchAssetMetadata } from '@/main/lib/directus';
+import { fetchAssetMetadata } from '@/api/directus';
 
 export async function parseImageFrames(chunks: ContentChunk[]): Promise<ContentChunk[]> {
   const processedChunks: ContentChunk[] = [];

@@ -1,6 +1,6 @@
 // src/main/components/Main/Section.tsx - Enhanced for SEO and Accessibility
 import React from 'react';
-import { cn } from '@/main/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface SectionProps {
   children: React.ReactNode;

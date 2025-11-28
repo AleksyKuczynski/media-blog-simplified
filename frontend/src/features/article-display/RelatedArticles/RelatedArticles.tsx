@@ -1,9 +1,8 @@
 // src/main/components/Article/RelatedArticles/RelatedArticles.tsx
 // PHASE 2A: Production version with carousel display
 
-import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { fetchRelatedArticles } from '@/main/lib/directus/fetchRelatedArticles';
-import { fetchArticleSlugs, fetchArticleCard, DIRECTUS_URL } from '@/main/lib/directus';
+import { Dictionary, Lang } from '@/config/i18n';
+import { fetchArticleSlugs, fetchArticleCard, fetchRelatedArticles, DIRECTUS_URL } from '@/api/directus';
 import RelatedArticlesCarousel, { CarouselArticle } from './RelatedArticlesCarousel';
 
 interface RelatedArticlesProps {

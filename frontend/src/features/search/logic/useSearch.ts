@@ -1,8 +1,8 @@
 // src/main/components/Search/useSearch.ts
 import { useState, useCallback } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
-import { SearchResult } from '@/main/lib/directus'
-import { Lang } from '@/main/lib/dictionary'
+import { SearchResult } from '@/api/directus'
+import { Lang } from '@/config/i18n'
 import { SearchStatus } from '../types'
 import { createSearchUrl } from '../utils/createSearchUrl'
 import { getSearchSuggestions } from '../actions/getSearchSuggestions'

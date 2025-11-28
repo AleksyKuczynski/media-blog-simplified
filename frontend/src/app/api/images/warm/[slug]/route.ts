@@ -13,9 +13,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchFullArticle } from '@/main/lib/directus';
-import { getSocialImageVariants } from '@/main/lib/utils/imageOptimization';
-import { DEFAULT_LANG } from '@/main/lib/constants/constants';
+import { fetchFullArticle } from '@/api/directus';
+import { getSocialImageVariants } from '@/lib/utils/imageOptimization';
+import { DEFAULT_LANG } from '@/config/constants/constants';
 
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
 

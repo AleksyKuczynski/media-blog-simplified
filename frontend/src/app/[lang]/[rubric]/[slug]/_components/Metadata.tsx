@@ -24,7 +24,7 @@
  * 
  * Dependencies:
  * - ../article.styles (LAYOUT_STYLES.metadata)
- * - @/main/lib/directus (AuthorDetails)
+ * - @/api/directus (AuthorDetails)
  * - @/main/lib/dictionary (Lang)
  * 
  * NOTE: Usually integrated into Header.tsx,
@@ -37,8 +37,8 @@
  */
 
 import Link from 'next/link';
-import { AuthorDetails } from '@/main/lib/directus/directusInterfaces';
-import { Lang } from '@/main/lib/dictionary';
+import { AuthorDetails } from '@/api/directus';
+import { Lang } from '@/config/i18n';
 import { LAYOUT_STYLES } from './article.styles';
 
 interface MetadataProps {

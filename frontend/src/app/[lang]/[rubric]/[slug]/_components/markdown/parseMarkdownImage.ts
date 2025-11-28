@@ -12,13 +12,13 @@
  * - Full URL construction
  * 
  * Dependencies:
- * - @/main/lib/directus (DIRECTUS_URL)
+ * - @/api/directus (DIRECTUS_URL)
  * 
  * @param markdown - Image markdown string
  * @returns {ParsedImage | null} Structured image data or null
  */
 
-import { DIRECTUS_URL } from "@/main/lib/directus";
+import { DIRECTUS_URL } from "@/api/directus";
 
 export function parseMarkdownImage(markdown: string): { alt: string; src: string; assetId: string } | null {
   // Guard against null/undefined markdown
