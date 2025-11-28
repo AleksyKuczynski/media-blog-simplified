@@ -1,7 +1,32 @@
-// src/app/[lang]/[rubric]/[slug]/_components/Content.tsx
-import { ContentChunk, TocItem } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes';
+// app/[lang]/[rubric]/[slug]/_components/Content.tsx
+/**
+ * Article Page - Content Renderer
+ * 
+ * Orchestrates markdown content display with custom blocks.
+ * Processes content chunks from markdown pipeline and renders
+ * appropriate components for each chunk type.
+ * 
+ * Chunk Types:
+ * - markdown: Standard HTML content
+ * - blockquote: Custom blockquote blocks
+ * - image-frame: Optimized images with captions
+ * - table: Markdown tables with alignment
+ * - article-card: Embedded article cards
+ * 
+ * Dependencies:
+ * - article.styles.ts (LAYOUT_STYLES.content)
+ * - content/* (MarkdownContent, CustomBlockquote, etc.)
+ * - markdown/* (ContentChunk types)
+ * 
+ * @param chunks - Processed content chunks from processContent()
+ * @param toc - Table of contents items
+ * @param title - Article title for embedded cards
+ * @param author - Author name for embedded cards
+ */
+
 import { LAYOUT_STYLES } from './article.styles';
 import ArticleContentRenderer from './content/ArticleContentRenderer';
+import { ContentChunk, TocItem } from './markdown/markdownTypes';
 
 interface ContentProps {
   chunks: ContentChunk[];

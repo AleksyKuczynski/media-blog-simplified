@@ -1,4 +1,24 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/MarkdownContent.tsx
+// app/[lang]/[rubric]/[slug]/_components/content/MarkdownContent.tsx
+/**
+ * Article Content - Markdown HTML Renderer
+ * 
+ * Parses HTML string from markdown conversion and renders
+ * appropriate React components based on element types.
+ * Uses node-html-parser for DOM traversal.
+ * 
+ * Process:
+ * 1. Parse HTML string to DOM tree
+ * 2. Traverse nodes recursively
+ * 3. Map HTML tags to React components via componentMap
+ * 4. Render component tree
+ * 
+ * Dependencies:
+ * - markdown-component-map.ts (element to component mapping)
+ * - Heading.tsx, Paragraph.tsx, Link.tsx, List.tsx, ListItem.tsx
+ * 
+ * @param content - HTML string from markdown conversion
+ */
+
 import React from 'react';
 import { parse, HTMLElement, Node, NodeType } from 'node-html-parser';
 import { componentMap } from './markdown-component-map';

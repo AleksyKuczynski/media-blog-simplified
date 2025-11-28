@@ -1,16 +1,32 @@
-// src/main/lib/markdown/convertImageUrl.ts
-import { DIRECTUS_URL } from '../../../../../../main/lib/directus/directusConstants';
-
+// app/[lang]/[rubric]/[slug]/_components/markdown/convertImageUrl.ts
 /**
- * Converts any Directus image URL to use the current DIRECTUS_URL
- * Handles various formats:
- * - Full URLs from different Directus instances
- * - Asset IDs only
- * - Local development URLs
+ * Article Markdown - Image URL Converter
  * 
- * @param url - The image URL or asset ID to convert
- * @returns Normalized URL using current DIRECTUS_URL
+ * Converts Directus asset IDs to full CDN URLs.
+ * Handles both asset IDs and full URLs.
+ * 
+ * Input Formats:
+ * - Asset ID: "abc123-def456"
+ * - Full URL: "https://domain.com/assets/abc123"
+ * - Relative: "/assets/abc123"
+ * 
+ * Output:
+ * - Full Directus URL: "{DIRECTUS_URL}/assets/{assetId}"
+ * 
+ * Features:
+ * - Asset ID detection
+ * - Full URL passthrough
+ * - Directus URL construction
+ * 
+ * Dependencies:
+ * - @/main/lib/directus (DIRECTUS_URL)
+ * 
+ * @param imageUrl - Asset ID or URL string
+ * @returns {string} Full Directus asset URL
  */
+
+import { DIRECTUS_URL } from "@/main/lib/directus";
+
 export function convertImageUrl(url: string): string {
   if (!url) return '';
   

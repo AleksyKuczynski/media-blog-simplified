@@ -1,27 +1,25 @@
-// src/main/lib/markdown/processCaptionLinks.ts
-
+// app/[lang]/[rubric]/[slug]/_components/markdown/processCaptionLinks.ts
 /**
- * Process links in image captions with simplified logic:
+ * Article Markdown - Caption Link Processing
  * 
- * 1. External links (http/https) → keep as-is for remark to convert to <a> tags
- * 2. Article slugs → convert to plain text (from link text)
- * 3. Invalid/internal links → convert to plain text if text exists, otherwise remove
+ * Simplified link processing for image captions.
+ * No balloon tips or article cards in captions.
  * 
- * No balloon tips, no article cards - keep captions simple and focused on the image.
+ * Link Handling:
+ * 1. External links (http/https) - preserved
+ * 2. Article slugs - converted to plain text
+ * 3. Invalid/internal links - converted to plain text or removed
  * 
- * @example
- * processCaptionLinks('[Photo](https://example.com)') 
- * // → '[Photo](https://example.com)' (external link preserved)
+ * Philosophy:
+ * - Keep captions simple and focused on image
+ * - Avoid interactive elements in captions
  * 
- * processCaptionLinks('[Related article](my-article-slug)')
- * // → 'Related article' (slug stripped, text kept)
+ * Dependencies: None
  * 
- * processCaptionLinks('[](invalid-link)')
- * // → '' (no text, removed completely)
- * 
- * processCaptionLinks('[Photo credit](Photo by John)')
- * // → 'Photo credit' (invalid link, text preserved)
+ * @param markdown - Caption markdown string
+ * @returns {string} Processed caption markdown
  */
+
 export function processCaptionLinks(markdown: string): string {
   return markdown.replace(
     /\[([^\]]*)\]\(([^)]+)\)/g,

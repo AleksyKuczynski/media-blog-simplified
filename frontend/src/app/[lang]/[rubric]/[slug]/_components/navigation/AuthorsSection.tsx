@@ -1,4 +1,28 @@
-// src/app/[lang]/[rubric]/[slug]/_components/navigation/AuthorsSection.tsx
+// app/[lang]/[rubric]/[slug]/_components/navigation/AuthorsSection.tsx
+/**
+ * Article Navigation - Authors Grid
+ * 
+ * Server component handling multiple article authors.
+ * Filters editorial placeholders, renders author cards.
+ * 
+ * Features:
+ * - Grid layout for multiple authors
+ * - Editorial author filtering
+ * - Conditional rendering
+ * - E-A-T signal multiplier
+ * 
+ * SEO: Multiple Person schemas
+ * Each author gets own Person schema and rel="author" link
+ * 
+ * Dependencies:
+ * - article.styles.ts (NAVIGATION_STYLES.relatedLinks.authors)
+ * - AuthorSection.tsx (individual cards)
+ * - @/main/lib/dictionary (Dictionary)
+ * 
+ * @param authors - Array of author objects
+ * @param className - Optional container class
+ * @param dictionary - Translations
+ */
 
 import { Dictionary } from '@/main/lib/dictionary';
 import { NAVIGATION_STYLES } from '../article.styles';
@@ -14,12 +38,6 @@ interface AuthorsSectionProps {
   dictionary: Dictionary;
 }
 
-/**
- * Authors section for article page - handles multiple authors
- * Static SSR component - imports dictionary directly
- * E-A-T signal multiplier (Expertise, Authority, Trust)
- * Each author gets own Person schema and rel="author" link
- */
 export default function AuthorsSection({
   authors,
   className,

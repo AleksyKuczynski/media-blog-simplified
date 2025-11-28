@@ -1,4 +1,26 @@
-// src/main/lib/markdown/parseBlockquotes.ts
+// app/[lang]/[rubric]/[slug]/_components/markdown/parseBlockquotes.ts
+/**
+ * Article Markdown - Blockquote Parser
+ * 
+ * Extracts custom blockquotes from markdown using >> delimiter.
+ * First step in processing pipeline.
+ * 
+ * Syntax:
+ * >> Blockquote content here
+ * >> Can span multiple lines
+ * >> Supports **markdown** formatting
+ * 
+ * Features:
+ * - Multi-line blockquote support
+ * - Preserves inline markdown formatting
+ * - Separates blockquotes into distinct chunks
+ * 
+ * Dependencies:
+ * - ./markdownTypes (ContentChunk)
+ * 
+ * @param content - Raw markdown string
+ * @returns {ContentChunk[]} Chunks with separated blockquotes
+ */
 
 import { BlockquoteProps, ContentChunk, EpigraphBlockquote, HighlightBlockquote, ProfileBlockquote, QuoteBlockquote } from './markdownTypes';
 import { convertImageUrl } from './convertImageUrl';

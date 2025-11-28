@@ -1,13 +1,33 @@
-// src/app/[lang]/[rubric]/[slug]/_components/engagement/SharePopup.tsx
+// app/[lang]/[rubric]/[slug]/_components/engagement/SharePopup.tsx
 /**
- * Share Popup Component
+ * Article Engagement - Share Modal
  * 
- * Displays social media share options in a centered modal
- * - Uses Modal component for consistent behavior
- * - Uses dictionary for all text content
- * - Uses icon components from EngagementIcons
- * - Instagram: Web Share API on mobile, clipboard fallback on desktop
- * - VK: Russian social network support
+ * Client component displaying social share options in centered modal.
+ * Handles platform-specific sharing logic.
+ * 
+ * Features:
+ * - Platform grid (Telegram, WhatsApp, VK, Twitter, Facebook, Instagram)
+ * - Web Share API for Instagram mobile
+ * - Clipboard fallback for Instagram desktop
+ * - Copy link option
+ * - Success feedback
+ * 
+ * Platform Handling:
+ * - Instagram: Web Share API (mobile) → clipboard (desktop)
+ * - Other platforms: Open share window
+ * - Copy: Direct clipboard access
+ * 
+ * Dependencies:
+ * - @/main/components/Interface/Modal (Modal component)
+ * - @/main/lib/dictionary (translations)
+ * - ./EngagementIcons (platform icons)
+ * - ./lib/share (share utility functions)
+ * - article.styles.ts (WIDGETS_STYLES.sharePopup)
+ * 
+ * @param isOpen - Modal visibility state
+ * @param onClose - Close handler
+ * @param onShare - Share action handler (returns share method used)
+ * @param showCopySuccess - Display copy success message
  */
 
 'use client';
@@ -15,7 +35,6 @@
 import { useState } from 'react';
 import { Modal } from '@/main/components/Interface/Modal/Modal';
 import { dictionary } from '@/main/lib/dictionary';
-import type { SharePlatform } from '@/app/[lang]/[rubric]/[slug]/_components/engagement/api';
 import {
   TelegramIcon,
   WhatsAppIcon,
@@ -26,6 +45,7 @@ import {
   CopyLinkIcon,
 } from './EngagementIcons';
 import { WIDGETS_STYLES } from '../article.styles';
+import { SharePlatform } from './lib';
 
 const styles = WIDGETS_STYLES.sharePopup;
 
@@ -75,9 +95,7 @@ const SHARE_PLATFORMS = [
   },
 ];
 
-/**
- * SharePopup Component
- */
+// SharePopup Component
 export function SharePopup({ isOpen, onClose, onShare, showCopySuccess }: SharePopupProps) {
   const [lastPlatform, setLastPlatform] = useState<SharePlatform | null>(null);
 

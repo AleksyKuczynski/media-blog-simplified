@@ -1,20 +1,48 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useEngagement.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useEngagement.ts
 /**
- * Main Engagement Hook
+ * Article Engagement - Main Hook
  * 
- * Coordinates all engagement functionality with timestamp-based reconciliation
- * - Views: Server-tracked on first visit, reconciled via action log
+ * Orchestrates all engagement functionality with state reconciliation.
+ * Combines view tracking, like state, and share state.
+ * 
+ * Architecture:
+ * - Views: Server-tracked, reconciled via action log
  * - Likes: Debounced (1s), optimistic updates, fire-and-forget API
  * - Shares: Immediate optimistic update, fire-and-forget API
- * - Instagram: Web Share API on mobile, clipboard fallback on desktop
+ * 
+ * Features:
+ * - Timestamp-based reconciliation
+ * - Optimistic UI updates
+ * - Error handling with user feedback
+ * - Analytics tracking (GA + Yandex)
+ * - Web Share API support (Instagram)
+ * 
+ * Dependencies:
+ * - ./useLikeState (like button logic)
+ * - ./useShareState (share state logic)
+ * - ./useViewTracking (optional view tracking)
+ * - ../lib/api (updateEngagement)
+ * - ../lib/share (share utilities)
+ * - ../lib/actionLog (reconcileCounts, logAction)
+ * - @/main/lib/analytics (GA + Yandex tracking)
+ * - @/main/lib/dictionary (error messages)
+ * 
+ * @param slug - Article slug
+ * @param title - Article title
+ * @param url - Full article URL
+ * @param initialData - Server engagement data
+ * @param trackView - Enable client-side view tracking (default: false)
+ * @param viewWasTrackedByAPI - Server tracked view on this request
+ * 
+ * @returns {UseEngagementReturn} State and action handlers
  */
 
 import { useState, useEffect, useCallback } from 'react';
 import { useLikeState } from './useLikeState';
-import { updateEngagement } from '../api/api';
-import { getShareUrl, copyToClipboard, openShareWindow, shareViaWebAPI } from '../api/share';
-import { logAction, reconcileCounts } from '../api/actionLog';
-import type { EngagementData, SharePlatform } from '../api';
+import { updateEngagement } from '../lib/api';
+import { getShareUrl, copyToClipboard, openShareWindow, shareViaWebAPI } from '../lib/share';
+import { logAction, reconcileCounts } from '../lib/actionLog';
+import type { EngagementData, SharePlatform } from '../lib';
 import { useViewTracking } from './useViewTracking';
 import { useShareState } from './useShareState';
 import { trackGAEvent } from '@/main/lib/analytics/google';

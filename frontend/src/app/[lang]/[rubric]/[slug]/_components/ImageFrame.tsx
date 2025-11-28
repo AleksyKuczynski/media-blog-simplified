@@ -1,4 +1,37 @@
-// src/app/[lang]/[rubric]/[slug]/_components/ImageFrame.tsx
+// app/[lang]/[rubric]/[slug]/_components/content/ImageFrame.tsx
+/**
+ * Article Content - Image Frame Component
+ * 
+ * Responsive image container with caption support.
+ * Replaces legacy carousel for single image display.
+ * 
+ * Features:
+ * - Next.js Image optimization
+ * - Directus asset integration
+ * - Responsive sizing (responsive by default)
+ * - Optional caption with HTML formatting
+ * - Fixed aspect ratio maintenance
+ * 
+ * Image Attributes:
+ * - src: Full Directus asset URL
+ * - alt: Image alt text (from Directus or markdown)
+ * - width/height: Asset dimensions from Directus
+ * - title: Optional title from Directus metadata
+ * 
+ * Caption Handling:
+ * - HTML content support (bold, italic, links)
+ * - External links preserved
+ * - Article slugs removed (captions stay simple)
+ * 
+ * Dependencies:
+ * - ../article.styles (MEDIA_STYLES.imageFrame)
+ * - Next.js Image component
+ * - ./markdownTypes (ImageAttributes)
+ * 
+ * @param imageAttributes - Image metadata from parseImageFrames
+ * @param caption - Optional HTML caption string
+ */
+
 'use client'
 
 import React, { memo } from 'react';

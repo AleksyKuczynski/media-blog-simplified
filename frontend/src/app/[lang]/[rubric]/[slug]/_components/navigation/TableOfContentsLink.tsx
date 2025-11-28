@@ -1,4 +1,30 @@
-// src/app/[lang]/[rubric]/[slug]/_components/navigation/TableOfContentsLink.tsx
+// app/[lang]/[rubric]/[slug]/_components/navigation/TableOfContentsLink.tsx
+/**
+ * Article Navigation - TOC Link Component
+ * 
+ * Client component for individual TOC links with smooth scroll.
+ * Handles active state and keyboard navigation.
+ * 
+ * Features:
+ * - Smooth scroll to heading
+ * - Active state highlighting
+ * - Keyboard accessible
+ * - Click event handling
+ * 
+ * Scroll Behavior:
+ * - Prevents default link behavior
+ * - Uses element.scrollIntoView() with smooth
+ * - Configurable offset for fixed headers
+ * 
+ * Dependencies:
+ * - ../article.styles (NAVIGATION_STYLES.tableOfContents)
+ * 
+ * @param text - Link text (heading content)
+ * @param id - Target heading ID
+ * @param level - Heading level (2-4) for indentation
+ * @param isActive - Active state for current section
+ */
+
 'use client';
 
 import { useRouter } from 'next/navigation';

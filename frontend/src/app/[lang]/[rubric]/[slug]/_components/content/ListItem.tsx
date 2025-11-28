@@ -1,4 +1,14 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/ListItem.tsx
+// app/[lang]/[rubric]/[slug]/_components/content/ListItem.tsx
+/**
+ * Article Content - List Item Element
+ * 
+ * Individual list item component.
+ * Server component with typography styling.
+ * 
+ * Dependencies:
+ * - article.styles.ts (ELEMENTS_STYLES.list.item)
+ */
+
 import React from 'react';
 import { ELEMENTS_STYLES } from '../article.styles';
 

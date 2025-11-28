@@ -1,8 +1,28 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/types.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/lib/types.ts
 /**
- * Engagement Types
+ * Article Engagement - Type Definitions
  * 
- * Centralized type definitions for the engagement system
+ * Centralized TypeScript interfaces for engagement system.
+ * 
+ * Core Types:
+ * - EngagementData: Server data structure
+ * - EngagementResponse: API response format
+ * - EngagementError: Error response format
+ * - EngagementAction: Action types ('view' | 'like' | 'unlike' | 'share')
+ * 
+ * UI State Types:
+ * - EngagementState: Component state
+ * - LikeState: Like button state
+ * - ViewTrackingState: View tracking state
+ * 
+ * Share Types:
+ * - SharePlatform: Platform identifiers
+ * - ShareConfig: Share URL configuration
+ * 
+ * Utility Types:
+ * - RetryOptions: API retry configuration
+ * 
+ * Dependencies: None (pure types)
  */
 
 // ===================================================================

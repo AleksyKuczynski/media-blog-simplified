@@ -147,7 +147,7 @@ export default async function ArticlePage({
       ?.map((block: any) => block.item?.content || '')
       .join('\n\n') || '';
     
-    const processedContent = await processContent(rawContent);
+    const processedContent = await processContent(rawContent, lang);
     const { chunks: contentChunks, toc: tocItems } = processedContent;
 
     const authorsWithDetails = article.authors?.map(author => ({

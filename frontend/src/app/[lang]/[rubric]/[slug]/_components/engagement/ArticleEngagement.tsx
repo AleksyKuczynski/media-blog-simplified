@@ -1,11 +1,33 @@
-// src/app/[lang]/[rubric]/[slug]/_components/engagement/ArticleEngagement.tsx
+// app/[lang]/[rubric]/[slug]/_components/engagement/ArticleEngagement.tsx
 /**
- * Article Engagement Component
+ * Article Engagement - Main Container
  * 
- * Displays engagement metrics (views, likes, shares) in a sticky sidebar
- * - Views: Tracked server-side on first visit
- * - Likes: Interactive with persistent state
- * - Shares: Opens social sharing popup
+ * Client component orchestrating engagement metrics display.
+ * Fixed position sidebar with views, likes, shares.
+ * 
+ * Architecture:
+ * - Server-side view tracking (API GET endpoint)
+ * - Client-side like state (localStorage persistence)
+ * - Share popup modal
+ * 
+ * Features:
+ * - Initial data fetch on mount
+ * - Session-based view deduplication
+ * - Optimistic UI updates
+ * - Error toast notifications
+ * - Loading skeletons
+ * 
+ * Dependencies:
+ * - ./hooks/useEngagement (main hook)
+ * - ./EngagementMetric (metric display)
+ * - ./EngagementIcons (SVG icons)
+ * - ./SharePopup (share modal)
+ * - ./lib/types (EngagementData type)
+ * 
+ * @param slug - Article slug
+ * @param title - Article title for sharing
+ * @param url - Full article URL for sharing
+ * @param className - Optional styling
  */
 
 'use client';
@@ -14,8 +36,8 @@ import { useState, useEffect } from 'react';
 import { useEngagement } from '@/main/lib/hooks';
 import { EngagementMetric } from './EngagementMetric';
 import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
-import type { EngagementData } from '@/app/[lang]/[rubric]/[slug]/_components/engagement/api';
 import { SharePopup } from './SharePopup';
+import { EngagementData } from './lib';
 
 export interface ArticleEngagementProps {
   slug: string;

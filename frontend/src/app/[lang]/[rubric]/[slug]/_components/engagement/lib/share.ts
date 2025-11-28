@@ -1,10 +1,36 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/share.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/lib/share.ts
 /**
- * Share Platform Utilities
+ * Article Engagement - Share Utilities
  * 
- * Social media sharing URLs and copy-to-clipboard functionality
- * - Web Share API support for Instagram on mobile
- * - VK (VKontakte) support for Russian market
+ * Platform-specific share URL generation and sharing methods.
+ * 
+ * Functions:
+ * - getShareUrl(platform, config): Generate share URL for platform
+ * - copyToClipboard(text): Copy to clipboard with fallback
+ * - openShareWindow(url): Open share popup window
+ * - shareViaWebAPI(config): Use Web Share API (mobile)
+ * - canUseWebShare(): Check Web Share API availability
+ * 
+ * Supported Platforms:
+ * - Telegram: t.me/share
+ * - WhatsApp: wa.me/send
+ * - VK: vk.com/share.php
+ * - Twitter: twitter.com/intent/tweet
+ * - Facebook: facebook.com/sharer/sharer.php
+ * - Instagram: Web Share API (mobile) / clipboard (desktop)
+ * - Copy: Clipboard API
+ * 
+ * Features:
+ * - URL encoding for special characters
+ * - Web Share API detection
+ * - Clipboard fallback
+ * - Popup window positioning
+ * 
+ * Dependencies:
+ * - ./types (SharePlatform, ShareConfig)
+ * 
+ * NOTE: Instagram requires Web Share API or clipboard,
+ * cannot open in popup window like other platforms
  */
 
 import { ShareConfig, SharePlatform } from "./types";

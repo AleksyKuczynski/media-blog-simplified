@@ -1,4 +1,22 @@
-// src/app/[lang]/[rubric]/[slug]/_components/navigation/TableOfContents.tsx
+// app/[lang]/[rubric]/[slug]/_components/navigation/TableOfContents.tsx
+/**
+ * Article Navigation - Table of Contents
+ * 
+ * Client component that displays heading hierarchy as clickable links.
+ * Smooth scrolls to heading anchors on click.
+ * 
+ * Features:
+ * - Hierarchical structure (h2, h3, h4)
+ * - Smooth scroll behavior
+ * - Active state highlighting
+ * - Mobile-friendly collapsible (via parent Collapsible)
+ * 
+ * Dependencies:
+ * - article.styles.ts (NAVIGATION_STYLES.tableOfContents)
+ * - markdown/generateToc.ts (TOC item structure)
+ * 
+ * @param items - TOC items from processContent()
+ */
 
 import { NAVIGATION_STYLES } from "../article.styles";
 import { TableOfContentsLink } from "./TableOfContentsLink";

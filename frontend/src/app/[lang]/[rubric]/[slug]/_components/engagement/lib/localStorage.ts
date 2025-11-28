@@ -1,11 +1,35 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/localStorage.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/lib/localStorage.ts
 /**
- * LocalStorage Operations for Engagement
+ * Article Engagement - LocalStorage Management
  * 
- * DEPRECATED: This file is kept for backward compatibility
- * The actionLog.ts module now handles all localStorage operations
+ * Manages persistent client-side engagement state.
  * 
- * Legacy functions exported here delegate to actionLog.ts
+ * Storage Keys:
+ * - liked_articles: Permanent like state
+ * - engagement_deltas: Temporary action deltas (10min expiry)
+ * 
+ * Like Storage (Permanent):
+ * - getLikedArticles(): Get all liked article slugs
+ * - isArticleLiked(slug): Check if article is liked
+ * - saveLikedArticle(slug): Add to liked set
+ * - removeLikedArticle(slug): Remove from liked set
+ * 
+ * Delta Storage (Temporary):
+ * - getEngagementDeltas(): Get all pending deltas
+ * - saveEngagementDeltas(deltas): Save delta state
+ * - getLikeDelta(slug): Get like delta for article
+ * - getShareDelta(slug): Get share delta for article
+ * - saveShareDelta(slug, baseValue): Record share action
+ * 
+ * Features:
+ * - Automatic delta expiry (10 minutes)
+ * - Silent error handling
+ * - SSR compatibility checks
+ * 
+ * Dependencies:
+ * - ./actionLog (like state functions)
+ * 
+ * NOTE: Contains timestamp-based reconciliation logic
  */
 
 import {

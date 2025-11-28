@@ -1,4 +1,28 @@
-// src/main/lib/markdown/markdownTypes.ts
+// app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes.ts
+/**
+ * Article Markdown - Type Definitions
+ * 
+ * TypeScript interfaces for markdown processing pipeline.
+ * 
+ * Core Types:
+ * - ContentChunk: Base chunk type
+ * - ProcessedContent: Pipeline output
+ * - ImageAttributes: Image metadata
+ * - TableData: Table structure
+ * - TOCItem: Table of contents item
+ * - ArticleCardData: Embedded article data
+ * 
+ * Chunk Types:
+ * - markdown: Standard HTML content
+ * - blockquote: Custom blockquotes
+ * - image: Single images
+ * - figure: Images with captions
+ * - image-frame: Processed images with metadata
+ * - table: Markdown tables
+ * - article-card: Embedded article cards
+ * 
+ * Dependencies: None (pure types)
+ */
 
 export interface ContentChunk {
   type: 'markdown' | 'blockquote' | 'figure' | 'image' | 'image-frame' | 'image-group' | 'table' | 'article-card';

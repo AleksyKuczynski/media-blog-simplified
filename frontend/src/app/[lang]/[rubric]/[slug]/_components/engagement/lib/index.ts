@@ -1,9 +1,18 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/index.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/lib/index.ts
 /**
- * Engagement Module - Public API
+ * Article Engagement - Public API
  * 
- * UPDATED: Added Web Share API exports
- * Centralized exports for all engagement functionality
+ * Barrel export for engagement module.
+ * Centralizes all public exports.
+ * 
+ * Exports:
+ * - Types (all from ./types)
+ * - API functions (fetchEngagement, updateEngagement)
+ * - LocalStorage functions (getLikedArticles, isArticleLiked, etc.)
+ * - Share functions (getShareUrl, copyToClipboard, etc.)
+ * - Utility functions (checkRateLimit, hasRecentlyViewed, etc.)
+ * 
+ * Dependencies: All other lib/ files
  */
 
 // Types

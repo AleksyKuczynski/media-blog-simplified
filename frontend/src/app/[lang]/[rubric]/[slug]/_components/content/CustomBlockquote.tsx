@@ -1,5 +1,22 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/CustomBlockquote.tsx
-import { BlockquoteProps } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes';
+// app/[lang]/[rubric]/[slug]/_components/content/CustomBlockquote.tsx
+/**
+ * Article Content - Custom Blockquote Block
+ * 
+ * Enhanced blockquote with custom styling and optional attribution.
+ * Extracted during markdown preprocessing.
+ * 
+ * Features:
+ * - Custom delimiter: >>
+ * - HTML content support
+ * - Citation support
+ * 
+ * Dependencies:
+ * - article.styles.ts (BLOCKS_STYLES.blockquote)
+ * 
+ * @param content - HTML content (may contain inline formatting)
+ */
+
+import { BlockquoteProps } from '../markdown/markdownTypes';
 import { Type1Blockquote } from './Type1Blockquote';
 import { Type2Blockquote } from './Type2Blockquote';
 import { Type3Blockquote } from './Type3Blockquote';

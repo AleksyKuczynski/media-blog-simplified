@@ -1,4 +1,19 @@
-// src/app/[lang]/[rubric]/[slug]/_components/navigation//QuickNavigation.tsx
+// app/[lang]/[rubric]/[slug]/_components/navigation/QuickNavigation.tsx
+/**
+ * Article Navigation - Quick Site Links
+ * 
+ * Server component with links to main site sections.
+ * Provides context and exit paths from article page.
+ * 
+ * SEO: Implements SiteNavigationElement schema.
+ * 
+ * Dependencies:
+ * - article.styles.ts (NAVIGATION_STYLES.relatedLinks.quickNav)
+ * - @/main/lib/dictionary (Dictionary, Lang)
+ * 
+ * @param lang - Language code for URL construction
+ * @param dictionary - Translations
+ */
 
 import Link from 'next/link';
 import { Dictionary, Lang } from '@/main/lib/dictionary';

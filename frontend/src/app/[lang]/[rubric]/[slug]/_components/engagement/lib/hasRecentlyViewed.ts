@@ -1,4 +1,23 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/hasRecentlyViewed.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/lib/hasRecentlyViewed.ts
+/**
+ * Article Engagement - View Detection
+ * 
+ * Checks if article was recently viewed to prevent duplicate tracking.
+ * 
+ * Function:
+ * - hasRecentlyViewed(slug, windowMs): Check recent view
+ * 
+ * Storage:
+ * - last_view_[slug]: Timestamp
+ * 
+ * Features:
+ * - Configurable time window (default: 30 minutes)
+ * - Silent error handling
+ * 
+ * Dependencies: None
+ * 
+ * NOTE: Used alongside session storage for view deduplication
+ */
 
 // Session tracking to prevent duplicate view counts within same session
 const viewTrackingMap = new Map<string, number>();

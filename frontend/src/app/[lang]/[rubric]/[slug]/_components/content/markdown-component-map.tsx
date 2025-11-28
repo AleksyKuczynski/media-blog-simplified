@@ -1,8 +1,21 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/markdown-component-map.tsx
+// app/[lang]/[rubric]/[slug]/_components/content/markdown-component-map.ts
 /**
- * Component map for rendering HTML elements as React components
+ * Article Content - Markdown Component Mapping
  * 
- * ✅ UPDATED: Added span handler for balloon tips
+ * Maps HTML element names to React components.
+ * Used by MarkdownContent.tsx for rendering parsed HTML.
+ * 
+ * Mappings:
+ * - h1-h6 → Heading
+ * - p → Paragraph  
+ * - a → Link
+ * - ul, ol → List
+ * - li → ListItem
+ * 
+ * NOTE: Does not handle custom blocks (blockquote, image-frame, table)
+ * which are processed separately by Content.tsx
+ * 
+ * @see MarkdownContent.tsx
  */
 
 import React from 'react';

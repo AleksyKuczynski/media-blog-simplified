@@ -1,5 +1,24 @@
-// src/main/lib/markdown/parseMarkdownImage.ts
-import { DIRECTUS_URL } from '../../../../../../main/lib/directus/directusConstants';
+// app/[lang]/[rubric]/[slug]/_components/markdown/parseMarkdownImage.ts
+/**
+ * Article Markdown - Image Syntax Parser
+ * 
+ * Parses markdown image syntax into structured data.
+ * 
+ * Syntax: ![alt text](assetId)
+ * 
+ * Features:
+ * - Alt text extraction
+ * - Asset ID extraction
+ * - Full URL construction
+ * 
+ * Dependencies:
+ * - @/main/lib/directus (DIRECTUS_URL)
+ * 
+ * @param markdown - Image markdown string
+ * @returns {ParsedImage | null} Structured image data or null
+ */
+
+import { DIRECTUS_URL } from "@/main/lib/directus";
 
 export function parseMarkdownImage(markdown: string): { alt: string; src: string; assetId: string } | null {
   // Guard against null/undefined markdown

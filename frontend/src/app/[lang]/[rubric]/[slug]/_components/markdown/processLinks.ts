@@ -1,12 +1,29 @@
-// src/main/lib/markdown/processLinks.ts
+// app/[lang]/[rubric]/[slug]/_components/markdown/processLinks.ts
 /**
- * Process markdown links and categorize them into three types:
- * 1. External links (http/https) - leave unchanged
- * 2. Article slugs - mark with UNIQUE delimiter for later processing
- * 3. Everything else - convert to balloon tips (data-attribute spans)
+ * Article Markdown - Link Processing
  * 
- * Generate data-attribute spans instead of styled HTML
- * This allows client-side rendering with the BalloonTip component
+ * Categorizes markdown links into three types:
+ * 1. External links (http/https) - preserved for markdown
+ * 2. Article slugs - marked with delimiter for article cards
+ * 3. Everything else - converted to balloon tips (data-attribute spans)
+ * 
+ * Delimiter Format:
+ * - Article cards: ___ARTICLE_CARD:slug___
+ * - Unlikely to appear naturally in content
+ * 
+ * Features:
+ * - Slug format validation
+ * - HTML entity escaping (XSS prevention)
+ * - Markdown-safe transformations
+ * 
+ * Dependencies:
+ * - ./validateSlug (isValidSlugFormat)
+ * - ./markdownTypes (ContentChunk)
+ * 
+ * @param chunks - Markdown content chunks
+ * @returns {ContentChunk[]} Transformed chunks
+ * 
+ * NOTE: Article card delimiter processed later by processArticleCards.ts
  */
 
 import { ContentChunk } from './markdownTypes';

@@ -1,21 +1,27 @@
-// src/app/[lang]/[rubric]/[slug]/_components/Article/styles/Article.styles.ts
+// app/[lang]/[rubric]/[slug]/_components/article.styles.ts
 /**
- * Centralized Tailwind styling constants for Article components
+ * Article Page - Centralized Style Constants
  * 
- * Organization:
- * - LAYOUT: Header, Metadata, Content wrappers
- * - ELEMENTS: Typography (Heading, Paragraph, Link, List)
- * - MEDIA: ImageFrame, Captions
- * - BLOCKS: Blockquote, Table, InlineArticleCard, BalloonTip
- * - NAVIGATION: TableOfContents, RelatedLinks
- * - WIDGETS: ScrollToTopButton
+ * Tailwind utility classes organized by component category.
+ * Single source of truth for all article page styling.
+ * 
+ * Sections:
+ * - LAYOUT_STYLES: Header, Content wrappers
+ * - ELEMENTS_STYLES: Typography (Heading, Paragraph, Link, List)
+ * - MEDIA_STYLES: ImageFrame, Captions
+ * - BLOCKS_STYLES: Blockquote, Table, InlineArticleCard, BalloonTip
+ * - NAVIGATION_STYLES: TableOfContents, RelatedLinks
+ * - WIDGETS_STYLES: SharePopup, ScrollToTopButton
  * 
  * Usage:
- * import { ARTICLE_STYLES } from '@/main/components/Article/styles';
- * <div className={ARTICLE_STYLES.layout.header.container} />
+ * import { LAYOUT_STYLES } from './article.styles'
+ * <div className={LAYOUT_STYLES.header.container} />
+ * 
+ * @see Header.tsx, Content.tsx for usage examples
  */
 
-import { IMAGE_RATIO_STRING } from "../../../../../main/components/mainConstants";
+import { IMAGE_RATIO_STRING } from "@/main/components/mainConstants";
+
 
 // ================================================================
 // LAYOUT COMPONENTS

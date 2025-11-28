@@ -1,22 +1,50 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/useLikeState.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useLikeState.ts
 /**
- * Like State Management Hook
+ * Article Engagement - Like State Hook
  * 
- * Manages like button state and count with timestamp-based reconciliation
- * - Button state: Permanent (persists in localStorage)
- * - Count display: Server count + pending action deltas
- * - Debounced: 1 second delay before API call
+ * Manages like button state with timestamp-based reconciliation.
+ * 
+ * Architecture:
+ * - Button state: Permanent (localStorage)
+ * - Count display: Server count + pending deltas
+ * - Debounced API calls: 1 second delay
+ * 
+ * Features:
+ * - Optimistic UI updates
+ * - Debounced API calls (prevents spam)
+ * - Request deduplication
+ * - State reconciliation on server count changes
+ * - Fire-and-forget API (no error rollback)
+ * 
+ * Reconciliation:
+ * - Compares action timestamps against server's last_updated
+ * - Only counts actions newer than last_updated
+ * - Automatic cleanup of old actions
+ * 
+ * Dependencies:
+ * - ../lib/api (updateEngagement)
+ * - ../lib/actionLog (isArticleLiked, addLikedArticle, etc.)
+ * 
+ * @param slug - Article slug
+ * @param currentLikes - Current server like count
+ * @param currentViews - Current server view count (for reconciliation)
+ * @param currentShares - Current server share count (for reconciliation)
+ * @param lastUpdated - Server last_updated timestamp
+ * 
+ * @returns {UseLikeStateReturn} Like state and toggle handler
+ * 
+ * NOTE: 1-second debounce prevents API spam from multiple clicks
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { updateEngagement } from '../api/api';
+import { updateEngagement } from '../lib/api';
 import { 
   isArticleLiked,
   addLikedArticle,
   removeLikedArticle,
   logAction,
   reconcileCounts,
-} from '../api/actionLog';
+} from '../lib/actionLog';
 
 export interface UseLikeStateOptions {
   slug: string;

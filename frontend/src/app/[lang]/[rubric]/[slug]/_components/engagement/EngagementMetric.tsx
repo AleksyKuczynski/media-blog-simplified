@@ -1,9 +1,30 @@
-// src/app/[lang]/[rubric]/[slug]/_components/engagement/EngagementMetric.tsx
+// app/[lang]/[rubric]/[slug]/_components/engagement/EngagementMetric.tsx
 /**
- * Engagement Metric Component
+ * Article Engagement - Metric Display Component
  * 
- * Unified display component for views, likes, and shares
- * Supports vertical layout with icon above count for sticky sidebar
+ * Unified display for views, likes, and shares.
+ * Supports both static display and interactive buttons.
+ * 
+ * Features:
+ * - Vertical layout (icon above count)
+ * - Loading states
+ * - Active/inactive states
+ * - Hover effects
+ * - Accessibility labels
+ * 
+ * Dependencies:
+ * - React (ReactNode type)
+ * 
+ * @param type - Metric type ('view' | 'like' | 'share')
+ * @param count - Current count
+ * @param icon - Icon component
+ * @param interactive - Enable button interaction
+ * @param isActive - Active state (liked/shared)
+ * @param isLoading - Loading state
+ * @param onClick - Click handler for interactive metrics
+ * @param disabled - Disable interaction
+ * @param ariaLabel - Accessibility label
+ * @param className - Optional styling
  */
 
 'use client';

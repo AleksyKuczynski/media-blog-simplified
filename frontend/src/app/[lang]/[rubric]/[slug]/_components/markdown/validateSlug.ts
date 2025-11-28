@@ -1,17 +1,31 @@
-// src/main/lib/markdown/validateSlug.ts
-
+// app/[lang]/[rubric]/[slug]/_components/markdown/validateSlug.ts
 /**
- * Validates if a string matches the article slug pattern
- * Pattern: lowercase letters, numbers, and hyphens only
+ * Article Markdown - Slug Validator
  * 
- * Examples:
- * ✓ "my-article-slug"
- * ✓ "article-123"
- * ✓ "test"
- * ✗ "My-Article" (uppercase)
- * ✗ "article_slug" (underscore)
- * ✗ "article.slug" (dot)
+ * Validates article slug format for embedded cards.
+ * 
+ * Valid Format:
+ * - Lowercase letters (a-z)
+ * - Numbers (0-9)
+ * - Hyphens (-)
+ * - No spaces or special characters
+ * 
+ * Example Valid Slugs:
+ * - "introduction-to-ai"
+ * - "article-2024"
+ * - "my-article"
+ * 
+ * Example Invalid Slugs:
+ * - "My Article" (spaces, uppercase)
+ * - "article_name" (underscores)
+ * - "article@123" (special chars)
+ * 
+ * Dependencies: None
+ * 
+ * @param slug - Slug string to validate
+ * @returns {boolean} True if valid format
  */
+
 export function isValidSlugFormat(text: string): boolean {
   if (!text || typeof text !== 'string') {
     return false;

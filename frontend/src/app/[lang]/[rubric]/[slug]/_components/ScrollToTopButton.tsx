@@ -1,4 +1,19 @@
-// src/app/[lang]/[rubric]/[slug]/_components/ScrollToTopButton.tsx
+// app/[lang]/[rubric]/[slug]/_components/ScrollToTopButton.tsx
+/**
+ * Article Page - Scroll to Top Button
+ * 
+ * Client component with fixed positioning.
+ * Appears after user scrolls down, smooth scrolls to top on click.
+ * 
+ * Features:
+ * - Visibility threshold: 400px scroll
+ * - Smooth scroll behavior
+ * - Accessible with keyboard navigation
+ * 
+ * Dependencies:
+ * - article.styles.ts (WIDGETS_STYLES.scrollToTop)
+ */
+
 'use client';
 
 import { useState, useEffect } from 'react';

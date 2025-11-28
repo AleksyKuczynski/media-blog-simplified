@@ -1,4 +1,27 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/Type4Blockquote.tsx
+// app/[lang]/[rubric]/[slug]/_components/content/Type4Blockquote.tsx
+/**
+ * Article Content - Type 4 Blockquote Component
+ * 
+ * Fourth blockquote variant completing the set.
+ * Provides maximum visual variety in content.
+ * 
+ * Visual Style:
+ * - Quaternary accent color
+ * - Final alternate background
+ * - Distinct visual treatment
+ * - Unique typography style
+ * 
+ * Usage: Special emphasis, final quote variant
+ * 
+ * Dependencies:
+ * - ../article.styles (BLOCKS_STYLES.blockquote.type4)
+ * 
+ * NOTE: Four-type system prevents visual repetition
+ * in articles with multiple blockquotes
+ * 
+ * @param content - HTML content string
+ */
+
 import Image from 'next/image';
 import { BLOCKS_STYLES } from '../article.styles';
 

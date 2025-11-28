@@ -1,4 +1,24 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/Heading.tsx
+// app/[lang]/[rubric]/[slug]/_components/content/Heading.tsx
+/**
+ * Article Content - Heading Elements
+ * 
+ * Handles h1-h6 heading elements with consistent styling.
+ * Automatically includes anchor IDs for TOC linking.
+ * Server component.
+ * 
+ * Features:
+ * - Responsive font sizing
+ * - Proper semantic hierarchy
+ * - Anchor link support
+ * 
+ * Dependencies:
+ * - article.styles.ts (ELEMENTS_STYLES.heading)
+ * 
+ * @param level - Heading level (1-6)
+ * @param children - Heading text content
+ * @param id - Optional anchor ID
+ */
+
 import React from 'react';
 import { ELEMENTS_STYLES } from '../article.styles';
 

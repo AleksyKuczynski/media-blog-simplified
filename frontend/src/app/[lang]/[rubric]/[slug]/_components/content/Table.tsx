@@ -1,7 +1,38 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/Table.tsx
-import { TableData } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes';
+// app/[lang]/[rubric]/[slug]/_components/content/Table.tsx
+/**
+ * Article Content - Table Block Component
+ * 
+ * Server component rendering markdown tables with alignment.
+ * Displays structured tabular data with responsive design.
+ * 
+ * Features:
+ * - Column alignment support (left, center, right)
+ * - Responsive horizontal scroll
+ * - HTML content in cells (bold, italic, links)
+ * - Semantic table structure (thead, tbody)
+ * 
+ * Table Structure:
+ * - headers: Array of column headers
+ * - rows: Array of row data
+ * - alignments: Array of column alignments
+ * - caption: Optional table caption
+ * 
+ * Alignment Classes:
+ * - left: text-left
+ * - center: text-center
+ * - right: text-right
+ * - none: text-left (default)
+ * 
+ * Dependencies:
+ * - ../article.styles (BLOCKS_STYLES.table)
+ * - ./markdownTypes (TableData)
+ * 
+ * @param tableData - Structured table data from extractTables
+ */
+
 import { twMerge } from 'tailwind-merge';
 import { BLOCKS_STYLES } from '../article.styles';
+import { TableData } from '../markdown/markdownTypes';
 
 interface TableProps {
   tableData: TableData;

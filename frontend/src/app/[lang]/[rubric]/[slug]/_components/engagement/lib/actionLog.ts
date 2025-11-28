@@ -1,14 +1,39 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/actionLog.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/lib/actionLog.ts
 /**
- * Action Log - Client-Side Engagement Tracking
+ * Article Engagement - Action Log & Reconciliation
  * 
- * Maintains a log of user actions with timestamps for reconciliation with server state
- * Prevents double-counting by comparing action timestamps against server's last_updated
+ * Maintains client-side log of user actions with timestamps.
+ * Prevents double-counting by comparing timestamps against server state.
  * 
  * Architecture:
  * - Actions logged immediately when user interacts
- * - Actions compared against server timestamp during reconciliation
+ * - Actions compared against server's last_updated during reconciliation
  * - Old actions (>10 min) automatically cleaned up
+ * 
+ * Storage Keys:
+ * - engagement_action_log: Timestamped action array
+ * - liked_articles: Permanent like state set
+ * 
+ * Functions:
+ * - logAction(slug, type): Record user action
+ * - getPendingActions(slug, serverLastUpdated): Get unreconciled actions
+ * - reconcileCounts(slug, serverCounts, serverLastUpdated): Calculate display counts
+ * - cleanupOldActions(): Remove expired actions
+ * - getLikedArticles(): Get liked article set
+ * - isArticleLiked(slug): Check like state
+ * - addLikedArticle(slug): Add to liked set
+ * - removeLikedArticle(slug): Remove from liked set
+ * 
+ * Features:
+ * - Unique action IDs (timestamp + random)
+ * - 10-minute action expiry
+ * - Timestamp-based reconciliation
+ * - Silent error handling
+ * 
+ * Dependencies:
+ * - ./types (ActionType)
+ * 
+ * NOTE: Critical for preventing double-counting in engagement metrics
  */
 
 const ACTION_LOG_KEY = 'engagement_action_log';

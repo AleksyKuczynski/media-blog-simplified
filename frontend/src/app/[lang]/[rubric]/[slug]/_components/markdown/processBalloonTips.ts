@@ -1,4 +1,35 @@
-// src/main/lib/markdown/processBalloonTips.ts
+// app/[lang]/[rubric]/[slug]/_components/markdown/processBalloonTips.ts
+/**
+ * Article Markdown - Balloon Tip Processor
+ * 
+ * Processes data-balloon-tip attributes for client-side rendering.
+ * Transforms data attributes into interactive tooltip elements.
+ * 
+ * HTML Input:
+ * <span data-balloon-tip="tooltip text">trigger text</span>
+ * 
+ * Process:
+ * 1. Find all spans with data-balloon-tip attribute
+ * 2. Extract tooltip text from attribute
+ * 3. Create BalloonTip component wrapper
+ * 4. Preserve original text as trigger
+ * 
+ * Features:
+ * - Data attribute parsing
+ * - HTML entity decoding
+ * - Client-side tooltip generation
+ * 
+ * Dependencies:
+ * - ./markdownTypes (ContentChunk)
+ * - ../content/BalloonTip (tooltip component)
+ * 
+ * NOTE: Used for non-link references in content
+ * (e.g., terms, definitions, side notes)
+ * 
+ * @param chunks - HTML content chunks
+ * @returns {ContentChunk[]} Chunks with balloon tips
+ */
+
 import { ContentChunk } from './markdownTypes';
 
 const balloonContainerStyles = [

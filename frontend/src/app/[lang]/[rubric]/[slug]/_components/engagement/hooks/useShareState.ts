@@ -1,14 +1,41 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/useShareState.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useShareState.ts
 /**
- * Share State Management Hook
+ * Article Engagement - Share State Hook
  * 
- * Manages share count display with timestamp-based reconciliation
- * - Count display: Server count + pending action deltas
- * - No debouncing: Shares are immediate
+ * Manages share count with timestamp-based reconciliation.
+ * 
+ * Architecture:
+ * - Count display: Server count + pending deltas
+ * - No permanent state (shares not tracked per user)
+ * - Immediate API calls (no debounce)
+ * 
+ * Features:
+ * - Optimistic UI updates
+ * - State reconciliation on server count changes
+ * - Fire-and-forget API (no error rollback)
+ * - Refresh trigger for external updates
+ * 
+ * Reconciliation:
+ * - Similar to like state
+ * - Compares action timestamps against server's last_updated
+ * 
+ * Dependencies:
+ * - ../lib/actionLog (reconcileCounts)
+ * 
+ * @param slug - Article slug
+ * @param currentViews - Current server view count (for reconciliation)
+ * @param currentLikes - Current server like count (for reconciliation)
+ * @param currentShares - Current server share count
+ * @param lastUpdated - Server last_updated timestamp
+ * @param refreshTrigger - External trigger for recalculation
+ * 
+ * @returns {UseShareStateReturn} Share state
+ * 
+ * NOTE: No user interaction tracking (shares are fire-and-forget)
  */
 
 import { useState, useEffect } from 'react';
-import { reconcileCounts } from '../api/actionLog';
+import { reconcileCounts } from '../lib/actionLog';
 
 export interface UseShareStateOptions {
   slug: string;

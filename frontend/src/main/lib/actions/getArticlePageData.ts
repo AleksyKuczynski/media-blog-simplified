@@ -55,7 +55,7 @@ export async function getArticlePageData(
   }).format(new Date(article.published_at));
 
   const articleContent = translation.article_body.map((block: any) => block.item.content).join('\n');
-  const processedContent = await processContent(articleContent);
+  const processedContent = await processContent(articleContent, params.lang);
 
   return {
     article: {

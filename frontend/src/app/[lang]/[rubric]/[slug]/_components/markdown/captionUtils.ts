@@ -1,4 +1,25 @@
-// src/main/lib/markdown/captionUtils.ts
+// app/[lang]/[rubric]/[slug]/_components/markdown/captionUtils.ts
+/**
+ * Article Markdown - Caption Utilities
+ * 
+ * Helper functions for extracting and processing captions.
+ * 
+ * Functions:
+ * - extractCaption: Extract caption text from following lines
+ * - processCaption: Clean and format caption text
+ * 
+ * Caption Detection:
+ * - Text immediately following image/table
+ * - Stops at empty line or next block element
+ * - Preserves inline markdown
+ * 
+ * Dependencies:
+ * - ./markdownToHtml (HTML conversion)
+ * 
+ * @param lines - Markdown lines array
+ * @param startIndex - Start position
+ * @returns {string | null} Caption text or null
+ */
 
 export function extractCaption(lines: string[], startIndex: number): { caption: string | null, endIndex: number } {
   if (startIndex >= lines.length) {

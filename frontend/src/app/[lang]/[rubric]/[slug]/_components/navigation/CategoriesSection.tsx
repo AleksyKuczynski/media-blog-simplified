@@ -1,4 +1,23 @@
-// src/app/[lang]/[rubric]/[slug]/_components/navigation/CategoriesSection.tsx
+// app/[lang]/[rubric]/[slug]/_components/navigation/CategoriesSection.tsx
+/**
+ * Article Navigation - Category Tags
+ * 
+ * Server component displaying article categories as horizontal tags.
+ * Enhances topical relevance signals for SEO.
+ * 
+ * Features:
+ * - Horizontal tag layout
+ * - Links to category filter pages
+ * - Conditional rendering (empty state)
+ * 
+ * Dependencies:
+ * - article.styles.ts (NAVIGATION_STYLES.relatedLinks.categories)
+ * - @/main/lib/dictionary (Dictionary, Lang, processTemplate)
+ * 
+ * @param categories - Array of category objects
+ * @param lang - Language code
+ * @param dictionary - Translations
+ */
 
 import Link from 'next/link';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';

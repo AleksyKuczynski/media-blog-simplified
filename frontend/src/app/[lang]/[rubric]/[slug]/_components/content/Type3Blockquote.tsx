@@ -1,4 +1,23 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/Type3Blockquote.tsx
+// app/[lang]/[rubric]/[slug]/_components/content/Type3Blockquote.tsx
+/**
+ * Article Content - Type 3 Blockquote Component
+ * 
+ * Third blockquote variant with unique styling.
+ * Part of four-type system for visual diversity.
+ * 
+ * Visual Style:
+ * - Tertiary accent color
+ * - Alternative background treatment
+ * - Unique border style
+ * - Distinctive spacing
+ * 
+ * Usage: Tertiary quotes, special callouts
+ * 
+ * Dependencies:
+ * - ../article.styles (BLOCKS_STYLES.blockquote.type3)
+ * 
+ * @param content - HTML content string
+ */
 
 import { BLOCKS_STYLES } from "../article.styles";
 

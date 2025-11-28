@@ -1,4 +1,29 @@
-// src/app/[lang]/[rubric]/[slug]/_components/Header.tsx
+// app/[lang]/[rubric]/[slug]/_components/Header.tsx
+/**
+ * Article Page - Header Component
+ * 
+ * Displays article title, hero image, author attribution, and metadata.
+ * Server component with responsive layout (mobile stacked, desktop grid).
+ * 
+ * Features:
+ * - Next.js Image optimization for hero image
+ * - Author links with hover states
+ * - Optional lead paragraph
+ * - Publication date display
+ * 
+ * Dependencies:
+ * - article.styles.ts (LAYOUT_STYLES.header)
+ * - @/main/lib/directus (DIRECTUS_URL, AuthorDetails)
+ * 
+ * @param lang - Language code for author links
+ * @param title - Article title
+ * @param publishedDate - Formatted publication date
+ * @param authors - List of article authors
+ * @param editorialText - Fallback text when no authors
+ * @param imagePath - Optional Directus asset ID
+ * @param lead - Optional lead paragraph
+ */
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/main/lib/directus';

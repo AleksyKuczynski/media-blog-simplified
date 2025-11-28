@@ -1,4 +1,16 @@
-// src/app/[lang]/[rubric]/[slug]/_components/PreviewBanner.tsx
+// app/[lang]/[rubric]/[slug]/_components/PreviewBanner.tsx
+/**
+ * Article Page - Preview Mode Banner
+ * 
+ * Client component that displays a fixed banner when viewing
+ * unpublished articles in preview mode.
+ * 
+ * Positioned at top of viewport, dismissible by user.
+ * Only shown when preview query params are valid.
+ * 
+ * Dependencies: None (self-contained)
+ */
+
 'use client';
 
 export default function PreviewBanner() {

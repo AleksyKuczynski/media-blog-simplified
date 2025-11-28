@@ -1,9 +1,23 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/api.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/lib/api.ts
 /**
- * Engagement API Client
+ * Article Engagement - API Client
  * 
- * Handles communication with engagement endpoints
- * Uses request deduplication to prevent duplicate API calls
+ * Handles communication with Next.js engagement API routes.
+ * Implements request deduplication to prevent duplicate calls.
+ * 
+ * Functions:
+ * - fetchEngagement: GET /api/engagement/[slug]
+ * - updateEngagement: POST /api/engagement/[slug] (like/unlike/share)
+ * 
+ * Features:
+ * - Request deduplication (in-flight request tracking)
+ * - Error handling with fallback values
+ * - no-store cache policy
+ * 
+ * Dependencies:
+ * - ./types (EngagementData, EngagementResponse, etc.)
+ * 
+ * @see /app/api/engagement/[slug]/route.ts (API endpoint)
  */
 
 import type { EngagementData, EngagementResponse, EngagementAction, EngagementError } from './types';

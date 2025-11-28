@@ -1,9 +1,31 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/triggerEngagementFlow.ts
+// app/[lang]/[rubric]/[slug]/_components/engagement/lib/triggerEngagementFlow.ts
 /**
- * Directus Flow Trigger
+ * Article Engagement - Flow Orchestration
  * 
- * Triggers Directus flows for engagement actions (view, like, unlike, share)
- * Fire-and-forget pattern - doesn't wait for completion
+ * Coordinates engagement action workflow with validation.
+ * 
+ * Function:
+ * - triggerEngagementFlow(action, slug, options): Execute action workflow
+ * 
+ * Workflow:
+ * 1. Rate limit check
+ * 2. Duplicate check (for views)
+ * 3. Optimistic UI update
+ * 4. API call
+ * 5. State reconciliation
+ * 6. Error handling
+ * 
+ * Features:
+ * - Pre-flight validation
+ * - Error recovery
+ * - State rollback on failure
+ * 
+ * Dependencies:
+ * - ./checkRateLimit
+ * - ./hasRecentlyViewed
+ * - ./api
+ * 
+ * NOTE: Main orchestration function for engagement actions
  */
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;

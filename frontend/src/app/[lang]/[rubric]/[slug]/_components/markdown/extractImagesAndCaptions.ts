@@ -1,8 +1,30 @@
-// src/main/lib/markdown/extractImagesAndCaptions.ts
+// app/[lang]/[rubric]/[slug]/_components/markdown/extractImagesAndCaptions.ts
+/**
+ * Article Markdown - Image & Caption Extractor
+ * 
+ * Separates images with captions from markdown text.
+ * Handles both inline images and figure blocks.
+ * 
+ * Patterns Recognized:
+ * - ![alt](src) - Inline image
+ * - ![alt](src)\nCaption text - Image with caption
+ * 
+ * Features:
+ * - Caption detection (text following image)
+ * - Multi-line caption support
+ * - Image/text chunk separation
+ * 
+ * Dependencies:
+ * - ./markdownTypes (ContentChunk)
+ * 
+ * @param content - Markdown string
+ * @returns {chunks: ContentChunk[]} Separated image and text chunks
+ */
+
 import { ContentChunk, ImageAttributes } from './markdownTypes';
 import { extractCaption } from './captionUtils';
-import { fetchAssetMetadata } from '../../../../../../main/lib/directus';
-import { parseMarkdownImage } from '../../../../../../main/lib/utils';
+import { parseMarkdownImage } from './parseMarkdownImage';
+import { fetchAssetMetadata } from '@/main/lib/directus';
 
 async function getImageAttributes(markdown: string): Promise<ImageAttributes | undefined> {
   const parsed = parseMarkdownImage(markdown);

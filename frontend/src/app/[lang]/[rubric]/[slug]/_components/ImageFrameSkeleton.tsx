@@ -1,4 +1,33 @@
-// src/app/[lang]/[rubric]/[slug]/_components/ImageFrameSkeleton.tsx
+// app/[lang]/[rubric]/[slug]/_components/content/ImageFrameSkeleton.tsx
+/**
+ * Article Content - Image Frame Loading Skeleton
+ * 
+ * Loading placeholder for ImageFrame component.
+ * Maintains layout during image fetch/processing.
+ * 
+ * Features:
+ * - Aspect ratio preservation
+ * - Pulsing animation
+ * - Caption placeholder
+ * - Smooth transition to loaded state
+ * 
+ * Skeleton Structure:
+ * - Image container with aspect ratio
+ * - Animated gray box
+ * - Optional caption bar
+ * 
+ * Dependencies:
+ * - ../article.styles (MEDIA_STYLES.imageFrame)
+ * 
+ * Usage:
+ * <Suspense fallback={<ImageFrameSkeleton />}>
+ *   <ImageFrame {...props} />
+ * </Suspense>
+ * 
+ * @param aspectRatio - Optional aspect ratio (default: 16/9)
+ * @param showCaption - Show caption placeholder (default: false)
+ */
+
 import { cn } from '@/main/lib/utils/utils';
 import { MEDIA_STYLES } from './article.styles';
 

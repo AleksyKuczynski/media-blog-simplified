@@ -1,4 +1,24 @@
-// src/app/[lang]/[rubric]/[slug]/_components/navigation/AuthorSection.tsx
+// app/[lang]/[rubric]/[slug]/_components/navigation/AuthorSection.tsx
+/**
+ * Article Navigation - Single Author Card
+ * 
+ * Server component for single author display.
+ * Used by AuthorsSection for multiple authors grid.
+ * 
+ * Features:
+ * - Author avatar
+ * - Author name link
+ * - Compact card layout
+ * - E-A-T signal (Expertise, Authority, Trust)
+ * 
+ * SEO: Person schema, rel="author" link
+ * 
+ * Dependencies:
+ * - article.styles.ts (NAVIGATION_STYLES.relatedLinks.author)
+ * - Next.js Image for avatar
+ * 
+ * @param author - Author object with name, slug, avatar
+ */
 
 import Link from 'next/link';
 import Image from 'next/image';

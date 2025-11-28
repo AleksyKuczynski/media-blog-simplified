@@ -1,4 +1,23 @@
-// src/app/[lang]/[rubric]/[slug]/_components/navigation/RubricSection.tsx
+// app/[lang]/[rubric]/[slug]/_components/navigation/RubricSection.tsx
+/**
+ * Article Navigation - Rubric Display
+ * 
+ * Server component showing article rubric with icon and link.
+ * Single rubric per article.
+ * 
+ * Features:
+ * - Rubric icon from Directus
+ * - Link to rubric page
+ * - Compact inline display
+ * 
+ * Dependencies:
+ * - article.styles.ts (NAVIGATION_STYLES.relatedLinks.rubric)
+ * - @/main/lib/directus (DIRECTUS_URL)
+ * - Next.js Image for icon
+ * 
+ * @param rubric - Rubric object with name, slug, icon
+ * @param lang - Language code
+ */
 
 import Link from 'next/link';
 import Image from 'next/image';

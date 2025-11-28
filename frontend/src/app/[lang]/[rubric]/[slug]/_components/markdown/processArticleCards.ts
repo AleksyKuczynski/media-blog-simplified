@@ -1,33 +1,49 @@
-// src/main/lib/markdown/processArticleCards.ts
-
-import { ContentChunk, ArticleCardData } from './markdownTypes';
-import { validateArticleSlug } from '../../../../../../main/lib/utils/validateArticleSlug';
-import { fetchArticleCard } from '../../../../../../main/lib/directus/fetchArticleCard';
-import { DIRECTUS_URL } from '../../../../../../main/lib/directus/directusConstants';
-
+// app/[lang]/[rubric]/[slug]/_components/markdown/processArticleCards.ts
 /**
- * Process markdown chunks to extract article slug placeholders and create article-card chunks
+ * Article Markdown - Article Card Processing
  * 
- * ✅ IMPROVED: Works with markdown-safe delimiters (___ARTICLE_CARD:slug___)
- * This approach is more robust than HTML span extraction
+ * Validates article slug placeholders and creates article-card chunks.
  * 
  * Process:
- * 1. Find all article slug delimiters in markdown
+ * 1. Find article slug delimiters (___ARTICLE_CARD:slug___)
  * 2. Validate slugs (check if articles exist)
  * 3. Fetch article card data for valid slugs
- * 4. Split chunks to insert article-card chunks between markdown sections
+ * 4. Split chunks to insert article-card chunks
  * 5. Remove invalid slug markers silently
+ * 
+ * Features:
+ * - Slug validation (existence check)
+ * - Article data fetching from Directus
+ * - Chunk splitting and insertion
+ * - Caching to avoid duplicate fetches
+ * 
+ * Dependencies:
+ * - ./markdownTypes (ContentChunk, ArticleCardData)
+ * - @/main/lib/utils/validateArticleSlug
+ * - @/main/lib/directus/fetchArticleCard
+ * - @/main/lib/directus/directusConstants (DIRECTUS_URL)
+ * 
+ * @param chunks - Markdown content chunks
+ * @returns {ContentChunk[]} Chunks with article-card insertions
  */
-export async function processArticleCards(chunks: ContentChunk[]): Promise<ContentChunk[]> {
+
+import { validateArticleSlug } from '@/main/lib/utils';
+import { ContentChunk, ArticleCardData } from './markdownTypes';
+import { DIRECTUS_URL, fetchArticleCard } from '@/main/lib/directus';
+import { Lang } from '@/main/lib/dictionary';
+
+export async function processArticleCards(
+  chunks: ContentChunk[],
+  lang: Lang
+): Promise<ContentChunk[]> {
   const processedChunks: ContentChunk[] = [];
-  const lang = 'ru'; // Default language for backward compatibility
   
   // Cache to avoid fetching same article multiple times
   const articleDataCache = new Map<string, ArticleCardData | null>();
   
   for (const chunk of chunks) {
     if (chunk.type === 'markdown' && chunk.content) {
-      // ✅ NEW: Search for markdown-safe delimiter instead of HTML spans
+      // Search for markdown-safe delimiter
       const articleCardRegex = /___ARTICLE_CARD:([a-z0-9\-]+)___/g;
       const matches = [...chunk.content.matchAll(articleCardRegex)];
       

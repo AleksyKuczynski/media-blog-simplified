@@ -1,8 +1,26 @@
-// src/app/[lang]/[rubric]/[slug]/_components/engagement/EngagementIcons.tsx
+// app/[lang]/[rubric]/[slug]/_components/engagement/EngagementIcons.tsx
 /**
- * Engagement Icons
+ * Article Engagement - Icon Components
  * 
- * SVG icons for engagement metrics and social sharing
+ * SVG icon components for engagement metrics.
+ * Optimized for responsive sizing and color theming.
+ * 
+ * Icons:
+ * - EyeIcon (views - static)
+ * - HeartIcon (likes - filled state support)
+ * - ShareIcon (shares)
+ * - Social media icons (Telegram, WhatsApp, Twitter, Facebook, Instagram, VK)
+ * - CopyLinkIcon
+ * 
+ * Features:
+ * - Filled/outline variants
+ * - Responsive sizing via className
+ * - Color inheritance from parent
+ * 
+ * Dependencies: None (pure SVG)
+ * 
+ * @param className - Tailwind size/color classes
+ * @param filled - Enable filled state (HeartIcon only)
  */
 
 export interface IconProps {
@@ -10,9 +28,7 @@ export interface IconProps {
   className?: string;
 }
 
-/**
- * Eye icon for view count
- */
+// Eye icon for view count
 export function EyeIcon({ className = '' }: IconProps) {
   return (
     <svg
@@ -38,9 +54,7 @@ export function EyeIcon({ className = '' }: IconProps) {
   );
 }
 
-/**
- * Heart icon for like button
- */
+// Heart icon for like button
 export function HeartIcon({ filled = false, className = '' }: IconProps) {
   return (
     <svg
@@ -60,9 +74,7 @@ export function HeartIcon({ filled = false, className = '' }: IconProps) {
   );
 }
 
-/**
- * Share icon for share button
- */
+// Share icon for share button
 export function ShareIcon({ className = '' }: IconProps) {
   return (
     <svg
@@ -82,9 +94,7 @@ export function ShareIcon({ className = '' }: IconProps) {
   );
 }
 
-/**
- * Spinner icon for loading states
- */
+// Spinner icon for loading states
 export function SpinnerIcon({ className = '' }: IconProps) {
   return (
     <svg
@@ -110,9 +120,7 @@ export function SpinnerIcon({ className = '' }: IconProps) {
   );
 }
 
-/**
- * Telegram icon for share popup
- */
+// Telegram icon for share popup
 export function TelegramIcon({ className = '' }: IconProps) {
   return (
     <svg
@@ -126,9 +134,7 @@ export function TelegramIcon({ className = '' }: IconProps) {
   );
 }
 
-/**
- * WhatsApp icon for share popup
- */
+// WhatsApp icon for share popup
 export function WhatsAppIcon({ className = '' }: IconProps) {
   return (
     <svg
@@ -142,9 +148,7 @@ export function WhatsAppIcon({ className = '' }: IconProps) {
   );
 }
 
-/**
- * Twitter (X) icon for share popup
- */
+// Twitter (X) icon for share popup
 export function TwitterIcon({ className = '' }: IconProps) {
   return (
     <svg
@@ -158,9 +162,7 @@ export function TwitterIcon({ className = '' }: IconProps) {
   );
 }
 
-/**
- * Facebook icon for share popup
- */
+// Facebook icon for share popup
 export function FacebookIcon({ className = '' }: IconProps) {
   return (
     <svg
@@ -174,9 +176,7 @@ export function FacebookIcon({ className = '' }: IconProps) {
   );
 }
 
-/**
- * Instagram icon for share popup
- */
+// Instagram icon for share popup
 export function InstagramIcon({ className = '' }: IconProps) {
   return (
     <svg
@@ -190,9 +190,7 @@ export function InstagramIcon({ className = '' }: IconProps) {
   );
 }
 
-/**
- * VK (VKontakte) icon for share popup
- */
+// VK (VKontakte) icon for share popup
 export function VKIcon({ className = '' }: IconProps) {
   return (
     <svg
@@ -206,9 +204,7 @@ export function VKIcon({ className = '' }: IconProps) {
   );
 }
 
-/**
- * Copy Link icon for share popup
- */
+// Copy Link icon for share popup
 export function CopyLinkIcon({ className = '' }: IconProps) {
   return (
     <svg

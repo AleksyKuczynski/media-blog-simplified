@@ -7,7 +7,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { updateEngagement } from '../api/api';
+import { updateEngagement } from '../lib/api';
 
 export interface UseViewTrackingOptions {
   slug: string;

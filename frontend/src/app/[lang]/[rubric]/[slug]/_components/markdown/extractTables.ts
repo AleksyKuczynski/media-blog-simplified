@@ -1,4 +1,35 @@
-// src/main/lib/markdown/extractTables.ts
+// app/[lang]/[rubric]/[slug]/_components/markdown/extractTables.ts
+/**
+ * Article Markdown - Table Extractor
+ * 
+ * Extracts and parses markdown tables with alignment support.
+ * 
+ * Markdown Table Format:
+ * | Header 1 | Header 2 |
+ * |:---------|:--------:|  (alignment: left, center)
+ * | Cell 1   | Cell 2   |
+ * 
+ * Features:
+ * - Header/body separation
+ * - Column alignment detection (left, center, right)
+ * - Inline markdown in cells (bold, italic, links)
+ * - HTML entity escaping
+ * 
+ * Alignment Syntax:
+ * - :-----  = left
+ * - :-----: = center
+ * - -----:  = right
+ * - -----   = none
+ * 
+ * Dependencies:
+ * - ./markdownTypes (ContentChunk, TableData)
+ * - ./captionUtils (extractCaption)
+ * - ./markdownToHtml (convertSimpleMarkdownToHtml)
+ * 
+ * @param content - Markdown string
+ * @returns {chunks: ContentChunk[]} Table and text chunks
+ */
+
 import { ContentChunk, TableData } from './markdownTypes';
 import { extractCaption } from './captionUtils';
 import { convertSimpleMarkdownToHtml } from './markdownToHtml';

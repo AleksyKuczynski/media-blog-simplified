@@ -1,5 +1,5 @@
 import { fetchEngagementData } from '@/main/lib/directus';
-import { checkRateLimit, hasRecentlyViewed, triggerEngagementFlow } from '@/app/[lang]/[rubric]/[slug]/_components/engagement/api';
+import { checkRateLimit, hasRecentlyViewed, triggerEngagementFlow } from '@/app/[lang]/[rubric]/[slug]/_components/engagement/lib';
 import { getClientIP, validateArticleSlug } from '@/main/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
