@@ -2,12 +2,12 @@
 import { useReducer, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useOutsideClick } from '@/main/lib/hooks';
-import { searchReducer, getInitialState } from '../desktop/searchReducer';
-import { handleSearchScenario } from '../desktop/searchScenarios';
-import { createSearchUrl } from '@/main/lib/utils';
+import { searchReducer, getInitialState } from './searchReducer';
+import { handleSearchScenario } from './searchScenarios';
 import { useSearch } from './useSearch';
 import { SearchUIState } from '../types';
 import { Lang } from '@/main/lib/dictionary';
+import { createSearchUrl } from '../utils/createSearchUrl';
 
 interface UseSearchLogicProps {
   mode: 'standard' | 'expandable';

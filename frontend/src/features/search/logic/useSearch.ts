@@ -2,10 +2,10 @@
 import { useState, useCallback } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { SearchResult } from '@/main/lib/directus'
-import { getSearchSuggestions } from '@/main/lib/actions'
-import { createSearchUrl } from '@/main/lib/utils'
 import { Lang } from '@/main/lib/dictionary'
 import { SearchStatus } from '../types'
+import { createSearchUrl } from '../utils/createSearchUrl'
+import { getSearchSuggestions } from '../actions/getSearchSuggestions'
 
 export function useSearch() {
   const [searchQuery, setSearchQuery] = useState('')

@@ -5,9 +5,9 @@
 'use client'
 
 import React, { useEffect } from 'react';
-import { SearchIcon } from '../../../main/components/Interface';
-import SearchInput from '../common/SearchInput';
-import { useSearchLogic } from '../hooks/useSearchLogic';
+import { SearchIcon } from '../../main/components/Interface';
+import SearchInput from './ui/SearchInput';
+import { useSearchLogic } from './logic/useSearchLogic';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { useRouter } from 'next/navigation';
 

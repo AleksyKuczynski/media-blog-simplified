@@ -9,7 +9,6 @@ export function executeExpandSearch(
   inputRef: React.RefObject<HTMLInputElement | null>
 ) {
 
-  console.log('executeExpandSearch called with:', { mode, inputRef });
   if (mode === 'standard') {
     dispatch({ type: 'START_DROPDOWN_EXPANSION' });
     dispatch({ type: 'SET_MESSAGE' });

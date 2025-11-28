@@ -3,8 +3,8 @@
 export { SearchIcon, CloseIcon, NavButton } from '../../main/components/Interface';
 
 // Internal exports
-export { default as ExpandableSearch } from './desktop/ExpandableSearch';
-export { default as MobileSearchContent } from './mobile/MobileSearchContent';
+export { default as ExpandableSearch } from './ExpandableSearch';
+export { default as MobileSearchContent } from './MobileSearchContent';
 export { default as SearchResultsHeader } from './page/SearchResultsHeader';
 export { default as SearchBarForm } from './page/SearchBarForm';  // UPDATED
 export { default as SearchResults } from './page/SearchResults';  // NEW

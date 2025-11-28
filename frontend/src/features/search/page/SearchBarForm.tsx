@@ -2,9 +2,9 @@
 'use client'
 
 import { SearchIcon } from '../../../main/components/Interface';
-import SearchDropdown from '../common/SearchDropdown';
-import SearchInput from '../common/SearchInput';
-import { useSearchLogic } from '../hooks/useSearchLogic';
+import SearchDropdown from '../ui/SearchDropdown';
+import SearchInput from '../ui/SearchInput';
+import { useSearchLogic } from '../logic/useSearchLogic';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
 
 interface SearchBarFormProps {
@@ -17,7 +17,6 @@ interface SearchBarFormProps {
 export default function SearchBarForm({
   dictionary,
   lang,
-  currentQuery = '',
   className = ''
 }: SearchBarFormProps) {
   const {

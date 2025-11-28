@@ -3,10 +3,10 @@
 'use client'
 
 import React from 'react';
-import { SearchIcon, NavButton, CloseIcon } from '../../../main/components/Interface';
-import SearchInput from '../common/SearchInput';
-import SearchDropdown from '../common/SearchDropdown';
-import { useSearchLogic } from '../hooks/useSearchLogic';
+import { SearchIcon, NavButton, CloseIcon } from '../../main/components/Interface';
+import SearchInput from './ui/SearchInput';
+import SearchDropdown from './ui/SearchDropdown';
+import { useSearchLogic } from './logic/useSearchLogic';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
 
 interface ExpandableSearchProps {
