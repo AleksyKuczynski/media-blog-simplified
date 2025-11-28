@@ -42,6 +42,7 @@ export const dictionaryEN: Dictionary = {
       articles: 'Articles',
       rubrics: 'Rubrics',
       authors: 'Authors',
+      categories: 'Categories',
       search: 'Search',
       authorArticles: 'Author Articles',
       categoryArticles: 'Category Articles',

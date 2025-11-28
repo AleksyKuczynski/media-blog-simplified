@@ -1,11 +1,12 @@
 // src/main/components/Search/common/SearchDropdownItem.tsx
+import { Dictionary } from '@/main/lib/dictionary';
 import { SearchResult } from '@/main/lib/directus/directusInterfaces';
 
 interface SearchDropdownItemProps {
   suggestion: SearchResult;
   isHighlighted: boolean;
   onSelect: () => void;
-  dictionary: any; // Add dictionary prop
+  dictionary: Dictionary;
 }
 
 export default function SearchDropdownItem({
@@ -33,8 +34,8 @@ export default function SearchDropdownItem({
       {/* Type badge */}
       <div className="text-xs font-medium uppercase tracking-wide opacity-70 mb-1">
         {suggestion.type === 'author' && dictionary.navigation.labels.authors}
-        {suggestion.type === 'category' && dictionary.sections.labels.categories}
-        {suggestion.type === 'article' && dictionary.sections.labels.articles}
+        {suggestion.type === 'category' && dictionary.navigation.labels.categories}
+        {suggestion.type === 'article' && dictionary.navigation.labels.articles}
       </div>
 
       {/* Title */}

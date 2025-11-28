@@ -53,6 +53,7 @@ export default function SearchDropdown({
               suggestion={suggestion}
               isHighlighted={index === state.selectedIndex}
               onSelect={() => onItemSelect(index)}
+              dictionary={dict}
             />
           ))}
         </ul>

@@ -38,6 +38,7 @@ export interface NavigationLabels {
   readonly articles: string;
   readonly rubrics: string;
   readonly authors: string;
+  readonly categories: string;
   readonly search: string;
   readonly authorArticles: string;
   readonly categoryArticles: string;

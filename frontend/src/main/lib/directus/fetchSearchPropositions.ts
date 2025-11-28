@@ -8,78 +8,58 @@ export async function fetchSearchPropositions(search: string, lang: Lang): Promi
   try {
     const results: SearchResult[] = [];
 
-    // 1. Search for authors
-    const authorsFilter = {
-      translations: {
-        _filter: {
-          languages_code: { _eq: lang },
-          name: { _icontains: search }
-        }
-      }
-    };
-
-    const authorsUrl = `${DIRECTUS_URL}/items/authors?fields=slug,translations.name,translations.bio&filter=${encodeURIComponent(JSON.stringify(authorsFilter))}&limit=2`;
-    const authorsResponse = await fetch(authorsUrl, { cache: 'no-store' });
+    // 1. Search for authors via translations table
+    const authorTranslationsUrl = `${DIRECTUS_URL}/items/authors_translations?filter[languages_code][_eq]=${lang}&filter[name][_icontains]=${encodeURIComponent(search)}&fields=authors_slug,name,bio&limit=3`;
+    const authorTranslationsResponse = await fetch(authorTranslationsUrl, { cache: 'no-store' });
     
-    if (authorsResponse.ok) {
-      const authorsData = await authorsResponse.json();
+    if (authorTranslationsResponse.ok) {
+      const authorTranslationsData = await authorTranslationsResponse.json();
       
-      for (const author of authorsData.data) {
-        const translation = author.translations?.[0];
-        if (translation) {
-          // Count articles by this author
-          const countUrl = `${DIRECTUS_URL}/items/articles_authors?filter[authors_slug][_eq]=${author.slug}&aggregate[count]=*`;
-          const countResponse = await fetch(countUrl, { cache: 'no-store' });
-          const countData = await countResponse.json();
-          const articleCount = countData.data?.[0]?.count || 0;
+      for (const translation of authorTranslationsData.data) {
+        const authorSlug = translation.authors_slug;
+        
+        // Count articles by this author
+        const countUrl = `${DIRECTUS_URL}/items/articles_authors?filter[authors_slug][_eq]=${authorSlug}&aggregate[count]=*`;
+        const countResponse = await fetch(countUrl, { cache: 'no-store' });
+        const countData = await countResponse.json();
+        const articleCount = countData.data?.[0]?.count || 0;
 
-          results.push({
-            type: 'author',
-            slug: author.slug,
-            name: translation.name,
-            bio: translation.bio,
-            articleCount
-          } as AuthorSearchResult);
-        }
+        results.push({
+          type: 'author',
+          slug: authorSlug,
+          name: translation.name,
+          bio: translation.bio,
+          articleCount
+        } as AuthorSearchResult);
       }
     }
 
-    // 2. Search for categories
-    const categoriesFilter = {
-      translations: {
-        _filter: {
-          languages_code: { _eq: lang },
-          name: { _icontains: search }
-        }
-      }
-    };
-
-    const categoriesUrl = `${DIRECTUS_URL}/items/categories?fields=slug,translations.name&filter=${encodeURIComponent(JSON.stringify(categoriesFilter))}&limit=2`;
-    const categoriesResponse = await fetch(categoriesUrl, { cache: 'no-store' });
+    // 2. Search for categories via translations table
+    const categoryTranslationsUrl = `${DIRECTUS_URL}/items/categories_translations?filter[languages_code][_eq]=${lang}&filter[name][_icontains]=${encodeURIComponent(search)}&fields=categories_slug,name&limit=3`;
+    const categoryTranslationsResponse = await fetch(categoryTranslationsUrl, { cache: 'no-store' });
     
-    if (categoriesResponse.ok) {
-      const categoriesData = await categoriesResponse.json();
+    if (categoryTranslationsResponse.ok) {
+      const categoryTranslationsData = await categoryTranslationsResponse.json();
       
-      for (const category of categoriesData.data) {
-        const translation = category.translations?.[0];
-        if (translation) {
-          // Count articles in this category
-          const countUrl = `${DIRECTUS_URL}/items/articles_categories?filter[categories_slug][_eq]=${category.slug}&aggregate[count]=*`;
-          const countResponse = await fetch(countUrl, { cache: 'no-store' });
-          const countData = await countResponse.json();
-          const articleCount = countData.data?.[0]?.count || 0;
+      for (const translation of categoryTranslationsData.data) {
+        const categorySlug = translation.categories_slug;
+        
+        // Count articles in this category
+        const countUrl = `${DIRECTUS_URL}/items/articles_categories?filter[categories_slug][_eq]=${categorySlug}&aggregate[count]=*`;
+        const countResponse = await fetch(countUrl, { cache: 'no-store' });
+        const countData = await countResponse.json();
+        const articleCount = countData.data?.[0]?.count || 0;
 
-          results.push({
-            type: 'category',
-            slug: category.slug,
-            name: translation.name,
-            articleCount
-          } as CategorySearchResult);
-        }
+        results.push({
+          type: 'category',
+          slug: categorySlug,
+          name: translation.name,
+          articleCount
+        } as CategorySearchResult);
       }
     }
 
-    // 3. Search for articles (existing logic with enhanced filter)
+    // 3. Search for articles with all SEO fields
     const articlesFilter = {
       _and: [
         {
@@ -108,7 +88,8 @@ export async function fetchSearchPropositions(search: string, lang: Lang): Promi
       'translations.description'
     ].join(',');
 
-    const articlesUrl = `${DIRECTUS_URL}/items/articles?fields=${articlesFields}&filter=${encodeURIComponent(JSON.stringify(articlesFilter))}&limit=${MAX_SEARCH_PROPOSITIONS - results.length}`;
+    const remainingLimit = Math.max(1, MAX_SEARCH_PROPOSITIONS - results.length);
+    const articlesUrl = `${DIRECTUS_URL}/items/articles?fields=${articlesFields}&filter=${encodeURIComponent(JSON.stringify(articlesFilter))}&limit=${remainingLimit}`;
     const articlesResponse = await fetch(articlesUrl, { cache: 'no-store' });
     
     if (articlesResponse.ok) {

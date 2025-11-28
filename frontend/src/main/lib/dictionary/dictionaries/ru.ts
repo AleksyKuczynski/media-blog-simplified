@@ -44,6 +44,7 @@ const dictionaryRU: Dictionary = {
       articles: 'Статьи',
       rubrics: 'Рубрики',
       authors: 'Авторы',
+      categories: 'Категории',
       search: 'Поиск',
       authorArticles: 'Статьи автора',
       categoryArticles: 'Статьи в категории',
