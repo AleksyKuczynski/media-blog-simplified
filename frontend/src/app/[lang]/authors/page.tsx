@@ -2,8 +2,8 @@
 import { Suspense } from 'react';
 import { fetchAllAuthors, fetchRubricBasics } from '@/main/lib/directus';
 import AuthorCard from '@/main/components/Main/AuthorCard';
-import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
-import Section from '@/main/components/Main/Section';
+import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
+import Section from '@/features/layout/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 import { AuthorCardSkeleton } from '@/main/components/Main/AuthorCardSkeleton';
 import { getDictionary, Lang } from '@/main/lib/dictionary';

@@ -3,9 +3,9 @@
 
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import ArticleList from '@/main/components/Main/ArticleList';
+import ArticleList from '@/features/article-display/ArticleList';
 import Pagination from '@/main/components/Main/Pagination';
-import Section from '@/main/components/Main/Section';
+import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs } from '@/main/lib/directus';
 import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';

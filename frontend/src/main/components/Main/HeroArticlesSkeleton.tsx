@@ -1,7 +1,7 @@
 // src/main/components/Main/HeroArticlesSkeleton.tsx
 
 import { HERO_ARTICLES_SKELETON_STYLES } from './HeroArticles';
-import { ArticleCardSkeletonVariant } from '../ArticleCards/ArticleCardVariant';
+import { ArticleCardSkeletonVariant } from '../../../features/article-display/ArticleCardVariant';
 
 interface HeroArticlesSkeletonProps {
   latestCount?: number;

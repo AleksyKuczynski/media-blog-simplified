@@ -1,10 +1,10 @@
 // frontend/src/main/components/Analytics/ConsentBanner.tsx
 'use client';
 
-import { useConsent } from '@/main/lib/analytics/useConsent';
 import Link from 'next/link';
 import { useState } from 'react';
 import { CustomButton } from '@/main/components/Interface/CustomButton';
+import { useConsent } from './lib/useConsent';
 
 interface ConsentBannerProps {
   dictionary: {

@@ -1,7 +1,7 @@
 // src/app/[lang]/privacy-policy/page.tsx
 import { Metadata } from 'next';
 import Link from 'next/link';
-import Section from '@/main/components/Main/Section';
+import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';

@@ -3,7 +3,7 @@
 
 import { headers } from 'next/headers';
 import { Lang } from '@/main/lib/dictionary';
-import { BreadcrumbContext, SmartBreadcrumbItem } from '@/main/components/Navigation/Breadcrumbs/types';
+import { BreadcrumbContext, SmartBreadcrumbItem } from '@/features/navigation/Breadcrumbs/types';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import Dictionary from '../dictionary/types';
 

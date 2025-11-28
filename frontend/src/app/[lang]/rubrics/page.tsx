@@ -3,8 +3,8 @@
 import { Metadata } from 'next';
 import { fetchAllRubrics } from '@/main/lib/directus/fetchAllRubrics';
 import { RubricCard } from '@/main/components/Main/RubricCard';
-import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
-import Section from '@/main/components/Main/Section';
+import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
+import Section from '@/features/layout/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';

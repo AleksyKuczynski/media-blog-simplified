@@ -2,10 +2,10 @@
 import React, { Suspense } from 'react'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Footer from '@/main/components/Footer/Footer'
-import Navigation from '@/main/components/Navigation/Navigation'
+import Navigation from '@/features/navigation/Navigation'
 import { getDictionary, type Lang } from '@/main/lib/dictionary'
 import { SUPPORTED_LANGUAGES } from '@/main/lib/constants/constants'
+import Footer from '@/features/layout/Footer'
 
 interface LayoutProps {
   children: React.ReactNode

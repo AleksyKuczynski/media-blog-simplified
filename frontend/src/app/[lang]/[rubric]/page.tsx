@@ -3,16 +3,16 @@
 
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import ArticleList from '@/main/components/Main/ArticleList';
+import ArticleList from '@/features/article-display/ArticleList';
 import Pagination from '@/main/components/Main/Pagination';
-import Section from '@/main/components/Main/Section';
+import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics } from '@/main/lib/directus';
 import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
 import { RubricPageSchema } from '@/main/components/SEO/schemas/RubricPageSchema';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
-import Breadcrumbs from '@/main/components/Navigation/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 
 export const revalidate = 300;
 

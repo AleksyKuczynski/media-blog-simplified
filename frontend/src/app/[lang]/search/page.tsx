@@ -1,10 +1,10 @@
 // src/app/[lang]/search/page.tsx
 import { Metadata } from 'next';
-import SearchTips from '@/main/components/Search/page/SearchTips';
-import SearchBarForm from '@/main/components/Search/page/SearchBarForm';
-import SearchResults from '@/main/components/Search/page/SearchResults';
+import SearchTips from '@/features/search/page/SearchTips';
+import SearchBarForm from '@/features/search/page/SearchBarForm';
+import SearchResults from '@/features/search/page/SearchResults';
 import RubricsSection from '@/main/components/Main/RubricsSection';
-import Section from '@/main/components/Main/Section';
+import Section from '@/features/layout/Section';
 import { RelatedArticlesCarousel } from '@/main/components/Main/RelatedArticles';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs, fetchAllRubrics, fetchArticleCard, DIRECTUS_URL } from '@/main/lib/directus';

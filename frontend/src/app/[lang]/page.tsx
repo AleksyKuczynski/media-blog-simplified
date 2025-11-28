@@ -7,7 +7,7 @@ import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
 import HeroArticles from '@/main/components/Main/HeroArticles';
 import { RubricCard } from '@/main/components/Main/RubricCard';
-import Section from '@/main/components/Main/Section';
+import Section from '@/features/layout/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
 
 export const dynamic = 'force-dynamic';

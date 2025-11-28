@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { getDictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
 import { createErrorHandler } from '@/main/lib/errors/errorUtils';
-import Section from '@/main/components/Main/Section';
+import Section from '@/features/layout/Section';
 import Link from 'next/link';
 
 interface ErrorProps {

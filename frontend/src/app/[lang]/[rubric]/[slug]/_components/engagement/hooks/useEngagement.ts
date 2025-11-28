@@ -45,8 +45,8 @@ import { logAction, reconcileCounts } from '../lib/actionLog';
 import type { EngagementData, SharePlatform } from '../lib';
 import { useViewTracking } from './useViewTracking';
 import { useShareState } from './useShareState';
-import { trackGAEvent } from '@/main/lib/analytics/google';
-import { trackYandexEvent } from '@/main/lib/analytics/yandex';
+import { trackGAEvent } from '@/features/analytics/lib/google';
+import { trackYandexEvent } from '@/features/analytics/lib/yandex';
 import { dictionary } from '@/main/lib/dictionary';
 
 export interface UseEngagementOptions {
