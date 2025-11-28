@@ -1,6 +1,6 @@
 // src/main/components/Search/searchScenarios.ts
 
-import { ANIMATION_DURATION } from '../../../main/components/Interface/constants';
+import { ANIMATION_DURATION } from '../../ui/constants';
 import { ComponentMode, SearchScenario, SearchStepAction } from '../types';
 
 export function executeExpandSearch(

@@ -1,6 +1,6 @@
 import { Dictionary } from '@/main/lib/dictionary';
-import StandardError from '@/main/components/errors/StandardError';
-import { ContentType } from '@/main/lib/errors/errorUtils';
+import StandardError from './StandardError';
+import { ContentType } from './lib/errorUtils';
 
 interface ErrorFallbackProps {
   dictionary: Dictionary;

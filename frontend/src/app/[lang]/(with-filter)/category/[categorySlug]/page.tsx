@@ -5,14 +5,13 @@ import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import ArticleList from '@/features/article-display/ArticleList';
-import Pagination from '@/main/components/Main/Pagination';
+import Pagination from '@/features/ui/Pagination';
 import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics } from '@/main/lib/directus';
 import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
-import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
+import { CollectionPageSchema } from '@/features/seo/schemas/CollectionPageSchema';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
-import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 
 export const revalidate = 300;

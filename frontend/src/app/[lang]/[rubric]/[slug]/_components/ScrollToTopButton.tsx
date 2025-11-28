@@ -17,8 +17,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronUpIcon } from '@/main/components/Interface/Icons';
-import { FloatingButton } from '@/main/components/Interface/FloatingButton';
+import { ChevronUpIcon } from '@/features/primitives/Icons';
+import { FloatingButton } from '@/features/primitives/FloatingButton';
 import { WIDGETS_STYLES } from './article.styles';
 
 const styles = WIDGETS_STYLES.scrollToTop;

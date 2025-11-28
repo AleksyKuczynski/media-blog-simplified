@@ -4,10 +4,10 @@
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { NavButton } from '../../../main/components/Interface';
-import { ChevronDownIcon } from '../../../main/components/Interface/Icons';
-import type { DropdownItemType } from '../../../main/components/Interface/Dropdown/types';
-import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../../../main/components/Interface/Dropdown';
+import { ChevronDownIcon } from '../../primitives/Icons';
+import type { DropdownItemType } from '../../ui/Dropdown/types';
+import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../../ui/Dropdown';
+import { NavButton } from '@/features/primitives/NavButton';
 
 interface SortingControlProps {
   readonly dictionary: Dictionary;

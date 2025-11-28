@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
-import ArticleCard from '../../../features/article-display/ArticleCard';
+import ArticleCard from './ArticleCard';
 import { HeroArticlesSkeleton } from './HeroArticlesSkeleton';
 
 interface HeroArticlesProps {

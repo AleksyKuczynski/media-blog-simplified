@@ -4,9 +4,9 @@
 import { useEffect } from 'react';
 import { getDictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
-import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import Section from '@/features/layout/Section';
 import Link from 'next/link';
+import { createErrorHandler } from '@/features/errors/lib/errorUtils';
 
 interface ErrorProps {
   error: Error & { digest?: string };

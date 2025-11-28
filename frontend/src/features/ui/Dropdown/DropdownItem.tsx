@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { DropdownItemProps } from './types';
-import { CheckIcon } from '../Icons';
+import { CheckIcon } from '../../primitives/Icons';
 import { useDropdownContext } from './DropdownContext';
 
 export default function DropdownItem({

@@ -1,11 +1,11 @@
 // src/main/components/Search/page/SearchBarForm.tsx
 'use client'
 
-import { SearchIcon } from '../../../main/components/Interface';
 import SearchDropdown from '../ui/SearchDropdown';
 import SearchInput from '../ui/SearchInput';
 import { useSearchLogic } from '../logic/useSearchLogic';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
+import { SearchIcon } from '@/features/primitives/Icons';
 
 interface SearchBarFormProps {
   readonly dictionary: Dictionary;

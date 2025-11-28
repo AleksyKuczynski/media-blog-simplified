@@ -33,11 +33,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useEngagement } from '@/main/lib/hooks';
 import { EngagementMetric } from './EngagementMetric';
 import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
 import { SharePopup } from './SharePopup';
 import { EngagementData } from './lib';
+import { useEngagement } from './hooks/useEngagement';
 
 export interface ArticleEngagementProps {
   slug: string;

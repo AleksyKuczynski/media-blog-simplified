@@ -2,9 +2,9 @@
 import { cookies, headers } from 'next/headers';
 import { getDictionary, type Lang } from '@/main/lib/dictionary';
 import { DEFAULT_LANG, SUPPORTED_LANGUAGES } from '@/main/lib/constants/constants';
-import StandardError from '@/main/components/errors/StandardError';
-import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import { Metadata } from 'next';
+import StandardError from '@/features/errors/StandardError';
+import { createErrorHandler } from '@/features/errors/lib/errorUtils';
 
 /**
  * Detect language from request context

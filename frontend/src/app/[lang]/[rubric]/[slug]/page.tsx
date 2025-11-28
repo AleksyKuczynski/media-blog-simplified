@@ -8,14 +8,12 @@ import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { processContent } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/processContent';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
-import StandardError from '@/main/components/errors/StandardError';
-import { RelatedArticles } from '@/main/components/Main/RelatedArticles';
-import generateArticleMetadata from '@/main/components/SEO/metadata/ArticleMetadata';
-import ArticleSchema from '@/main/components/SEO/schemas/ArticleSchema';
-import QuickNavigationSchema from '@/main/components/SEO/schemas/QuickNavigationSchema';
-import AuthorsSectionSchema from '@/main/components/SEO/schemas/AuthorsSectionSchema';
-import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
-import Collapsible from '@/main/components/Interface/Collapsible';
+import { RelatedArticles } from '@/features/article-display/RelatedArticles';
+import generateArticleMetadata from '@/features/seo/metadata/ArticleMetadata';
+import ArticleSchema from '@/features/seo/schemas/ArticleSchema';
+import QuickNavigationSchema from '@/features/seo/schemas/QuickNavigationSchema';
+import AuthorsSectionSchema from '@/features/seo/schemas/AuthorsSectionSchema';
+import Collapsible from '@/features/ui/Collapsible';
 import { Header } from './_components/Header';
 import ArticleEngagement from './_components/engagement/ArticleEngagement';
 import { TableOfContents } from './_components/navigation/TableOfContents';
@@ -26,6 +24,8 @@ import RubricSection from './_components/navigation/RubricSection';
 import AuthorsSection from './_components/navigation/AuthorsSection';
 import { ScrollToTopButton } from './_components/ScrollToTopButton';
 import PreviewBanner from './_components/PreviewBanner';
+import StandardError from '@/features/errors/StandardError';
+import { safeGenerateMetadata } from '@/features/errors/lib/metadataErrorHandler';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -312,7 +312,6 @@ export default async function ArticlePage({
     );
 
   } catch (error) {
-    console.error('Error in ArticlePage:', error);
     return (
       <StandardError
         dictionary={dictionary}

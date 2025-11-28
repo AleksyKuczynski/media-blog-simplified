@@ -2,7 +2,7 @@
 'use client'
 
 import { useState } from 'react';
-import { ChevronDownIcon } from './Icons';
+import { ChevronDownIcon } from '../primitives/Icons';
 
 interface CollapsibleProps {
   title: string;

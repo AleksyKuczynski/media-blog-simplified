@@ -1,8 +1,8 @@
 // src/main/components/Search/page/SearchTips.tsx
 'use client'
 
-import Collapsible from '../../../main/components/Interface/Collapsible';
-import { SearchIcon } from '../../../main/components/Interface';
+import { SearchIcon } from '@/features/primitives/Icons';
+import Collapsible from '../../ui/Collapsible';
 import { Dictionary } from '@/main/lib/dictionary';
 
 interface SearchTipsProps {

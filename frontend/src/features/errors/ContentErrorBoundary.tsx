@@ -4,8 +4,8 @@
 import React from 'react';
 import { getDictionary } from '@/main/lib/dictionary';
 import { DEFAULT_LANG } from '@/main/lib/constants/constants';
-import StandardError from '@/main/components/errors/StandardError';
-import { ContentType } from '@/main/lib/errors/errorUtils';
+import StandardError from './StandardError';
+import { ContentType } from './lib/errorUtils';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;

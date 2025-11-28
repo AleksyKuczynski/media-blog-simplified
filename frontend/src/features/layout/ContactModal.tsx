@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Modal } from '@/main/components/Interface/Modal/Modal';
+import { Modal } from '@/features/ui/Modal/Modal';
 import type { Dictionary } from '@/main/lib/dictionary';
 
 interface ContactModalProps {

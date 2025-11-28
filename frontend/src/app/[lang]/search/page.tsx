@@ -5,15 +5,15 @@ import SearchBarForm from '@/features/search/page/SearchBarForm';
 import SearchResults from '@/features/search/page/SearchResults';
 import RubricsSection from '@/main/components/Main/RubricsSection';
 import Section from '@/features/layout/Section';
-import { RelatedArticlesCarousel } from '@/main/components/Main/RelatedArticles';
+import { RelatedArticlesCarousel } from '@/features/article-display/RelatedArticles';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs, fetchAllRubrics, fetchArticleCard, DIRECTUS_URL } from '@/main/lib/directus';
 import { ArticleSlugInfo, Rubric } from '@/main/lib/directus/directusInterfaces';
 import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
-import { SearchSchema } from '@/main/components/SEO/schemas/SearchSchema';
-import { generateSearchMetadataSimple } from '@/main/components/SEO/metadata/SearchMetadata';
-import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
-import { CarouselArticle } from '@/main/components/Main/RelatedArticles/RelatedArticlesCarousel';
+import { SearchSchema } from '@/features/seo/schemas/SearchSchema';
+import { generateSearchMetadataSimple } from '@/features/seo/metadata/SearchMetadata';
+import { CarouselArticle } from '@/features/article-display/RelatedArticles/RelatedArticlesCarousel';
+import { safeGenerateMetadata } from '@/features/errors/lib/metadataErrorHandler';
 
 export const revalidate = 0;
 

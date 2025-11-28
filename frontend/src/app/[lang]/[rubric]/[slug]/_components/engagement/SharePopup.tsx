@@ -33,7 +33,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Modal } from '@/main/components/Interface/Modal/Modal';
+import { Modal } from '@/features/ui/Modal/Modal';
 import { dictionary } from '@/main/lib/dictionary';
 import {
   TelegramIcon,

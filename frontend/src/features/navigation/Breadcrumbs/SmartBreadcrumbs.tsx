@@ -2,7 +2,7 @@
 // Ensures all text comes from dictionary and all paths use correct lang parameter
 
 import Link from 'next/link';
-import { ChevronRightIcon } from '@/main/components/Interface/Icons';
+import { ChevronRightIcon } from '@/features/primitives/Icons';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { detectBreadcrumbContext, generateContextualBreadcrumbs } from '@/main/lib/utils/breadcrumbContextDetector';
 

@@ -7,7 +7,7 @@ import YandexMetrikaNoScript from '@/features/analytics/YandexMetrikaNoScript'
 import GoogleAnalyticsScript from '@/features/analytics/GoogleAnalyticsScript'
 import GoogleAnalyticsNoScript from '@/features/analytics/GoogleAnalyticsNoScript'
 import ConsentBanner from '@/features/analytics/ConsentBanner'
-import ScrollRestorationClient from '@/main/components/ScrollRestorationClient' // Changed import
+import ScrollRestorationClient from '@/features/navigation/ScrollRestorationClient' // Changed import
 import { dictionary } from '@/main/lib/dictionary';
 import { fontCustom, fontDisplay, fontSans, fontSerif } from './fonts/fonts'
 

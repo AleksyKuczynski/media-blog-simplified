@@ -6,12 +6,12 @@ import { RubricCard } from '@/main/components/Main/RubricCard';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import Section from '@/features/layout/Section';
 import CardGrid from '@/main/components/Main/CardGrid';
-import { generateCollectionMetadata } from '@/main/components/SEO/metadata/CollectionMetadata';
-import { CollectionPageSchema } from '@/main/components/SEO/schemas/CollectionPageSchema';
+import { generateCollectionMetadata } from '@/features/seo/metadata/CollectionMetadata';
+import { CollectionPageSchema } from '@/features/seo/schemas/CollectionPageSchema';
 import { getLocalizedRubricCount } from '@/main/lib/dictionary/helpers/content'; // FIXED: Correct import
-import { createErrorHandler } from '@/main/lib/errors/errorUtils';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { Rubric } from '@/main/lib/directus';
+import { createErrorHandler } from '@/features/errors/lib/errorUtils';
 
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;

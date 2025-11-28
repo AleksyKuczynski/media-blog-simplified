@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { CustomButton } from '@/main/components/Interface/CustomButton';
+import { CustomButton } from '@/features/primitives/CustomButton';
 import { useConsent } from './lib/useConsent';
 
 interface ConsentBannerProps {

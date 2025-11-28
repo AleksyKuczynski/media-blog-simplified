@@ -5,12 +5,13 @@
 
 import { Category } from '@/main/lib/directus/directusInterfaces';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
-import { ChevronDownIcon } from '../../../main/components/Interface/Icons';
+import { ChevronDownIcon } from '../../primitives/Icons';
 import { getFilterAccessibilityData } from '@/main/lib/dictionary/helpers/filter';
-import { CustomButton, NavButton } from '../../../main/components/Interface';
-import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../../../main/components/Interface/Dropdown';
+import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '../../ui/Dropdown';
 import { useFilterGroup, useFilterValidation } from './useFilterGroup';
 import SortingControl from './SortingControl';
+import { NavButton } from '@/features/primitives/NavButton';
+import { CustomButton } from '@/features/primitives/CustomButton';
 
 // ===================================================================
 // TYPES - Simple and clean

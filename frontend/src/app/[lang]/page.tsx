@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/main/lib/directus/index';
-import HeroArticles from '@/main/components/Main/HeroArticles';
+import HeroArticles from '@/features/article-display/HeroArticles';
 import { RubricCard } from '@/main/components/Main/RubricCard';
 import Section from '@/features/layout/Section';
 import CardGrid from '@/main/components/Main/CardGrid';

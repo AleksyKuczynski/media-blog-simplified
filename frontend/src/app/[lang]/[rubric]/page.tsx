@@ -4,12 +4,12 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import ArticleList from '@/features/article-display/ArticleList';
-import Pagination from '@/main/components/Main/Pagination';
+import Pagination from '@/features/ui/Pagination';
 import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics } from '@/main/lib/directus';
 import { ITEMS_PER_PAGE } from '@/main/lib/directus/directusConstants';
-import { RubricPageSchema } from '@/main/components/SEO/schemas/RubricPageSchema';
+import { RubricPageSchema } from '@/features/seo/schemas/RubricPageSchema';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
 import { getLocalizedArticleCount } from '@/main/lib/dictionary/helpers/content';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';

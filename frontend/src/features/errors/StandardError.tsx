@@ -1,9 +1,8 @@
 // src/components/errors/StandardError.tsx
-import React from 'react';
 import Link from 'next/link';
 import Section from '@/features/layout/Section';
 import { Dictionary } from '@/main/lib/dictionary';
-import { createErrorHandler, ContentType } from '@/main/lib/errors/errorUtils';
+import { ContentType, createErrorHandler } from './lib/errorUtils';
 
 interface StandardErrorProps {
   dictionary: Dictionary;

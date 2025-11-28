@@ -8,7 +8,7 @@ import DesktopNavigation from './DesktopNav'
 import MobileNavigation from './MobileNav/MobileNav'
 import SkipLinks from './SkipLinks'
 import { Dictionary, Lang } from '@/main/lib/dictionary'
-import { CompleteNavigationSchema } from '@/main/components/SEO'
+import { CompleteNavigationSchema } from '@/features/seo'
 
 interface NavigationProps {
   dictionary: Dictionary

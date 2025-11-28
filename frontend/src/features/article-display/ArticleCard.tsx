@@ -2,11 +2,11 @@
 
 import { Suspense } from 'react';
 import { ArticleCardVariant, ArticleCardSkeletonVariant } from './ArticleCardVariant';
-import { getArticleCardData } from '@/main/lib/actions';
 import { generateArticleLink, generateArticleLinkAsync } from '@/main/lib/utils';
 import { ArticleCardProps } from './interfaces';
 import { DIRECTUS_URL } from '@/main/lib/directus';
 import { IMAGE_RATIO } from '../../main/components/mainConstants';
+import { getArticleCardData } from './actions/getArticleCardData';
 
 export default async function ArticleCard({ 
   slug, 

@@ -2,7 +2,7 @@
 import { Suspense } from 'react';
 import Section from '../../layout/Section';
 import ArticleList from '../../article-display/ArticleList';
-import Pagination from '../../../main/components/Main/Pagination';
+import Pagination from '../../ui/Pagination';
 import SearchResultsHeader from './SearchResultsHeader';
 import { Dictionary, Lang } from '@/main/lib/dictionary';
 import { ArticleSlugInfo } from '@/main/lib/directus/directusInterfaces';

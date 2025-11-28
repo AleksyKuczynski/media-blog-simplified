@@ -3,7 +3,7 @@
 'use client'
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { CustomButton } from '../Interface/CustomButton';
+import { CustomButton } from '../../../features/primitives/CustomButton';
 import { Dictionary } from '@/main/lib/dictionary';
 
 interface LoadMoreButtonProps {

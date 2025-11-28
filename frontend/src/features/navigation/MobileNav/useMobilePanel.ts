@@ -7,7 +7,7 @@ import { useState, useRef, useReducer, useCallback, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { lockBodyScroll, unlockBodyScroll } from '@/main/lib/utils/bodyScrollLock'
 import { menuAnimationReducer } from './menuAnimationReducer'
-import { CONTROLS_ANIMATION_DURATION, MENU_ANIMATION_DURATION } from '../../../main/components/Interface/constants'
+import { CONTROLS_ANIMATION_DURATION, MENU_ANIMATION_DURATION } from '../../ui/constants'
 
 interface UseMobilePanelConfig {
   side: 'left' | 'right'

@@ -2,7 +2,7 @@
 import React from 'react';
 import { SearchUIState } from '../types';
 import { cn } from '@/main/lib/utils/utils';
-import { ANIMATION_DURATION } from '@/main/components/Interface/constants';
+import { ANIMATION_DURATION } from '@/features/ui/constants';
 
 interface SearchInputProps {
   state: SearchUIState;

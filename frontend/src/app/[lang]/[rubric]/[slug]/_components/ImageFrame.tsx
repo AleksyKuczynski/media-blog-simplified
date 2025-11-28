@@ -34,7 +34,7 @@
 
 'use client'
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Image from 'next/image';
 import { cn } from '@/main/lib/utils/utils';
 import { MEDIA_STYLES } from './article.styles';
