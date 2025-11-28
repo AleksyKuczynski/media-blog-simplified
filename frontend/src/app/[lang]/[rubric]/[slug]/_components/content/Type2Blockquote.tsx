@@ -1,6 +1,6 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/blocks/Type2Blockquote.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/Type2Blockquote.tsx
 
-import { BLOCKS_STYLES } from "../../article.styles";
+import { BLOCKS_STYLES } from "../article.styles";
 
 interface Type2Props {
   content: string;

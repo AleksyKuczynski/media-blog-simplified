@@ -1,9 +1,9 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/blocks/InlineArticleCard.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/InlineArticleCard.tsx
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArticleCardData } from '@/main/lib/markdown/markdownTypes';
-import { BLOCKS_STYLES } from '../../article.styles';
+import { BLOCKS_STYLES } from '../article.styles';
 
 interface InlineArticleCardProps {
   articleCardData: ArticleCardData;

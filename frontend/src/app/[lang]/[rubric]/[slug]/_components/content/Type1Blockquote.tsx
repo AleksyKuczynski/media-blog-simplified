@@ -1,5 +1,5 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/blocks/Type1Blockquote.tsx
-import { BLOCKS_STYLES } from "../../article.styles";
+// src/app/[lang]/[rubric]/[slug]/_components/content/Type1Blockquote.tsx
+import { BLOCKS_STYLES } from "../article.styles";
 
 interface Type1Props {
   content: string;

@@ -1,6 +1,6 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/blocks/Type4Blockquote.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/Type4Blockquote.tsx
 import Image from 'next/image';
-import { BLOCKS_STYLES } from '../../article.styles';
+import { BLOCKS_STYLES } from '../article.styles';
 
 interface Type4Props {
   content: string;

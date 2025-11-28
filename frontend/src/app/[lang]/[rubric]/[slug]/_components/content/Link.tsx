@@ -1,7 +1,7 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/elements/Link.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/Link.tsx
 import React from 'react';
 import Link from 'next/link';
-import { ELEMENTS_STYLES } from '../../article.styles';
+import { ELEMENTS_STYLES } from '../article.styles';
 
 interface ArticleLinkProps {
   href: string;

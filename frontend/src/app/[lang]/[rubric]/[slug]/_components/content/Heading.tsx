@@ -1,6 +1,6 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/elements/Heading.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/Heading.tsx
 import React from 'react';
-import { ELEMENTS_STYLES } from '../../article.styles';
+import { ELEMENTS_STYLES } from '../article.styles';
 
 interface HeadingProps {
   level: 1 | 2 | 3 | 4 | 5 | 6;

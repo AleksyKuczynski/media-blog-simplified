@@ -1,7 +1,7 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/blocks/Table.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/Table.tsx
 import { TableData } from '@/main/lib/markdown/markdownTypes';
 import { twMerge } from 'tailwind-merge';
-import { BLOCKS_STYLES } from '../../article.styles';
+import { BLOCKS_STYLES } from '../article.styles';
 
 interface TableProps {
   tableData: TableData;

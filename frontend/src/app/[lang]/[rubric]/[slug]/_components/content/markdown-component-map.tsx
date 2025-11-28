@@ -1,4 +1,4 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/elements/componentMap.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/markdown-component-map.tsx
 /**
  * Component map for rendering HTML elements as React components
  * 
@@ -11,8 +11,8 @@ import { ArticleLink } from './Link';
 import { ArticleList } from './List';
 import { ListItem } from './ListItem';
 import { ArticleParagraph } from './Paragraph';
-import ImageFrame from '../../ImageFrame';
-import { BalloonTip } from '../blocks/BalloonTip';
+import ImageFrame from '../ImageFrame';
+import { BalloonTip } from './BalloonTip';
 
 // Helper to recursively extract text from React children
 const extractTextFromChildren = (children: React.ReactNode): string => {

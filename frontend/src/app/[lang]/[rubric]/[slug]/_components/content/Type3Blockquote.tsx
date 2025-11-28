@@ -1,6 +1,6 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/blocks/Type3Blockquote.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/Type3Blockquote.tsx
 
-import { BLOCKS_STYLES } from "../../article.styles";
+import { BLOCKS_STYLES } from "../article.styles";
 
 
 interface Type3Props {

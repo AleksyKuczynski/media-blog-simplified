@@ -1,4 +1,4 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/blocks/BalloonTip.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/BalloonTip.tsx
 /**
  * BalloonTip - Interactive tooltip component for inline link explanations
  * 
@@ -14,7 +14,7 @@
 
 import { useState, useRef } from 'react';
 import { useOutsideClick } from '@/main/lib/hooks/useOutsideClick';
-import { BLOCKS_STYLES } from '../../article.styles';
+import { BLOCKS_STYLES } from '../article.styles';
 
 interface BalloonTipProps {
   text: string;

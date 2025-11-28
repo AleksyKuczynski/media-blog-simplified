@@ -1,6 +1,6 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/elements/List.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/List.tsx
 import React from 'react';
-import { ELEMENTS_STYLES } from '../../article.styles';
+import { ELEMENTS_STYLES } from '../article.styles';
 
 
 interface ListProps {

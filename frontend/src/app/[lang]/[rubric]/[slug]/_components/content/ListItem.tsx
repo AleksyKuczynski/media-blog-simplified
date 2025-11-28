@@ -1,6 +1,6 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/elements/ListItem.tsx
+// src/app/[lang]/[rubric]/[slug]/_components/content/ListItem.tsx
 import React from 'react';
-import { ELEMENTS_STYLES } from '../../article.styles';
+import { ELEMENTS_STYLES } from '../article.styles';
 
 export const ListItem: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   

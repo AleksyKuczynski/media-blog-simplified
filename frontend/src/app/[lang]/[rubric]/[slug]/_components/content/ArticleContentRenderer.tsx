@@ -2,10 +2,10 @@
 
 import { ContentChunk } from '@/main/lib/markdown/markdownTypes';
 import { MarkdownContent } from './MarkdownContent';
-import { CustomBlockquote } from './blocks/CustomBlockquote';
+import { CustomBlockquote } from './CustomBlockquote';
 import ImageFrame from '../ImageFrame';
-import Table from './blocks/Table';
-import InlineArticleCard from './blocks/InlineArticleCard';
+import Table from './Table';
+import InlineArticleCard from './InlineArticleCard';
 
 interface ArticleContentRendererProps {
   chunks: ContentChunk[];
