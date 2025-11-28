@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/types.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/types.ts
 /**
  * Engagement Types
  * 

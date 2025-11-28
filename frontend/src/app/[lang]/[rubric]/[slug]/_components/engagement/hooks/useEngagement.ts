@@ -1,4 +1,4 @@
-// frontend/src/main/lib/hooks/useEngagement.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useEngagement.ts
 /**
  * Main Engagement Hook
  * 
@@ -11,15 +11,15 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useLikeState } from './useLikeState';
-import { useShareState } from './useShareState';
+import { updateEngagement } from '../api/api';
+import { getShareUrl, copyToClipboard, openShareWindow, shareViaWebAPI } from '../api/share';
+import { logAction, reconcileCounts } from '../api/actionLog';
+import type { EngagementData, SharePlatform } from '../api';
 import { useViewTracking } from './useViewTracking';
-import { updateEngagement } from '../engagement/api';
-import { getShareUrl, copyToClipboard, openShareWindow, shareViaWebAPI } from '../engagement/share';
-import { logAction, reconcileCounts } from '../engagement/actionLog';
-import { trackGAEvent } from '../analytics/google';
-import { trackYandexEvent } from '../analytics/yandex';
-import type { EngagementData, SharePlatform } from '../engagement';
-import { dictionary } from '../dictionary';
+import { useShareState } from './useShareState';
+import { trackGAEvent } from '@/main/lib/analytics/google';
+import { trackYandexEvent } from '@/main/lib/analytics/yandex';
+import { dictionary } from '@/main/lib/dictionary';
 
 export interface UseEngagementOptions {
   slug: string;

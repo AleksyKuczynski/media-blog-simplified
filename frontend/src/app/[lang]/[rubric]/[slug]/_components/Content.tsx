@@ -1,5 +1,5 @@
 // src/app/[lang]/[rubric]/[slug]/_components/Content.tsx
-import { ContentChunk, TocItem } from '@/main/lib/markdown/markdownTypes';
+import { ContentChunk, TocItem } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes';
 import { LAYOUT_STYLES } from './article.styles';
 import ArticleContentRenderer from './content/ArticleContentRenderer';
 

@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/triggerEngagementFlow.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/triggerEngagementFlow.ts
 /**
  * Directus Flow Trigger
  * 

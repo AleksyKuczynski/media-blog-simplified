@@ -1,5 +1,5 @@
 // src/main/lib/markdown/parseMarkdownImage.ts
-import { DIRECTUS_URL } from '../directus/directusConstants';
+import { DIRECTUS_URL } from '../../../../../../main/lib/directus/directusConstants';
 
 export function parseMarkdownImage(markdown: string): { alt: string; src: string; assetId: string } | null {
   // Guard against null/undefined markdown

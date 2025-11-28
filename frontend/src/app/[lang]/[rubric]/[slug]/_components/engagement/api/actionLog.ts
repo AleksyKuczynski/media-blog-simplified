@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/actionLog.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/actionLog.ts
 /**
  * Action Log - Client-Side Engagement Tracking
  * 

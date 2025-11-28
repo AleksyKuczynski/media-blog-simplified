@@ -15,7 +15,7 @@
 import { useState } from 'react';
 import { Modal } from '@/main/components/Interface/Modal/Modal';
 import { dictionary } from '@/main/lib/dictionary';
-import type { SharePlatform } from '@/main/lib/engagement';
+import type { SharePlatform } from '@/app/[lang]/[rubric]/[slug]/_components/engagement/api';
 import {
   TelegramIcon,
   WhatsAppIcon,

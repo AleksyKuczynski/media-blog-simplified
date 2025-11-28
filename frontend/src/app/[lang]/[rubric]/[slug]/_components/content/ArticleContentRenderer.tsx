@@ -1,6 +1,6 @@
 // src/app/[lang]/[rubric]/[slug]/_components/content/ArticleContentRenderer.tsx
 
-import { ContentChunk } from '@/main/lib/markdown/markdownTypes';
+import { ContentChunk } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes';
 import { MarkdownContent } from './MarkdownContent';
 import { CustomBlockquote } from './CustomBlockquote';
 import ImageFrame from '../ImageFrame';

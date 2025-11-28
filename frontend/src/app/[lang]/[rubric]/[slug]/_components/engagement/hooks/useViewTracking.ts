@@ -1,4 +1,4 @@
-// frontend/src/main/lib/hooks/useViewTracking.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useViewTracking.ts
 /**
  * View Tracking Hook
  * 
@@ -7,7 +7,7 @@
  */
 
 import { useEffect, useRef } from 'react';
-import { updateEngagement } from '../engagement/api';
+import { updateEngagement } from '../api/api';
 
 export interface UseViewTrackingOptions {
   slug: string;

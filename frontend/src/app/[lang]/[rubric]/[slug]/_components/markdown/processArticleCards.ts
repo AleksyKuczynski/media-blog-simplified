@@ -1,9 +1,9 @@
 // src/main/lib/markdown/processArticleCards.ts
 
 import { ContentChunk, ArticleCardData } from './markdownTypes';
-import { validateArticleSlug } from '../utils/validateArticleSlug';
-import { fetchArticleCard } from '../directus/fetchArticleCard';
-import { DIRECTUS_URL } from '../directus/directusConstants';
+import { validateArticleSlug } from '../../../../../../main/lib/utils/validateArticleSlug';
+import { fetchArticleCard } from '../../../../../../main/lib/directus/fetchArticleCard';
+import { DIRECTUS_URL } from '../../../../../../main/lib/directus/directusConstants';
 
 /**
  * Process markdown chunks to extract article slug placeholders and create article-card chunks

@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/localStorage.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/localStorage.ts
 /**
  * LocalStorage Operations for Engagement
  * 

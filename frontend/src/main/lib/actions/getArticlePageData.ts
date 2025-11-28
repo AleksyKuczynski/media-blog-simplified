@@ -3,7 +3,7 @@
 
 import { getDictionary, Lang } from '../dictionary';
 import { AuthorDetails, fetchAllRubrics, fetchAuthorBySlug, fetchAuthorsForArticle, fetchFullArticle, fetchRubricDetails } from "../directus";
-import { processContent } from '../markdown/processContent';
+import { processContent } from '../../../app/[lang]/[rubric]/[slug]/_components/markdown/processContent';
 
 export async function getArticlePageData(
   params: { rubric: string, slug: string, lang: Lang }, 

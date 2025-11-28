@@ -1,5 +1,5 @@
 // src/main/lib/markdown/convertImageUrl.ts
-import { DIRECTUS_URL } from '../directus/directusConstants';
+import { DIRECTUS_URL } from '../../../../../../main/lib/directus/directusConstants';
 
 /**
  * Converts any Directus image URL to use the current DIRECTUS_URL

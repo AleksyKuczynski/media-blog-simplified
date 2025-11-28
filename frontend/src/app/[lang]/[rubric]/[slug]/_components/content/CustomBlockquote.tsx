@@ -1,5 +1,5 @@
 // src/app/[lang]/[rubric]/[slug]/_components/content/CustomBlockquote.tsx
-import { BlockquoteProps } from '@/main/lib/markdown/markdownTypes';
+import { BlockquoteProps } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes';
 import { Type1Blockquote } from './Type1Blockquote';
 import { Type2Blockquote } from './Type2Blockquote';
 import { Type3Blockquote } from './Type3Blockquote';

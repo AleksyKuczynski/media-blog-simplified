@@ -1,5 +1,5 @@
 // src/app/[lang]/[rubric]/[slug]/_components/content/Table.tsx
-import { TableData } from '@/main/lib/markdown/markdownTypes';
+import { TableData } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes';
 import { twMerge } from 'tailwind-merge';
 import { BLOCKS_STYLES } from '../article.styles';
 

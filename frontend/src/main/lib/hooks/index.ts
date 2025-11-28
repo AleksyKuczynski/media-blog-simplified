@@ -9,22 +9,22 @@ export {
   type UseEngagementOptions,
   type UseEngagementReturn,
   type ShareMethod,
-} from '@/main/lib/hooks/useEngagement';
+} from '@/app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useEngagement';
 
 export {
   useViewTracking,
   type UseViewTrackingOptions,
   type UseViewTrackingReturn,
-} from '@/main/lib/hooks/useViewTracking';
+} from '@/app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useViewTracking';
 
 export {
   useLikeState,
   type UseLikeStateOptions,
   type UseLikeStateReturn,
-} from '@/main/lib/hooks/useLikeState';
+} from '@/app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useLikeState';
 
 export {
   useShareState,
   type UseShareStateOptions,
   type UseShareStateReturn,
-} from '@/main/lib/hooks/useShareState';
+} from '@/app/[lang]/[rubric]/[slug]/_components/engagement/hooks/useShareState';

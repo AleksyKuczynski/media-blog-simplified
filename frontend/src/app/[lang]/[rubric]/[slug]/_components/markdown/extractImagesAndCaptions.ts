@@ -1,8 +1,8 @@
 // src/main/lib/markdown/extractImagesAndCaptions.ts
 import { ContentChunk, ImageAttributes } from './markdownTypes';
 import { extractCaption } from './captionUtils';
-import { fetchAssetMetadata } from '../directus';
-import { parseMarkdownImage } from '../utils';
+import { fetchAssetMetadata } from '../../../../../../main/lib/directus';
+import { parseMarkdownImage } from '../../../../../../main/lib/utils';
 
 async function getImageAttributes(markdown: string): Promise<ImageAttributes | undefined> {
   const parsed = parseMarkdownImage(markdown);

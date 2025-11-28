@@ -3,7 +3,7 @@
 import { convertSimpleMarkdownToHtml } from './markdownToHtml';
 import { processCaptionLinks } from './processCaptionLinks';
 import { ContentChunk, ImageAttributes } from './markdownTypes';
-import { fetchAssetMetadata } from '../directus';
+import { fetchAssetMetadata } from '../../../../../../main/lib/directus';
 import { parseMarkdownImage } from './parseMarkdownImage';
 
 /**

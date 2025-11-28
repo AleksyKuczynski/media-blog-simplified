@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/api.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/api.ts
 /**
  * Engagement API Client
  * 

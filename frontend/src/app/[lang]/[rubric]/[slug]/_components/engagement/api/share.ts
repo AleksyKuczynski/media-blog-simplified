@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/share.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/share.ts
 /**
  * Share Platform Utilities
  * 

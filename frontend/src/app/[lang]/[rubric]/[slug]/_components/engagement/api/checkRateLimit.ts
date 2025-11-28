@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/checkRateLimit.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/checkRateLimit.ts
 
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute

@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/index.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/index.ts
 /**
  * Engagement Module - Public API
  * 

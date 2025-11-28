@@ -14,7 +14,7 @@ import { useState, useEffect } from 'react';
 import { useEngagement } from '@/main/lib/hooks';
 import { EngagementMetric } from './EngagementMetric';
 import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
-import type { EngagementData } from '@/main/lib/engagement';
+import type { EngagementData } from '@/app/[lang]/[rubric]/[slug]/_components/engagement/api';
 import { SharePopup } from './SharePopup';
 
 export interface ArticleEngagementProps {

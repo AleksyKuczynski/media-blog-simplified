@@ -1,4 +1,4 @@
-// frontend/src/main/lib/engagement/hasRecentlyViewed.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/api/hasRecentlyViewed.ts
 
 // Session tracking to prevent duplicate view counts within same session
 const viewTrackingMap = new Map<string, number>();

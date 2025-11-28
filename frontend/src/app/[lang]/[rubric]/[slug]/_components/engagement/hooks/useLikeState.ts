@@ -1,4 +1,4 @@
-// frontend/src/main/lib/hooks/useLikeState.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/useLikeState.ts
 /**
  * Like State Management Hook
  * 
@@ -9,14 +9,14 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { updateEngagement } from '../engagement/api';
+import { updateEngagement } from '../api/api';
 import { 
   isArticleLiked,
   addLikedArticle,
   removeLikedArticle,
   logAction,
   reconcileCounts,
-} from '../engagement/actionLog';
+} from '../api/actionLog';
 
 export interface UseLikeStateOptions {
   slug: string;

@@ -1,4 +1,4 @@
-// frontend/src/main/lib/hooks/useShareState.ts
+// frontend/src/app/[lang]/[rubric]/[slug]/_components/engagement/useShareState.ts
 /**
  * Share State Management Hook
  * 
@@ -8,7 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { reconcileCounts } from '../engagement/actionLog';
+import { reconcileCounts } from '../api/actionLog';
 
 export interface UseShareStateOptions {
   slug: string;

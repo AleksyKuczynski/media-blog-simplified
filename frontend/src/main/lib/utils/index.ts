@@ -2,7 +2,7 @@
 export { createSearchUrl } from '@/main/components/Search/common/createSearchUrl';
 export { generateArticleLinkAsync } from '@/main/lib/utils/generateArticleLinkAsync';
 export { generateArticleLink } from '@/main/lib/utils/generateArticleLink';
-export { parseMarkdownImage } from '@/main/lib/markdown/parseMarkdownImage';
+export { parseMarkdownImage } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/parseMarkdownImage';
 export { smoothScrollTo } from '@/main/lib/utils/smoothScrollTo';
 export { cn } from '@/main/lib/utils/utils';
 export { validateArticleSlug } from './validateArticleSlug';
