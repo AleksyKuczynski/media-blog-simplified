@@ -1,12 +1,12 @@
 // src/app/layout.tsx
 import './globals.scss'
 import { DEFAULT_LANG } from '@/main/lib/constants/constants'
-import ConsentModeScript from '@/main/components/Analytics/ConsentModeScript'
-import YandexMetrikaScript from '@/main/components/Analytics/YandexMetrikaScript'
-import YandexMetrikaNoScript from '@/main/components/Analytics/YandexMetrikaNoScript'
-import GoogleAnalyticsScript from '@/main/components/Analytics/GoogleAnalyticsScript'
-import GoogleAnalyticsNoScript from '@/main/components/Analytics/GoogleAnalyticsNoScript'
-import ConsentBanner from '@/main/components/Analytics/ConsentBanner'
+import ConsentModeScript from '@/features/analytics/ConsentModeScript'
+import YandexMetrikaScript from '@/features/analytics/YandexMetrikaScript'
+import YandexMetrikaNoScript from '@/features/analytics/YandexMetrikaNoScript'
+import GoogleAnalyticsScript from '@/features/analytics/GoogleAnalyticsScript'
+import GoogleAnalyticsNoScript from '@/features/analytics/GoogleAnalyticsNoScript'
+import ConsentBanner from '@/features/analytics/ConsentBanner'
 import ScrollRestorationClient from '@/main/components/ScrollRestorationClient' // Changed import
 import { dictionary } from '@/main/lib/dictionary';
 import { fontCustom, fontDisplay, fontSans, fontSerif } from './fonts/fonts'

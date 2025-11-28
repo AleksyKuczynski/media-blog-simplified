@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/main/lib/directus';
-import { ArticleEngagement, Content, Header, ScrollToTopButton, RelatedArticles, TableOfContents, QuickNavigation, CategoriesSection, RubricSection, AuthorsSection } from '@/main/components/Article';
 import Section from '@/main/components/Main/Section';
 import { getDictionary, Lang } from '@/main/lib/dictionary';
 import { processTemplate } from '@/main/lib/dictionary/helpers/templates';
@@ -14,9 +13,19 @@ import generateArticleMetadata from '@/main/components/SEO/metadata/ArticleMetad
 import ArticleSchema from '@/main/components/SEO/schemas/ArticleSchema';
 import QuickNavigationSchema from '@/main/components/SEO/schemas/QuickNavigationSchema';
 import AuthorsSectionSchema from '@/main/components/SEO/schemas/AuthorsSectionSchema';
-import PreviewBanner from '@/main/components/Article/PreviewBanner';
+import PreviewBanner from '@/app/[lang]/[rubric]/[slug]/_components/PreviewBanner';
 import { safeGenerateMetadata } from '@/main/lib/errors/metadataErrorHandler';
 import Collapsible from '@/main/components/Interface/Collapsible';
+import { Header } from './_components/Header';
+import ArticleEngagement from './_components/engagement/ArticleEngagement';
+import { TableOfContents } from './_components/navigation/TableOfContents';
+import { Content } from './_components/Content';
+import QuickNavigation from './_components/navigation/QuickNavigation';
+import CategoriesSection from './_components/navigation/CategoriesSection';
+import RubricSection from './_components/navigation/RubricSection';
+import AuthorsSection from './_components/navigation/AuthorsSection';
+import { RelatedArticles } from '@/main/components/Main/RelatedArticles';
+import { ScrollToTopButton } from './_components/ScrollToTopButton';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
