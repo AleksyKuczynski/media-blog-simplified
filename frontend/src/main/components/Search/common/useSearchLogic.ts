@@ -142,7 +142,7 @@ export function useSearchLogic({
           // Nawigacja z wybranej sugestii
           const selectedSuggestion = state.suggestions[state.selectedIndex];
           cleanupAndClose();
-          router.push(`/${lang}/${selectedSuggestion.rubric_slug}/${selectedSuggestion.slug}`);
+          router.push(`/${lang}/${selectedSuggestion.slug}/${selectedSuggestion.slug}`);
         } else if (hasNavigableContent && state.query.length >= 3) {
           // Nawigacja z wprowadzonego tekstu
           const searchUrl = createSearchUrl(state.query, searchParams);
@@ -158,19 +158,21 @@ export function useSearchLogic({
   }, [state.selectedIndex, state.suggestions, state.query, hasNavigableContent, lang, searchParams, router, cleanupAndClose]);
 
   const handleSelect = useCallback((index: number) => {
-    handleSearchScenario({
-      type: 'SCENARIO_SELECT_RESULT',
-      index,
-      dispatch,
-      mode
-    });
-    
-    const selectedSuggestion = state.suggestions[index];
-    if (selectedSuggestion) {
-      cleanupAndClose();
-      router.push(`/${lang}/${selectedSuggestion.rubric_slug}/${selectedSuggestion.slug}`);
+    const suggestion = state.suggestions[index];
+    if (!suggestion) return;
+
+    let targetUrl: string;
+    if (suggestion.type === 'author') {
+      targetUrl = `/${lang}/authors/${suggestion.slug}`;
+    } else if (suggestion.type === 'category') {
+      targetUrl = `/${lang}/articles?category=${suggestion.slug}`;
+    } else {
+      targetUrl = `/${lang}/${suggestion.rubric_slug}/${suggestion.slug}`;
     }
-  }, [state.suggestions, lang, router, cleanupAndClose, mode]);
+
+    router.push(targetUrl);
+    cleanupAndClose();
+  }, [state.suggestions, lang, router, cleanupAndClose]);
 
   const handleFocus = useCallback(() => {
     if (mode === 'standard') {

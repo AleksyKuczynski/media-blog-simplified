@@ -135,6 +135,36 @@ export interface FullArticle {
   categories: Category[];
 }
 
+export type SearchResultType = 'author' | 'category' | 'article';
+
+export interface BaseSearchResult {
+  type: SearchResultType;
+  slug: string;
+}
+
+export interface AuthorSearchResult extends BaseSearchResult {
+  type: 'author';
+  name: string;
+  bio?: string;
+  articleCount: number;
+}
+
+export interface CategorySearchResult extends BaseSearchResult {
+  type: 'category';
+  name: string;
+  articleCount: number;
+}
+
+export interface ArticleSearchResult extends BaseSearchResult {
+  type: 'article';
+  title: string;
+  description: string;
+  rubric_slug: string;
+  languages_code: string;
+}
+
+export type SearchResult = AuthorSearchResult | CategorySearchResult | ArticleSearchResult;
+
 export interface SearchProposition { //  Results of search in translated titles and descriptions
   slug: string;
   title: string;

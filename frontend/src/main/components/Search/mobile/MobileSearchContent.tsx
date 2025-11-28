@@ -50,14 +50,19 @@ export default function MobileSearchContent({
   }, [refs.inputRef]);
 
   // Handle selecting a suggestion
-  const handleSuggestionSelect = (index: number) => {
+const handleSuggestionSelect = (index: number) => {
     const suggestion = state.suggestions[index];
-    if (suggestion) {
-      // Navigate to the article using rubric_slug and slug
+    if (!suggestion) return;
+
+    if (suggestion.type === 'author') {
+      router.push(`/${lang}/authors/${suggestion.slug}`);
+    } else if (suggestion.type === 'category') {
+      router.push(`/${lang}/articles?category=${suggestion.slug}`);
+    } else {
       router.push(`/${lang}/${suggestion.rubric_slug}/${suggestion.slug}`);
-      // Close offcanvas after selection
-      onSearchComplete?.();
     }
+    
+    onSearchComplete?.();
   };
 
   // Handle keyboard navigation in suggestions list
@@ -136,7 +141,7 @@ export default function MobileSearchContent({
           
           return (
             <button
-              key={suggestion.slug}
+              key={`${suggestion.type}-${suggestion.slug}`}
               id={`mobile-suggestion-${index}`}
               role="option"
               aria-selected={isHighlighted}
@@ -153,22 +158,34 @@ export default function MobileSearchContent({
               `}
               tabIndex={0}
             >
-              {/* Suggestion Type Badge - SearchProposition returns articles only */}
+              {/* Type Badge */}
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xs font-medium uppercase tracking-wide text-on-sf-var opacity-70">
-                  {dictionary.sections.labels.articles}
+                  {suggestion.type === 'author' && dictionary.navigation.labels.authors}
+                  {suggestion.type === 'category' && dictionary.sections.labels.categories}
+                  {suggestion.type === 'article' && dictionary.sections.labels.articles}
                 </span>
               </div>
 
-              {/* Suggestion Title */}
+              {/* Title/Name */}
               <div className="font-medium text-base">
-                {suggestion.title}
+                {suggestion.type === 'article' ? suggestion.title : suggestion.name}
               </div>
 
-              {/* Suggestion Description (if exists) */}
-              {suggestion.description && (
+              {/* Description/Bio/Count */}
+              {suggestion.type === 'article' && suggestion.description && (
                 <div className="text-sm opacity-80 mt-1 line-clamp-2">
                   {suggestion.description}
+                </div>
+              )}
+              {suggestion.type === 'author' && (
+                <div className="text-sm opacity-80 mt-1">
+                  {suggestion.articleCount} {dictionary.common.count.articles}
+                </div>
+              )}
+              {suggestion.type === 'category' && (
+                <div className="text-sm opacity-80 mt-1">
+                  {suggestion.articleCount} {dictionary.common.count.articles}
                 </div>
               )}
             </button>

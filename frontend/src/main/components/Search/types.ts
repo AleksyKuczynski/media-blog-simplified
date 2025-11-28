@@ -1,7 +1,7 @@
 // src/main/components/Search/types.ts
 // FIXED: React 19 compatible nullable ref types
 
-import { SearchProposition } from '@/main/lib/directus';
+import { SearchProposition, SearchResult } from '@/main/lib/directus';
 
 export type ComponentMode = 'expandable' | 'standard';
 export type ComponentVisibility = 'hidden' | 'animating-in' | 'visible' | 'animating-out';
@@ -27,7 +27,7 @@ export interface SearchUIState {
     content: DropdownContent;
   };
   query: string;
-  suggestions: SearchProposition[];
+  suggestions: SearchResult[];
   selectedIndex: number;
   searchStatus: SearchStatus;
 }

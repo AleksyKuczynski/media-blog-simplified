@@ -1,16 +1,18 @@
-// src/main/components/Search/SearchDropdownItem.tsx - CLEANED UP
-import { SearchProposition } from '@/main/lib/directus/directusInterfaces';
+// src/main/components/Search/common/SearchDropdownItem.tsx
+import { SearchResult } from '@/main/lib/directus/directusInterfaces';
 
 interface SearchDropdownItemProps {
-  suggestion: SearchProposition;
+  suggestion: SearchResult;
   isHighlighted: boolean;
   onSelect: () => void;
+  dictionary: any; // Add dictionary prop
 }
 
 export default function SearchDropdownItem({
   suggestion,
   isHighlighted,
-  onSelect
+  onSelect,
+  dictionary
 }: SearchDropdownItemProps) {
 
   return (
@@ -25,29 +27,30 @@ export default function SearchDropdownItem({
         }
       `.trim()}
       onClick={onSelect}
-      onMouseDown={(e) => {
-        // Prevent blur event on the input when clicking an item
-        e.preventDefault();
-      }}
+      onMouseDown={(e) => e.preventDefault()}
       aria-selected={isHighlighted}
     >
-      {/* Title section with consistent styling */}
-      <div className="font-medium">
-        {suggestion.title}
+      {/* Type badge */}
+      <div className="text-xs font-medium uppercase tracking-wide opacity-70 mb-1">
+        {suggestion.type === 'author' && dictionary.navigation.labels.authors}
+        {suggestion.type === 'category' && dictionary.sections.labels.categories}
+        {suggestion.type === 'article' && dictionary.sections.labels.articles}
       </div>
 
-      {/* Description section with conditional opacity based on state */}
-      {suggestion.description && (
-        <div 
-          className={`
-            text-sm truncate mt-0.5
-            ${isHighlighted 
-              ? 'text-txcolor-inverted/80' 
-              : 'text-txcolor-secondary'
-            }
-          `.trim()}
-        >
+      {/* Title */}
+      <div className="font-medium">
+        {suggestion.type === 'article' ? suggestion.title : suggestion.name}
+      </div>
+
+      {/* Description/Count */}
+      {suggestion.type === 'article' && suggestion.description && (
+        <div className={`text-sm truncate mt-0.5 ${isHighlighted ? 'text-txcolor-inverted/80' : 'text-txcolor-secondary'}`}>
           {suggestion.description}
+        </div>
+      )}
+      {(suggestion.type === 'author' || suggestion.type === 'category') && (
+        <div className={`text-sm mt-0.5 ${isHighlighted ? 'text-txcolor-inverted/80' : 'text-txcolor-secondary'}`}>
+          {suggestion.articleCount} {dictionary.common.count.articles}
         </div>
       )}
     </li>
