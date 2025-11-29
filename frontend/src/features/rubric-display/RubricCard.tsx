@@ -1,4 +1,4 @@
-// src/main/components/Main/RubricCard.tsx
+// src/features/rubric-display/RubricCard.tsx
 
 import React from 'react';
 import Link from 'next/link';
@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Dictionary, Lang } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { DIRECTUS_URL } from '@/api/directus';
+import { RUBRIC_CARD_STYLES } from './styles';
 
 export interface RubricCardProps {
   rubric: {
@@ -27,9 +28,6 @@ export interface RubricCardProps {
   dictionary: Dictionary;
 }
 
-/**
- * Generate rubric URL from slug and language
- */
 const generateRubricUrl = (slug: string, lang: Lang): string => {
   return `/${lang}/${slug}`;
 };
@@ -39,13 +37,9 @@ export const RubricCard: React.FC<RubricCardProps> = ({
   lang,
   dictionary,
 }) => {
-  // Generate URL internally from slug
   const rubricUrl = generateRubricUrl(rubric.slug, lang);
-  
-  // Generate unique key for list rendering (using slug as unique identifier)
   const cardKey = `rubric-${rubric.slug}`;
   
-  // Generate accessible labels using dictionary
   const iconAltText = rubric.nav_icon 
     ? processTemplate(dictionary.sections.rubrics.rubricIcon, { name: rubric.name })
     : dictionary.sections.rubrics.noIcon;
@@ -55,69 +49,68 @@ export const RubricCard: React.FC<RubricCardProps> = ({
   
   return (
     <article 
-      className="group relative overflow-hidden rounded-lg border bg-card p-6 transition-all hover:shadow-lg"
+      className={RUBRIC_CARD_STYLES.card}
       data-rubric-slug={rubric.slug}
       data-key={cardKey}
     >
-      {/* Rubric Icon */}
-      <div className="mb-4 flex items-center justify-between">
+      {/* Header with icon and count */}
+      <div className={RUBRIC_CARD_STYLES.header}>
         {rubric.nav_icon ? (
-          <div className="relative h-8 w-8">
+          <div className={RUBRIC_CARD_STYLES.iconWrapper}>
             <Image
               src={`${DIRECTUS_URL}/assets/${rubric.nav_icon}`}
               alt={iconAltText}
               fill
-              className="object-contain"
+              className={RUBRIC_CARD_STYLES.iconImage}
               sizes="32px"
               loading="lazy"
             />
           </div>
         ) : (
           <div 
-            className="h-8 w-8 rounded bg-muted flex items-center justify-center"
+            className={RUBRIC_CARD_STYLES.iconFallback}
             aria-label={dictionary.sections.rubrics.noIcon}
           >
-            <span className="text-muted-foreground text-xs">
+            <span className={RUBRIC_CARD_STYLES.iconFallbackText}>
               {rubric.name.charAt(0).toUpperCase()}
             </span>
           </div>
         )}
         
-        {/* Article count if available */}
         {rubric.articleCount !== undefined && rubric.articleCount > 0 && (
-          <span className="text-sm text-muted-foreground">
+          <span className={RUBRIC_CARD_STYLES.articleCount}>
             {rubric.articleCount} {dictionary.sections.labels.articles}
           </span>
         )}
       </div>
       
-      {/* Rubric Title with generated URL */}
-      <h2 className="mb-2 text-xl font-semibold group-hover:text-primary transition-colors">
+      {/* Title */}
+      <h2 className={RUBRIC_CARD_STYLES.title}>
         <Link 
           href={rubricUrl}
-          className="before:absolute before:inset-0"
+          className={RUBRIC_CARD_STYLES.titleLink}
           aria-label={exploreText}
         >
           {rubric.name}
         </Link>
       </h2>
       
-      {/* Rubric Description */}
+      {/* Description */}
       {rubric.description && (
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+        <p className={RUBRIC_CARD_STYLES.description}>
           {rubric.description}
         </p>
       )}
       
-      {/* Action Link */}
-      <div className="mt-auto">
-        <span className="text-sm font-medium text-primary group-hover:underline">
+      {/* Action */}
+      <div className={RUBRIC_CARD_STYLES.action}>
+        <span className={RUBRIC_CARD_STYLES.actionText}>
           {dictionary.common.actions.explore} →
         </span>
       </div>
       
-      {/* Screen Reader Enhancement */}
-      <div className="sr-only">
+      {/* Screen reader */}
+      <div className={RUBRIC_CARD_STYLES.srOnly}>
         {processTemplate(dictionary.sections.templates.itemInCollection, {
           item: rubric.name,
           collection: dictionary.sections.labels.rubrics,

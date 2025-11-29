@@ -1,11 +1,10 @@
-// src/main/components/Main/RubricsSection.tsx
-// Reusable rubrics section - extracted from HomePage
-// Displays grid of rubric cards with optional heading
+// src/features/rubric-display/RubricsSection.tsx
 
 import Link from 'next/link';
 import { Dictionary, Lang } from '@/config/i18n';
 import RubricCard from './RubricCard';
 import CardGrid from '../layout/CardGrid';
+import { RUBRICS_SECTION_STYLES } from './styles';
 
 interface TransformedRubric {
   slug: string;
@@ -25,20 +24,6 @@ interface RubricsSectionProps {
   readonly className?: string;
 }
 
-/**
- * RubricsSection - Reusable rubrics display component
- * 
- * Features:
- * - Grid of rubric cards
- * - Optional custom heading
- * - Optional "View All" link
- * - Responsive layout
- * 
- * Usage:
- * - HomePage: Show 6 rubrics with "Explore Rubrics" heading
- * - Search page: Show 6 rubrics with "Browse Categories" heading
- * - Can be used anywhere rubrics grid is needed
- */
 export default function RubricsSection({
   rubrics,
   dictionary,
@@ -58,16 +43,16 @@ export default function RubricsSection({
   }
 
   return (
-    <section className={`py-16 ${className}`}>
-      <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <header className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 text-on-sf">
+    <section className={`${RUBRICS_SECTION_STYLES.section} ${className}`}>
+      <div className={RUBRICS_SECTION_STYLES.container}>
+        {/* Header */}
+        <header className={RUBRICS_SECTION_STYLES.header}>
+          <h2 className={RUBRICS_SECTION_STYLES.heading}>
             {sectionHeading}
           </h2>
           
           {dictionary.sections.home?.rubricsDescription && (
-            <p className="text-lg text-on-sf-var max-w-2xl mx-auto mb-8">
+            <p className={RUBRICS_SECTION_STYLES.description}>
               {dictionary.sections.home.rubricsDescription}
             </p>
           )}
@@ -75,18 +60,12 @@ export default function RubricsSection({
           {showViewAll && (
             <Link 
               href={rubricsUrl}
-              className="
-                inline-flex items-center gap-2 
-                text-pr-cont hover:text-pr-fix 
-                font-medium transition-colors duration-200
-                focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2 rounded
-                group
-              "
+              className={RUBRICS_SECTION_STYLES.viewAll.link}
               aria-label={`${viewAllText} - посмотреть полный каталог рубрик`}
             >
               {viewAllText}
               <span 
-                className="transform transition-transform duration-200 group-hover:translate-x-1" 
+                className={RUBRICS_SECTION_STYLES.viewAll.arrow}
                 aria-hidden="true"
               >
                 →
@@ -95,7 +74,7 @@ export default function RubricsSection({
           )}
         </header>
         
-        {/* Rubrics Grid */}
+        {/* Grid */}
         <CardGrid
           cols={{
             mobile: 1,
@@ -103,7 +82,7 @@ export default function RubricsSection({
             desktop: 3,
             large: 3
           }}
-          className="max-w-7xl mx-auto"
+          className={RUBRICS_SECTION_STYLES.grid}
         >
           {rubrics.map((rubric) => (
             <RubricCard

@@ -1,7 +1,7 @@
 // src/main/components/Main/AuthorCardSkeleton.tsx
 
 import { cn } from '@/lib/utils/cn';
-import { AUTHOR_CARD_SKELETON_STYLES } from './AuthorCard';
+import { AUTHOR_CARD_SKELETON_STYLES } from './styles';
 
 interface AuthorCardSkeletonProps {
   linkToProfile?: boolean;
