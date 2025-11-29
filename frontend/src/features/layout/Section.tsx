@@ -1,6 +1,7 @@
-// src/main/components/Main/Section.tsx - Enhanced for SEO and Accessibility
+// src/features/layout/Section.tsx
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { SECTION_STYLES } from './styles';
 
 interface SectionProps {
   children: React.ReactNode;
@@ -29,11 +30,8 @@ export default function Section({
   ...props 
 }: SectionProps) {
   const sectionClasses = cn(
-    // Base section styling
-    "w-full pb-6 lg:pb-8 xl:pb-12",
-    // Background alternation for visual hierarchy
-    isOdd ? "bg-sf" : "bg-sf-hst",
-    // Additional custom classes
+    SECTION_STYLES.wrapper.base,
+    isOdd ? SECTION_STYLES.wrapper.odd : SECTION_STYLES.wrapper.even,
     className
   );
 
@@ -49,20 +47,14 @@ export default function Section({
 
   return (
     <Component {...sectionProps}>
-      <div className="container mx-auto">
-        {/* Section title handled internally - no duplication */}
+      <div className={SECTION_STYLES.container}>
         {title && (
-          <header className="mb-8">
-            <h2 className="
-              text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 pl-1
-              text-sf-hst
-            ">
+          <header className={SECTION_STYLES.header.wrapper}>
+            <h2 className={SECTION_STYLES.header.title}>
               {title}
             </h2>
           </header>
         )}
-        
-        {/* Main content area */}
         {children}
       </div>
     </Component>

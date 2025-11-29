@@ -497,6 +497,8 @@ const dictionaryRU: Dictionary = {
         messagePlaceholder: 'Расскажите, чем мы можем помочь...',
         submitButton: 'Отправить',
         cancelButton: 'Отмена',
+        submitting: 'Отправка...',
+        requiredField: 'обязательное поле',
         successMessage: 'Спасибо! Ваше сообщение отправлено. Мы ответим в ближайшее время.',
         errorMessage: 'Произошла ошибка. Пожалуйста, попробуйте позже или напишите на',
         emailRequired: 'Email обязателен',

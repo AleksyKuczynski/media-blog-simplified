@@ -495,6 +495,8 @@ export const dictionaryEN: Dictionary = {
         messagePlaceholder: 'Tell us how we can help...',
         submitButton: 'Send',
         cancelButton: 'Cancel',
+        submitting: 'Sending...',
+  requiredField: 'required field',
         successMessage: 'Thank you! Your message has been sent. We will respond shortly.',
         errorMessage: 'An error occurred. Please try again later or write to',
         emailRequired: 'Email is required',

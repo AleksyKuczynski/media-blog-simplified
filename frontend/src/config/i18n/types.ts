@@ -553,6 +553,8 @@ export interface FooterContactModal {
   readonly messagePlaceholder: string;
   readonly submitButton: string;
   readonly cancelButton: string;
+  readonly submitting: string;
+  readonly requiredField: string;
   readonly successMessage: string;
   readonly errorMessage: string;
   readonly emailRequired: string;

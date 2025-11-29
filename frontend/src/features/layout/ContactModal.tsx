@@ -1,9 +1,10 @@
-// frontend/src/main/components/Footer/ContactModal.tsx
+// frontend/src/features/layout/ContactModal.tsx
 'use client';
 
 import { useState } from 'react';
 import type { Dictionary } from '@/config/i18n';
 import { Modal } from '@/shared/ui/Modal/Modal';
+import { CONTACT_MODAL_STYLES, getInputClasses, getStatusClasses } from './styles';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -50,19 +51,16 @@ export function ContactModal({
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
 
-    // Email validation
     if (!formData.email.trim()) {
       newErrors.email = dictionary.footer.contact.modal.emailRequired;
     } else if (!EMAIL_REGEX.test(formData.email)) {
       newErrors.email = dictionary.footer.contact.modal.emailInvalid;
     }
 
-    // Subject validation
     if (!formData.subject.trim()) {
       newErrors.subject = dictionary.footer.contact.modal.subjectRequired;
     }
 
-    // Message validation
     if (!formData.message.trim()) {
       newErrors.message = dictionary.footer.contact.modal.messageRequired;
     }
@@ -81,18 +79,14 @@ export function ContactModal({
     setIsSubmitting(true);
     setStatus({ type: 'idle' });
 
-    // TODO: Replace with actual API call when backend is ready
-    // For now, simulate API call
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Simulate success
       setStatus({
         type: 'success',
         message: dictionary.footer.contact.modal.successMessage,
       });
 
-      // Reset form after success
       setTimeout(() => {
         setFormData({ email: '', subject: '', message: '' });
         setErrors({});
@@ -116,14 +110,12 @@ export function ContactModal({
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear error when user starts typing
     if (errors[name as keyof FormErrors]) {
       setErrors(prev => ({ ...prev, [name]: undefined }));
     }
   };
 
   const handleClose = () => {
-    // Reset form state when closing
     setFormData({ email: '', subject: '', message: '' });
     setErrors({});
     setStatus({ type: 'idle' });
@@ -138,31 +130,23 @@ export function ContactModal({
       size="md"
       position="center"
     >
-      <form onSubmit={handleSubmit} className="p-6 space-y-5">
-        {/* Success/Error Messages */}
+      <form onSubmit={handleSubmit} className={CONTACT_MODAL_STYLES.form.container}>
         {status.type !== 'idle' && (
-          <div
-            className={`
-              px-4 py-3 rounded-lg text-sm font-medium
-              ${status.type === 'success' 
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800' 
-                : 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800'
-              }
-            `}
-            role="alert"
-          >
+          <div className={getStatusClasses(status.type)} role="alert">
             {status.message}
           </div>
         )}
 
         {/* Email Field */}
-        <div>
-          <label 
-            htmlFor="contact-email" 
-            className="block text-sm font-medium text-on-sf mb-2"
-          >
+        <div className={CONTACT_MODAL_STYLES.field.wrapper}>
+          <label htmlFor="contact-email" className={CONTACT_MODAL_STYLES.field.label}>
             {dictionary.footer.contact.modal.emailLabel}
-            <span className="text-red-500 ml-1" aria-label="обязательное поле">*</span>
+            <span 
+              className={CONTACT_MODAL_STYLES.field.required} 
+              aria-label={dictionary.footer.contact.modal.requiredField}
+            >
+              *
+            </span>
           </label>
           <input
             id="contact-email"
@@ -171,36 +155,28 @@ export function ContactModal({
             value={formData.email}
             onChange={handleChange}
             placeholder={dictionary.footer.contact.modal.emailPlaceholder}
-            className={`
-              w-full px-4 py-3 
-              bg-sf-cont border rounded-lg
-              text-on-sf placeholder:text-on-sf-var
-              transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-pr-fix focus:border-transparent
-              ${errors.email 
-                ? 'border-red-500 dark:border-red-500' 
-                : 'border-ol-var hover:border-ol-var/60'
-              }
-            `}
+            className={getInputClasses(!!errors.email)}
             disabled={isSubmitting}
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? 'email-error' : undefined}
           />
           {errors.email && (
-            <p id="email-error" className="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            <p id="email-error" className={CONTACT_MODAL_STYLES.field.error}>
               {errors.email}
             </p>
           )}
         </div>
 
         {/* Subject Field */}
-        <div>
-          <label 
-            htmlFor="contact-subject" 
-            className="block text-sm font-medium text-on-sf mb-2"
-          >
+        <div className={CONTACT_MODAL_STYLES.field.wrapper}>
+          <label htmlFor="contact-subject" className={CONTACT_MODAL_STYLES.field.label}>
             {dictionary.footer.contact.modal.subjectLabel}
-            <span className="text-red-500 ml-1" aria-label="обязательное поле">*</span>
+            <span 
+              className={CONTACT_MODAL_STYLES.field.required} 
+              aria-label={dictionary.footer.contact.modal.requiredField}
+            >
+              *
+            </span>
           </label>
           <input
             id="contact-subject"
@@ -210,36 +186,28 @@ export function ContactModal({
             onChange={handleChange}
             placeholder={dictionary.footer.contact.modal.subjectPlaceholder}
             maxLength={200}
-            className={`
-              w-full px-4 py-3 
-              bg-sf-cont border rounded-lg
-              text-on-sf placeholder:text-on-sf-var
-              transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-pr-fix focus:border-transparent
-              ${errors.subject 
-                ? 'border-red-500 dark:border-red-500' 
-                : 'border-ol-var hover:border-ol-var/60'
-              }
-            `}
+            className={getInputClasses(!!errors.subject)}
             disabled={isSubmitting}
             aria-invalid={!!errors.subject}
             aria-describedby={errors.subject ? 'subject-error' : undefined}
           />
           {errors.subject && (
-            <p id="subject-error" className="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            <p id="subject-error" className={CONTACT_MODAL_STYLES.field.error}>
               {errors.subject}
             </p>
           )}
         </div>
 
         {/* Message Field */}
-        <div>
-          <label 
-            htmlFor="contact-message" 
-            className="block text-sm font-medium text-on-sf mb-2"
-          >
+        <div className={CONTACT_MODAL_STYLES.field.wrapper}>
+          <label htmlFor="contact-message" className={CONTACT_MODAL_STYLES.field.label}>
             {dictionary.footer.contact.modal.messageLabel}
-            <span className="text-red-500 ml-1" aria-label="обязательное поле">*</span>
+            <span 
+              className={CONTACT_MODAL_STYLES.field.required} 
+              aria-label={dictionary.footer.contact.modal.requiredField}
+            >
+              *
+            </span>
           </label>
           <textarea
             id="contact-message"
@@ -249,61 +217,38 @@ export function ContactModal({
             placeholder={dictionary.footer.contact.modal.messagePlaceholder}
             rows={6}
             maxLength={5000}
-            className={`
-              w-full px-4 py-3 
-              bg-sf-cont border rounded-lg
-              text-on-sf placeholder:text-on-sf-var
-              transition-colors duration-200
-              resize-none
-              focus:outline-none focus:ring-2 focus:ring-pr-fix focus:border-transparent
-              ${errors.message 
-                ? 'border-red-500 dark:border-red-500' 
-                : 'border-ol-var hover:border-ol-var/60'
-              }
-            `}
+            className={getInputClasses(!!errors.message, true)}
             disabled={isSubmitting}
             aria-invalid={!!errors.message}
             aria-describedby={errors.message ? 'message-error' : undefined}
           />
           {errors.message && (
-            <p id="message-error" className="mt-1.5 text-sm text-red-600 dark:text-red-400">
+            <p id="message-error" className={CONTACT_MODAL_STYLES.field.error}>
               {errors.message}
             </p>
           )}
-          <p className="mt-1.5 text-xs text-on-sf-var">
+          <p className={CONTACT_MODAL_STYLES.field.hint}>
             {formData.message.length} / 5000
           </p>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 pt-2">
+        <div className={CONTACT_MODAL_STYLES.buttons.wrapper}>
           <button
             type="submit"
             disabled={isSubmitting || status.type === 'success'}
-            className="
-              flex-1 px-6 py-3 
-              bg-pr-cont hover:bg-pr-fix 
-              text-on-pr font-medium rounded-lg
-              transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-pr-fix focus:ring-offset-2
-              disabled:opacity-50 disabled:cursor-not-allowed
-            "
+            className={CONTACT_MODAL_STYLES.buttons.primary}
           >
-            {isSubmitting ? 'Отправка...' : dictionary.footer.contact.modal.submitButton}
+            {isSubmitting 
+              ? dictionary.footer.contact.modal.submitting 
+              : dictionary.footer.contact.modal.submitButton
+            }
           </button>
           <button
             type="button"
             onClick={handleClose}
             disabled={isSubmitting}
-            className="
-              px-6 py-3 
-              bg-transparent border-2 border-ol-var
-              text-on-sf-var hover:text-on-sf hover:border-ol-var/60
-              font-medium rounded-lg
-              transition-colors duration-200
-              focus:outline-none focus:ring-2 focus:ring-pr-fix focus:ring-offset-2
-              disabled:opacity-50 disabled:cursor-not-allowed
-            "
+            className={CONTACT_MODAL_STYLES.buttons.secondary}
           >
             {dictionary.footer.contact.modal.cancelButton}
           </button>
