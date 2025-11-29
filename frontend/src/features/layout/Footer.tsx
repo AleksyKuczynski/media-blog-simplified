@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { ContactModal } from './ContactModal';
 import { FOOTER_STYLES } from './styles';
+import { getFooterNavigationItems } from '@/config/i18n/helpers/navigation';
 
 interface FooterProps {
   lang: Lang;
@@ -14,7 +15,9 @@ interface FooterProps {
 }
 
 export default function Footer({ lang, dictionary }: FooterProps) {
-  const { footer, navigation, seo } = dictionary;
+  const { footer, seo } = dictionary;
+  const footerNavItems = getFooterNavigationItems(dictionary, lang);
+
   const currentYear = new Date().getFullYear();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
@@ -90,38 +93,16 @@ export default function Footer({ lang, dictionary }: FooterProps) {
                 className={FOOTER_STYLES.nav.wrapper}
                 aria-label={footer.quickLinks.ariaLabel}
               >
-                <div className={FOOTER_STYLES.nav.itemWrapper}>
-                  <Link 
-                    href={`/${lang}`}
-                    className={FOOTER_STYLES.link.base}
-                  >
-                    {navigation.labels.home}
-                  </Link>
-                </div>
-                <div className={FOOTER_STYLES.nav.itemWrapper}>
-                  <Link 
-                    href={`/${lang}/articles`}
-                    className={FOOTER_STYLES.link.base}
-                  >
-                    {navigation.labels.articles}
-                  </Link>
-                </div>
-                <div className={FOOTER_STYLES.nav.itemWrapper}>
-                  <Link 
-                    href={`/${lang}/authors`}
-                    className={FOOTER_STYLES.link.base}
-                  >
-                    {navigation.labels.authors}
-                  </Link>
-                </div>
-                <div className={FOOTER_STYLES.nav.itemWrapper}>
-                  <Link 
-                    href={`/${lang}/rubrics`}
-                    className={FOOTER_STYLES.link.base}
-                  >
-                    {navigation.labels.rubrics}
-                  </Link>
-                </div>
+                {footerNavItems.map((item) => (
+                  <div key={item.key} className={FOOTER_STYLES.nav.itemWrapper}>
+                    <Link 
+                      href={item.href}
+                      className={FOOTER_STYLES.link.base}
+                    >
+                      {item.label}
+                    </Link>
+                  </div>
+                ))}
               </nav>
             </section>
 

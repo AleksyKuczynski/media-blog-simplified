@@ -1,6 +1,4 @@
-// src/main/components/Navigation/Navigation.tsx
-// FIXED: Removed invalid includeMobile prop from CompleteNavigationSchema
-
+// features/navigation/Navigation.tsx
 'use client'
 
 import { usePathname } from 'next/navigation'
@@ -9,6 +7,7 @@ import MobileNavigation from './MobileNav/MobileNav'
 import SkipLinks from './SkipLinks'
 import { Dictionary, Lang } from '@/config/i18n'
 import { CompleteNavigationSchema } from '@/shared/seo'
+import { HEADER_STYLES } from './styles'
 
 interface NavigationProps {
   dictionary: Dictionary
@@ -17,21 +16,14 @@ interface NavigationProps {
   breadcrumbs?: Array<{ name: string; href: string }>
 }
 
-export interface NavProps extends NavigationProps {
-  isSearchPage: boolean
-  currentPageTitle?: string
-}
-
 export default function Navigation({ 
   dictionary, 
   lang,
   currentPath,
-  breadcrumbs = []
 }: NavigationProps) {
   const pathname = usePathname()
   const isSearchPage = pathname === '/ru/search'
   
-  // Determine current page context using new dictionary structure
   const getCurrentPageTitle = (): string => {
     if (pathname === '/ru') return dictionary.navigation.labels.home
     if (pathname.startsWith('/ru/articles')) return dictionary.navigation.labels.articles
@@ -45,24 +37,20 @@ export default function Navigation({
 
   return (
     <>
-      {/* Enhanced skip links with dictionary structure */}
       <SkipLinks dictionary={dictionary} />
       
-      {/* FIXED: Complete navigation schema with correct props only */}
       <CompleteNavigationSchema 
         dictionary={dictionary}
         currentPath={currentPath || pathname.replace('/ru', '') || '/'}
       />
       
-      {/* Enhanced navigation wrapper with better semantic markup */}
       <header 
         role="banner" 
-        className="fixed top-0 left-0 right-0 z-50"
+        className={HEADER_STYLES.wrapper}
         itemScope 
         itemType="https://schema.org/WebSite"
         aria-label={dictionary.navigation.accessibility.mainNavigation}
       >
-        {/* Enhanced site identity for schema with correct property names */}
         <meta itemProp="name" content={dictionary.seo.site.name} />
         <meta itemProp="url" content={dictionary.seo.site.url} />
         <meta itemProp="description" content={dictionary.seo.site.description} />

@@ -17,7 +17,8 @@ export interface NavigationItem {
  * Generate navigation items using dictionary
  * Now accepts lang parameter for proper URL generation
  */
-export const getNavigationItems = (
+// All possible navigation items
+export const getAllNavigationItems = (
   dictionary: Dictionary,
   lang: Lang
 ): NavigationItem[] => {
@@ -73,17 +74,30 @@ export const getNavigationItems = (
   ];
 };
 
-/**
- * Generate navigation elements for schema markup
- * This is essentially an alias for getNavigationItems for semantic clarity
- * Uses DEFAULT_LANG for schema generation (schemas are language-neutral)
- */
+// Header navigation - excludes home (logo) and search (separate UI)
+export const getHeaderNavigationItems = (
+  dictionary: Dictionary,
+  lang: Lang
+): NavigationItem[] => {
+  const all = getAllNavigationItems(dictionary, lang);
+  return all.filter(item => ['articles', 'rubrics', 'authors'].includes(item.key));
+};
+
+// Footer navigation - complete set
+export const getFooterNavigationItems = (
+  dictionary: Dictionary,
+  lang: Lang
+): NavigationItem[] => {
+  return getAllNavigationItems(dictionary, lang);
+};
+
+// Legacy alias for backward compatibility
+export const getNavigationItems = getHeaderNavigationItems;
+
+// Schema generation - complete set
 export const generateNavigationElements = (dictionary: Dictionary): NavigationItem[] => {
-  // For schema markup, we use 'en' as default since schemas should be language-neutral
-  // But in reality, we should pass the actual lang from the component
-  // This is a limitation of the current schema system that assumes single language
   const { DEFAULT_LANG } = require('@/config/constants/constants');
-  return getNavigationItems(dictionary, DEFAULT_LANG);
+  return getAllNavigationItems(dictionary, DEFAULT_LANG);
 };
 
 /**
