@@ -1,7 +1,8 @@
-// src/main/components/Main/ArticleListSkeleton.tsx
+// src/features/article-display/ArticleListSkeleton.tsx
 
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils/cn';
 import { ArticleCardSkeletonVariant } from './ArticleCardVariant';
+import { ARTICLE_LIST_SKELETON_STYLES } from './styles';
 
 interface ArticleListSkeletonProps {
   variant?: 'grid' | 'list';
@@ -17,25 +18,23 @@ export function ArticleListSkeleton({
   className 
 }: ArticleListSkeletonProps) {
   const gridClasses = variant === 'grid' 
-    ? 'grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-2 gap-6 lg:gap-8'
-    : 'flex flex-col gap-4';
+    ? ARTICLE_LIST_SKELETON_STYLES.container.grid
+    : ARTICLE_LIST_SKELETON_STYLES.container.list;
 
   return (
     <section 
-      className={cn('article-list', className)} 
+      className={cn(ARTICLE_LIST_SKELETON_STYLES.section, className)} 
       role="status" 
       aria-label="Loading articles..."
     >
       {/* Count skeleton */}
       {showCount && (
-        <div className="mb-6">
-          <div className="h-4 w-32 bg-on-sf/10 rounded animate-pulse" />
-        </div>
+        <div className={ARTICLE_LIST_SKELETON_STYLES.countSkeleton} />
       )}
       
       {/* Grid skeleton */}
       <div className={cn(
-        'container mx-auto py-6 md:py-8 lg:py-12 sm:px-6 2xl:px-8',
+        ARTICLE_LIST_SKELETON_STYLES.container.base,
         gridClasses
       )}>
         {Array.from({ length: count }, (_, index) => (
@@ -47,7 +46,7 @@ export function ArticleListSkeleton({
         ))}
       </div>
       
-      <span className="sr-only">Loading articles...</span>
+      <span className={ARTICLE_LIST_SKELETON_STYLES.srOnly}>Loading articles...</span>
     </section>
   );
 }

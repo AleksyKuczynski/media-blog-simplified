@@ -1,11 +1,12 @@
-// src/main/components/Main/ArticleList.tsx
+// src/features/article-display/ArticleList.tsx
 
 import { Suspense } from 'react';
 import { Dictionary, Lang } from '@/config/i18n';
-import { ArticleSlugInfo } from '@/api/directus';
 import ArticleCard from './ArticleCard';
-import { processTemplate } from '@/config/i18n/helpers/templates';
 import { ArticleCardSkeletonVariant } from './ArticleCardVariant';
+import { ARTICLE_LIST_STYLES } from './styles';
+import { ArticleSlugInfo } from '@/api/directus';
+import { processTemplate } from '@/config/i18n/helpers/templates';
 
 interface ArticleListProps {
   readonly slugInfos: ArticleSlugInfo[];
@@ -21,64 +22,39 @@ interface ArticleListProps {
   readonly errorMessage?: string;
 }
 
-/**
- * Enhanced ArticleList - FIXED to use only existing dictionary entries
- * NO HARDCODED TEXT - comprehensive dictionary integration
- */
-export default function ArticleList({ 
-  slugInfos, 
-  lang, 
-  dictionary,
-  authorSlug, 
-  categorySlug,
+export default function ArticleList({
+  slugInfos,
+  lang,
   rubricSlug,
+  authorSlug,
+  dictionary,
   variant = 'grid',
   showCount = false,
+  errorMessage,
   className = '',
-  ariaLabel,
-  errorMessage
+  ariaLabel
 }: ArticleListProps) {
   
-  // Context-aware empty message generator - FIXED to use existing dictionary entries
-  function getContextualEmptyMessage(): string {
-    if (categorySlug) {
-      // Use existing emptyCollection template with collection label
-      return processTemplate(dictionary.sections.templates.emptyCollection, {
+  const gridClasses = variant === 'grid' 
+    ? ARTICLE_LIST_STYLES.container.grid
+    : ARTICLE_LIST_STYLES.container.list;
+
+  // Empty state
+  if (slugInfos.length === 0) {
+    const contextualMessage = errorMessage || 
+      processTemplate(dictionary.sections.templates.emptyCollection, {
         collection: dictionary.sections.labels.collection,
         items: dictionary.sections.labels.articles
       });
-    }
-    if (rubricSlug) {
-      // Use existing content.templates.emptyRubric which is specifically for this use case
-      return processTemplate(dictionary.content.templates.emptyRubric, {
-        name: dictionary.sections.labels.collection // Generic term to avoid specific rubric name
-      });
-    }
-    if (authorSlug) {
-      // Use base noArticlesFound message - keep it simple to avoid complex template construction
-      return dictionary.sections.articles.noArticlesFound;
-    }
-    // Fallback to base dictionary entry
-    return dictionary.sections.articles.noArticlesFound;
-  }
-  
-  // Enhanced empty state with context-aware messages
-  if (slugInfos.length === 0) {
-    const contextualMessage = getContextualEmptyMessage();
-    
+
     return (
-      <div 
-        className="text-center py-12"
-        role="status"
-        aria-label={dictionary.common.status.empty}
-      >
-        <div className="text-gray-600 dark:text-gray-400">
+      <div className={ARTICLE_LIST_STYLES.container.base}>
+        <div className={ARTICLE_LIST_STYLES.empty.wrapper}>
           <svg 
-            className="mx-auto h-12 w-12 mb-4 opacity-50" 
+            className={ARTICLE_LIST_STYLES.empty.icon}
             fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
-            aria-hidden="true"
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
           >
             <path 
               strokeLinecap="round" 
@@ -87,10 +63,10 @@ export default function ArticleList({
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
             />
           </svg>
-          <p className="text-lg mb-2">
+          <p className={ARTICLE_LIST_STYLES.empty.title}>
             {errorMessage || contextualMessage}
           </p>
-          <p className="text-sm opacity-75">
+          <p className={ARTICLE_LIST_STYLES.empty.description}>
             {processTemplate(dictionary.sections.templates.emptyCollection, {
               collection: dictionary.sections.labels.collection,
               items: dictionary.sections.labels.articles
@@ -101,28 +77,27 @@ export default function ArticleList({
     );
   }
 
-  // Enhanced loading component with better UX
+  // Loading fallback
   const LoadingFallback = () => (
-  <div 
-    className={`container mx-auto ${gridClasses} py-6 md:py-8 lg:py-12 sm:px-6 2xl:px-8`}
-    role="status" 
-    aria-label={dictionary.common.status.loading}
-  >
-    {/* Show appropriate number of skeleton cards based on layout */}
-    {Array.from({ length: variant === 'grid' ? 6 : 4 }, (_, index) => (
-      <ArticleCardSkeletonVariant 
-        key={index}
-        layout="regular"
-        showImage={true}
-      />
-    ))}
-    <span className="sr-only">{dictionary.common.status.loading}</span>
-  </div>
-);
+    <div 
+      className={`${ARTICLE_LIST_STYLES.container.base} ${gridClasses}`}
+      role="status" 
+      aria-label={dictionary.common.status.loading}
+    >
+      {Array.from({ length: variant === 'grid' ? 6 : 4 }, (_, index) => (
+        <ArticleCardSkeletonVariant 
+          key={index}
+          layout="regular"
+          showImage={true}
+        />
+      ))}
+      <span className="sr-only">{dictionary.common.status.loading}</span>
+    </div>
+  );
 
-  // Count display for better UX
+  // Count display
   const ArticleCount = () => showCount ? (
-    <div className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+    <div className={ARTICLE_LIST_STYLES.count}>
       {processTemplate(dictionary.sections.templates.totalCount, {
         count: slugInfos.length.toString(),
         countLabel: dictionary.common.count.articles
@@ -130,21 +105,16 @@ export default function ArticleList({
     </div>
   ) : null;
 
-  // Grid layout classes based on variant
-  const gridClasses = variant === 'grid' 
-    ? 'grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-2 gap-6 lg:gap-8'
-    : 'flex flex-col gap-4';
-
   return (
     <section
-      className={`article-list ${className}`}
+      className={`${ARTICLE_LIST_STYLES.section} ${className}`}
       aria-label={ariaLabel || dictionary.sections.labels.articles}
       role="region"
     >
       <ArticleCount />
       
       <Suspense fallback={<LoadingFallback />}>
-        <div className={`container mx-auto ${gridClasses} py-6 md:py-8 lg:py-12 sm:px-6 2xl:px-8`}>
+        <div className={`${ARTICLE_LIST_STYLES.container.base} ${gridClasses}`}>
           {slugInfos.map((slugInfo, index) => (
             <ArticleCard 
               key={slugInfo.slug}
@@ -154,7 +124,6 @@ export default function ArticleList({
               rubricSlug={rubricSlug}
               layout={slugInfo.layout}
               dictionary={dictionary}
-              // Enhanced accessibility
               aria-posinset={index + 1}
               aria-setsize={slugInfos.length}
             />

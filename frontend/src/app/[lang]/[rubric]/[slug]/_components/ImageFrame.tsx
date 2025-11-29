@@ -36,7 +36,7 @@
 
 import { memo } from 'react';
 import Image from 'next/image';
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils/cn';
 import { MEDIA_STYLES } from './article.styles';
 
 export interface ImageAttributes {

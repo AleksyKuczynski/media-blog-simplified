@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils/cn';
 import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
 import { Lang } from '@/config/i18n';
 

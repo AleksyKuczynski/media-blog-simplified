@@ -1,8 +1,8 @@
 // src/main/components/Search/SearchInput.tsx - Enhanced with new accessibility features
 import React from 'react';
 import { SearchUIState } from '../types';
-import { cn } from '@/lib/utils/utils';
 import { ANIMATION_DURATION } from '@/shared/ui/constants';
+import { cn } from '@/lib/utils';
 
 interface SearchInputProps {
   state: SearchUIState;

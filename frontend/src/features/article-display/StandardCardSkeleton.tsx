@@ -1,8 +1,8 @@
 // src/main/components/ArticleCards/StandardCardSkeleton.tsx
 
-import { cn } from '@/lib/utils/utils';
+import { cn } from '@/lib/utils/cn';
 // ✅ Import from StandardCard where styling logic lives
-import { STANDARD_CARD_SKELETON_STYLES } from './StandardCard';
+import { STANDARD_CARD_SKELETON_STYLES } from './styles';
 
 interface StandardCardSkeletonProps {
   layout?: 'regular' | 'promoted' | 'latest';

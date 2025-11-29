@@ -1,9 +1,9 @@
 // src/main/components/Article/RelatedArticles/RelatedArticles.tsx
-// PHASE 2A: Production version with carousel display
 
 import { Dictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchArticleCard, fetchRelatedArticles, DIRECTUS_URL } from '@/api/directus';
 import RelatedArticlesCarousel, { CarouselArticle } from './RelatedArticlesCarousel';
+import { RELATED_ARTICLES_STYLES } from './styles';
 
 interface RelatedArticlesProps {
   currentArticleSlug: string;
@@ -13,7 +13,6 @@ interface RelatedArticlesProps {
   }>;
   lang: Lang;
   dictionary: Dictionary;
-  className?: string;
 }
 
 const MINIMUM_ARTICLES = 10;
@@ -35,7 +34,6 @@ export default async function RelatedArticles({
   articleCategories,
   lang,
   dictionary,
-  className = "mt-12 pt-8 border-t border-gray-200"
 }: RelatedArticlesProps) {
   
   try {
@@ -128,8 +126,8 @@ export default async function RelatedArticles({
         slug: article.slug,
         title: article.title,
         publishedAt: article.published_at,
-        rubricSlug: article.rubric_slug || 'articles', // Fallback to 'articles' if no rubric
-        imageSrc, // Full URL, not just ID
+        rubricSlug: article.rubric_slug,
+        imageSrc,
         formattedDate,
       };
     });
@@ -137,32 +135,21 @@ export default async function RelatedArticles({
     // Step 5: Render carousel
     return (
       <section 
-        className={className}
-        aria-label={dictionary.sections.rubrics.readMoreAbout || "Related articles"}
+        className={RELATED_ARTICLES_STYLES.section}
+        aria-label={dictionary.sections.rubrics.readMoreAbout}
       >
-        <h2 className="text-2xl font-bold mb-6 text-on-sf">
-          {dictionary.sections.rubrics.readMoreAbout || "Read more"}
+        <h2 className={RELATED_ARTICLES_STYLES.heading}>
+          {dictionary.sections.rubrics.readMoreAbout}
         </h2>
 
         <RelatedArticlesCarousel
           articles={carouselArticles}
           lang={lang}
         />
-
-        {/* Debug info - can be removed later */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-4 text-xs text-on-sf-var">
-            Showing {carouselArticles.length} articles
-            {finalArticles.length < MINIMUM_ARTICLES && 
-              ` (including ${finalArticles.length - relatedArticles.length} latest articles)`
-            }
-          </div>
-        )}
       </section>
     );
 
   } catch (error) {
-    console.error('Error in RelatedArticles:', error);
     return null; // Don't render on error
   }
 }

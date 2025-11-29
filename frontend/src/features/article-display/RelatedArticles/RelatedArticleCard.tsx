@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { cn } from '@/lib/utils/utils';
 import { Lang } from '@/config/i18n';
+import { RELATED_CARD_SKELETON_STYLES, RELATED_CARD_STYLES } from './styles';
 
 interface RelatedArticleCardProps {
   slug: string;
@@ -19,41 +19,6 @@ interface RelatedArticleCardProps {
  * Compact vertical card optimized for horizontal carousel
  * Design: Fixed width, image on top, minimal text
  */
-
-// ✅ STYLE CONSTANTS - Following project pattern
-export const RELATED_CARD_STYLES = {
-  // Card container
-  container: 'group block w-full',
-  
-  // Card structure
-  card: 'bg-sf-cont rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col',
-  
-  // Image container
-  imageContainer: 'relative w-full aspect-video overflow-hidden bg-sf-hi',
-  
-  // Image element
-  image: 'object-cover group-hover:scale-110 transition-transform duration-300',
-  
-  // Content container
-  content: 'p-4 flex flex-col flex-grow',
-  
-  // Title
-  title: 'text-base font-semibold line-clamp-2 mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200 flex-grow',
-  
-  // Date
-  date: 'text-xs text-on-sf-var mt-auto',
-} as const;
-
-// ✅ SKELETON STYLES
-export const RELATED_CARD_SKELETON_STYLES = {
-  container: RELATED_CARD_STYLES.container,
-  card: cn(RELATED_CARD_STYLES.card, 'animate-pulse'),
-  imageContainer: cn(RELATED_CARD_STYLES.imageContainer, 'bg-sf-hi'),
-  content: RELATED_CARD_STYLES.content,
-  title: 'h-4 bg-on-sf/10 rounded mb-2',
-  titleSecond: 'h-4 w-3/4 bg-on-sf/10 rounded mb-2',
-  date: 'h-3 w-20 bg-on-sf/10 rounded',
-} as const;
 
 export default function RelatedArticleCard({
   slug,

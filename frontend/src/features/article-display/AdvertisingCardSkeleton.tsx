@@ -1,8 +1,7 @@
 // src/main/components/ArticleCards/AdvertisingCardSkeleton.tsx
 
-import { cn } from '@/lib/utils/utils';
-// ✅ Import style constants from parent component
-import { ADVERTISING_CARD_SKELETON_STYLES } from './AdvertisingCard';
+import { cn } from '@/lib/utils/cn';
+import { ADVERTISING_CARD_SKELETON_STYLES } from './styles';
 
 export function AdvertisingCardSkeleton() {
   return (

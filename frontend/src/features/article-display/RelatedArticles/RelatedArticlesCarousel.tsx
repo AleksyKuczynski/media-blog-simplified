@@ -1,17 +1,17 @@
-// src/main/components/Article/RelatedArticles/RelatedArticlesCarousel.tsx
-// PHASE 2B: Full horizontal scroll carousel
+// src/features/article-display/RelatedArticles/RelatedArticlesCarousel.tsx
 
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
 import RelatedArticleCard, { RelatedArticleCardSkeleton } from './RelatedArticleCard';
 import { Lang } from '@/config/i18n';
+import { RELATED_CAROUSEL_STYLES } from './styles';
 
 export interface CarouselArticle {
   slug: string;
   title: string;
   publishedAt: string;
-  imageSrc?: string; // Full image URL
+  imageSrc?: string;
   rubricSlug: string;
   formattedDate: string;
 }
@@ -22,18 +22,6 @@ interface RelatedArticlesCarouselProps {
   isLoading?: boolean;
 }
 
-/**
- * RelatedArticlesCarousel - PHASE 2B: Full horizontal carousel
- * 
- * Features:
- * - Horizontal scroll with snap points
- * - Arrow navigation (desktop)
- * - Gradient indicators on edges
- * - Peek effect (partial cards visible)
- * - Touch/swipe support (native CSS)
- * - Responsive behavior
- * - Accessible keyboard navigation
- */
 export default function RelatedArticlesCarousel({
   articles,
   lang,
@@ -44,41 +32,35 @@ export default function RelatedArticlesCarousel({
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
-  // Check scroll position to show/hide arrows
   const updateScrollButtons = () => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = container;
-    
-    setCanScrollLeft(scrollLeft > 10); // Small threshold to account for rounding
+    setCanScrollLeft(scrollLeft > 10);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
   };
 
-  // Set up scroll listener
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     updateScrollButtons();
-
     container.addEventListener('scroll', updateScrollButtons);
     return () => container.removeEventListener('scroll', updateScrollButtons);
   }, [articles]);
 
-  // Update on window resize
   useEffect(() => {
     const handleResize = () => updateScrollButtons();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Scroll by one card width
   const scroll = (direction: 'left' | 'right') => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const cardWidth = 300; // Approximate card width + gap
+    const cardWidth = 300;
     const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
 
     container.scrollBy({
@@ -87,12 +69,11 @@ export default function RelatedArticlesCarousel({
     });
   };
 
-  // Loading state
   if (isLoading) {
     return (
-      <div className="flex gap-4 overflow-hidden">
+      <div className={RELATED_CAROUSEL_STYLES.scrollContainer}>
         {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className="min-w-[280px] max-w-[300px]">
+          <div key={index} className={RELATED_CAROUSEL_STYLES.cardWrapper}>
             <RelatedArticleCardSkeleton />
           </div>
         ))}
@@ -100,21 +81,21 @@ export default function RelatedArticlesCarousel({
     );
   }
 
-  // Empty state - should not happen if parent handles it correctly
   if (!articles || articles.length === 0) {
     return null;
   }
 
   return (
     <div 
-      className="relative"
+      className={RELATED_CAROUSEL_STYLES.wrapper}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Left gradient fade indicator */}
+      {/* Left gradient */}
       {canScrollLeft && (
         <div 
-          className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-sf via-sf/50 to-transparent z-10 pointer-events-none"
+          className={RELATED_CAROUSEL_STYLES.gradientLeft}
+          style={{ opacity: canScrollLeft ? 1 : 0 }}
           aria-hidden="true"
         />
       )}
@@ -122,10 +103,10 @@ export default function RelatedArticlesCarousel({
       {/* Scroll container */}
       <div
         ref={scrollContainerRef}
-        className="flex gap-4 overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide pb-4"
+        className={RELATED_CAROUSEL_STYLES.scrollContainer}
         style={{
-          scrollbarWidth: 'none', // Firefox
-          msOverflowStyle: 'none', // IE/Edge
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
         }}
         role="list"
         aria-label="Related articles carousel"
@@ -134,7 +115,7 @@ export default function RelatedArticlesCarousel({
           <div 
             key={article.slug} 
             role="listitem"
-            className="min-w-[280px] max-w-[300px] snap-center flex-shrink-0"
+            className={RELATED_CAROUSEL_STYLES.cardWrapper}
           >
             <RelatedArticleCard
               slug={article.slug}
@@ -149,68 +130,56 @@ export default function RelatedArticlesCarousel({
         ))}
       </div>
 
-      {/* Right gradient fade indicator */}
+      {/* Right gradient */}
       {canScrollRight && (
         <div 
-          className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-sf via-sf/50 to-transparent z-10 pointer-events-none"
+          className={RELATED_CAROUSEL_STYLES.gradientRight}
+          style={{ opacity: canScrollRight ? 1 : 0 }}
           aria-hidden="true"
         />
       )}
 
-      {/* Navigation arrows - Desktop only, visible on hover */}
-      <div className="hidden lg:block">
-        {canScrollLeft && (
-          <button
-            onClick={() => scroll('left')}
-            className={`absolute left-2 top-1/2 -translate-y-1/2 z-20 
-              w-10 h-10 rounded-full bg-sf-cont/90 hover:bg-sf-cont
-              border border-ol-var shadow-lg
-              flex items-center justify-center
-              transition-all duration-300
-              ${isHovered ? 'opacity-100' : 'opacity-0'}
-              hover:scale-110 active:scale-95`}
-            aria-label="Scroll to previous articles"
-            type="button"
+      {/* Navigation buttons */}
+      {canScrollLeft && (
+        <button
+          onClick={() => scroll('left')}
+          className={`${RELATED_CAROUSEL_STYLES.navButton.base} ${RELATED_CAROUSEL_STYLES.navButton.left}`}
+          style={{ opacity: isHovered ? 1 : 0 }}
+          aria-label="Scroll to previous articles"
+          type="button"
+        >
+          <svg 
+            className={RELATED_CAROUSEL_STYLES.navButton.icon}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+            aria-hidden="true"
           >
-            <svg 
-              className="w-5 h-5 text-on-sf" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-        )}
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+      )}
 
-        {canScrollRight && (
-          <button
-            onClick={() => scroll('right')}
-            className={`absolute right-2 top-1/2 -translate-y-1/2 z-20
-              w-10 h-10 rounded-full bg-sf-cont/90 hover:bg-sf-cont
-              border border-ol-var shadow-lg
-              flex items-center justify-center
-              transition-all duration-300
-              ${isHovered ? 'opacity-100' : 'opacity-0'}
-              hover:scale-110 active:scale-95`}
-            aria-label="Scroll to next articles"
-            type="button"
+      {canScrollRight && (
+        <button
+          onClick={() => scroll('right')}
+          className={`${RELATED_CAROUSEL_STYLES.navButton.base} ${RELATED_CAROUSEL_STYLES.navButton.right}`}
+          style={{ opacity: isHovered ? 1 : 0 }}
+          aria-label="Scroll to next articles"
+          type="button"
+        >
+          <svg 
+            className={RELATED_CAROUSEL_STYLES.navButton.icon}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+            aria-hidden="true"
           >
-            <svg 
-              className="w-5 h-5 text-on-sf" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        )}
-      </div>
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      )}
 
-      {/* Hide scrollbar - Additional CSS */}
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
