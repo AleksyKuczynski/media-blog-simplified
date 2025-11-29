@@ -1,10 +1,10 @@
-// src/main/components/Navigation/Breadcrumbs/SmartBreadcrumbs.tsx
-// Ensures all text comes from dictionary and all paths use correct lang parameter
-
+// src/features/navigation/Breadcrumbs/SmartBreadcrumbs.tsx
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/shared/primitives/Icons';
 import { Dictionary, Lang } from '@/config/i18n';
-import { detectBreadcrumbContext, generateContextualBreadcrumbs } from '@/lib/utils/breadcrumbContextDetector';
+import { detectBreadcrumbContext, generateContextualBreadcrumbs } from './lib/breadcrumbContextDetector';
+import { BREADCRUMB_STYLES } from './styles';
+import { generateSmartBreadcrumbSchemas, BreadcrumbSchemas } from '@/shared/seo/schemas/BreadcrumbSchema';
 
 interface SmartBreadcrumbsProps {
   articleData: {
@@ -39,7 +39,7 @@ export default async function SmartBreadcrumbs({
   articleData,
   dictionary,
   lang,
-  className = "text-sm mb-8 overflow-x-auto"
+  className
 }: SmartBreadcrumbsProps) {
   
   // Detect context from referrer
@@ -59,115 +59,46 @@ export default async function SmartBreadcrumbs({
   // Get base URL for structured data
   const baseUrl = dictionary.seo.site.url.replace(/\/$/, '');
 
-  // Generate JSON-LD structured data for primary path
-  const primaryBreadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "@id": `${baseUrl}/${lang}/${articleData.rubricSlug}/${articleData.slug}#primary-breadcrumb`,
-    "numberOfItems": displayPath.length,
-    "itemListElement": displayPath.map((item, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "name": item.label,
-      "item": {
-        "@type": "WebPage",
-        "@id": `${baseUrl}${item.href}`,
-        "url": `${baseUrl}${item.href}`,
-        "name": item.label
-      }
-    }))
-  };
-
-  // Generate alternative breadcrumb schemas for SEO comprehensiveness
-  const alternativeSchemas = seoAlternatives.map((altPath, schemaIndex) => ({
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "@id": `${baseUrl}/${lang}/${articleData.rubricSlug}/${articleData.slug}#alt-breadcrumb-${schemaIndex + 1}`,
-    "numberOfItems": altPath.length,
-    "itemListElement": altPath.map((item, index) => ({
-      "@type": "ListItem",
-      "position": index + 1,
-      "name": item.label,
-      "item": {
-        "@type": "WebPage",
-        "@id": `${baseUrl}${item.href}`,
-        "url": `${baseUrl}${item.href}`,
-        "name": item.label
-      }
-    }))
-  }));
-
-  // Always include canonical path if different from displayed path
-  let canonicalSchema = null;
-  if (JSON.stringify(displayPath) !== JSON.stringify(canonicalPath)) {
-    canonicalSchema = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "@id": `${baseUrl}/${lang}/${articleData.rubricSlug}/${articleData.slug}#canonical-breadcrumb`,
-      "numberOfItems": canonicalPath.length,
-      "itemListElement": canonicalPath.map((item, index) => ({
-        "@type": "ListItem",
-        "position": index + 1,
-        "name": item.label,
-        "item": {
-          "@type": "WebPage",
-          "@id": `${baseUrl}${item.href}`,
-          "url": `${baseUrl}${item.href}`,
-          "name": item.label
-        }
-      }))
-    };
-  }
+  // Generate all breadcrumb schemas
+  const schemas = generateSmartBreadcrumbSchemas(
+    baseUrl,
+    lang,
+    articleData.rubricSlug,
+    articleData.slug,
+    displayPath,
+    canonicalPath,
+    seoAlternatives
+  );
 
   return (
     <>
-      {/* Primary breadcrumb structured data */}
-      <script 
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(primaryBreadcrumbSchema) }}
-      />
-      
-      {/* Canonical breadcrumb structured data (if different) */}
-      {canonicalSchema && (
-        <script 
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(canonicalSchema) }}
-        />
-      )}
-      
-      {/* Alternative breadcrumb structured data */}
-      {alternativeSchemas.map((schema, index) => (
-        <script 
-          key={`alt-schema-${index}`}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
-      ))}
+      {/* Breadcrumb structured data */}
+      <BreadcrumbSchemas schemas={schemas} />
 
       {/* User-facing breadcrumb navigation */}
       <nav 
         aria-label={dictionary.navigation.accessibility.breadcrumbNavigation}
-        className={className}
+        className={className || BREADCRUMB_STYLES.nav.container}
         itemScope 
         itemType="https://schema.org/BreadcrumbList"
       >
-        <ol className="list-none inline-flex items-center whitespace-nowrap">
+        <ol className={BREADCRUMB_STYLES.list.base}>
           {displayPath.map((item, index) => {
             const isLast = index === displayPath.length - 1;
             
             return (
               <li 
                 key={item.href} 
-                className="flex items-center"
+                className={BREADCRUMB_STYLES.item.container}
                 itemProp="itemListElement" 
                 itemScope 
                 itemType="https://schema.org/ListItem"
               >
                 {/* Chevron separator */}
                 {index > 0 && (
-                  <span className="mx-2 flex-shrink-0">
+                  <span className={BREADCRUMB_STYLES.separator.container}>
                     <ChevronRightIcon 
-                      className="w-3 h-3 text-pr-cont" 
+                      className={BREADCRUMB_STYLES.separator.icon}
                       aria-hidden="true" 
                     />
                   </span>
@@ -176,7 +107,7 @@ export default async function SmartBreadcrumbs({
                 {/* Breadcrumb item */}
                 {isLast ? (
                   <span 
-                    className="text-on-sf-var line-clamp-1"
+                    className={BREADCRUMB_STYLES.currentPage.base}
                     itemProp="name"
                     aria-current="page"
                   >
@@ -185,7 +116,7 @@ export default async function SmartBreadcrumbs({
                 ) : (
                   <Link 
                     href={item.href} 
-                    className="text-pr-cont hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200"
+                    className={BREADCRUMB_STYLES.link.base}
                     itemProp="item"
                     aria-label={item.ariaLabel}
                   >

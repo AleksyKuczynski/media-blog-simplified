@@ -5,7 +5,7 @@ import { headers } from 'next/headers';
 import { Lang } from '@/config/i18n';
 import { BreadcrumbContext, SmartBreadcrumbItem } from '@/features/navigation/Breadcrumbs/types';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import Dictionary from '../../config/i18n/types';
+import Dictionary from '../../../../config/i18n/types';
 
 /**
  * Detect user's navigation context based on referrer and URL patterns

@@ -1,6 +1,4 @@
-// src/main/components/Navigation/FilterGroup.tsx
-// FIXED: React hooks rules, type safety, uses dictionary entries
-
+// src/features/navigation/Filter/FilterGroup.tsx
 'use client';
 
 import { Category } from '@/api/directus';
@@ -12,20 +10,13 @@ import { useFilterGroup, useFilterValidation } from './useFilterGroup';
 import SortingControl from './SortingControl';
 import { NavButton } from '@/shared/primitives/NavButton';
 import { CustomButton } from '@/shared/primitives/CustomButton';
-
-// ===================================================================
-// TYPES - Simple and clean
-// ===================================================================
+import { FILTER_STYLES, FILTER_CONTROL_STYLES, FILTER_BUTTON_STYLES } from './styles';
 
 interface FilterGroupProps {
   readonly categories: Category[];
   readonly dictionary: Dictionary;
   readonly lang: Lang;
 }
-
-// ===================================================================
-// MAIN FILTERGROUP COMPONENT - FIXED
-// ===================================================================
 
 export default function FilterGroup({
   categories,
@@ -49,17 +40,16 @@ export default function FilterGroup({
 
   const accessibility = getFilterAccessibilityData(dictionary);
 
-  // Check validation after hooks (not before)
   if (!validation.isValid) {
     console.warn('FilterGroup validation issues:', validation.issues);
   }
 
   try {
     return (
-      <div className="mb-8 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 px-4">
+      <div className={FILTER_STYLES.container.base}>
         {/* Category Selector */}
-        <div className="flex flex-col">
-          <span className="mb-2 text-sm font-medium text-prcolor">
+        <div className={FILTER_CONTROL_STYLES.wrapper}>
+          <span className={FILTER_CONTROL_STYLES.label}>
             {filterLabels.category}
           </span>
           <Dropdown
@@ -71,13 +61,13 @@ export default function FilterGroup({
             <DropdownTrigger>
               <NavButton
                 context="desktop"
-                className="flex items-center justify-between w-full sm:w-48 px-4 py-2 border-2 border-prcolor rounded-md"
+                className={FILTER_BUTTON_STYLES.dropdown.wide}
                 aria-label={accessibility.categorySelector}
               >
-                <span className="truncate">
+                <span className={FILTER_BUTTON_STYLES.text.base}>
                   {selectedCategoryName}
                 </span>
-                <ChevronDownIcon className="h-5 w-5 ml-2 flex-shrink-0" />
+                <ChevronDownIcon className={FILTER_BUTTON_STYLES.icon} />
               </NavButton>
             </DropdownTrigger>
             <DropdownContent>
@@ -86,7 +76,7 @@ export default function FilterGroup({
                   key={item.id}
                   item={item}
                   index={index}
-                  isSelected={Boolean(item.selected)} // FIXED: ensure boolean
+                  isSelected={Boolean(item.selected)}
                   onSelect={() => handleCategoryChange(item)}
                 />
               ))}
@@ -94,17 +84,15 @@ export default function FilterGroup({
           </Dropdown>
         </div>
 
-        {/* Sorting Control - uses existing component */}
-        <div className="flex flex-col">
-          <SortingControl
-            dictionary={dictionary}
-            currentSort={currentSort}
-            lang={lang}
-          />
-        </div>
+        {/* Sorting Control */}
+        <SortingControl
+          dictionary={dictionary}
+          currentSort={currentSort}
+          lang={lang}
+        />
 
-        {/* Reset Button - FIXED: removed invalid size prop */}
-        <div className="flex flex-col justify-end">
+        {/* Reset Button */}
+        <div className={FILTER_CONTROL_STYLES.resetButtonWrapper}>
           <CustomButton
             color="primary"
             onClick={handleReset}
@@ -119,28 +107,27 @@ export default function FilterGroup({
   } catch (error) {
     console.error('FilterGroup: Error rendering component', error);
     
-    // Fallback FilterGroup using dictionary entries
     return (
-      <div className="mb-8 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 px-4">
-        <div className="flex flex-col">
-          <span className="mb-2 text-sm font-medium text-prcolor">
+      <div className={FILTER_STYLES.container.base}>
+        <div className={FILTER_CONTROL_STYLES.wrapper}>
+          <span className={FILTER_CONTROL_STYLES.label}>
             {filterLabels.category}
           </span>
-          <div className="w-full sm:w-48 px-4 py-2 border-2 border-prcolor rounded-md">
+          <div className={FILTER_BUTTON_STYLES.dropdown.wide}>
             {filterLabels.allCategories}
           </div>
         </div>
         
-        <div className="flex flex-col">
-          <span className="mb-2 text-sm font-medium text-prcolor">
+        <div className={FILTER_CONTROL_STYLES.wrapper}>
+          <span className={FILTER_CONTROL_STYLES.label}>
             {filterLabels.sortOrder}
           </span>
-          <div className="px-4 py-2 border-2 border-prcolor rounded-md">
+          <div className={FILTER_BUTTON_STYLES.dropdown.base}>
             {filterLabels.newest}
           </div>
         </div>
         
-        <div className="flex flex-col justify-end">
+        <div className={FILTER_CONTROL_STYLES.resetButtonWrapper}>
           <CustomButton
             color="primary"
             onClick={() => window.location.href = `/${lang}/articles`}
@@ -153,19 +140,14 @@ export default function FilterGroup({
   }
 }
 
-// ===================================================================
-// FILTER GROUP VARIANTS - Different configurations, FIXED
-// ===================================================================
-
 /**
- * MinimalFilterGroup - Simplified version, FIXED
+ * MinimalFilterGroup - Simplified version
  */
 export function MinimalFilterGroup({
   categories,
   dictionary,
   lang
 }: FilterGroupProps) {
-  // FIXED: Hooks called at top level
   const {
     filterLabels,
     selectedCategoryName,
@@ -178,7 +160,7 @@ export function MinimalFilterGroup({
 
   try {
     return (
-      <div className="mb-4 flex items-center justify-between px-4">
+      <div className={FILTER_STYLES.container.minimal}>
         <span className="text-sm text-prcolor">
           {filterLabels.category}: <strong>{selectedCategoryName}</strong>
         </span>
@@ -186,7 +168,6 @@ export function MinimalFilterGroup({
         <CustomButton
           color="primary"
           onClick={handleReset}
-          // FIXED: removed invalid size prop
         >
           {filterLabels.reset}
         </CustomButton>
@@ -196,7 +177,7 @@ export function MinimalFilterGroup({
   } catch (error) {
     console.error('MinimalFilterGroup: Error rendering component', error);
     return (
-      <div className="mb-4 flex items-center justify-between px-4">
+      <div className={FILTER_STYLES.container.minimal}>
         <span className="text-sm text-prcolor">{filterLabels.allCategories}</span>
         <button onClick={() => window.location.href = `/${lang}/articles`}>
           {filterLabels.reset}
@@ -207,14 +188,13 @@ export function MinimalFilterGroup({
 }
 
 /**
- * CategoryOnlyFilter - Just category selection, FIXED
+ * CategoryOnlyFilter - Just category selection
  */
 export function CategoryOnlyFilter({
   categories,
   dictionary,
   lang
 }: FilterGroupProps) {
-  // FIXED: Hooks called at top level
   const {
     categoryItems,
     selectedCategoryName,
@@ -227,7 +207,7 @@ export function CategoryOnlyFilter({
 
   try {
     return (
-      <div className="mb-6 flex justify-center">
+      <div className={FILTER_STYLES.container.centered}>
         <Dropdown
           items={categoryItems}
           onSelect={handleCategoryChange}
@@ -237,10 +217,10 @@ export function CategoryOnlyFilter({
           <DropdownTrigger>
             <NavButton
               context="desktop"
-              className="flex items-center justify-between w-64 px-4 py-2 border-2 border-prcolor rounded-md"
+              className={FILTER_BUTTON_STYLES.dropdown.centered}
             >
-              <span className="truncate">{selectedCategoryName}</span>
-              <ChevronDownIcon className="h-5 w-5 ml-2 flex-shrink-0" />
+              <span className={FILTER_BUTTON_STYLES.text.base}>{selectedCategoryName}</span>
+              <ChevronDownIcon className={FILTER_BUTTON_STYLES.icon} />
             </NavButton>
           </DropdownTrigger>
           <DropdownContent>
@@ -249,7 +229,7 @@ export function CategoryOnlyFilter({
                 key={item.id}
                 item={item}
                 index={index}
-                isSelected={Boolean(item.selected)} // FIXED: ensure boolean
+                isSelected={Boolean(item.selected)}
                 onSelect={() => handleCategoryChange(item)}
               />
             ))}
@@ -262,8 +242,8 @@ export function CategoryOnlyFilter({
     console.error('CategoryOnlyFilter: Error rendering component', error);
     const filterLabels = dictionary.filter;
     return (
-      <div className="mb-6 flex justify-center">
-        <div className="w-64 px-4 py-2 border-2 border-prcolor rounded-md text-center">
+      <div className={FILTER_STYLES.container.centered}>
+        <div className={FILTER_BUTTON_STYLES.dropdown.centered}>
           {filterLabels.labels.allCategories}
         </div>
       </div>

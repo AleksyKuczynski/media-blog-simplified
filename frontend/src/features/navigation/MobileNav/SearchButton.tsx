@@ -1,9 +1,9 @@
-// src/main/components/Navigation/SearchButton.tsx
-// Search toggle button for mobile navigation
-
+// src/features/navigation/MobileNav/SearchButton.tsx
 'use client'
 
 import React from 'react';
+import { SEARCH_BUTTON_STYLES } from './styles';
+import { CloseIcon, SearchIcon } from '@/shared/primitives/Icons';
 
 interface SearchButtonProps {
   isOpen: boolean;
@@ -14,10 +14,6 @@ interface SearchButtonProps {
   buttonRef?: React.RefObject<HTMLButtonElement | null>;
 }
 
-/**
- * SearchButton - Toggle button for mobile search
- * Shows search icon when closed, X icon when open
- */
 export default function SearchButton({
   isOpen,
   onClick,
@@ -33,48 +29,14 @@ export default function SearchButton({
       aria-expanded={isOpen}
       aria-controls={ariaControls}
       aria-label={isOpen ? closeLabel : openLabel}
-      className="
-        p-3 rounded-full bg-sf-hi hover:bg-sf-hst text-on-sf 
-        transition-all duration-200 
-        active:scale-95 touch-manipulation
-      "
+      className={SEARCH_BUTTON_STYLES.button}
       type="button"
     >
-      <div className="w-6 h-6 flex items-center justify-center">
-        {isOpen ? (
-          // Close icon (X)
-          <svg 
-            className="w-5 h-5" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M6 18L18 6M6 6l12 12" 
-            />
-          </svg>
-        ) : (
-          // Search icon
-          <svg 
-            className="w-5 h-5" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" 
-            />
-          </svg>
-        )}
-      </div>
+      {isOpen ? (
+        <CloseIcon className={SEARCH_BUTTON_STYLES.icon} />
+      ) : (
+        <SearchIcon className={SEARCH_BUTTON_STYLES.icon} />
+      )}
     </button>
   );
 }

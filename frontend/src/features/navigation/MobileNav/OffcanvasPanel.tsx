@@ -1,11 +1,11 @@
-// src/main/components/Navigation/OffcanvasPanel.tsx
-// Unified offcanvas panel component for mobile menu and search
-// Can slide from left or right based on props
-
+// src/features/navigation/MobileNav/OffcanvasPanel.tsx
 'use client'
 
 import React from 'react';
 import { MobilePanelOverlay } from './MobilePanelOverlay';
+import { OFFCANVAS_PANEL_STYLES } from './styles';
+import { cn } from '@/lib/utils';
+import { CloseIcon } from '@/shared/primitives/Icons';
 
 interface OffcanvasPanelProps {
   id: string;
@@ -18,11 +18,6 @@ interface OffcanvasPanelProps {
   panelRef?: React.RefObject<HTMLDivElement | null>;
 }
 
-/**
- * OffcanvasPanel - Unified slide panel component
- * Used for both mobile menu (left) and mobile search (right)
- * Handles overlay, animations, and accessibility
- */
 export default function OffcanvasPanel({
   id,
   isOpen,
@@ -34,74 +29,48 @@ export default function OffcanvasPanel({
   panelRef
 }: OffcanvasPanelProps) {
   
-  // Calculate transform classes based on side and open state
   const getTransformClasses = () => {
     if (side === 'left') {
       return isOpen ? 'translate-x-0' : '-translate-x-full';
     } else {
       return isOpen ? 'translate-x-0' : 'translate-x-full';
     }
-  };
+  }
 
-  // Handle clicks inside panel - allow interactions with content
-  const handlePanelClick = (e: React.MouseEvent) => {
-    const target = e.target as HTMLElement;
-    
-    // Check if the clicked element is interactive
-    const isInteractiveElement = 
-      target.tagName === 'A' ||
-      target.tagName === 'BUTTON' ||
-      target.tagName === 'INPUT' ||
-      target.tagName === 'TEXTAREA' ||
-      target.closest('a') ||
-      target.closest('button') ||
-      target.closest('input') ||
-      target.closest('textarea') ||
-      target.closest('[role="button"]') ||
-      target.closest('[role="menuitem"]') ||
-      target.closest('[role="combobox"]') ||
-      target.closest('[role="option"]') ||
-      target.closest('.search-container') ||
-      target.closest('[data-interactive]');
-    
-    // Don't close if clicking interactive elements
-    if (isInteractiveElement) {
-      return;
-    }
-  };
+  const panelClasses = cn(
+    OFFCANVAS_PANEL_STYLES.panel.base,
+    side === 'left' ? OFFCANVAS_PANEL_STYLES.panel.left : OFFCANVAS_PANEL_STYLES.panel.right,
+    getTransformClasses()
+  );
 
   return (
     <>
-      {/* Overlay - appears when panel is open */}
       {isOpen && <MobilePanelOverlay onClose={onClose} />}
-
-      {/* Slide Panel */}
+      
       <div
         ref={panelRef}
         id={id}
-        onClick={handlePanelClick}
-        className={`
-          fixed top-16 left-0 right-0 bottom-0 z-[60] pointer-events-auto
-          bg-sf-cont/95 backdrop-blur-lg border-b border-ol-var/20
-          transform transition-transform duration-300 ease-in-out
-          ${getTransformClasses()}
-        `}
-        aria-hidden={!isOpen}
+        className={panelClasses}
+        role="dialog"
+        aria-modal="true"
         aria-label={ariaLabel}
+        aria-hidden={!isOpen}
       >
-        <div className="flex flex-col h-full">
-          {/* Panel Header */}
-          <div className="px-6 py-4 border-b border-ol-var/20">
-            <h2 className="text-lg font-semibold text-on-sf">
-              {title}
-            </h2>
-          </div>
-
-          {/* Panel Content - scrollable */}
-          <div className="flex-1 overflow-y-auto" data-interactive="true">
-            {children}
-          </div>
+        <div className={OFFCANVAS_PANEL_STYLES.header.container}>
+          <h2 className={OFFCANVAS_PANEL_STYLES.header.title}>
+            {title}
+          </h2>
+          <button
+            onClick={onClose}
+            className={OFFCANVAS_PANEL_STYLES.header.closeButton}
+            aria-label="Close"
+            type="button"
+          >
+            <CloseIcon className={OFFCANVAS_PANEL_STYLES.header.closeIcon} />
+          </button>
         </div>
+        
+        {children}
       </div>
     </>
   );

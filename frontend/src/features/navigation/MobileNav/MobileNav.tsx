@@ -1,4 +1,4 @@
-// src/main/components/Navigation/MobileNav/MobileNav.tsx
+// src/features/navigation/MobileNav/MobileNav.tsx
 'use client'
 
 import Logo from '../../../shared/primitives/Logo'
@@ -10,6 +10,7 @@ import LanguageSwitcher from '../LanguageSwitcher'
 import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/config/i18n'
 import HamburgerButton from './HamburgerButton'
+import { MOBILE_NAV_STYLES, PANEL_CONTENT_STYLES } from './styles'
 
 interface MobileNavProps {
   dictionary: Dictionary
@@ -64,12 +65,12 @@ export default function MobileNavigation({
     <>
       {/* Top Navigation Bar */}
       <nav 
-        className="xl:hidden bg-sf-cont/80 backdrop-blur-lg border-b border-ol-var/20 transition-all duration-300 relative z-50"
+        className={MOBILE_NAV_STYLES.nav.container}
         aria-label={dictionary.navigation.accessibility.mainNavigation}
         itemScope
         itemType="https://schema.org/SiteNavigationElement"
       >
-        <div className="flex items-center justify-between h-16 px-4">
+        <div className={MOBILE_NAV_STYLES.nav.topBar}>
           
           {/* Hamburger Menu Button - Left */}
           {!isSearchOpen && (
@@ -83,7 +84,7 @@ export default function MobileNavigation({
             />
           )}
           
-          {isSearchOpen && <div className="w-12" />}
+          {isSearchOpen && <div className={MOBILE_NAV_STYLES.spacer} />}
           
           {/* Logo - Center */}
           <Logo 
@@ -94,7 +95,7 @@ export default function MobileNavigation({
           />
           
           {/* Right side: Language Switcher + Search Button */}
-          <div className="flex items-center gap-2">
+          <div className={MOBILE_NAV_STYLES.sections.right}>
             {!isMenuOpen && <LanguageSwitcher currentLang={lang} />}
             
             {!isMenuOpen && (
@@ -108,7 +109,7 @@ export default function MobileNavigation({
               />
             )}
             
-            {isMenuOpen && <div className="w-12" />}
+            {isMenuOpen && <div className={MOBILE_NAV_STYLES.spacer} />}
           </div>
         </div>
       </nav>
@@ -123,15 +124,15 @@ export default function MobileNavigation({
         ariaLabel={dictionary.navigation.accessibility.menuDescription}
         panelRef={menuRef}
       >
-        <div className="flex flex-col h-full bg-sf-cont">
-          <div className="flex-1 overflow-y-auto py-6">
+        <div className={PANEL_CONTENT_STYLES.menu.container}>
+          <div className={PANEL_CONTENT_STYLES.menu.scrollArea}>
             <nav 
-              className="space-y-1 px-4"
+              className={PANEL_CONTENT_STYLES.menu.nav}
               role="menu"
               aria-label={dictionary.navigation.accessibility.mainMenuLabel}
               onTransitionEnd={handleMenuComplete}
             >
-              <ul className="space-y-1">
+              <ul className={PANEL_CONTENT_STYLES.menu.list}>
                 <NavLinks 
                   dictionary={dictionary}
                   lang={lang}
@@ -153,7 +154,7 @@ export default function MobileNavigation({
         ariaLabel={dictionary.search.accessibility.searchDescription}
         panelRef={searchRef}
       >
-        <div className="h-full bg-sf-cont">
+        <div className={PANEL_CONTENT_STYLES.search.container}>
           <MobileSearchContent 
             dictionary={dictionary}
             lang={lang}

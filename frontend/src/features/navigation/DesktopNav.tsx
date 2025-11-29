@@ -36,24 +36,6 @@ export default function DesktopNavigation({
           role="group"
           aria-label={dictionary.navigation.accessibility.primarySectionsLabel}
         >
-          <ul 
-            className={DESKTOP_NAV_STYLES.navList}
-            role="menubar"
-            aria-label={dictionary.navigation.accessibility.mainMenuLabel}
-          >
-            <NavLinks 
-              dictionary={dictionary}
-              lang={lang}
-            />
-          </ul>
-        </div>
-
-        <div 
-          className={DESKTOP_NAV_STYLES.centerSection}
-          itemProp="mainEntity"
-          itemScope
-          itemType="https://schema.org/Organization"
-        >
           <meta itemProp="name" content={dictionary.seo.site.name} />
           <meta itemProp="description" content={dictionary.seo.site.description} />
           <meta itemProp="url" content={dictionary.seo.site.url} />
@@ -66,14 +48,30 @@ export default function DesktopNavigation({
             aria-label={dictionary.navigation.accessibility.logoMainPageLabel}
           />
         </div>
+
+        <div 
+          className={DESKTOP_NAV_STYLES.centerSection}
+          itemProp="mainEntity"
+          itemScope
+          itemType="https://schema.org/Organization"
+        >
+          <ul 
+            className={DESKTOP_NAV_STYLES.navList}
+            role="menubar"
+            aria-label={dictionary.navigation.accessibility.mainMenuLabel}
+          >
+            <NavLinks 
+              dictionary={dictionary}
+              lang={lang}
+            />
+          </ul>
+        </div>
         
         <div 
           className={DESKTOP_NAV_STYLES.rightSection}
           role="group"
           aria-label={dictionary.navigation.accessibility.searchAndSettingsLabel}
         >
-          <LanguageSwitcher currentLang={lang} />
-          
           <div 
             id="site-search"
             role="search"
@@ -84,6 +82,8 @@ export default function DesktopNavigation({
               lang={lang}
             />
           </div>
+          
+          <LanguageSwitcher currentLang={lang} />          
         </div>
       </div>
     </nav>

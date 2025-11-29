@@ -1,10 +1,8 @@
-// src/main/components/Navigation/MobilePanelOverlay.tsx
-// Unified overlay backdrop for mobile panels (menu and search)
-// Uses consistent design: light overlay without blur
-
+// src/features/navigation/MobileNav/MobilePanelOverlay.tsx
 'use client'
 
 import { useCallback } from 'react'
+import { PANEL_OVERLAY_STYLES } from './styles'
 
 interface MobilePanelOverlayProps {
   onClose: () => void
@@ -12,7 +10,6 @@ interface MobilePanelOverlayProps {
 
 export function MobilePanelOverlay({ onClose }: MobilePanelOverlayProps) {
   const handleClick = useCallback((e: React.MouseEvent) => {
-    // Only close if clicking directly on the overlay background
     if (e.target === e.currentTarget) {
       onClose()
     }
@@ -21,7 +18,7 @@ export function MobilePanelOverlay({ onClose }: MobilePanelOverlayProps) {
   return (
     <div
       onClick={handleClick}
-      className="fixed inset-0 bg-black/10 z-[45] pointer-events-auto"
+      className={PANEL_OVERLAY_STYLES.overlay}
       aria-hidden="true"
       role="presentation"
     />

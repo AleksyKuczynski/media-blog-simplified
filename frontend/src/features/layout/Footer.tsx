@@ -1,4 +1,4 @@
-// frontend/src/features/layout/Footer.tsx
+// features/layout/Footer.tsx
 'use client';
 
 import { useState } from 'react';
@@ -8,11 +8,39 @@ import { processTemplate } from '@/config/i18n/helpers/templates';
 import { ContactModal } from './ContactModal';
 import { FOOTER_STYLES } from './styles';
 import { getFooterNavigationItems } from '@/config/i18n/helpers/navigation';
+import { OrganizationSchema } from '@/shared/seo/schemas/OrganizationSchema';
+import { 
+  TelegramIcon, 
+  VKIcon, 
+  InstagramIcon 
+} from '@/app/[lang]/[rubric]/[slug]/_components/engagement/EngagementIcons';
 
 interface FooterProps {
   lang: Lang;
   dictionary: Dictionary;
 }
+
+// Social media platform configuration with icons
+const SOCIAL_PLATFORMS = [
+  {
+    key: 'telegram',
+    label: 'Telegram',
+    icon: TelegramIcon,
+    ariaLabel: 'Telegram канал EventForMe',
+  },
+  {
+    key: 'vk',
+    label: 'VKontakte',
+    icon: VKIcon,
+    ariaLabel: 'Группа VKontakte EventForMe',
+  },
+  {
+    key: 'instagram',
+    label: 'Instagram',
+    icon: InstagramIcon,
+    ariaLabel: 'Instagram EventForMe',
+  },
+] as const;
 
 export default function Footer({ lang, dictionary }: FooterProps) {
   const { footer, seo } = dictionary;
@@ -26,49 +54,17 @@ export default function Footer({ lang, dictionary }: FooterProps) {
     year: currentYear.toString(),
   });
 
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": seo.site.name,
-    "alternateName": seo.site.fullName,
-    "url": seo.site.url,
-    "description": seo.site.organizationDescription,
-    "logo": {
-      "@type": "ImageObject",
-      "url": `${seo.site.url}/logo.png`,
-      "width": 200,
-      "height": 80,
-    },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "email": seo.site.contactEmail,
-      "contactType": "customer support",
-      "availableLanguage": "ru",
-    },
-    "sameAs": seo.site.socialProfiles,
-    "areaServed": seo.site.geographicAreas.map(area => ({
-      "@type": "Place",
-      "name": area,
-    })),
-    "foundingDate": "2023",
-    "memberOf": {
-      "@type": "Organization",
-      "name": "European Cultural Media Network",
-    },
-  };
-
   return (
     <>
       <footer 
         className={FOOTER_STYLES.container}
         role="contentinfo"
         aria-label={footer.accessibility.footerNavigation}
+        id="site-footer"
       >
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ 
-            __html: JSON.stringify(organizationSchema, null, 2) 
-          }}
+        <OrganizationSchema 
+          dictionary={dictionary} 
+          contactType="customer support" 
         />
 
         <div className={FOOTER_STYLES.innerContainer}>
@@ -106,33 +102,28 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               </nav>
             </section>
 
-            {/* Column 3: Social Links */}
+            {/* Column 3: Social Links with Icons */}
             <section className={FOOTER_STYLES.section.wrapper}>
               <h3 className={FOOTER_STYLES.section.heading}>
                 {footer.socialLinks.title}
               </h3>
               <nav className={FOOTER_STYLES.nav.wrapper}>
-                <div className={FOOTER_STYLES.nav.itemWrapper}>
-                  <Link 
-                    href={seo.site.socialProfiles[0]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={FOOTER_STYLES.link.external}
-                    aria-label="Telegram канал EventForMe"
-                  >
-                    Telegram
-                  </Link>
-                </div>
-                <div className={FOOTER_STYLES.nav.itemWrapper}>
-                  <Link 
-                    href={seo.site.socialProfiles[1]}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={FOOTER_STYLES.link.external}
-                    aria-label="Группа VKontakte EventForMe"
-                  >
-                    VKontakte
-                  </Link>
+                <div className="flex gap-4">
+                  {SOCIAL_PLATFORMS.map((platform, index) => {
+                    const Icon = platform.icon;
+                    return (
+                      <Link
+                        key={platform.key}
+                        href={seo.site.socialProfiles[index]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded"
+                        aria-label={platform.ariaLabel}
+                      >
+                        <Icon className="w-6 h-6" />
+                      </Link>
+                    );
+                  })}
                 </div>
               </nav>
             </section>
@@ -145,7 +136,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               <nav className={FOOTER_STYLES.nav.wrapper}>
                 <div className={FOOTER_STYLES.nav.itemWrapper}>
                   <Link 
-                    href={`/${lang}/privacy-policy`}
+                    href={`/${lang}/privacy`}
                     className={FOOTER_STYLES.link.base}
                   >
                     {footer.legal.privacyPolicy}
@@ -182,7 +173,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
             </section>
           </div>
 
-          {/* Footer Bottom - Copyright */}
+          {/* Copyright */}
           <div className={FOOTER_STYLES.copyright.wrapper}>
             <div className={FOOTER_STYLES.copyright.text}>
               <p>{copyrightText}</p>
@@ -191,7 +182,6 @@ export default function Footer({ lang, dictionary }: FooterProps) {
         </div>
       </footer>
 
-      {/* Contact Modal */}
       <ContactModal
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}

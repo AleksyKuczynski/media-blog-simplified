@@ -1,8 +1,9 @@
-// src/main/components/Main/Breadcrumbs.tsx
+// src/features/navigation/Breadcrumbs/Breadcrumbs.tsx
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/shared/primitives/Icons';
 import { RubricBasic } from '@/api/directus';
 import { Lang } from '@/config/i18n';
+import { BREADCRUMB_STYLES } from './styles';
 
 export interface BreadcrumbItem {
   label: string;
@@ -21,8 +22,8 @@ interface BreadcrumbsProps {
 }
 
 const Chevron = () => (
-  <span className="mx-2 flex-shrink-0">
-    <ChevronRightIcon className="w-3 h-3 text-pr-cont" aria-hidden="true" />
+  <span className={BREADCRUMB_STYLES.separator.container}>
+    <ChevronRightIcon className={BREADCRUMB_STYLES.separator.icon} aria-hidden="true" />
   </span>
 );
 
@@ -57,15 +58,15 @@ export default function Breadcrumbs({ items, lang, translations }: BreadcrumbsPr
   return (
     <nav 
       aria-label="Breadcrumb" 
-      className="text-sm mb-8 overflow-x-auto"
+      className={BREADCRUMB_STYLES.nav.container}
       itemScope 
       itemType="https://schema.org/BreadcrumbList"
     >
-      <ol className="list-none inline-flex items-center whitespace-nowrap">
+      <ol className={BREADCRUMB_STYLES.list.base}>
         {fullPath.map((item, index) => (
           <li 
             key={item.href} 
-            className="flex items-center"
+            className={BREADCRUMB_STYLES.item.container}
             itemProp="itemListElement" 
             itemScope 
             itemType="https://schema.org/ListItem"
@@ -73,7 +74,7 @@ export default function Breadcrumbs({ items, lang, translations }: BreadcrumbsPr
             {index > 0 && <Chevron />}
             {index === fullPath.length - 1 ? (
               <span 
-                className="font-medium text-on-sf" 
+                className={BREADCRUMB_STYLES.currentPage.base}
                 aria-current="page"
                 itemProp="name"
               >
@@ -82,7 +83,7 @@ export default function Breadcrumbs({ items, lang, translations }: BreadcrumbsPr
             ) : (
               <Link
                 href={item.href}
-                className="text-on-sf-var hover:text-on-sf transition-colors duration-200"
+                className={BREADCRUMB_STYLES.link.base}
                 itemProp="item"
               >
                 <span itemProp="name">{item.label}</span>

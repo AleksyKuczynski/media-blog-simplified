@@ -1,4 +1,4 @@
-// src/main/components/Interface/Icons.tsx
+// src/shared/primitives/Icons.tsx
 
 import React from 'react';
 
@@ -25,9 +25,15 @@ export function SearchIcon(props: IconProps) {
 export function CloseIcon(props: IconProps) {
   return (
     <svg {...defaultIconProps} {...props}>
-      <path 
-            strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"
-          />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+}
+
+export function MenuIcon(props: IconProps) {
+  return (
+    <svg {...defaultIconProps} {...props}>
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
     </svg>
   );
 }
@@ -99,26 +105,29 @@ export function FilterIcon(props: IconProps) {
     </svg>
   );
 }
+
 export function ResetIcon(props: IconProps) {
   return (
     <svg {...defaultIconProps} viewBox="0 0 11 11" {...props}>
-  <path d="M1 3l6 0c2,0 4,2 4,4 0,2 -2,4 -4,4 -2,0 -4,-2 -4,-4m0 -2l-2 -2 2 -2"/>
-  </svg>
-  );
-}
-export function DateSortUpIcon(props: IconProps) {
-  return (
-    <svg {...defaultIconProps} viewBox="0 0 6 6" {...props}>
-  <path d="M2 1l3 0c1,0 1,1 1,1l0 3c0,1 -1,1 -1,1l-3 0c-1,0 -1,-1 -1,-1l0 -3c0,-1 1,-1 1,-1z"/>
-  <path d="M4 0l0 1m-1 3l0 -2m-1 1l1 -1 1 1m-2 -3l0 1"/>
+      <path d="M1 3l6 0c2,0 4,2 4,4 0,2 -2,4 -4,4 -2,0 -4,-2 -4,-4m0 -2l-2 -2 2 -2"/>
     </svg>
   );
 }
+
+export function DateSortUpIcon(props: IconProps) {
+  return (
+    <svg {...defaultIconProps} viewBox="0 0 6 6" {...props}>
+      <path d="M2 1l3 0c1,0 1,1 1,1l0 3c0,1 -1,1 -1,1l-3 0c-1,0 -1,-1 -1,-1l0 -3c0,-1 1,-1 1,-1z"/>
+      <path d="M4 0l0 1m-1 3l0 -2m-1 1l1 -1 1 1m-2 -3l0 1"/>
+    </svg>
+  );
+}
+
 export function DateSortDownIcon(props: IconProps) {
   return (
     <svg {...defaultIconProps} viewBox="0 0 27 27" {...props}>
-  <path d="M7 4l13 0c3,0 6,3 6,6l0 11c0,3 -3,6 -6,6l-13 0c-3,0 -6,-3 -6,-6l0 -11c0,-3 3,-6 6,-6z"/>
-  <path d="M19 2l0 5m-5 4l0 9m4 -4l-4 4 -4 -4m-1 -14l0 5"/>
+      <path d="M7 4l13 0c3,0 6,3 6,6l0 11c0,3 -3,6 -6,6l-13 0c-3,0 -6,-3 -6,-6l0 -11c0,-3 3,-6 6,-6z"/>
+      <path d="M19 2l0 5m-5 4l0 9m4 -4l-4 4 -4 -4m-1 -14l0 5"/>
     </svg>
   );
 }

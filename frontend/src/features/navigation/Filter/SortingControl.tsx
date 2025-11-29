@@ -1,5 +1,4 @@
-// src/main/components/Navigation/SortingControl.tsx
-// Migrated to new dictionary structure - clean implementation
+// src/features/navigation/Filter/SortingControl.tsx
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -8,6 +7,7 @@ import { ChevronDownIcon } from '@/shared/primitives/Icons';
 import type { DropdownItemType } from '@/shared/ui/Dropdown/types';
 import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '@/shared/ui/Dropdown';
 import { NavButton } from '@/shared/primitives/NavButton';
+import { FILTER_CONTROL_STYLES, FILTER_BUTTON_STYLES } from './styles';
 
 interface SortingControlProps {
   readonly dictionary: Dictionary;
@@ -15,10 +15,6 @@ interface SortingControlProps {
   readonly lang: Lang;
 }
 
-/**
- * SortingControl - Migrated to new dictionary structure
- * Uses dictionary.sorting instead of separate translations prop
- */
 export default function SortingControl({ 
   dictionary, 
   currentSort, 
@@ -28,7 +24,6 @@ export default function SortingControl({
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  // Access sorting translations from dictionary
   const sorting = dictionary.filter;
 
   const sortItems: DropdownItemType[] = [
@@ -48,8 +43,8 @@ export default function SortingControl({
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <span className="text-sm font-medium text-prcolor">
+    <div className={FILTER_CONTROL_STYLES.wrapperWithGap}>
+      <span className={FILTER_CONTROL_STYLES.label}>
         {sorting.labels.sortBy}
       </span>
       <Dropdown
@@ -61,13 +56,13 @@ export default function SortingControl({
         <DropdownTrigger>
           <NavButton
             context="desktop"
-            className="flex items-center justify-between w-full px-4 py-2 border-2 border-prcolor rounded-md"
+            className={FILTER_BUTTON_STYLES.dropdown.base}
             aria-label={sorting.labels.sortBy}
           >
-            <span className="truncate">
+            <span className={FILTER_BUTTON_STYLES.text.base}>
               {sortItems.find(item => item.value === currentSort)?.label}
             </span>
-            <ChevronDownIcon className="h-5 w-5 ml-2 flex-shrink-0" />
+            <ChevronDownIcon className={FILTER_BUTTON_STYLES.icon} />
           </NavButton>
         </DropdownTrigger>
         <DropdownContent>
