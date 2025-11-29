@@ -139,12 +139,20 @@ export function useSearchLogic({
       case 'Enter':
         e.preventDefault();
         if (state.selectedIndex >= 0 && state.suggestions[state.selectedIndex]) {
-          // Nawigacja z wybranej sugestii
           const selectedSuggestion = state.suggestions[state.selectedIndex];
           cleanupAndClose();
-          router.push(`/${lang}/${selectedSuggestion.slug}/${selectedSuggestion.slug}`);
+          
+          let targetUrl: string;
+          if (selectedSuggestion.type === 'author') {
+            targetUrl = `/${lang}/authors/${selectedSuggestion.slug}`;
+          } else if (selectedSuggestion.type === 'category') {
+            targetUrl = `/${lang}/articles?category=${selectedSuggestion.slug}`;
+          } else {
+            targetUrl = `/${lang}/${selectedSuggestion.rubric_slug}/${selectedSuggestion.slug}`;
+          }
+          
+          router.push(targetUrl);
         } else if (hasNavigableContent && state.query.length >= 3) {
-          // Nawigacja z wprowadzonego tekstu
           const searchUrl = createSearchUrl(state.query, searchParams);
           cleanupAndClose();
           router.push(`/${lang}${searchUrl}`);
