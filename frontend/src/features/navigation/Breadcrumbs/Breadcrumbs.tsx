@@ -26,7 +26,7 @@ const Chevron = () => (
   </span>
 );
 
-export default function Breadcrumbs({ items, rubrics, lang, translations }: BreadcrumbsProps) {
+export default function Breadcrumbs({ items, lang, translations }: BreadcrumbsProps) {
   const fullPath: BreadcrumbItem[] = [
     { label: translations.home, href: `/${lang}` },
   ];

@@ -1,11 +1,10 @@
-// src/main/components/Search/SearchResultsHeader.tsx
-// CLIENT COMPONENT: Handles only search results header UI (title, count, sorting)
-// DOES NOT render ArticleList - that stays in server component
+// src/features/search/page/SearchResultsHeader.tsx
 'use client'
 
 import SortingControl from '@/features/navigation/Filter/SortingControl';
 import { Dictionary, Lang } from '@/config/i18n';
 import { getLocalizedCount } from '@/config/i18n/helpers/content';
+import { SEARCH_PAGE_STYLES } from '../search.styles';
 
 interface SearchResultsHeaderProps {
   readonly dictionary: Dictionary;
@@ -15,20 +14,6 @@ interface SearchResultsHeaderProps {
   readonly lang: Lang;
 }
 
-/**
- * SearchResultsHeader - Client component for search results UI controls
- * 
- * ARCHITECTURE DECISION:
- * This component handles only the client-side interactive elements:
- * - Results heading with query display
- * - Results count display
- * - Sorting control (client interactivity)
- * 
- * The actual ArticleList rendering happens in the server component (SearchPage)
- * to maintain the ability to use async server components (ArticleCard).
- * 
- * SEO: Maintains semantic structure with proper schema markup
- */
 export default function SearchResultsHeader({
   dictionary,
   searchQuery,
@@ -47,17 +32,16 @@ export default function SearchResultsHeader({
       <meta itemProp="query" content={searchQuery} />
       <meta itemProp="numberOfItems" content={resultsCount.toString()} />
       
-      {/* Results Title and Count */}
       <div>
         <h1 
           id="search-results-heading"
-          className="text-lg font-semibold text-txcolor-primary mb-2"
+          className={SEARCH_PAGE_STYLES.header.title}
           itemProp="headline"
         >
-          {dictionary.search.templates.pageTitle}: <span className="font-normal">{searchQuery}</span>
+          {dictionary.search.templates.pageTitle}: <span className={SEARCH_PAGE_STYLES.header.span}>{searchQuery}</span>
         </h1>
         <p 
-          className="text-txcolor-secondary"
+          className={SEARCH_PAGE_STYLES.results.count}
           aria-live="polite"
           itemProp="description"
         >
@@ -65,7 +49,6 @@ export default function SearchResultsHeader({
         </p>
       </div>
 
-      {/* Sorting Control - Client Interactivity */}
       <aside aria-label={dictionary.filter.accessibility.sortingControl}>
         <SortingControl
           dictionary={dictionary}

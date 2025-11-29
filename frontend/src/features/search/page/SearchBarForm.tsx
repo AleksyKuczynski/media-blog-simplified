@@ -1,4 +1,4 @@
-// src/main/components/Search/page/SearchBarForm.tsx
+// src/features/search/page/SearchBarForm.tsx
 'use client'
 
 import SearchDropdown from '../ui/SearchDropdown';
@@ -6,6 +6,7 @@ import SearchInput from '../ui/SearchInput';
 import { useSearchLogic } from '../logic/useSearchLogic';
 import { Dictionary, Lang } from '@/config/i18n';
 import { SearchIcon } from '@/shared/primitives/Icons';
+import { SEARCH_BAR_FORM_STYLES } from '../search.styles';
 
 interface SearchBarFormProps {
   readonly dictionary: Dictionary;
@@ -31,7 +32,7 @@ export default function SearchBarForm({
   return (
     <search 
       ref={refs.containerRef}
-      className={`w-full ${className}`}
+      className={`${SEARCH_BAR_FORM_STYLES.container} ${className}`}
       role="search"
       aria-label={dictionary.search.accessibility.searchLabel}
       itemScope
@@ -40,19 +41,10 @@ export default function SearchBarForm({
       <meta itemProp="target" content={`https://${dictionary.seo.site.url}/${lang}/search?search={search_term_string}`} />
       <meta itemProp="query-input" content="required name=search_term_string" />
       
-      <div className="relative">
-        <div className="
-          flex items-center gap-3
-          bg-sf-hi rounded-lg shadow-md
-          hover:shadow-lg
-          focus-within:ring-2
-          focus-within:ring-pr-fix
-          focus-within:ring-offset-2
-          transition-all duration-200
-          px-4 py-3
-        ">
-          <div className="text-on-sf-var pointer-events-none flex-shrink-0">
-            <SearchIcon className="w-6 h-6" />
+      <div className={SEARCH_BAR_FORM_STYLES.wrapper}>
+        <div className={SEARCH_BAR_FORM_STYLES.inputWrapper}>
+          <div className={SEARCH_BAR_FORM_STYLES.icon}>
+            <SearchIcon className={SEARCH_BAR_FORM_STYLES.iconSize} />
           </div>
           
           <SearchInput
@@ -71,7 +63,7 @@ export default function SearchBarForm({
           state={state}
           dict={dictionary}
           onItemSelect={handlers.handleSelect}
-          className="rounded-lg shadow-lg"
+          className={SEARCH_BAR_FORM_STYLES.dropdown}
           ariaLabel={dictionary.search.accessibility.searchResultsLabel}
         />
       </div>

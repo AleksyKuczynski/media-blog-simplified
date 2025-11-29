@@ -1,5 +1,4 @@
-// src/main/components/Search/ExpandableSearch.tsx
-// SEO-OPTIMIZED: Enhanced semantic markup and accessibility
+// src/features/search/ui/ExpandableSearch.tsx
 'use client'
 
 import React from 'react';
@@ -9,6 +8,7 @@ import { Dictionary, Lang } from '@/config/i18n';
 import { useSearchLogic } from '../logic/useSearchLogic';
 import { NavButton } from '@/shared/primitives/NavButton';
 import { CloseIcon, SearchIcon } from '@/shared/primitives/Icons';
+import { EXPANDABLE_SEARCH_STYLES } from '../search.styles';
 
 interface ExpandableSearchProps {
   readonly dictionary: Dictionary;
@@ -16,10 +16,6 @@ interface ExpandableSearchProps {
   readonly className?: string;
 }
 
-/**
- * ExpandableSearch - SEO-optimized expandable search component
- * SEMANTIC: Enhanced with structured markup for better SEO
- */
 export default function ExpandableSearch({
   dictionary,
   lang,
@@ -40,7 +36,7 @@ export default function ExpandableSearch({
   return (
     <search 
       ref={refs.containerRef as React.RefObject<HTMLElement>}
-      className={`relative ${className}`}
+      className={`${EXPANDABLE_SEARCH_STYLES.container} ${className}`}
       role="search"
       aria-label={dictionary.search.accessibility.searchLabel}
       itemScope
@@ -50,12 +46,8 @@ export default function ExpandableSearch({
       <meta itemProp="query-input" content="required name=search_term_string" />
       
       <div className={`
-        relative flex items-center gap-2
-        transition-all duration-200 ease-in-out
-        ${isExpanded ? 
-          'bg-sf-hi border border-ol rounded-lg shadow-lg hover:shadow-xl focus-within:outline-none focus-within:ring-1 focus-within:ring-pr-fix focus-within:ring-offset-0' 
-          : ''
-        }
+        ${EXPANDABLE_SEARCH_STYLES.wrapper.base}
+        ${isExpanded ? EXPANDABLE_SEARCH_STYLES.wrapper.expanded : EXPANDABLE_SEARCH_STYLES.wrapper.collapsed}
       `.trim()}>
         
         <SearchInput
@@ -78,7 +70,7 @@ export default function ExpandableSearch({
               ? dictionary.search.accessibility.searchButtonLabel
               : dictionary.search.accessibility.clearSearchLabel
           }
-          className="p-2 rounded-full hover:bg-bgcolor-accent/10 transition-colors duration-200"
+          className={EXPANDABLE_SEARCH_STYLES.button}
         />
       </div>
 
@@ -86,7 +78,7 @@ export default function ExpandableSearch({
         state={state}
         dict={dictionary}
         onItemSelect={handlers.handleSelect}
-        className="rounded-lg shadow-lg"
+        className={EXPANDABLE_SEARCH_STYLES.dropdown}
         ariaLabel={dictionary.search.accessibility.searchResultsLabel}
       />
     </search>

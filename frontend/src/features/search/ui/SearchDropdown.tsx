@@ -1,7 +1,8 @@
-// src/main/components/Search/SearchDropdown.tsx - CLEANED UP
+// src/features/search/ui/SearchDropdown.tsx
 import { SearchUIState } from '../types';
 import SearchDropdownItem from './SearchDropdownItem';
 import { Dictionary } from '@/config/i18n';
+import { SEARCH_DROPDOWN_STYLES } from '../search.styles';
 
 interface SearchDropdownProps {
   state: SearchUIState;
@@ -19,26 +20,25 @@ export default function SearchDropdown({
   ariaLabel
 }: SearchDropdownProps) {
 
-  // Visibility classes - hardcoded rounded theme
   const getVisibilityClasses = () => {
     switch (state.dropdown.visibility) {
       case 'hidden':
-        return 'scale-y-0 opacity-0 -translate-y-4 pointer-events-none invisible';
+        return SEARCH_DROPDOWN_STYLES.visibility.hidden;
       case 'animating-in':
-        return 'scale-y-100 opacity-100 translate-y-0 transition-all duration-300 ease-out delay-150 visible';
+        return SEARCH_DROPDOWN_STYLES.visibility.animatingIn;
       case 'visible':
-        return 'scale-y-100 opacity-100 translate-y-0 transition-none visible';
+        return SEARCH_DROPDOWN_STYLES.visibility.visible;
       case 'animating-out':
-        return 'scale-y-0 opacity-0 -translate-y-4 transition-all duration-300 ease-in pointer-events-none';
+        return SEARCH_DROPDOWN_STYLES.visibility.animatingOut;
       default:
-        return 'scale-y-0 opacity-0 -translate-y-4 pointer-events-none invisible';
+        return SEARCH_DROPDOWN_STYLES.visibility.hidden;
     }
   };
 
   function renderContent() {
     if (state.dropdown.content === 'message') {
       return (
-        <div className="px-4 py-2 text-on-sf-var rounded-lg mx-2">
+        <div className={SEARCH_DROPDOWN_STYLES.content.message}>
           {renderStatusMessage()}
         </div>
       );
@@ -83,10 +83,7 @@ export default function SearchDropdown({
   return (
     <div 
       className={`
-        absolute z-50 shadow-lg bg-sf-hi 
-        w-full top-full mt-2 max-h-[80vh]
-        origin-top transition-none
-        rounded-xl
+        ${SEARCH_DROPDOWN_STYLES.container.base}
         ${getVisibilityClasses()}
         ${className}
       `.trim()}
@@ -94,7 +91,7 @@ export default function SearchDropdown({
       aria-hidden={state.dropdown.visibility === 'animating-out'}
       aria-label={ariaLabel}
     >
-      <div className="transition-opacity duration-150 opacity-100">
+      <div className={SEARCH_DROPDOWN_STYLES.content.wrapper}>
         {renderContent()}
       </div>
     </div>

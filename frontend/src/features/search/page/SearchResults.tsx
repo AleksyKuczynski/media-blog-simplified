@@ -1,4 +1,4 @@
-// src/main/components/Search/page/SearchResults.tsx
+// src/features/search/page/SearchResults.tsx
 import { Suspense } from 'react';
 import Pagination from '@/shared/ui/Pagination';
 import SearchResultsHeader from './SearchResultsHeader';
@@ -6,6 +6,7 @@ import { Dictionary, Lang } from '@/config/i18n';
 import { ArticleSlugInfo } from '@/api/directus';
 import Section from '@/features/layout/Section';
 import ArticleList from '@/features/article-display/ArticleList';
+import { SEARCH_PAGE_STYLES } from '../search.styles';
 
 interface SearchResultsProps {
   readonly dictionary: Dictionary;
@@ -30,44 +31,41 @@ export default function SearchResults({
   currentSort,
   mode,
 }: SearchResultsProps) {
-  // Invalid query state
   if (mode === 'invalid-query') {
     return (
       <div 
-        className="text-center py-8 mb-8 bg-sf-hi rounded-lg"
+        className={SEARCH_PAGE_STYLES.results.invalidState}
         role="alert"
         aria-live="polite"
       >
-        <p className="text-on-sf-var">
+        <p className={SEARCH_PAGE_STYLES.results.stateText}>
           {dictionary.search.labels.minCharacters}
         </p>
       </div>
     );
   }
 
-  // No results state
   if (mode === 'no-results') {
     return (
       <div 
-        className="text-center py-8 mb-8 bg-sf-hi rounded-lg"
+        className={SEARCH_PAGE_STYLES.results.emptyState}
         role="status"
         aria-live="polite"
       >
-        <h2 className="text-xl font-bold mb-2 text-on-sf">
+        <h2 className={SEARCH_PAGE_STYLES.results.emptyTitle}>
           {dictionary.search.labels.noResults}
         </h2>
-        <p className="text-on-sf-var">
-          {dictionary.search.hub?.noResultsSuggestion || ''}
+        <p className={SEARCH_PAGE_STYLES.results.emptyDescription}>
+          {dictionary.search.hub.noResultsSuggestion}
         </p>
       </div>
     );
   }
 
-  // Results state
   return (
     <Section
       ariaLabel={dictionary.search.accessibility.searchResultsLabel}
-      className="mb-12"
+      className={SEARCH_PAGE_STYLES.results.section}
     >
       <SearchResultsHeader
         dictionary={dictionary}
@@ -82,12 +80,12 @@ export default function SearchResults({
           dictionary={dictionary}
           slugInfos={slugs}
           lang={lang}
-          className="space-y-6 mt-6"
+          className={SEARCH_PAGE_STYLES.results.list}
         />
       </Suspense>
 
       {totalPages > 1 && (
-        <div className="mt-8">
+        <div className={SEARCH_PAGE_STYLES.results.pagination}>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

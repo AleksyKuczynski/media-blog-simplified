@@ -1,5 +1,4 @@
 // src/main/components/Search/types.ts
-// FIXED: React 19 compatible nullable ref types
 
 import { SearchResult } from '@/api/directus';
 

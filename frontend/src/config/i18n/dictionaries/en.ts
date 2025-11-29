@@ -394,7 +394,7 @@ export const dictionaryEN: Dictionary = {
     hub: {  // NEW SECTION
       tipsTitle: 'Search tips',
       tips: [
-        'Используйте минимум 3 символа для поиска',
+        'Enter at least 3 chars',
         'Use keywords for better results',
         'Try something different',
         'Searching in articles, authors and rubrics',
