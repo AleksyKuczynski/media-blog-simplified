@@ -58,18 +58,27 @@ export const LAYOUT_STYLES = {
 export const ELEMENTS_STYLES = {
   // Heading levels
   heading: {
-    base: 'font-bold text-on-sf mb-4 mt-8 first:mt-0',
-    h1: 'text-3xl md:text-4xl font-display',
-    h2: 'text-2xl md:text-3xl font-sans',
-    h3: 'text-xl md:text-2xl font-sans',
-    h4: 'text-lg md:text-xl font-sans',
+    base: `text-on-sf font-serif 
+          mx-2 `,
+    h2: `font-black 
+          text-3xl mb-8 mt-16 
+          md:text-3xl`,
+    h3: `font-bold 
+          text-xl mb-6 mt-8 
+          md:text-2xl`,
+    h4: `font-medium 
+          text-lg mb-4 mt-8 
+          md:text-xl`,
     h5: 'text-base md:text-xl font-display',
     h6: 'text-sm md:text-lg font-display',
   },
 
   // Paragraph
   paragraph: {
-    base: 'mb-6 text-base md:text-lg text-on-sf-var leading-relaxed first:mt-0 last:mb-0 font-serif',
+    base: `font-serif text-on-sf-var leading-relaxed first:mt-0 last:mb-0
+          text-base px-2 mb-3 
+
+          md:text-lg  `,
   },
 
   // Links
@@ -81,7 +90,7 @@ export const ELEMENTS_STYLES = {
 
   // Lists
   list: {
-    base: 'mb-6 pl-6 space-y-2 text-on-sf-var leading-relaxed',
+    base: 'mx-2 font-serif text-sm my-6 pl-6 space-y-2 text-on-sf-var leading-relaxed',
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
     item: 'text-on-sf-var marker:text-pr-cont pl-2 last:mb-0',
