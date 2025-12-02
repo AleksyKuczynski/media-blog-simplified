@@ -39,7 +39,7 @@ export const LAYOUT_STYLES = {
     metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
     authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
     lead: `mx-2 font-light max-w-[800px] mx-auto text-on-sf
-          mb-8 col-span-2 text-xl px-2 pt-6 
+          mb-8 col-span-2 text-lg px-2 pt-6 
           xl:text-xl `,
   },
 
@@ -65,20 +65,20 @@ export const ELEMENTS_STYLES = {
     base: `text-on-sf font-serif 
           mx-2 `,
     h2: `font-bold 
-          text-[32] mb-8 mt-16 
+          text-3xl mb-8 mt-16 
           md:text-3xl`,
-    h3: `font-semibold 
+    h3: `font-bold 
           text-2xl mb-6 mt-8 
           md:text-2xl`,
-    h4: `uppercase
-          text-xl mb-4 mt-8 
+    h4: `uppercase font-medium
+          text-lg mb-4 mt-6 
           md:text-xl`,
   },
 
   // Paragraph
   paragraph: {
     base: `font-serif text-on-sf-var leading-relaxed first:mt-0 last:mb-0
-          text-lg px-2 mb-3 
+          px-2 mb-3 
 
           md:text-lg  `,
   },
@@ -93,7 +93,7 @@ export const ELEMENTS_STYLES = {
   // Lists
   list: {
     base: `font-serif text-on-sf-var leading-relaxed 
-          mx-2 text-base my-6 pl-6 space-y-2`,
+          mx-2 text-sm my-6 pl-6 space-y-2`,
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
     item: 'text-on-sf-var marker:text-pr-cont pl-2 last:mb-0',
