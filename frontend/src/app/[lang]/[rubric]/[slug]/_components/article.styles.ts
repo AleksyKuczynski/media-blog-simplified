@@ -31,7 +31,8 @@ export const LAYOUT_STYLES = {
   // Header component (actual implementation from Header.tsx)
   header: {
     container: 'relative mb-12 lg:grid grid-cols-2 justify-center',
-    title: 'mb-8 lg:pl-6 xl:pl-8 font-custom text-3xl text-center lg:text-left font-bold text-on-sf',
+    title: `mb-8 font-custom font-bold text-on-sf
+          lg:pl-6 xl:pl-8 text-3xl text-center lg:text-left`,
     imageContainer: `relative mx-auto ${IMAGE_RATIO_STRING} overflow-hidden order-first h-full w-full md:max-lg:w-3/4 lg:rounded-2xl`,
     image: 'w-full h-full object-cover',
     metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
@@ -61,20 +62,20 @@ export const ELEMENTS_STYLES = {
     base: `text-on-sf font-serif 
           mx-2 `,
     h2: `font-black 
-          text-3xl mb-8 mt-16 
+          text-4xl mb-8 mt-16 
           md:text-3xl`,
     h3: `font-bold 
-          text-xl mb-6 mt-8 
+          text-2xl mb-6 mt-8 
           md:text-2xl`,
     h4: `font-medium 
-          text-lg mb-4 mt-8 
+          text-xl mb-4 mt-8 
           md:text-xl`,
   },
 
   // Paragraph
   paragraph: {
     base: `font-serif text-on-sf-var leading-relaxed first:mt-0 last:mb-0
-          text-base px-2 mb-3 
+          text-lg px-2 mb-3 
 
           md:text-lg  `,
   },
@@ -88,7 +89,8 @@ export const ELEMENTS_STYLES = {
 
   // Lists
   list: {
-    base: 'mx-2 font-serif text-sm my-6 pl-6 space-y-2 text-on-sf-var leading-relaxed',
+    base: `font-serif text-on-sf-var leading-relaxed 
+          mx-2 text-base my-6 pl-6 space-y-2`,
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
     item: 'text-on-sf-var marker:text-pr-cont pl-2 last:mb-0',
