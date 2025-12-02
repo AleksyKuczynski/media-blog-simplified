@@ -64,13 +64,13 @@ export const ELEMENTS_STYLES = {
   heading: {
     base: `text-on-sf font-serif 
           mx-2 `,
-    h2: `font-black 
-          text-3xl mb-8 mt-16 
+    h2: `font-bold 
+          text-[32] mb-8 mt-16 
           md:text-3xl`,
-    h3: `font-bold 
+    h3: `font-semibold 
           text-2xl mb-6 mt-8 
           md:text-2xl`,
-    h4: `font-medium uppercase
+    h4: `uppercase
           text-xl mb-4 mt-8 
           md:text-xl`,
   },
