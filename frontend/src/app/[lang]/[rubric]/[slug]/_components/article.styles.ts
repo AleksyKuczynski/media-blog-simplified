@@ -69,8 +69,6 @@ export const ELEMENTS_STYLES = {
     h4: `font-medium 
           text-lg mb-4 mt-8 
           md:text-xl`,
-    h5: 'text-base md:text-xl font-display',
-    h6: 'text-sm md:text-lg font-display',
   },
 
   // Paragraph
