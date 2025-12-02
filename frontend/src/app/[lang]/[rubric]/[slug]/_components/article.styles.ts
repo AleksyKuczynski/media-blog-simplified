@@ -32,12 +32,15 @@ export const LAYOUT_STYLES = {
   header: {
     container: 'relative mb-12 lg:grid grid-cols-2 justify-center',
     title: `mb-8 font-custom font-bold text-on-sf
-          lg:pl-6 xl:pl-8 text-3xl text-center lg:text-left`,
+          text-3xl text-center 
+          lg:pl-6 xl:pl-8 lg:text-left`,
     imageContainer: `relative mx-auto ${IMAGE_RATIO_STRING} overflow-hidden order-first h-full w-full md:max-lg:w-3/4 lg:rounded-2xl`,
     image: 'w-full h-full object-cover',
     metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
     authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
-    lead: 'text-lg xl:text-xl font-light max-w-[800px] mx-auto mb-8 col-span-2 px-2 pt-6 text-on-sf',
+    lead: `mx-2 font-light max-w-[800px] mx-auto text-on-sf
+          mb-8 col-span-2 text-xl px-2 pt-6 
+          xl:text-xl `,
   },
 
   // Metadata component (actual implementation from Metadata.tsx)
@@ -62,12 +65,12 @@ export const ELEMENTS_STYLES = {
     base: `text-on-sf font-serif 
           mx-2 `,
     h2: `font-black 
-          text-4xl mb-8 mt-16 
+          text-3xl mb-8 mt-16 
           md:text-3xl`,
     h3: `font-bold 
           text-2xl mb-6 mt-8 
           md:text-2xl`,
-    h4: `font-medium 
+    h4: `font-medium uppercase
           text-xl mb-4 mt-8 
           md:text-xl`,
   },
