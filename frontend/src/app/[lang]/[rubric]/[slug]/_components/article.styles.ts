@@ -30,11 +30,12 @@ import { IMAGE_RATIO_STRING } from "@/features/mainConstants";
 export const LAYOUT_STYLES = {
   // Header component (actual implementation from Header.tsx)
   header: {
-    container: 'relative mb-12 lg:grid grid-cols-2 justify-center',
-    title: `mb-8 font-custom font-bold text-on-sf
-          text-3xl text-center 
+    container: `relative mb-12 
+          lg:grid grid-cols-2 justify-center`,
+    title: `mx-2 mb-6 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf
+          text-3xl 
           lg:pl-6 xl:pl-8 lg:text-left`,
-    imageContainer: `relative mx-auto ${IMAGE_RATIO_STRING} overflow-hidden order-first h-full w-full md:max-lg:w-3/4 lg:rounded-2xl`,
+    imageContainer: `relative mx-2 ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl h-full md:max-lg:w-3/4 `,
     image: 'w-full h-full object-cover',
     metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
     authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
@@ -63,7 +64,8 @@ export const ELEMENTS_STYLES = {
   // Heading levels
   heading: {
     base: `text-on-sf font-serif 
-          mx-2 `,
+          mx-2 
+          `,
     h2: `font-bold 
           text-3xl mb-8 mt-16 
           md:text-3xl`,
@@ -109,14 +111,14 @@ export const MEDIA_STYLES = {
   imageFrame: {
     wrapper: 'w-full mb-8',
     figure: 'w-full',
-    container: 'relative mx-auto overflow-hidden bg-sf-cont rounded-2xl shadow-lg max-h-[90vh] w-auto max-w-full flex items-center justify-center',
+    container: 'relative mx-auto overflow-hidden bg-sf-cont max-h-[90vh] w-auto max-w-full flex items-center justify-center',
     image: 'h-full w-auto max-w-full object-contain',
     caption: 'prose-sm text-on-sf-var mt-4 text-center px-4',
   },
 
   // ImageFrame Skeleton
   imageSkeleton: {
-    container: 'relative mx-auto overflow-hidden bg-sf-cont rounded-2xl shadow-lg animate-pulse',
+    container: 'relative mx-auto overflow-hidden bg-sf-cont animate-pulse',
     shimmer: 'absolute inset-0 bg-gradient-to-r from-sf-hi via-sf-hst to-sf-hi bg-[length:200%_100%] animate-[shimmer_1.5s_infinite]',
     placeholder: 'absolute inset-0 flex items-center justify-center text-on-sf-var/50',
     loadingText: 'mt-2 text-sm text-on-sf-var/60',
@@ -218,14 +220,14 @@ export const NAVIGATION_STYLES = {
     
     // CategoriesSection
     categories: {
-      container: 'w-full py-4',
+      container: 'w-full mx-2 pb-4',
       nav: 'flex flex-wrap gap-2',
       tag: 'text-sm text-on-sf-var bg-sf-cont px-3 py-1.5 rounded-lg hover:bg-sf-hi transition-colors',
     },
     
     // RubricSection
     rubric: {
-      container: 'w-full py-4',
+      container: 'w-full mx-2 pb-4',
       link: 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
       icon: 'relative w-6 h-6',
       text: 'text-base font-medium text-on-sf',

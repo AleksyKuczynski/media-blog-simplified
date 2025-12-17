@@ -30,13 +30,12 @@ import { ContentChunk, TocItem } from './markdown/markdownTypes';
 
 interface ContentProps {
   chunks: ContentChunk[];
-  toc: TocItem[];
   title?: string;
   author?: string;
   datePublished?: string;
 }
 
-export function Content({ chunks, toc, title, author, datePublished }: ContentProps) {
+export function Content({ chunks, title, author, datePublished }: ContentProps) {
   const structuredData = title && author && datePublished ? {
     "@context": "https://schema.org",
     "@type": "Article",

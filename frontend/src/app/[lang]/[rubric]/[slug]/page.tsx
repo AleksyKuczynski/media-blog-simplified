@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
-import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { processContent } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/processContent';
@@ -234,6 +233,20 @@ export default async function ArticlePage({
                 <div className="text-lg">{dictionary.common.status.loading}</div>
               </div>
             }>
+              <RubricSection 
+                rubric={rubricData}
+                lang={lang}
+                dictionary={dictionary}
+              />
+              
+              {categoriesData.length > 0 && (
+                <CategoriesSection 
+                  categories={categoriesData}
+                  lang={lang}
+                  dictionary={dictionary}
+                />
+              )}
+
               <Header
                 title={translation.title}
                 lead={translation.lead}
@@ -263,7 +276,6 @@ export default async function ArticlePage({
 
               <Content
                 chunks={contentChunks}
-                toc={tocItems}
                 title={translation.title}
                 author={article.authors?.[0]?.name || 'EventForMe Editorial'}
                 datePublished={article.published_at}

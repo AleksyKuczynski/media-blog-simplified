@@ -55,23 +55,6 @@ export function Header({
   return (
     <header className={styles.container}>
       
-      <h1 className={styles.title}>
-        {title}
-      </h1>
-      
-      {imagePath && (
-        <div className={`${styles.imageContainer} ${IMAGE_RATIO_STRING}`}>
-          <Image
-            src={`${DIRECTUS_URL}/assets/${imagePath}`}
-            alt={title}
-            fill
-            sizes="(max-width: 768px) 100vw, 1200px"
-            priority
-            className={styles.image}
-          />
-        </div>
-      )}
-
       <div className={styles.metadataBox}>
         <p>
           {authors.length > 0 && authors[0].name !== '::EDITORIAL::' ? (
@@ -92,6 +75,23 @@ export function Header({
         </p>
         <p>{publishedDate}</p>
       </div>
+
+      <h1 className={styles.title}>
+        {title}
+      </h1>
+      
+      {imagePath && (
+        <div className={`${styles.imageContainer} ${IMAGE_RATIO_STRING}`}>
+          <Image
+            src={`${DIRECTUS_URL}/assets/${imagePath}`}
+            alt={title}
+            fill
+            sizes="(max-width: 768px) 100vw, 1200px"
+            priority
+            className={styles.image}
+          />
+        </div>
+      )}
 
       {lead && (
         <div className={styles.lead}>

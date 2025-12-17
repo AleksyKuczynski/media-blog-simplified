@@ -11,11 +11,11 @@
 
 export const BREADCRUMB_STYLES = {
   nav: {
-    container: 'text-sm mb-8 overflow-x-auto',
+    container: 'text-sm mx-2 my-4',
   },
   
   list: {
-    base: 'list-none inline-flex items-center whitespace-nowrap',
+    base: 'list-none inline-flex',
   },
   
   item: {
@@ -28,7 +28,7 @@ export const BREADCRUMB_STYLES = {
   },
   
   link: {
-    base: 'text-pr-cont hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200',
+    base: 'truncate text-ellipsis text-pr-cont hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200',
   },
   
   currentPage: {
