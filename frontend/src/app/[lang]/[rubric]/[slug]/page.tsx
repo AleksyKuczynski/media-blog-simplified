@@ -226,97 +226,95 @@ export default async function ArticlePage({
           dictionary={dictionary}
         />
 
-        <article itemScope itemType="https://schema.org/Article">
-          <div className="container mx-auto">
-            <Suspense fallback={
-              <div className="text-center py-8">
-                <div className="text-lg">{dictionary.common.status.loading}</div>
-              </div>
-            }>
-              <RubricSection 
-                rubric={rubricData}
+        <article itemScope itemType="https://schema.org/Article" className="container mx-auto px-2 md:px-4">
+          <Suspense fallback={
+            <div className="text-center py-8">
+              <div className="text-lg">{dictionary.common.status.loading}</div>
+            </div>
+          }>
+            <RubricSection 
+              rubric={rubricData}
+              lang={lang}
+              dictionary={dictionary}
+            />
+            
+            {categoriesData.length > 0 && (
+              <CategoriesSection 
+                categories={categoriesData}
                 lang={lang}
                 dictionary={dictionary}
               />
-              
-              {categoriesData.length > 0 && (
-                <CategoriesSection 
-                  categories={categoriesData}
-                  lang={lang}
-                  dictionary={dictionary}
-                />
-              )}
+            )}
 
-              <Header
-                title={translation.title}
-                lead={translation.lead}
-                imagePath={article.article_heading_img}
+            <Header
+              title={translation.title}
+              lead={translation.lead}
+              imagePath={article.article_heading_img}
+              authors={authorsWithDetails}
+              publishedDate={formattedDate}
+              lang={lang}
+              editorialText={processTemplate(dictionary.content.labels.editorial, {
+                siteName: dictionary.seo.site.name
+              })}
+            />
+
+            <ArticleEngagement
+              slug={articleSlug}
+              title={translation.title}
+              url={currentArticleUrl}
+            />
+
+            {tocItems.length > 0 && (
+              <Collapsible
+                title={dictionary.content.labels.tableOfContents}
+                ariaLabel={dictionary.content.labels.tableOfContents}
+              >
+                <TableOfContents items={tocItems} />
+              </Collapsible>
+            )}
+
+            <Content
+              chunks={contentChunks}
+              title={translation.title}
+              author={article.authors?.[0]?.name || 'EventForMe Editorial'}
+              datePublished={article.published_at}
+            />
+
+            <QuickNavigation 
+              lang={lang}
+              dictionary={dictionary}
+            />
+
+            {categoriesData.length > 0 && (
+              <CategoriesSection 
+                categories={categoriesData}
+                lang={lang}
+                dictionary={dictionary}
+              />
+            )}
+
+            <RubricSection 
+              rubric={rubricData}
+              lang={lang}
+              dictionary={dictionary}
+            />
+
+            {authorsWithDetails.length > 0 && (
+              <AuthorsSection 
                 authors={authorsWithDetails}
-                publishedDate={formattedDate}
-                lang={lang}
-                editorialText={processTemplate(dictionary.content.labels.editorial, {
-                  siteName: dictionary.seo.site.name
-                })}
-              />
-
-              <ArticleEngagement
-                slug={articleSlug}
-                title={translation.title}
-                url={currentArticleUrl}
-              />
-
-              {tocItems.length > 0 && (
-                <Collapsible
-                  title={dictionary.content.labels.tableOfContents}
-                  ariaLabel={dictionary.content.labels.tableOfContents}
-                >
-                  <TableOfContents items={tocItems} />
-                </Collapsible>
-              )}
-
-              <Content
-                chunks={contentChunks}
-                title={translation.title}
-                author={article.authors?.[0]?.name || 'EventForMe Editorial'}
-                datePublished={article.published_at}
-              />
-
-              <QuickNavigation 
-                lang={lang}
                 dictionary={dictionary}
               />
+            )}
 
-              {categoriesData.length > 0 && (
-                <CategoriesSection 
-                  categories={categoriesData}
-                  lang={lang}
-                  dictionary={dictionary}
-                />
-              )}
+            <RelatedArticles
+              currentArticleSlug={articleSlug}
+              articleCategories={categoriesData}
+              lang={lang}
+              dictionary={dictionary}
+            />
 
-              <RubricSection 
-                rubric={rubricData}
-                lang={lang}
-                dictionary={dictionary}
-              />
-
-              {authorsWithDetails.length > 0 && (
-                <AuthorsSection 
-                  authors={authorsWithDetails}
-                  dictionary={dictionary}
-                />
-              )}
-
-              <RelatedArticles
-                currentArticleSlug={articleSlug}
-                articleCategories={categoriesData}
-                lang={lang}
-                dictionary={dictionary}
-              />
-
-              <ScrollToTopButton />
-            </Suspense>
-          </div>
+            <ScrollToTopButton />
+          </Suspense>
         </article>
       </>
     );

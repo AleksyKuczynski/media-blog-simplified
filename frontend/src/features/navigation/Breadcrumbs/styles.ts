@@ -11,7 +11,7 @@
 
 export const BREADCRUMB_STYLES = {
   nav: {
-    container: 'text-sm mx-2 my-4 max-w-[100vw]',
+    container: 'text-sm mx-2 my-4 max-w-[50vw]',
   },
   
   list: {

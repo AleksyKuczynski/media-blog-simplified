@@ -32,14 +32,14 @@ export const LAYOUT_STYLES = {
   header: {
     container: `relative mb-12 
           lg:grid grid-cols-2 justify-center`,
-    title: `mx-2 mb-6 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf
+    title: `mb-6 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf
           text-3xl 
           lg:pl-6 xl:pl-8 lg:text-left`,
-    imageContainer: `relative mx-2 ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl h-full md:max-lg:w-3/4 `,
+    imageContainer: `relative ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl h-full md:max-lg:w-3/4 `,
     image: 'w-full h-full object-cover',
     metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
     authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
-    lead: `mx-2 font-light max-w-[800px] mx-auto text-on-sf
+    lead: `font-light max-w-[800px] mx-auto text-on-sf
           mb-8 col-span-2 text-lg px-2 pt-6 
           xl:text-xl `,
   },
@@ -64,7 +64,7 @@ export const ELEMENTS_STYLES = {
   // Heading levels
   heading: {
     base: `text-on-sf 
-          mx-2 
+           
           `,
     h2: `font-bold font-serif 
           text-3xl mb-8 mt-16 
@@ -72,15 +72,15 @@ export const ELEMENTS_STYLES = {
     h3: `font-bold font-serif 
           text-2xl mb-6 mt-8 
           md:text-2xl`,
-    h4: `uppercase
-          text-lg mb-4 mt-6 
+    h4: `uppercase font-serif
+          text-xl mb-4 mt-6 
           md:text-xl`,
   },
 
   // Paragraph
   paragraph: {
     base: `font-serif text-on-sf-var leading-relaxed first:mt-0 last:mb-0
-          px-2 mb-3 
+          mb-3 
 
           md:text-lg  `,
   },
@@ -95,10 +95,10 @@ export const ELEMENTS_STYLES = {
   // Lists
   list: {
     base: `font-serif text-on-sf-var leading-relaxed 
-          mx-2 text-sm my-6 pl-6 space-y-2`,
+          my-6 pl-6 space-y-2`,
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
-    item: 'text-on-sf-var marker:text-sec-cont pl-2 last:mb-0',
+    item: 'text-on-sf-var marker:text-sec-cont last:mb-0',
   },
 } as const;
 
@@ -109,7 +109,7 @@ export const ELEMENTS_STYLES = {
 export const MEDIA_STYLES = {
   // ImageFrame
   imageFrame: {
-    wrapper: 'w-full mb-8',
+    wrapper: 'w-[100vw] -mx-2 mb-8',
     figure: 'w-full',
     container: 'relative mx-auto overflow-hidden bg-sf-cont max-h-[90vh] w-auto max-w-full flex items-center justify-center',
     image: 'h-full w-auto max-w-full object-contain',
@@ -143,7 +143,7 @@ export const BLOCKS_STYLES = {
 
   // Blockquote Type 2 (Quote with Author)
   blockquote2: {
-    container: `relative mx-2 my-8 p-6 pb-8 rounded-3xl shadow-md bg-sf-cont
+    container: `relative my-8 p-6 pb-8 rounded-3xl shadow-md bg-sf-cont
             md:mx-8 
             lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4 
             before:content-["”"] before:text-8xl before:text-sec-cont before:absolute`,
@@ -161,7 +161,7 @@ export const BLOCKS_STYLES = {
 
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
-    container: `mb-6 mx-2 p-6 pb-10 grid grid-cols-4 bg-sf-cont rounded-3xl shadow-md
+    container: `mb-6 p-6 pb-10 grid grid-cols-4 bg-sf-cont rounded-3xl shadow-md
             md:mx-8 
             lg:mx-auto lg:my-12 lg:w-5/6 
             xl:w-3/4 `,
