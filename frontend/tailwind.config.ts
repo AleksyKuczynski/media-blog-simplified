@@ -73,6 +73,13 @@ const config: Config = {
           'dim-inv': 'var(--color-primary-fixed-dim-inverted)',
         },
         
+        // Secondary colors
+        sec: {
+          cont: 'var(--color-secondary-container)',
+          fix: 'var(--color-secondary-fixed)',
+          dim: 'var(--color-secondary-fixed-dim)',
+        },
+        
         // Tertiary colors
         tr: {
           cont: 'var(--color-tertiary-container)',
@@ -86,6 +93,8 @@ const config: Config = {
           'sf-var': 'var(--color-on-surface-variant)',
           pr: 'var(--color-on-primary-container)',
           'pr-var': 'var(--color-on-primary-container-variant)',
+          sec: 'var(--color-on-secondary-container)',
+          'sec-var': 'var(--color-on-secondary-container-variant)',
           tr: 'var(--color-on-tertiary-container)',
           'tr-var': 'var(--color-on-tertiary-container-variant)',
         },
