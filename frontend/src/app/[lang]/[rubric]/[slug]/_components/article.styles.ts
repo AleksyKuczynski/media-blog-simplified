@@ -98,7 +98,7 @@ export const ELEMENTS_STYLES = {
           mx-2 text-sm my-6 pl-6 space-y-2`,
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
-    item: 'text-on-sf-var marker:text-pr-cont pl-2 last:mb-0',
+    item: 'text-on-sf-var marker:text-sec-cont pl-2 last:mb-0',
   },
 } as const;
 
@@ -143,11 +143,11 @@ export const BLOCKS_STYLES = {
 
   // Blockquote Type 2 (Quote with Author)
   blockquote2: {
-    container: `relative mx-2 my-8 p-6 rounded-xl shadow-md bg-sf-cont
+    container: `relative mx-2 my-8 p-6 pb-8 rounded-3xl shadow-md bg-sf-cont
             md:mx-8 
             lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4 
             before:content-["”"] before:text-8xl before:text-sec-cont before:absolute`,
-    content: 'text-on-sf-var mt-0 mb-4 pt-12 text-xl leading-loose font-medium font-serif',
+    content: 'text-on-sf-var mt-0 mb-4 pt-12 text-xl leading-loose font-serif',
     author: 'text-on-sf-var text-right mb-2 text-base font-medium',
   },
 
@@ -161,11 +161,14 @@ export const BLOCKS_STYLES = {
 
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
-    container: 'mb-6 mx-2 px-6 md:mx-8 lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4 grid grid-cols-2 pt-6 bg-sf-cont rounded-xl shadow-md',
-    avatarWrapper: 'justify-self-end rounded-2xl shadow-md mr-4 mb-2 relative w-20 h-20 overflow-hidden',
+    container: `mb-6 mx-2 p-6 pb-10 grid grid-cols-4 bg-sf-cont rounded-3xl shadow-md
+            md:mx-8 
+            lg:mx-auto lg:my-12 lg:w-5/6 
+            xl:w-3/4 `,
+    avatarWrapper: 'rounded-full relative w-20 h-20 overflow-hidden',
     avatar: 'h-full w-full object-cover my-0',
-    authorName: 'self-center my-0 font-serif font-semibold text-2xl text-on-sf-var',
-    content: 'col-span-2 pb-3 text-base font-medium font-serif text-on-sf-var',
+    authorName: 'col-span-3 pl-4 self-center font-medium text-xl text-on-sf-var',
+    content: 'col-span-4 pt-4 text-lg font-serif text-on-sf-var',
   },
 
   // Table
