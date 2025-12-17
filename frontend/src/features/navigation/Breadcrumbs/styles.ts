@@ -11,11 +11,11 @@
 
 export const BREADCRUMB_STYLES = {
   nav: {
-    container: 'text-sm mx-2 my-4',
+    container: 'text-sm mx-2 my-4 max-w-[100vw]',
   },
   
   list: {
-    base: 'list-none inline-flex',
+    base: 'list-none',
   },
   
   item: {

@@ -63,16 +63,16 @@ export const LAYOUT_STYLES = {
 export const ELEMENTS_STYLES = {
   // Heading levels
   heading: {
-    base: `text-on-sf font-serif 
+    base: `text-on-sf 
           mx-2 
           `,
-    h2: `font-bold 
+    h2: `font-bold font-serif 
           text-3xl mb-8 mt-16 
           md:text-3xl`,
-    h3: `font-bold 
+    h3: `font-bold font-serif 
           text-2xl mb-6 mt-8 
           md:text-2xl`,
-    h4: `uppercase font-medium
+    h4: `uppercase
           text-lg mb-4 mt-6 
           md:text-xl`,
   },
@@ -133,28 +133,35 @@ export const MEDIA_STYLES = {
 export const BLOCKS_STYLES = {
   // Blockquote Type 1 (Highlight)
   blockquote1: {
-    container: 'relative mb-6 p-6 pt-4 md:mx-8 lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4 rounded-xl shadow-md before:content-[\'\'] before:font-display before:text-8xl before:text-pr-cont before:text-start before:absolute',
-    content: 'text-on-sf-var my-0 pt-12 pb-4 text-2xl text-center leading-relaxed font-semibold font-serif',
+    container: `relative mb-6 p-6 pt-8 
+            md:mx-8 
+            lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4
+            before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
+    content: `text-on-sf-var my-0 pt-12 pb-4 text-xl leading-relaxed font-semibold font-serif 
+            `,
   },
 
   // Blockquote Type 2 (Quote with Author)
   blockquote2: {
-    container: 'relative mb-6 p-6 md:mx-8 lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4 rounded-xl shadow-md before:content-[\'\'] before:font-display before:text-8xl before:text-pr-cont before:text-start before:absolute',
-    content: 'text-on-sf-var mt-0 mb-4 pt-12 text-xl text-center leading-loose font-medium font-serif',
-    author: 'text-on-sf-var text-right mb-2 text-base font-medium font-serif',
+    container: `relative mx-2 my-8 p-6 rounded-xl shadow-md bg-sf-cont
+            md:mx-8 
+            lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4 
+            before:content-["”"] before:text-8xl before:text-sec-cont before:absolute`,
+    content: 'text-on-sf-var mt-0 mb-4 pt-12 text-xl leading-loose font-medium font-serif',
+    author: 'text-on-sf-var text-right mb-2 text-base font-medium',
   },
 
   // Blockquote Type 3 (Epigraph)
   blockquote3: {
     container: 'relative mb-6 p-4 pl-12 md:pl-0 md:pr-12 flex flex-col items-end',
-    content: 'text-lg font-serif text-on-sf-var mb-4 md:w-1/2',
-    author: 'font-serif font-semibold text-base text-on-sf-var mb-1 md:w-1/2 text-right',
-    source: 'font-serif text-on-sf-var/80 text-sm mt-0 text-right',
+    content: 'font-serif text-on-sf-var mb-4 md:w-1/2',
+    author: 'font-medium text-base text-on-sf-var mb-1 md:w-1/2 text-right',
+    source: 'text-on-sf-var/80 text-sm mt-0 text-right',
   },
 
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
-    container: 'mb-6 px-6 md:mx-8 lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4 grid grid-cols-2 pt-6 bg-sf-cont rounded-xl shadow-md',
+    container: 'mb-6 mx-2 px-6 md:mx-8 lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4 grid grid-cols-2 pt-6 bg-sf-cont rounded-xl shadow-md',
     avatarWrapper: 'justify-self-end rounded-2xl shadow-md mr-4 mb-2 relative w-20 h-20 overflow-hidden',
     avatar: 'h-full w-full object-cover my-0',
     authorName: 'self-center my-0 font-serif font-semibold text-2xl text-on-sf-var',
