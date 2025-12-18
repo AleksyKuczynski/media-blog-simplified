@@ -33,13 +33,17 @@ export const LAYOUT_STYLES = {
     container: `relative mb-12 
           lg:grid grid-cols-2 justify-center`,
     title: `mb-6 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf
-          text-3xl 
+          text-3xl
+          max-w-2xl mx-auto 
           lg:pl-6 xl:pl-8 lg:text-left`,
-    imageContainer: `relative ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl h-full md:max-lg:w-3/4 `,
+    imageContainer: `relative ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl 
+          h-full mx-auto
+          max-w-md
+          md:max-lg:w-3/4 `,
     image: 'w-full h-full object-cover',
     metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
     authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
-    lead: `font-light max-w-[800px] mx-auto text-on-sf
+    lead: `font-light max-w-xl mx-auto text-on-sf
           mb-8 col-span-2 text-lg px-2 pt-6 
           xl:text-xl `,
   },
@@ -110,12 +114,14 @@ export const ELEMENTS_STYLES = {
 export const MEDIA_STYLES = {
   // ImageFrame
   imageFrame: {
-    wrapper: `max-w-dvw -mx-2 mb-8
+    wrapper: `max-w-svw -mx-2 mb-8
               md:mx-auto`,
     figure: 'w-full',
-    container: 'relative mx-auto overflow-hidden bg-sf-cont max-h-[90vh] w-auto max-w-full flex items-center justify-center',
+    container: `relative mx-auto overflow-hidden bg-sf-cont md:rounded-lg
+            max-h-[90vh] w-auto max-w-full 
+            flex items-center justify-center my-0`,
     image: 'w-full max-w-full object-contain',
-    caption: 'prose-sm text-on-sf-var mt-4 text-center px-4',
+    caption: 'prose-sm text-on-sf-var text-center px-4',
   },
 
   // ImageFrame Skeleton
@@ -139,37 +145,38 @@ export const BLOCKS_STYLES = {
             max-w-xl mx-auto
             lg:my-12
             before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
-    content: `text-on-sf-var my-0 pt-12 pb-4 text-xl leading-relaxed font-semibold font-serif 
-            `,
+    content: `text-on-sf-var my-0 pt-12 pb-4 
+            text-xl leading-relaxed font-semibold dark:font-medium font-serif`,
   },
 
   // Blockquote Type 2 (Quote with Author)
   blockquote2: {
-    container: `relative my-8 p-6 pb-8 rounded-3xl shadow-md bg-sf-cont
-            max-w-xl mx-auto 
-            lg:my-12 
-            before:content-["”"] before:text-8xl before:text-sec-cont before:absolute`,
-    content: 'text-on-sf-var mt-0 mb-4 pt-12 text-xl leading-loose font-serif',
+    container: `relative mb-6 p-6 pt-8
+            max-w-xl mx-auto
+            lg:my-12
+            before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
+    content: `text-on-sf-var my-0 pt-12 pb-4 
+            text-xl leading-relaxed font-semibold dark:font-medium font-serif`,
     author: 'text-on-sf-var text-right mb-2 text-base font-medium',
   },
 
   // Blockquote Type 3 (Epigraph)
   blockquote3: {
-    container: 'relative mb-6 p-4 pl-12 md:pl-0 md:pr-12 flex flex-col items-end',
-    content: 'font-serif text-on-sf-var mb-4 md:w-1/2',
-    author: 'font-medium text-base text-on-sf-var mb-1 md:w-1/2 text-right',
-    source: 'text-on-sf-var/80 text-sm mt-0 text-right',
+    container: 'relative mb-6 p-4 pl-12 md:pl-0 md:pr-12 text-on-sf-var flex flex-col items-end',
+    content: 'font-serif mb-4 md:w-1/2',
+    author: 'mb-1 md:w-1/2 text-right',
+    source: 'italic text-sm mt-0 text-right',
   },
 
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
-    container: `mb-6 p-6 pb-10 grid grid-cols-4 bg-sf-cont rounded-3xl shadow-md
+    container: `mb-6 p-6 pb-10 grid grid-cols-4 rounded-3xl border-red
             max-w-xl mx-auto 
             lg:my-12`,
     avatarWrapper: 'rounded-full relative w-20 h-20 overflow-hidden',
     avatar: 'h-full w-full object-cover my-0',
-    authorName: 'col-span-3 pl-4 self-center font-medium text-xl text-on-sf-var',
-    content: 'col-span-4 pt-4 text-lg font-serif text-on-sf-var',
+    authorName: 'col-span-3 pl-4 self-center font-medium text-xl text-on-sf-var border-red',
+    content: 'col-span-4 pt-4 text-lg font-serif text-on-sf-var border-red',
   },
 
   // Table
@@ -186,10 +193,11 @@ export const BLOCKS_STYLES = {
 
   // InlineArticleCard
   inlineArticleCard: {
-    container: 'not-prose my-6 w-full',
+    container: 'not-prose my-6 md:my-12 w-full max-w-xl shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300',
     link: 'group block w-full',
-    card: 'bg-sf-cont rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-row items-stretch h-20 sm:h-28 md:h-32',
-    imageContainer: 'relative flex-shrink-0 overflow-hidden bg-sf-hi w-20 sm:w-28 md:w-32',
+    card: 'bg-sf-cont flex flex-row items-stretch h-20 sm:h-28 md:h-32',
+    imageContainer: `relative flex-shrink-0 overflow-hidden bg-sf-hi 
+          w-28 md:w-32`,
     image: 'object-cover group-hover:scale-110 transition-transform duration-300',
     content: 'flex flex-col justify-center flex-grow p-3 sm:p-4 min-w-0',
     label: 'text-xs font-medium uppercase tracking-wide mb-1 text-pr-cont hidden sm:block',

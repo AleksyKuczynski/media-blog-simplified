@@ -226,7 +226,7 @@ export default async function ArticlePage({
           dictionary={dictionary}
         />
 
-        <article itemScope itemType="https://schema.org/Article" className="container max-w-4xl mx-auto px-2 md:px-4">
+        <article itemScope itemType="https://schema.org/Article" className="container overflow-x-hidden max-w-4xl mx-auto px-2 md:px-4">
           <Suspense fallback={
             <div className="text-center py-8">
               <div className="text-lg">{dictionary.common.status.loading}</div>
