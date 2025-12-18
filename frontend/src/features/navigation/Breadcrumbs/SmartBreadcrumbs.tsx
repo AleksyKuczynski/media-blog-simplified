@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ChevronRightIcon } from '@/shared/primitives/Icons';
 import { Dictionary, Lang } from '@/config/i18n';
 import { detectBreadcrumbContext, generateContextualBreadcrumbs } from './lib/breadcrumbContextDetector';
-import { BREADCRUMB_STYLES } from './styles';
+import { BREADCRUMB_STYLES, SMART_BREADCRUMB_STYLES } from './styles';
 import { generateSmartBreadcrumbSchemas, BreadcrumbSchemas } from '@/shared/seo/schemas/BreadcrumbSchema';
 
 interface SmartBreadcrumbsProps {
@@ -86,10 +86,26 @@ export default async function SmartBreadcrumbs({
           {displayPath.map((item, index) => {
             const isLast = index === displayPath.length - 1;
             
+            // Determine item styling (always 4 members)
+            const itemClass = index === 0 
+              ? SMART_BREADCRUMB_STYLES.item.home
+              : index === 1
+              ? SMART_BREADCRUMB_STYLES.item.context
+              : isLast
+              ? SMART_BREADCRUMB_STYLES.item.article
+              : SMART_BREADCRUMB_STYLES.item.parent;
+            
+            // Determine link styling
+            const linkClass = index === 0 
+              ? SMART_BREADCRUMB_STYLES.link.home
+              : index === 1
+              ? SMART_BREADCRUMB_STYLES.link.context
+              : SMART_BREADCRUMB_STYLES.link.parent;
+            
             return (
               <li 
                 key={item.href} 
-                className={BREADCRUMB_STYLES.item.container}
+                className={itemClass}
                 itemProp="itemListElement" 
                 itemScope 
                 itemType="https://schema.org/ListItem"
@@ -107,7 +123,7 @@ export default async function SmartBreadcrumbs({
                 {/* Breadcrumb item */}
                 {isLast ? (
                   <span 
-                    className={BREADCRUMB_STYLES.currentPage.base}
+                    className={SMART_BREADCRUMB_STYLES.currentPage.base}
                     itemProp="name"
                     aria-current="page"
                   >
@@ -116,7 +132,7 @@ export default async function SmartBreadcrumbs({
                 ) : (
                   <Link 
                     href={item.href} 
-                    className={BREADCRUMB_STYLES.link.base}
+                    className={linkClass}
                     itemProp="item"
                     aria-label={item.ariaLabel}
                   >
@@ -126,7 +142,7 @@ export default async function SmartBreadcrumbs({
                 <meta itemProp="position" content={`${index + 1}`} />
               </li>
             );
-          })}
+          })}        
         </ol>
       </nav>
     </>

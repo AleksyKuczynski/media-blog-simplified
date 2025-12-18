@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ChevronRightIcon } from '@/shared/primitives/Icons';
 import { RubricBasic } from '@/api/directus';
 import { Lang } from '@/config/i18n';
-import { BREADCRUMB_STYLES } from './styles';
+import { BREADCRUMB_STYLES, SIMPLE_BREADCRUMB_STYLES } from './styles';
 
 export interface BreadcrumbItem {
   label: string;
@@ -63,35 +63,51 @@ export default function Breadcrumbs({ items, lang, translations }: BreadcrumbsPr
       itemType="https://schema.org/BreadcrumbList"
     >
       <ol className={BREADCRUMB_STYLES.list.base}>
-        {fullPath.map((item, index) => (
-          <li 
-            key={item.href} 
-            className={BREADCRUMB_STYLES.item.container}
-            itemProp="itemListElement" 
-            itemScope 
-            itemType="https://schema.org/ListItem"
-          >
-            {index > 0 && <Chevron />}
-            {index === fullPath.length - 1 ? (
-              <span 
-                className={BREADCRUMB_STYLES.currentPage.base}
-                aria-current="page"
-                itemProp="name"
-              >
-                {item.label}
-              </span>
-            ) : (
-              <Link
-                href={item.href}
-                className={BREADCRUMB_STYLES.link.base}
-                itemProp="item"
-              >
-                <span itemProp="name">{item.label}</span>
-              </Link>
-            )}
-            <meta itemProp="position" content={String(index + 1)} />
-          </li>
-        ))}
+        {fullPath.map((item, index) => {
+          const isLast = index === fullPath.length - 1;
+          
+          // Determine item styling
+          const itemClass = index === 0 
+            ? SIMPLE_BREADCRUMB_STYLES.item.home
+            : isLast
+            ? SIMPLE_BREADCRUMB_STYLES.item.last
+            : SIMPLE_BREADCRUMB_STYLES.item.context;
+          
+          // Determine link styling
+          const linkClass = index === 0 
+            ? SIMPLE_BREADCRUMB_STYLES.link.home
+            : SIMPLE_BREADCRUMB_STYLES.link.context;
+          
+          return (
+            <li 
+              key={item.href} 
+              className={itemClass}
+              itemProp="itemListElement" 
+              itemScope 
+              itemType="https://schema.org/ListItem"
+            >
+              {index > 0 && <Chevron />}
+              {isLast ? (
+                <span 
+                  className={SIMPLE_BREADCRUMB_STYLES.currentPage.base}
+                  aria-current="page"
+                  itemProp="name"
+                >
+                  {item.label}
+                </span>
+              ) : (
+                <Link
+                  href={item.href}
+                  className={linkClass}
+                  itemProp="item"
+                >
+                  <span itemProp="name">{item.label}</span>
+                </Link>
+              )}
+              <meta itemProp="position" content={String(index + 1)} />
+            </li>
+          );
+        })}
       </ol>
     </nav>
   );
