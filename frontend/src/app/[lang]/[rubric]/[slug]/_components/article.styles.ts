@@ -170,13 +170,13 @@ export const BLOCKS_STYLES = {
 
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
-    container: `mb-6 p-6 pb-10 grid grid-cols-4 rounded-3xl border-red
+    container: `mb-6 p-6 pb-10 grid grid-cols-4 rounded-2xl border-t border-ol-var shadow-md
             max-w-xl mx-auto 
             lg:my-12`,
     avatarWrapper: 'rounded-full relative w-20 h-20 overflow-hidden',
     avatar: 'h-full w-full object-cover my-0',
-    authorName: 'col-span-3 pl-4 self-center font-medium text-xl text-on-sf-var border-red',
-    content: 'col-span-4 pt-4 text-lg font-serif text-on-sf-var border-red',
+    authorName: 'col-span-3 pl-4 self-center font-medium text-xl text-on-sf-var',
+    content: 'col-span-4 pt-4 text-lg font-serif text-on-sf-var',
   },
 
   // Table
@@ -232,21 +232,21 @@ export const NAVIGATION_STYLES = {
     relatedLinks: {
     // QuickNavigation
     quickNav: {
-      container: 'w-full py-4 border-b border-ol-var',
+      container: 'w-full max-w-2xl mx-auto py-4 border-b border-ol-var',
       nav: 'flex flex-wrap gap-x-4 gap-y-2',
       link: 'text-on-sf-var hover:text-on-sf hover:underline transition-colors',
     },
     
     // CategoriesSection
     categories: {
-      container: 'w-full mx-2 pb-4',
+      container: 'w-full max-w-2xl mx-auto pb-4',
       nav: 'flex flex-wrap gap-2',
       tag: 'text-sm text-on-sf-var bg-sf-cont px-3 py-1.5 rounded-lg hover:bg-sf-hi transition-colors',
     },
     
     // RubricSection
     rubric: {
-      container: 'w-full mx-2 pb-4',
+      container: 'w-full max-w-2xl mx-auto pb-4',
       link: 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
       icon: 'relative w-6 h-6',
       text: 'text-base font-medium text-on-sf',
@@ -254,7 +254,7 @@ export const NAVIGATION_STYLES = {
     
     // AuthorSection (single author - standalone)
     author: {
-      container: 'w-full py-4 border-t border-ol-var',
+      container: 'w-full max-w-2xl mx-auto py-4 border-t border-ol-var',
       link: 'inline-flex items-center gap-3 px-4 py-3 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
       avatar: 'relative w-10 h-10 rounded-full overflow-hidden',
       info: 'flex flex-col',
@@ -264,7 +264,7 @@ export const NAVIGATION_STYLES = {
     
     // AuthorsSection (multiple authors)
     authors: {
-      container: 'w-full py-4 border-t border-ol-var',
+      container: 'w-full max-w-2xl mx-auto py-4 border-t border-ol-var',
       grid: 'flex flex-wrap gap-3',
       heading: 'sr-only',
       // Card styles for authors in grid
@@ -279,7 +279,7 @@ export const NAVIGATION_STYLES = {
   // RelatedArticles
   relatedArticles: {
     container: 'mt-12 pt-8 border-t border-gray-200',
-    heading: 'text-2xl font-bold mb-6 text-on-sf',
+    heading: 'text-2xl font-bold mb-6 text-on-sf max-w-2xl mx-auto',
     grid: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6',
     emptyState: 'text-center py-8 text-on-sf-var',
   },
