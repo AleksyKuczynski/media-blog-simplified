@@ -9,6 +9,8 @@
  * - BREADCRUMB_STYLES: Container, list, items, separators, links
  */
 
+import { cn } from "@/lib/utils";
+
 export const BREADCRUMB_STYLES = {
   nav: {
     container: 'text-sm mx-2 my-4',
@@ -28,7 +30,11 @@ export const BREADCRUMB_STYLES = {
   },
   
   link: {
-    base: 'truncate text-ellipsis text-pr-cont hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200 max-w-[120px] md:max-w-[180px] lg:max-w-[240px] inline-block',
+    base: cn(
+      'truncate text-ellipsis text-pr-cont', 
+      'hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200', 
+      'max-w-[100px] md:max-w-[180px] lg:max-w-[240px] inline-block',
+    )
   },
   
   currentPage: {

@@ -61,8 +61,8 @@ export const RELATED_CAROUSEL_STYLES = {
       'disabled:opacity-0 disabled:cursor-not-allowed',
       'hidden lg:flex items-center justify-center'
     ),
-    left: '-left-4',
-    right: '-right-4',
+    left: 'left-4',
+    right: 'right-4',
     icon: 'w-6 h-6 text-on-sf',
   },
 } as const;

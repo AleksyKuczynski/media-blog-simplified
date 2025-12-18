@@ -39,7 +39,7 @@ export const LAYOUT_STYLES = {
     imageContainer: `relative ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl 
           h-full mx-auto
           max-w-md
-          md:max-lg:w-3/4 `,
+          `,
     image: 'w-full h-full object-cover',
     metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
     authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
