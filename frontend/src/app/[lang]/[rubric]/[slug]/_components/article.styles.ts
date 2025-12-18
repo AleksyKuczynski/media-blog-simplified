@@ -170,7 +170,7 @@ export const BLOCKS_STYLES = {
 
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
-    container: `mb-6 p-6 pb-10 grid grid-cols-4 rounded-2xl border-t border-ol-var shadow-md
+    container: `mb-6 p-8 pb-10 grid grid-cols-4 rounded-2xl border-t border-ol-var shadow-md
             max-w-xl mx-auto 
             lg:my-12`,
     avatarWrapper: 'rounded-full relative w-20 h-20 overflow-hidden',
@@ -274,14 +274,6 @@ export const NAVIGATION_STYLES = {
       name: 'text-sm font-medium text-on-sf',
       label: 'text-xs text-on-sf-var',
     },
-  },
-
-  // RelatedArticles
-  relatedArticles: {
-    container: 'mt-12 pt-8 border-t border-gray-200',
-    heading: 'text-2xl font-bold mb-6 text-on-sf max-w-2xl mx-auto',
-    grid: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6',
-    emptyState: 'text-center py-8 text-on-sf-var',
   },
 } as const;
 

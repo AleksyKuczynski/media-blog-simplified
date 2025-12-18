@@ -11,19 +11,23 @@ export const RELATED_ARTICLES_STYLES = {
   section: 'mt-12 pt-8 border-t border-gray-200',
   
   // Heading
-  heading: 'text-2xl font-bold mb-6 text-on-sf',
+  heading: 'text-2xl font-bold mb-6 text-on-sf max-w-2xl mx-auto',
 } as const;
 
 export const RELATED_CAROUSEL_STYLES = {
   // Outer wrapper
-  wrapper: 'relative group',
+  wrapper: cn(
+    'relative group',
+    'w-screen', // Full viewport width
+    '-mx-4 sm:-mx-6 2xl:-mx-8', // Negative margins to break out of container padding
+    'px-4 sm:px-6 2xl:px-8' // Add padding back for content
+  ),
   
   // Scroll container
   scrollContainer: cn(
     'flex gap-4 overflow-x-auto scrollbar-hide',
     'snap-x snap-mandatory scroll-smooth',
-    'px-1 py-2', // Padding for shadow visibility
-    '-mx-1' // Negative margin to offset padding
+    'py-2'
   ),
   
   // Individual card wrapper
