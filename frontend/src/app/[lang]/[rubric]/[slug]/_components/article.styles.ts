@@ -64,7 +64,7 @@ export const ELEMENTS_STYLES = {
   // Heading levels
   heading: {
     base: `text-on-sf 
-           
+           max-w-2xl mx-auto
           `,
     h2: `font-bold font-serif 
           text-3xl mb-8 mt-16 
@@ -81,7 +81,7 @@ export const ELEMENTS_STYLES = {
   paragraph: {
     base: `font-serif text-on-sf-var leading-relaxed first:mt-0 last:mb-0
           mb-3 
-
+          max-w-2xl mx-auto
           md:text-lg  `,
   },
 
@@ -95,7 +95,8 @@ export const ELEMENTS_STYLES = {
   // Lists
   list: {
     base: `font-serif text-on-sf-var leading-relaxed 
-          my-6 pl-6 space-y-2`,
+          my-6 pl-6 space-y-2
+          max-w-2xl mx-auto`,
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
     item: 'text-on-sf-var marker:text-sec-cont last:mb-0',
@@ -109,10 +110,11 @@ export const ELEMENTS_STYLES = {
 export const MEDIA_STYLES = {
   // ImageFrame
   imageFrame: {
-    wrapper: 'w-[100vw] -mx-2 mb-8',
+    wrapper: `max-w-dvw -mx-2 mb-8
+              md:mx-auto`,
     figure: 'w-full',
     container: 'relative mx-auto overflow-hidden bg-sf-cont max-h-[90vh] w-auto max-w-full flex items-center justify-center',
-    image: 'h-full w-auto max-w-full object-contain',
+    image: 'w-full max-w-full object-contain',
     caption: 'prose-sm text-on-sf-var mt-4 text-center px-4',
   },
 
@@ -134,8 +136,8 @@ export const BLOCKS_STYLES = {
   // Blockquote Type 1 (Highlight)
   blockquote1: {
     container: `relative mb-6 p-6 pt-8 
-            md:mx-8 
-            lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4
+            max-w-xl mx-auto
+            lg:my-12
             before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
     content: `text-on-sf-var my-0 pt-12 pb-4 text-xl leading-relaxed font-semibold font-serif 
             `,
@@ -144,8 +146,8 @@ export const BLOCKS_STYLES = {
   // Blockquote Type 2 (Quote with Author)
   blockquote2: {
     container: `relative my-8 p-6 pb-8 rounded-3xl shadow-md bg-sf-cont
-            md:mx-8 
-            lg:mx-auto lg:my-12 lg:w-5/6 xl:w-3/4 
+            max-w-xl mx-auto 
+            lg:my-12 
             before:content-["”"] before:text-8xl before:text-sec-cont before:absolute`,
     content: 'text-on-sf-var mt-0 mb-4 pt-12 text-xl leading-loose font-serif',
     author: 'text-on-sf-var text-right mb-2 text-base font-medium',
@@ -162,9 +164,8 @@ export const BLOCKS_STYLES = {
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
     container: `mb-6 p-6 pb-10 grid grid-cols-4 bg-sf-cont rounded-3xl shadow-md
-            md:mx-8 
-            lg:mx-auto lg:my-12 lg:w-5/6 
-            xl:w-3/4 `,
+            max-w-xl mx-auto 
+            lg:my-12`,
     avatarWrapper: 'rounded-full relative w-20 h-20 overflow-hidden',
     avatar: 'h-full w-full object-cover my-0',
     authorName: 'col-span-3 pl-4 self-center font-medium text-xl text-on-sf-var',
