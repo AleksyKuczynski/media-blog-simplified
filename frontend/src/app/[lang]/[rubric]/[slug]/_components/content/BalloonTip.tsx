@@ -54,7 +54,7 @@ export function BalloonTip({ text, url }: BalloonTipProps) {
   return (
     <span
       ref={containerRef}
-      className={styles.container}
+      className={styles.trigger}
     >
       {/* Clickable link text */}
       <span

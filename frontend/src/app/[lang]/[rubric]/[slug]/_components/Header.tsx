@@ -2,41 +2,42 @@
 /**
  * Article Page - Header Component
  * 
- * Displays article title, hero image, author attribution, and metadata.
+ * Displays article title, hero image, author attribution via AuthorsSection, and metadata.
  * Server component with responsive layout (mobile stacked, desktop grid).
  * 
  * Features:
  * - Next.js Image optimization for hero image
- * - Author links with hover states
+ * - AuthorsSection for author cards with avatars
  * - Optional lead paragraph
  * - Publication date display
  * 
  * Dependencies:
  * - article.styles.ts (LAYOUT_STYLES.header)
  * - @/api/directus (DIRECTUS_URL, AuthorDetails)
+ * - navigation/AuthorsSection (author cards)
  * 
  * @param lang - Language code for author links
  * @param title - Article title
  * @param publishedDate - Formatted publication date
  * @param authors - List of article authors
- * @param editorialText - Fallback text when no authors
+ * @param dictionary - Translations
  * @param imagePath - Optional Directus asset ID
  * @param lead - Optional lead paragraph
  */
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
-import { Lang } from '@/config/i18n';
+import { Lang, Dictionary } from '@/config/i18n';
 import { LAYOUT_STYLES } from './article.styles';
 import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
+import AuthorsSection from './navigation/AuthorsSection';
 
 interface HeaderProps {
   lang: Lang;
   title: string;
   publishedDate: string;
   authors: AuthorDetails[];
-  editorialText: string;
+  dictionary: Dictionary;
   imagePath?: string;
   lead?: string;
 }
@@ -47,8 +48,8 @@ export function Header({
   lang,
   title, 
   publishedDate, 
-  authors, 
-  editorialText, 
+  authors,
+  dictionary,
   imagePath,
   lead
 }: HeaderProps) {
@@ -56,24 +57,12 @@ export function Header({
     <header className={styles.container}>
       
       <div className={styles.metadataBox}>
-        <p>
-          {authors.length > 0 && authors[0].name !== '::EDITORIAL::' ? (
-            authors.map((author, index) => (
-              <span key={author.slug}>
-                {index > 0 && " & "}
-                <Link 
-                  href={`/${lang}/authors/${author.slug}`} 
-                  className={styles.authorLink}
-                >
-                  {author.name}
-                </Link>
-              </span>
-            ))
-          ) : (
-            <span>{editorialText}</span>
-          )}
-        </p>
-        <p>{publishedDate}</p>
+        <AuthorsSection 
+          authors={authors}
+          dictionary={dictionary}
+          className={styles.authorsWrapper}
+        />
+        <p className={styles.dateText}>{publishedDate}</p>
       </div>
 
       <h1 className={styles.title}>

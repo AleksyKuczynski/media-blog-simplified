@@ -4,7 +4,6 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
-import { processTemplate } from '@/config/i18n/helpers/templates';
 import { processContent } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/processContent';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
 import { RelatedArticles } from '@/features/article-display/RelatedArticles';
@@ -253,9 +252,7 @@ export default async function ArticlePage({
               authors={authorsWithDetails}
               publishedDate={formattedDate}
               lang={lang}
-              editorialText={processTemplate(dictionary.content.labels.editorial, {
-                siteName: dictionary.seo.site.name
-              })}
+              dictionary={dictionary}
             />
 
             <ArticleEngagement

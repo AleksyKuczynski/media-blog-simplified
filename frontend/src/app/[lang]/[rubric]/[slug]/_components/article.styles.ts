@@ -42,7 +42,8 @@ export const LAYOUT_STYLES = {
           `,
     image: 'w-full h-full object-cover',
     metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
-    authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
+    authorsWrapper: 'mb-4',
+    dateText: 'font-medium text-sm xl:text-base text-on-sf-var text-right',
     lead: `font-light max-w-xl mx-auto text-on-sf
           mb-8 col-span-2 text-lg px-2 pt-6 
           xl:text-xl `,
