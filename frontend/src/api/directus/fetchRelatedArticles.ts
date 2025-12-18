@@ -1,4 +1,4 @@
-// src/main/lib/directus/fetchRelatedArticles.ts
+// src/api/directus/fetchRelatedArticles.ts
 
 import { DIRECTUS_URL } from "./index";
 import { Lang } from "@/config/i18n";

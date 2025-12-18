@@ -41,9 +41,9 @@ export const LAYOUT_STYLES = {
           max-w-md
           `,
     image: 'w-full h-full object-cover',
-    metadataBox: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto w-full lg:max-w-[800px] p-2 lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 lg:rounded-2xl lg:mt-8',
-    authorsWrapper: 'mb-4',
-    dateText: 'font-medium text-sm xl:text-base text-on-sf-var text-right',
+    metadataBox: 'mx-auto w-full',
+    authorsWrapper: '',
+    dateText: 'font-medium text-sm xl:text-base text-on-sf-var',
     lead: `font-light max-w-xl mx-auto text-on-sf
           mb-8 col-span-2 text-lg px-2 pt-6 
           xl:text-xl `,
@@ -255,8 +255,8 @@ export const NAVIGATION_STYLES = {
     
     // AuthorSection (single author - standalone)
     author: {
-      container: 'w-full max-w-2xl mx-auto py-4 border-t border-ol-var',
-      link: 'inline-flex items-center gap-3 px-4 py-3 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
+      container: 'w-full max-w-2xl mx-auto',
+      link: 'inline-flex items-center gap-3 pr-4 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
       avatar: 'relative w-10 h-10 rounded-full overflow-hidden',
       info: 'flex flex-col',
       name: 'text-sm font-medium text-on-sf',
@@ -265,8 +265,8 @@ export const NAVIGATION_STYLES = {
     
     // AuthorsSection (multiple authors)
     authors: {
-      container: 'w-full max-w-2xl mx-auto py-4 border-t border-ol-var',
-      grid: 'flex flex-wrap gap-3',
+      container: 'w-full max-w-2xl mx-auto py-4',
+      grid: 'flex flex-wrap gap-1',
       heading: 'sr-only',
       // Card styles for authors in grid
       card: 'inline-flex items-center gap-3 px-4 py-3 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',

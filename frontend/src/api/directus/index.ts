@@ -1,4 +1,4 @@
-// src/main/lib/directus/index.ts
+// src/api/directus/index.ts
 
 export * from './directusConstants';
 export * from './directusInterfaces';

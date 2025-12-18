@@ -1,4 +1,4 @@
-// /frontend/src/main/lib/directus/fetchAuthorsForArticle.ts
+// src/api/directus/fetchAuthorsForArticle.ts
 
 import { AuthorDetails, DIRECTUS_URL } from "./index";
 import { Lang } from "@/config/i18n";
@@ -8,6 +8,7 @@ export async function fetchAuthorsForArticle(slug: string, lang: Lang): Promise<
 
     const fields = [
       'authors_slug.slug',
+      'authors_slug.avatar',
       'authors_slug.translations.name',
       'authors_slug.translations.languages_code'
     ].join(',');
@@ -44,6 +45,7 @@ export async function fetchAuthorsForArticle(slug: string, lang: Lang): Promise<
       const translation = authorData.translations[0];
       return {
         slug: authorData.slug,
+        avatar: authorData.avatar || '',
         name: translation ? translation.name : authorData.slug // Fallback to slug if no translation
       };
     });

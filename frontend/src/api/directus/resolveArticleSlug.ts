@@ -1,4 +1,4 @@
-// frontend/src/main/lib/directus/resolveArticleSlug.ts
+// src/api/directus/resolveArticleSlug.ts
 
 import { DIRECTUS_URL } from "./index";
 import { Lang } from "@/config/i18n";

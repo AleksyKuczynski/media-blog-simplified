@@ -1,4 +1,4 @@
-// frontend/src/main/lib/directus/fetchFullArticle.ts
+// src/api/directus/fetchFullArticle.ts
 
 import { FullArticle, ArticleBlock, fetchAuthorsForArticle, fetchCategoriesForArticle } from "./index";
 import { Lang } from "@/config/i18n";

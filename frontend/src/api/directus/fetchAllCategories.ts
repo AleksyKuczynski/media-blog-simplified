@@ -1,4 +1,4 @@
-// /frontend/src/main/lib/directus/fetchCategories.ts
+// /src/api/directus/fetchCategories.ts
 
 import { Lang } from "@/config/i18n";
 import { Category, CategoryTranslation, DIRECTUS_URL } from "./index";

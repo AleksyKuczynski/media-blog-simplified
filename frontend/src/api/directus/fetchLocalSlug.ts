@@ -1,4 +1,4 @@
-// src/main/lib/directus/fetchLocalSlug.ts
+// src/api/directus/fetchLocalSlug.ts
 
 import { DIRECTUS_URL } from "./directusConstants";
 import { Lang } from "@/config/i18n";

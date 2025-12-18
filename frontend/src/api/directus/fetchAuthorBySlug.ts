@@ -1,4 +1,4 @@
-// src/main/lib/directus/fetchAuthorBySlug.ts
+// src/api/directus/fetchAuthorBySlug.ts
 
 import { AuthorDetails, DIRECTUS_URL } from "./index";
 import { Lang } from "@/config/i18n";

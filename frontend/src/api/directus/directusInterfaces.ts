@@ -1,4 +1,4 @@
-// src/main/lib/directus/interfaces.ts
+// src/api/directus/interfaces.ts
 
 export interface AuthorTranslation {
   languages_code: string;
@@ -131,7 +131,7 @@ export interface FullArticle {
   article_heading_img: string;
   rubric_slug: string;
   translations: ArticleTranslation[];
-  authors: { name: string; slug: string }[];
+  authors: { name: string; slug: string; avatar?: string }[];
   categories: Category[];
 }
 

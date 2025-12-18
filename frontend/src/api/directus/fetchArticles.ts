@@ -1,4 +1,4 @@
-// frontend/src/main/lib/directus/fetchArticles.ts
+// /src/api/directus/fetchArticles.ts
 
 import { Lang } from "@/config/i18n";
 import { DIRECTUS_URL } from "./directusConstants";

@@ -45,7 +45,6 @@ interface HeaderProps {
 const styles = LAYOUT_STYLES.header;
 
 export function Header({ 
-  lang,
   title, 
   publishedDate, 
   authors,
@@ -57,12 +56,13 @@ export function Header({
     <header className={styles.container}>
       
       <div className={styles.metadataBox}>
+        <p className={styles.dateText}>{publishedDate}</p>
+        
         <AuthorsSection 
           authors={authors}
           dictionary={dictionary}
           className={styles.authorsWrapper}
         />
-        <p className={styles.dateText}>{publishedDate}</p>
       </div>
 
       <h1 className={styles.title}>

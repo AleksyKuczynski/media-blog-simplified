@@ -1,4 +1,4 @@
-// src/main/lib/directus/fetchArticleCard.ts
+// src/api/directus/fetchArticleCard.ts
 
 import { ArticleCardType, DIRECTUS_URL } from "./index";
 import { Lang } from "@/config/i18n";

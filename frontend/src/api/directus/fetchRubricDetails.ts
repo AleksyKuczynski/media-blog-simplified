@@ -1,4 +1,4 @@
-// src/main/lib/directus/fetchRubricDetails.ts
+// src/api/directus/fetchRubricDetails.ts
 
 import { Lang } from "@/config/i18n";
 import { DIRECTUS_URL, Rubric, fetchAssetMetadata } from './index';

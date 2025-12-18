@@ -1,4 +1,4 @@
-// src/main/lib/directus/fetchHeroSlugs.ts
+// src/api/directus/fetchHeroSlugs.ts
 
 import { DIRECTUS_URL, HERO_LATEST_ARTICLES_COUNT } from "./index";
 import { Lang } from "@/config/i18n";

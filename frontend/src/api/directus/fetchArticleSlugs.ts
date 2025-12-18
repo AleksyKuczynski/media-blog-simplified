@@ -1,4 +1,4 @@
-// frontend/src/main/lib/directus/fetchArticleSlugs.ts
+// /src/api/directus/fetchArticleSlugs.ts
 
 import { DIRECTUS_URL, ITEMS_PER_PAGE } from "./directusConstants";
 import { ArticleSlugInfo } from "./directusInterfaces";

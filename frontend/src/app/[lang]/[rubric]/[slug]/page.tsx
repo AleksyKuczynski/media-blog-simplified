@@ -151,7 +151,7 @@ export default async function ArticlePage({
     const authorsWithDetails = article.authors?.map(author => ({
       name: author.name || 'EventForMe Editorial',
       slug: author.slug || '',
-      avatar: '',
+      avatar: author.avatar || '',
       bio: '',
     }));
 

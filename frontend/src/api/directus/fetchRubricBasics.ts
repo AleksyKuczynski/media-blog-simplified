@@ -1,4 +1,4 @@
-// src/main/lib/directus/fetchRubricBasics.ts
+// src/api/directus/fetchRubricBasics.ts
 
 import { DIRECTUS_URL } from './directusConstants';
 import { RubricBasic } from './directusInterfaces';

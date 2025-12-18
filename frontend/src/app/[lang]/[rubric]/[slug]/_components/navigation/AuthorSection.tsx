@@ -57,9 +57,7 @@ export default function AuthorSection({
   
   const sectionId = `author-${author.slug}`;
   const headingId = `${sectionId}-heading`;
-  
-  // Label text for "Автор" or equivalent
-  const authorLabel = dictionary.sections.labels.author || 'Автор';
+  const authorLabel = dictionary.sections.labels.author;
 
   return (
     <section className={styles.container} aria-labelledby={headingId}>
@@ -76,7 +74,7 @@ export default function AuthorSection({
         {author.avatar ? (
           <div className={styles.avatar}>
             <Image
-              src={`${DIRECTUS_URL}/assets/${author.avatar}`}
+              src={`${DIRECTUS_URL}/assets/${author.avatar}?width=40&height=40&quality=80&format=webp`}
               alt={author.name}
               fill
               className="object-cover"
@@ -93,7 +91,6 @@ export default function AuthorSection({
         
         <div className={styles.info}>
           <span className={styles.name}>{author.name}</span>
-          <span className={styles.label}>{authorLabel}</span>
         </div>
       </Link>
     </section>

@@ -1,3 +1,5 @@
+// src/api/directus/fetchRubricSlug.ts
+
 import { DIRECTUS_URL } from "./directusConstants";
 
 export async function fetchRubricSlug(articleSlug: string): Promise<string | null> {

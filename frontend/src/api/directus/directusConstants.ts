@@ -1,4 +1,4 @@
-// src/main/lib/directus/constants.ts
+// src/api/directus/constants.ts
 
 export const DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL || process.env.DIRECTUS_URL;
 export const ITEMS_PER_PAGE = 2; // You can adjust this value as needed

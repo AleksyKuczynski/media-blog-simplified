@@ -1,3 +1,5 @@
+// src/api/directus/fetchPromotedSlug.ts
+
 import { DIRECTUS_URL, PromotedArticle } from "./index";
 
 export async function fetchPromotedSlug(): Promise<string | null> {

@@ -1,5 +1,4 @@
-// src/main/lib/directus/fetchEngagementData.ts
-// PHASE 1 - UPDATED: Added date_updated field for timestamp-based reconciliation
+// src/api/directus/fetchEngagementData.ts
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;

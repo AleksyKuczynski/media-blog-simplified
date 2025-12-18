@@ -1,4 +1,4 @@
-// src/main/lib/directus/fetchAssetMetadata.ts
+// src/api/directus/fetchAssetMetadata.ts
 import { DIRECTUS_URL } from "./directusConstants";
 import { Asset } from "./directusInterfaces";
 
