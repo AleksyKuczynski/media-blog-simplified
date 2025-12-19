@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 export const BREADCRUMB_STYLES = {
   nav: {
-  container: 'text-sm mx-2 my-4 overflow-x-auto scrollbar-hide',
+  container: 'text-sm mx-2 xl:mx-auto md:px-2 xl:px-4 my-4 max-w-7xl overflow-x-auto scrollbar-hide',
   },
   list: {
   base: 'list-none flex flex-nowrap items-center',

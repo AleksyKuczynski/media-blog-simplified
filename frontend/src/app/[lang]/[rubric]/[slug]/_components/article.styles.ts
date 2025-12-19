@@ -31,7 +31,7 @@ export const LAYOUT_STYLES = {
   // Header component - flex on mobile, grid on desktop
   header: {
     // Container uses flex column on mobile, grid on desktop
-    container: 'relative mb-12 flex flex-col sm:max-md:mx-16 md:grid md:grid-cols-2 md:gap-8',
+    container: 'relative mb-12 flex flex-col sm:max-md:mx-16 md:grid md:grid-cols-2 md:gap-8 xl:gap-16',
     
     // Mobile-only date - order-1, hidden on desktop
     mobileDateText: 'order-1 font-medium text-sm text-on-sf-var mb-4 md:hidden',

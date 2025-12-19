@@ -276,10 +276,12 @@ export default async function ArticlePage({
               datePublished={article.published_at}
             />
 
-            <QuickNavigation 
-              lang={lang}
-              dictionary={dictionary}
-            />
+            {authorsWithDetails.length > 0 && (
+              <AuthorsSection 
+                authors={authorsWithDetails}
+                dictionary={dictionary}
+              />
+            )}
 
             {categoriesData.length > 0 && (
               <CategoriesSection 
@@ -295,12 +297,10 @@ export default async function ArticlePage({
               dictionary={dictionary}
             />
 
-            {authorsWithDetails.length > 0 && (
-              <AuthorsSection 
-                authors={authorsWithDetails}
-                dictionary={dictionary}
-              />
-            )}
+            <QuickNavigation 
+              lang={lang}
+              dictionary={dictionary}
+            />
 
             <ScrollToTopButton />
           </Suspense>
