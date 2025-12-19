@@ -28,34 +28,37 @@ import { IMAGE_RATIO_STRING } from "@/features/mainConstants";
 // ================================================================
 
 export const LAYOUT_STYLES = {
-  // Header component (actual implementation from Header.tsx)
+  // Header component - flex on mobile, grid on desktop
   header: {
-    container: `relative mb-12 
-          lg:grid grid-cols-2 justify-center`,
-    title: `mb-6 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf
-          text-3xl
-          max-w-2xl mx-auto 
-          lg:pl-6 xl:pl-8 lg:text-left`,
-    imageContainer: `relative ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl 
-          h-full mx-auto
-          max-w-md
-          `,
+    // Container uses flex column on mobile, grid on desktop
+    container: 'relative mb-12 flex flex-col sm:max-md:mx-16 md:grid md:grid-cols-2 md:gap-8',
+    
+    // Mobile-only date - order-1, hidden on desktop
+    mobileDateText: 'order-1 font-medium text-sm text-on-sf-var mb-4 md:hidden',
+    
+    // Image wrapper - order-3 on mobile, order-1 on desktop (left column)
+    imageWrapper: 'order-3 mb-6 md:order-1 md:mb-0',
+    imageContainer: `relative ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl shadow-lg w-full h-full`,
     image: 'w-full h-full object-cover',
-    metadataBox: 'mx-auto w-full',
-    authorsWrapper: '',
+    
+    // Right column: Title + metadata - order-2 on both mobile and desktop
+    rightColumn: 'order-2 mb-6 md:mb-0 md:flex md:flex-col md:justify-between',
+    
+    title: 'mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-5xl md:mb-0',
+    
+    // Metadata box - hidden on mobile, visible on desktop at bottom of right column
+    metadataBox: 'hidden md:block',
+    
+    // Authors wrapper
+    authorsWrapper: 'mt-4',
+    
     dateText: 'font-medium text-sm xl:text-base text-on-sf-var',
-    lead: `font-light max-w-xl mx-auto text-on-sf
-          mb-8 col-span-2 text-lg px-2 pt-6 
-          xl:text-xl `,
+    
+    // Lead paragraph - order-4, full width
+    lead: 'order-4 font-light text-on-sf text-lg max-sm:px-4 pt-6 md:col-span-2 md:max-w-2xl md:mx-auto xl:text-xl xl:max-w-4xl',
   },
 
-  // Metadata component (actual implementation from Metadata.tsx)
-  metadata: {
-    container: 'font-medium text-sm xl:text-base text-on-sf-var mx-auto flex justify-between col-span-2 w-full lg:max-w-[800px] lg:py-6 xl:py-8 bg-sf-cont md:max-lg:w-3/4 rounded-b-2xl lg:rounded-2xl lg:mt-8 p-6 shadow-sm',
-    authorLink: 'text-pr-cont hover:text-pr-fix underline underline-offset-4 transition-colors duration-600',
-  },
-
-  // Content wrapper (actual implementation from Content.tsx)
+  // Content wrapper
   content: {
     container: 'pb-12',
   },
@@ -87,7 +90,7 @@ export const ELEMENTS_STYLES = {
     base: `font-serif text-on-sf-var leading-relaxed first:mt-0 last:mb-0
           mb-3 
           max-w-2xl mx-auto
-          md:text-lg  `,
+            `,
   },
 
   // Links

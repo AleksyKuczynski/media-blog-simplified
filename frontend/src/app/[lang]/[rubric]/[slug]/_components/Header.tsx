@@ -3,11 +3,15 @@
  * Article Page - Header Component
  * 
  * Displays article title, hero image, author attribution via AuthorsSection, and metadata.
- * Server component with responsive layout (mobile stacked, desktop grid).
+ * Server component with responsive layout using flex order.
+ * 
+ * Layout:
+ * Mobile (<768px): Date → Title → Image → Lead (flex column with order)
+ * Desktop (≥768px): [Image | Title+Date+Authors] → Lead (2-column grid)
  * 
  * Features:
  * - Next.js Image optimization for hero image
- * - AuthorsSection for author cards with avatars
+ * - AuthorsSection for author cards with avatars (hidden on mobile)
  * - Optional lead paragraph
  * - Publication date display
  * 
@@ -16,7 +20,6 @@
  * - @/api/directus (DIRECTUS_URL, AuthorDetails)
  * - navigation/AuthorsSection (author cards)
  * 
- * @param lang - Language code for author links
  * @param title - Article title
  * @param publishedDate - Formatted publication date
  * @param authors - List of article authors
@@ -27,13 +30,12 @@
 
 import Image from 'next/image';
 import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
-import { Lang, Dictionary } from '@/config/i18n';
+import { Dictionary } from '@/config/i18n';
 import { LAYOUT_STYLES } from './article.styles';
 import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
 import AuthorsSection from './navigation/AuthorsSection';
 
 interface HeaderProps {
-  lang: Lang;
   title: string;
   publishedDate: string;
   authors: AuthorDetails[];
@@ -55,33 +57,42 @@ export function Header({
   return (
     <header className={styles.container}>
       
-      <div className={styles.metadataBox}>
-        <p className={styles.dateText}>{publishedDate}</p>
-        
-        <AuthorsSection 
-          authors={authors}
-          dictionary={dictionary}
-          className={styles.authorsWrapper}
-        />
-      </div>
+      {/* Mobile date - order-1, hidden on desktop */}
+      <p className={styles.mobileDateText}>{publishedDate}</p>
 
-      <h1 className={styles.title}>
-        {title}
-      </h1>
-      
+      {/* Image - order-3 on mobile, order-1 on desktop (left column) */}
       {imagePath && (
-        <div className={`${styles.imageContainer} ${IMAGE_RATIO_STRING}`}>
-          <Image
-            src={`${DIRECTUS_URL}/assets/${imagePath}`}
-            alt={title}
-            fill
-            sizes="(max-width: 768px) 100vw, 1200px"
-            priority
-            className={styles.image}
-          />
+        <div className={styles.imageWrapper}>
+          <div className={`${styles.imageContainer} ${IMAGE_RATIO_STRING}`}>
+            <Image
+              src={`${DIRECTUS_URL}/assets/${imagePath}`}
+              alt={title}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+              className={styles.image}
+            />
+          </div>
         </div>
       )}
 
+      {/* Right column: Title + Metadata - order-2 on both mobile and desktop */}
+      <div className={styles.rightColumn}>
+        <h1 className={styles.title}>
+          {title}
+        </h1>
+        
+        <div className={styles.metadataBox}>
+          <p className={styles.dateText}>{publishedDate}</p>
+          <AuthorsSection 
+            authors={authors}
+            dictionary={dictionary}
+            className={styles.authorsWrapper}
+          />
+        </div>
+      </div>
+
+      {/* Lead paragraph - order-4, spans full width */}
       {lead && (
         <div className={styles.lead}>
           {lead}
