@@ -119,7 +119,7 @@ export const ELEMENTS_STYLES = {
           my-6 pl-6 space-y-2
           max-w-2xl mx-auto
           text-lg
-          lg:text-xl lg:max-w-3xl`,
+          lg:text-xl lg:max-w-3xl lg:mb-16`,
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
     item: 'text-on-sf-var marker:text-sec-cont last:mb-0',
@@ -133,7 +133,7 @@ export const ELEMENTS_STYLES = {
 export const MEDIA_STYLES = {
   // ImageFrame
   imageFrame: {
-    wrapper: `max-w-svw -mx-2 mb-8
+    wrapper: `max-w-svw -mx-2 mb-8 lg:mb-16
               md:mx-auto`,
     figure: 'w-full',
     container: `relative mx-auto overflow-hidden bg-sf-cont md:rounded-lg
@@ -258,17 +258,17 @@ export const NAVIGATION_STYLES = {
     
     // CategoriesAndRubricSection - Combined layout
     categoriesAndRubric: {
-      container: 'w-full max-w-2xl mx-auto pb-4',
+      container: 'w-full max-w-2xl mx-auto pb-8',
       // Wrapper: column on mobile, row on desktop
-      wrapper: 'flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4',
+      wrapper: 'flex flex-col sm:flex-row sm:items-center gap-3',
       
       // Categories navigation - maintains original tag design
       categoriesNav: 'flex flex-wrap gap-2',
-      categoryTag: 'text-sm text-on-sf-var bg-sf-cont px-3 py-1.5 rounded-lg hover:bg-sf-hi transition-colors',
+      categoryTag: 'px-2 py-0.5 text-sm text-pr-cont border border-pr-cont hover:text-pr transition-colors',
       
       // Rubric link - similar to author section
-      rubricLink: 'inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors flex-shrink-0',
-      rubricIcon: 'relative w-5 h-5 flex-shrink-0',
+      rubricLink: 'inline-flex items-center gap-3 pr-4 border border-pr-cont rounded-full hover:bg-sf-hi transition-colors',
+      rubricIcon: 'relative w-10 h-10 rounded-full overflow-hidden',
       rubricText: 'text-sm font-medium text-on-sf whitespace-nowrap',
     },
     
