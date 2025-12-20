@@ -86,15 +86,15 @@ export const ELEMENTS_STYLES = {
     h2: `font-semibold font-serif 
           text-3xl mb-8 mt-16 
           md:text-3xl
-          lg:text-5xl lg:max-w-3xl`,
+          lg:text-5xl lg:max-w-4xl`,
     h3: `font-medium font-serif 
           text-2xl mb-6 mt-8 
           md:text-2xl
-          lg:text-4xl lg:max-w-3xl`,
+          lg:text-4xl lg:max-w-4xl`,
     h4: `uppercase font-medium font-serif
           text-xl mb-4 mt-6 
           md:text-xl
-          lg:text-2xl lg:max-w-3xl`,
+          lg:text-2xl lg:max-w-4xl`,
   },
 
   // Paragraph
