@@ -38,7 +38,7 @@ export const LAYOUT_STYLES = {
     
     // Image wrapper - order-3 on mobile, order-1 on desktop (left column)
     imageWrapper: 'order-3 mb-6 md:order-1 md:mb-0',
-    imageContainer: `relative ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl shadow-lg w-full h-full`,
+    imageContainer: `relative ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl border border-ol-var shadow-lg w-full h-full`,
     image: 'w-full h-full object-cover',
     
     // Right column: Title + metadata - order-2 on both mobile and desktop
@@ -53,7 +53,7 @@ export const LAYOUT_STYLES = {
     metadataBox: 'hidden md:block mt-8',
     
     // Authors wrapper
-    authorsWrapper: 'mb-2 xl:mb-4',
+    authorsWrapper: 'mb-2 lg:mb-4 xl:mb-6',
     
     dateText: 'font-medium max-lg:text-sm text-on-sf-var',
     
@@ -91,7 +91,7 @@ export const ELEMENTS_STYLES = {
           text-2xl mb-6 mt-8 
           md:text-2xl
           lg:text-4xl lg:max-w-3xl`,
-    h4: `uppercase font-serif
+    h4: `uppercase font-medium font-serif
           text-xl mb-4 mt-6 
           md:text-xl
           lg:text-2xl lg:max-w-3xl`,
@@ -99,11 +99,11 @@ export const ELEMENTS_STYLES = {
 
   // Paragraph
   paragraph: {
-    base: `font-serif text-on-sf-var first:mt-0 last:mb-0
+    base: `font-serif text-on-sf first:mt-0 last:mb-0
           mb-3 
           max-w-2xl mx-auto
           text-lg leading-[1.5]
-          lg:text-xl lg:leading-[1.5] lg:max-w-3xl`,
+          lg:text-xl lg:leading-[1.5] lg:max-w-4xl`,
   },
 
   // Links
@@ -115,14 +115,14 @@ export const ELEMENTS_STYLES = {
 
   // Lists
   list: {
-    base: `font-serif text-on-sf-var 
+    base: `font-serif text-on-sf 
           my-6 pl-6 space-y-2
           max-w-2xl mx-auto
           text-lg leading-[1.5]
           lg:text-xl lg:leading-[1.5] lg:max-w-3xl lg:mb-16`,
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
-    item: 'text-on-sf-var marker:text-sec-cont last:mb-0',
+    item: 'text-on-sf marker:text-sec-cont last:mb-0',
   },
 } as const;
 
@@ -133,12 +133,11 @@ export const ELEMENTS_STYLES = {
 export const MEDIA_STYLES = {
   // ImageFrame
   imageFrame: {
-    wrapper: `max-w-svw -mx-2 mb-8 lg:mb-16
+    figure: `max-w-svw -mx-2 mb-8 lg:mb-16
               md:mx-auto`,
-    figure: 'w-full',
-    container: `relative mx-auto overflow-hidden bg-sf-cont md:rounded-lg
+    container: `noprose relative mx-auto overflow-hidden bg-sf-cont md:rounded-lg
             max-h-[90vh] w-auto max-w-full 
-            flex items-center justify-center my-0`,
+            flex items-center justify-center`,
     image: 'w-full max-w-full object-contain',
     caption: 'prose-sm text-on-sf-var text-center px-4',
   },
@@ -268,12 +267,12 @@ export const NAVIGATION_STYLES = {
       
       // Categories navigation - maintains original tag design
       categoriesNav: 'flex flex-wrap gap-2',
-      categoryTag: 'px-2 py-0.5 max-lg:text-sm text-pr-cont border border-pr-cont rounded-full hover:text-pr transition-colors',
+      categoryTag: 'px-2 py-0.5 max-lg:text-sm rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
       
       // Rubric link - similar to author section
-      rubricLink: 'max-md:hidden inline-flex items-center gap-3 pr-4 border border-pr-cont rounded-full hover:bg-sf-hi transition-colors',
+      rubricLink: 'max-md:hidden inline-flex items-center gap-3 pr-4 rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
       rubricIcon: 'relative w-10 h-10 rounded-full overflow-hidden',
-      rubricText: 'max-lg:text-sm font-medium text-on-sf whitespace-nowrap',
+      rubricText: 'max-lg:text-sm font-medium whitespace-nowrap',
     },
     
     // AuthorSection (single author - standalone)
@@ -282,7 +281,7 @@ export const NAVIGATION_STYLES = {
       link: 'inline-flex items-center gap-3 pr-4 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
       avatar: 'relative w-10 h-10 rounded-full overflow-hidden',
       info: 'flex flex-col',
-      name: 'max-lg:text-sm font-medium text-on-sf',
+      name: 'max-lg:text-sm font-medium text-pr-cont',
       label: 'text-xs text-on-sf-var',
     },
     
