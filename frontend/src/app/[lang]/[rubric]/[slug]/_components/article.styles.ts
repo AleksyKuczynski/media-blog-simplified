@@ -44,18 +44,27 @@ export const LAYOUT_STYLES = {
     // Right column: Title + metadata - order-2 on both mobile and desktop
     rightColumn: 'order-2 mb-6 md:mb-0 md:flex md:flex-col md:justify-between',
     
-    title: 'mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-5xl md:mb-0',
+    title: `mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl 
+            sm:text-4xl 
+            md:text-3xl md:mb-0 
+            lg:text-5xl 
+            xl:text-6xl`,
     
     // Metadata box - hidden on mobile, visible on desktop at bottom of right column
     metadataBox: 'hidden md:block',
     
     // Authors wrapper
-    authorsWrapper: 'mt-4',
+    authorsWrapper: 'mb-8',
     
     dateText: 'font-medium text-sm xl:text-base text-on-sf-var',
     
     // Lead paragraph - order-4, full width
-    lead: 'order-4 font-light text-on-sf text-lg max-sm:px-4 pt-6 md:col-span-2 md:max-w-2xl md:mx-auto xl:text-xl xl:max-w-4xl',
+    lead: `order-4 font-light text-on-sf text-lg 
+            max-sm:px-4 pt-6 
+            text-xl
+            md:col-span-2 md:max-w-2xl md:mx-auto md:text-2xl
+            lg:text-3xl lg:max-w-3xl
+            xl:max-w-4xl`,
   },
 
   // Content wrapper
@@ -74,15 +83,18 @@ export const ELEMENTS_STYLES = {
     base: `text-on-sf 
            max-w-2xl mx-auto
           `,
-    h2: `font-bold font-serif 
+    h2: `font-semibold font-serif 
           text-3xl mb-8 mt-16 
-          md:text-3xl`,
-    h3: `font-bold font-serif 
+          md:text-3xl
+          lg:text-5xl lg:max-w-3xl`,
+    h3: `font-medium font-serif 
           text-2xl mb-6 mt-8 
-          md:text-2xl`,
+          md:text-2xl
+          lg:text-4xl lg:max-w-3xl`,
     h4: `uppercase font-serif
           text-xl mb-4 mt-6 
-          md:text-xl`,
+          md:text-xl
+          lg:text-2xl lg:max-w-3xl`,
   },
 
   // Paragraph
@@ -90,7 +102,8 @@ export const ELEMENTS_STYLES = {
     base: `font-serif text-on-sf-var leading-relaxed first:mt-0 last:mb-0
           mb-3 
           max-w-2xl mx-auto
-            `,
+          text-lg
+          lg:text-xl lg:max-w-3xl`,
   },
 
   // Links
@@ -104,7 +117,9 @@ export const ELEMENTS_STYLES = {
   list: {
     base: `font-serif text-on-sf-var leading-relaxed 
           my-6 pl-6 space-y-2
-          max-w-2xl mx-auto`,
+          max-w-2xl mx-auto
+          text-lg
+          lg:text-xl lg:max-w-3xl`,
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
     item: 'text-on-sf-var marker:text-sec-cont last:mb-0',

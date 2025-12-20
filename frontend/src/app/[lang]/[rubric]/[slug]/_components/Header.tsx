@@ -83,12 +83,12 @@ export function Header({
         </h1>
         
         <div className={styles.metadataBox}>
-          <p className={styles.dateText}>{publishedDate}</p>
           <AuthorsSection 
             authors={authors}
             dictionary={dictionary}
             className={styles.authorsWrapper}
           />
+          <p className={styles.dateText}>{publishedDate}</p>
         </div>
       </div>
 

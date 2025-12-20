@@ -4,7 +4,6 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
-import { processContent } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/processContent';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
 import { RelatedArticles } from '@/features/article-display/RelatedArticles';
 import generateArticleMetadata from '@/shared/seo/metadata/ArticleMetadata';
@@ -23,6 +22,7 @@ import PreviewBanner from './_components/PreviewBanner';
 import StandardError from '@/shared/errors/StandardError';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import CategoriesAndRubricSection from './_components/navigation/CategoriesAndRubricSection';
+import { processContent } from './_components/markdown/processContent';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
