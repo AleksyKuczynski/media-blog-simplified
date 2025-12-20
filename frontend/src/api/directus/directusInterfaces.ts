@@ -16,6 +16,11 @@ export interface AuthorDetails extends Author {
   bio: string; // Holds the translated bio
 }
 
+export interface BlockMarkdown {
+  id: string;
+  content: string;
+}
+
 export interface RubricTranslation {
   languages_code: string;
   name: string;
@@ -56,9 +61,19 @@ export interface PromotedArticle {
   article: string; // Stores the promoted article slug
 }
 
-export interface ArticleSlugInfo {
+export interface ArticleBlockItem {
+  id: string;
+  content: string;
+}
+
+export interface ArticleBlock {
+  collection: string;
+  item: ArticleBlockItem;
+}
+
+export interface ArticleCardAuthor {
+  name: string;
   slug: string;
-  layout: 'regular' | 'advertising' | 'news';
 }
 
 export interface ArticleCardTranslation {
@@ -66,11 +81,6 @@ export interface ArticleCardTranslation {
   title: string;
   description: string;
   local_slug?: string;
-}
-
-export interface ArticleCardAuthor {
-  name: string;
-  slug: string;
 }
 
 export interface ArticleCardType {
@@ -95,6 +105,16 @@ export interface ArticleCarousel {
   '5_slide': string | null;
 }
 
+export interface ArticleRubric {
+  slug: string;
+  nav_icon?: string;
+}
+
+export interface ArticleSlugInfo {
+  slug: string;
+  layout: 'regular' | 'advertising' | 'news';
+}
+
 export interface ArticleTranslation {
   languages_code: string;
   title: string;
@@ -106,21 +126,6 @@ export interface ArticleTranslation {
   local_slug?: string;
 }
 
-export interface ArticleBlockItem {
-  id: string;
-  content: string;
-}
-
-export interface ArticleBlock {
-  collection: string;
-  item: ArticleBlockItem;
-}
-
-export interface BlockMarkdown {
-  id: string;
-  content: string;
-}
-
 export interface FullArticle {
   slug: string;
   status: string;
@@ -129,7 +134,7 @@ export interface FullArticle {
   updated_at: string | null;
   external_link: string | null;
   article_heading_img: string;
-  rubric_slug: string;
+  rubric_slug: ArticleRubric;
   translations: ArticleTranslation[];
   authors: { name: string; slug: string; avatar?: string }[];
   categories: Category[];

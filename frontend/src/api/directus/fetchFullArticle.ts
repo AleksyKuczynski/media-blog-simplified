@@ -20,6 +20,7 @@ export async function fetchFullArticle(
       'external_link',
       'article_heading_img',
       'rubric_slug.slug',
+      'rubric_slug.nav_icon',
       'translations.languages_code',
       'translations.title',
       'translations.description',
@@ -97,7 +98,10 @@ export async function fetchFullArticle(
       updated_at: article.updated_at,
       external_link: article.external_link,
       article_heading_img: article.article_heading_img,
-      rubric_slug: article.rubric_slug?.slug || '',
+      rubric_slug: {
+        slug: article.rubric_slug?.slug || '',
+        nav_icon: article.rubric_slug?.nav_icon
+      },
       translations: [{
         languages_code: translation.languages_code,
         title: translation.title,

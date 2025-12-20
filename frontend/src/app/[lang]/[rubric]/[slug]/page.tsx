@@ -17,13 +17,12 @@ import ArticleEngagement from './_components/engagement/ArticleEngagement';
 import { TableOfContents } from './_components/navigation/TableOfContents';
 import { Content } from './_components/Content';
 import QuickNavigation from './_components/navigation/QuickNavigation';
-import CategoriesSection from './_components/navigation/CategoriesSection';
-import RubricSection from './_components/navigation/RubricSection';
 import AuthorsSection from './_components/navigation/AuthorsSection';
 import { ScrollToTopButton } from './_components/ScrollToTopButton';
 import PreviewBanner from './_components/PreviewBanner';
 import StandardError from '@/shared/errors/StandardError';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
+import CategoriesAndRubricSection from './_components/navigation/CategoriesAndRubricSection';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -159,7 +158,7 @@ export default async function ArticlePage({
     const rubricDetails = rubricBasics.find(r => r.slug === rubric);
     const rubricName = rubricDetails?.name || rubric;
 
-    // FIX: Call enhanceArticleForBreadcrumbs with correct parameters
+    // Call enhanceArticleForBreadcrumbs with correct parameters
     const articleBreadcrumbData = enhanceArticleForBreadcrumbs(
       article,
       rubricName,
@@ -189,8 +188,9 @@ export default async function ArticlePage({
     };
 
     const rubricData = {
-      slug: rubric,
+      slug: article.rubric_slug.slug,
       name: rubricName,
+      icon: article.rubric_slug.nav_icon,
     };
 
     const categoriesData = article.categories?.map(cat => ({
@@ -231,19 +231,12 @@ export default async function ArticlePage({
               <div className="text-lg">{dictionary.common.status.loading}</div>
             </div>
           }>
-            <RubricSection 
+            <CategoriesAndRubricSection
+              categories={categoriesData}
               rubric={rubricData}
               lang={lang}
               dictionary={dictionary}
             />
-            
-            {categoriesData.length > 0 && (
-              <CategoriesSection 
-                categories={categoriesData}
-                lang={lang}
-                dictionary={dictionary}
-              />
-            )}
 
             <Header
               title={translation.title}
@@ -283,15 +276,8 @@ export default async function ArticlePage({
               />
             )}
 
-            {categoriesData.length > 0 && (
-              <CategoriesSection 
-                categories={categoriesData}
-                lang={lang}
-                dictionary={dictionary}
-              />
-            )}
-
-            <RubricSection 
+            <CategoriesAndRubricSection
+              categories={categoriesData}
               rubric={rubricData}
               lang={lang}
               dictionary={dictionary}

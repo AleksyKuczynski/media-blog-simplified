@@ -241,19 +241,20 @@ export const NAVIGATION_STYLES = {
       link: 'text-on-sf-var hover:text-on-sf hover:underline transition-colors',
     },
     
-    // CategoriesSection
-    categories: {
+    // CategoriesAndRubricSection - Combined layout
+    categoriesAndRubric: {
       container: 'w-full max-w-2xl mx-auto pb-4',
-      nav: 'flex flex-wrap gap-2',
-      tag: 'text-sm text-on-sf-var bg-sf-cont px-3 py-1.5 rounded-lg hover:bg-sf-hi transition-colors',
-    },
-    
-    // RubricSection
-    rubric: {
-      container: 'w-full max-w-2xl mx-auto pb-4',
-      link: 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
-      icon: 'relative w-6 h-6',
-      text: 'text-base font-medium text-on-sf',
+      // Wrapper: column on mobile, row on desktop
+      wrapper: 'flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4',
+      
+      // Categories navigation - maintains original tag design
+      categoriesNav: 'flex flex-wrap gap-2',
+      categoryTag: 'text-sm text-on-sf-var bg-sf-cont px-3 py-1.5 rounded-lg hover:bg-sf-hi transition-colors',
+      
+      // Rubric link - similar to author section
+      rubricLink: 'inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors flex-shrink-0',
+      rubricIcon: 'relative w-5 h-5 flex-shrink-0',
+      rubricText: 'text-sm font-medium text-on-sf whitespace-nowrap',
     },
     
     // AuthorSection (single author - standalone)
