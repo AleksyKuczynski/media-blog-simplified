@@ -44,11 +44,10 @@ export const LAYOUT_STYLES = {
     // Right column: Title + metadata - order-2 on both mobile and desktop
     rightColumn: 'order-2 mb-6 md:mb-0 md:flex md:flex-col md:justify-between',
     
-    title: `mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl 
-            sm:text-4xl 
-            md:text-3xl md:mb-0 
-            lg:text-5xl 
-            xl:text-6xl`,
+    title: `mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl leading-[1.2] 
+            sm:text-4xl sm:leading-[1.2] 
+            md:text-3xl md:leading-[1.2] md:mb-0 
+            lg:text-5xl lg:leading-[1.2]`,
     
     // Metadata box - hidden on mobile, visible on desktop at bottom of right column
     metadataBox: 'hidden md:block',
@@ -59,11 +58,12 @@ export const LAYOUT_STYLES = {
     dateText: 'font-medium text-sm xl:text-base text-on-sf-var',
     
     // Lead paragraph - order-4, full width
-    lead: `order-4 font-light text-on-sf text-lg 
+    lead: `order-4 font-light text-on-sf
             max-sm:px-4 pt-6 
-            text-xl
-            md:col-span-2 md:max-w-2xl md:mx-auto md:text-2xl
-            lg:text-3xl lg:max-w-3xl
+            md:col-span-2 md:max-w-2xl md:mx-auto 
+            text-xl leading-9
+            md:text-2xl md:leading-9
+            lg:text-2xl lg:leading-9 lg:max-w-3xl
             xl:max-w-4xl`,
   },
 
@@ -102,8 +102,8 @@ export const ELEMENTS_STYLES = {
     base: `font-serif text-on-sf-var leading-relaxed first:mt-0 last:mb-0
           mb-3 
           max-w-2xl mx-auto
-          text-lg
-          lg:text-xl lg:max-w-3xl`,
+          text-lg leading-[1.5]
+          lg:text-xl lg:leading-[1.5] lg:max-w-3xl`,
   },
 
   // Links
@@ -260,7 +260,7 @@ export const NAVIGATION_STYLES = {
     categoriesAndRubric: {
       container: 'w-full max-w-2xl mx-auto pb-8',
       // Wrapper: column on mobile, row on desktop
-      wrapper: 'flex flex-col sm:flex-row sm:items-center gap-3',
+      wrapper: 'flex flex-col sm:flex-row sm:items-center sm:justify-center gap-3',
       
       // Categories navigation - maintains original tag design
       categoriesNav: 'flex flex-wrap gap-2',
