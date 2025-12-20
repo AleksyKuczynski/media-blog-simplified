@@ -1,4 +1,4 @@
-// src/main/components/Interface/Collapsible.tsx
+// src/shared/ui/Collapsible.tsx
 'use client'
 
 import { useState } from 'react';
@@ -25,58 +25,66 @@ export default function Collapsible({
   const contentId = `${buttonId}-content`;
 
   return (
-    <div className="collapsible mb-6 bg-sf-cont/50 border border-ol-var/20">
-      {/* Mobile: Collapsible Button */}
-      <button
-        id={buttonId}
-        onClick={toggleOpen}
-        aria-expanded={isOpen}
-        aria-controls={contentId}
-        aria-label={ariaLabel || title}
-        className="
-          md:hidden
-          flex items-center justify-between w-full
-          px-4 py-3
-          bg-sf-hi hover:bg-sf-hst rounded-lg
-          transition-colors duration-200
-          focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2
-        "
-        type="button"
-      >
-        <div className="flex items-center gap-3">
-          {icon && <span className="text-on-sf-var">{icon}</span>}
-          <span className="font-medium text-on-sf">
-            {title}
-          </span>
+    <div className="collapsible mb-6">
+      {/* Mobile: Collapsible with pill button and connecting line */}
+      <div className="md:hidden">
+        <div className="flex items-center gap-0">
+          {/* Pill-shaped button */}
+          <button
+            id={buttonId}
+            onClick={toggleOpen}
+            aria-expanded={isOpen}
+            aria-controls={contentId}
+            aria-label={ariaLabel || title}
+            className="
+              flex items-center gap-3
+              px-6 py-3 mx-auto
+              bg-sf hover:bg-sf rounded-full
+              transition-colors duration-200
+              border border-ol-var/20
+            "
+            type="button"
+          >
+            <div className="flex items-center gap-3 text-pr-cont">
+              {icon && <span className="text-pr-cont">{icon}</span>}
+              <span className="font-medium whitespace-nowrap">
+                {title}
+              </span>
+            </div>
+
+            <span 
+              className="text-on-sf-var transition-transform duration-200"
+              style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              aria-hidden="true"
+            >
+              <ChevronDownIcon className="w-5 h-5" />
+            </span>
+          </button>
         </div>
 
-        <span 
-          className="text-on-sf-var transition-transform duration-200"
-          style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-          aria-hidden="true"
-        >
-          <ChevronDownIcon className="w-5 h-5" />
-        </span>
-      </button>
+        {/* Expanded content box */}
+        {isOpen && (
+          <div
+            id={contentId}
+            role="region"
+            aria-labelledby={buttonId}
+            className="-mt-6 border-ol-var/20 pl-0"
+          >
+            <div className="bg-sf border border-ol-var/20 rounded-md p-4 pt-8">
+              {children}
+            </div>
+          </div>
+        )}
+      </div>
 
-      {/* Desktop: Static Heading */}
-      <h2 className="hidden md:flex items-center gap-3 px-4 py-3 font-medium text-on-sf">
-        {icon && <span className="text-on-sf-var">{icon}</span>}
-        <span>{title}</span>
-      </h2>
+      {/* Desktop: Static heading with always-visible content */}
+      <div className="hidden md:block bg-sf-cont/50 border border-ol-var/20">
+        <h2 className="flex items-center gap-3 px-4 py-3 font-medium text-on-sf">
+          {icon && <span className="text-on-sf-var">{icon}</span>}
+          <span>{title}</span>
+        </h2>
 
-      {/* Content: Collapsible on mobile, always visible on desktop */}
-      <div
-        id={contentId}
-        role="region"
-        aria-labelledby={buttonId}
-        className={`
-          overflow-hidden transition-all duration-300 text-on-sf-var
-          ${isOpen ? 'max-h-[2000px] opacity-100 mt-2' : 'max-h-0 opacity-0'}
-          md:max-h-none md:opacity-100 md:mt-2
-        `}
-      >
-        <div className="px-4 py-3">
+        <div className="px-4 py-3 text-on-sf-var">
           {children}
         </div>
       </div>
