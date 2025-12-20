@@ -1,20 +1,49 @@
-// src/app/[lang]/[rubric]/[slug]/_components/content/BalloonTip.tsx
+// app/[lang]/[rubric]/[slug]/_components/content/BalloonTip.tsx
 /**
- * BalloonTip - Interactive tooltip component for inline link explanations
+ * BalloonTip - Interactive tooltip component for inline content explanations
+ * 
+ * Displays a clickable trigger text with a popup tooltip.
+ * Used for non-link markdown references (e.g., terms, definitions, notes).
  * 
  * Features:
- * - Click to show/hide on both desktop and mobile
- * - Click outside to close
- * - Visible underlined + colored link text
+ * - Click/tap to show/hide tooltip
+ * - Keyboard accessible (Enter/Space to toggle, Escape to close)
  * - Touch-friendly with proper tap targets
- * - Accessible with keyboard support
+ * - Auto-closes on outside click or scroll
+ * - Responsive positioning within viewport
+ * - Visible styled trigger (dotted underline, colored text)
+ * 
+ * Visual Design:
+ * - Trigger: Dotted underline, primary color text
+ * - Tooltip: Rounded card with shadow, appears above trigger
+ * - Responsive width: 90vw on mobile, max 512px on desktop
+ * 
+ * Markdown Processing:
+ * - Created by processLinks.ts for non-HTTP, non-slug links
+ * - Triggered by data-balloon-tip attribute in HTML
+ * - Rendered via SpanHandler in markdown-component-map
+ * 
+ * Architecture:
+ * - Presentation component (this file)
+ * - Logic in useBalloonTip hook
+ * - Styles in article.styles.ts (BLOCKS_STYLES.balloonTip)
+ * 
+ * Dependencies:
+ * - ./useBalloonTip (tooltip logic)
+ * - ../article.styles (BLOCKS_STYLES)
+ * 
+ * Usage:
+ * Markdown: [trigger text](explanation text)
+ * Renders: <BalloonTip text="trigger text" url="explanation text" />
+ * 
+ * @param text - Trigger text to display (clickable)
+ * @param url - Tooltip content to show on click
  */
 
 'use client';
 
-import { useState, useRef } from 'react';
-import { useOutsideClick } from '@/lib/hooks/useOutsideClick';
 import { BLOCKS_STYLES } from '../article.styles';
+import { useBalloonTip } from './useBalloonTip';
 
 interface BalloonTipProps {
   text: string;
@@ -24,39 +53,19 @@ interface BalloonTipProps {
 const styles = BLOCKS_STYLES.balloonTip;
 
 export function BalloonTip({ text, url }: BalloonTipProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLSpanElement>(null);
-  const toggleRef = useRef<HTMLSpanElement>(null);
-
-  // Close when clicking outside (using project's useOutsideClick signature)
-  useOutsideClick(
+  const {
+    isOpen,
+    tooltipStyle,
     containerRef,
     toggleRef,
-    isOpen,
-    () => setIsOpen(false)
-  );
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsOpen(!isOpen);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Toggle on Enter or Space
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      setIsOpen(!isOpen);
-    }
-    // Note: Escape key is handled by useOutsideClick hook
-  };
+    tooltipRef,
+    handleClick,
+    handleKeyDown,
+  } = useBalloonTip();
 
   return (
-    <span
-      ref={containerRef}
-      className={styles.trigger}
-    >
-      {/* Clickable link text */}
+    <span ref={containerRef} className="relative">
+      {/* Clickable trigger text */}
       <span
         ref={toggleRef}
         onClick={handleClick}
@@ -70,10 +79,12 @@ export function BalloonTip({ text, url }: BalloonTipProps) {
         {text}
       </span>
 
-      {/* Balloon tip popup */}
+      {/* Tooltip popup */}
       {isOpen && (
         <span
+          ref={tooltipRef}
           className={styles.tooltip}
+          style={tooltipStyle}
           role="tooltip"
           onClick={(e) => e.stopPropagation()}
         >

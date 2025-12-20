@@ -18,6 +18,7 @@
  * 
  * @param content - HTML string from markdown conversion
  */
+'use client';
 
 import React from 'react';
 import { parse, HTMLElement, Node, NodeType } from 'node-html-parser';
@@ -42,7 +43,18 @@ export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
 
       const props: any = {};
       Object.entries(element.attributes).forEach(([key, value]) => {
-        props[key === 'class' ? 'className' : key] = value;
+        // Convert 'class' to 'className' for React
+        if (key === 'class') {
+          props.className = value;
+        } 
+        // Keep data-* attributes as-is (React supports them)
+        else if (key.startsWith('data-')) {
+          props[key] = value;
+        }
+        // Convert other hyphenated attributes to camelCase
+        else {
+          props[key] = value;
+        }
       });
 
       const children = element.childNodes.map((child, index) => 

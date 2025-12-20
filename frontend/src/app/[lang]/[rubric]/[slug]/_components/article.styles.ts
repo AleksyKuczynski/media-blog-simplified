@@ -133,13 +133,13 @@ export const ELEMENTS_STYLES = {
 export const MEDIA_STYLES = {
   // ImageFrame
   imageFrame: {
-    figure: `max-w-svw -mx-2 mb-8 lg:mb-16
+    figure: `max-w-svw -mx-2 my-8 md:my-12 lg:my-16
               md:mx-auto`,
-    container: `noprose relative mx-auto overflow-hidden bg-sf-cont md:rounded-lg
+    container: `relative mx-auto overflow-hidden bg-sf-cont md:rounded-lg
             max-h-[90vh] w-auto max-w-full 
             flex items-center justify-center`,
     image: 'w-full max-w-full object-contain',
-    caption: 'prose-sm text-on-sf-var text-center px-4',
+    caption: 'max-w-2xl mx-auto mt-2 px-4 prose lg:prose-lg text-on-sf-var',
   },
 
   // ImageFrame Skeleton
@@ -230,9 +230,10 @@ export const BLOCKS_STYLES = {
 
   // BalloonTip (actual implementation from BalloonTip.tsx)
   balloonTip: {
-    container: 'relative inline-block group',
-    trigger: 'cursor-help border-b-2 border-dotted border-pr-cont text-pr-cont hover:text-pr-fix transition-colors',
-    tooltip: 'absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-sf-hst text-on-sf text-sm rounded-lg shadow-lg whitespace-nowrap z-50',
+    container: 'relative group',
+    trigger: 'cursor-help border-b-2 border-dotted border-tr-cont text-tr-cont hover:text-tr-fix transition-colors',
+    tooltip: `fixed mb-2 px-4 pt-2 pb-4 bg-sf border border-ol-var text-on-sf rounded-lg shadow-lg z-50 whitespace-normal w-[calc(100vw-2rem)] max-w-lg 
+            max-md:text-sm`,  
   },
 } as const;
 

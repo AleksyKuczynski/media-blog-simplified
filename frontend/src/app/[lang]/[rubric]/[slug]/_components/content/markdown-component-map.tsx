@@ -53,17 +53,18 @@ const extractTextFromChildren = (children: React.ReactNode): string => {
 
 // Span handler for balloon tips and regular spans
 const SpanHandler = ({ children, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
-  // Check if this is a balloon tip span
   const balloonTipUrl = (props as any)['data-balloon-tip'];
   
+  // Debug logging
+  console.log('SpanHandler called with props:', props);
+  console.log('balloonTipUrl value:', balloonTipUrl);
+  
   if (balloonTipUrl) {
-    // Extract text content from children (handles nested elements)
     const text = extractTextFromChildren(children);
-    
+    console.log('Creating BalloonTip with text:', text, 'url:', balloonTipUrl);
     return <BalloonTip text={text} url={balloonTipUrl} />;
   }
   
-  // Regular span - preserve all attributes
   return <span {...props}>{children}</span>;
 };
 

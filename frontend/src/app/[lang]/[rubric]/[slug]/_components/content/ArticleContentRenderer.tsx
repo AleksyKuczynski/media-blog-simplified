@@ -44,7 +44,6 @@ export default function ArticleContentRenderer({
             imageAttributes={chunk.imageAttributes!}
             caption={chunk.caption}
             processedCaption={chunk.processedCaption}
-            className="my-8"
           />
         );
 
@@ -58,7 +57,6 @@ export default function ArticleContentRenderer({
                 imageAttributes={image.imageAttributes}
                 caption={image.caption}
                 processedCaption={image.processedCaption}
-                className="mb-4"
               />
             ))}
           </div>
