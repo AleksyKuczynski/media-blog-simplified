@@ -50,12 +50,12 @@ export const LAYOUT_STYLES = {
             lg:text-5xl lg:leading-[1.2]`,
     
     // Metadata box - hidden on mobile, visible on desktop at bottom of right column
-    metadataBox: 'hidden md:block',
+    metadataBox: 'hidden md:block mt-8',
     
     // Authors wrapper
-    authorsWrapper: 'mb-8',
+    authorsWrapper: 'mb-2 xl:mb-4',
     
-    dateText: 'font-medium text-sm xl:text-base text-on-sf-var',
+    dateText: 'font-medium max-lg:text-sm text-on-sf-var',
     
     // Lead paragraph - order-4, full width
     lead: `order-4 font-light text-on-sf
@@ -99,7 +99,7 @@ export const ELEMENTS_STYLES = {
 
   // Paragraph
   paragraph: {
-    base: `font-serif text-on-sf-var leading-relaxed first:mt-0 last:mb-0
+    base: `font-serif text-on-sf-var first:mt-0 last:mb-0
           mb-3 
           max-w-2xl mx-auto
           text-lg leading-[1.5]
@@ -115,11 +115,11 @@ export const ELEMENTS_STYLES = {
 
   // Lists
   list: {
-    base: `font-serif text-on-sf-var leading-relaxed 
+    base: `font-serif text-on-sf-var 
           my-6 pl-6 space-y-2
           max-w-2xl mx-auto
-          text-lg
-          lg:text-xl lg:max-w-3xl lg:mb-16`,
+          text-lg leading-[1.5]
+          lg:text-xl lg:leading-[1.5] lg:max-w-3xl lg:mb-16`,
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
     item: 'text-on-sf-var marker:text-sec-cont last:mb-0',
@@ -164,8 +164,10 @@ export const BLOCKS_STYLES = {
             max-w-xl mx-auto
             lg:my-12
             before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
-    content: `text-on-sf-var my-0 pt-12 pb-4 
-            text-xl leading-relaxed font-semibold dark:font-medium font-serif`,
+    content: `text-on-sf-var my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif
+            text-xl leading-[1.75] 
+            md:text-2xl md:leading-[1.75] 
+            lg:text-3xl lg:leading-[1.75]`,
   },
 
   // Blockquote Type 2 (Quote with Author)
@@ -174,17 +176,19 @@ export const BLOCKS_STYLES = {
             max-w-xl mx-auto
             lg:my-12
             before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
-    content: `text-on-sf-var my-0 pt-12 pb-4 
-            text-xl leading-relaxed font-semibold dark:font-medium font-serif`,
-    author: 'text-on-sf-var text-right mb-2 text-base font-medium',
+    content: `text-on-sf-var my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif 
+            text-xl leading-[1.75] 
+            md:text-2xl md:leading-[1.75] 
+            lg:text-3xl lg:leading-[1.75]`,
+    author: 'text-on-sf-var text-right mb-2 max-sm:text-sm font-medium',
   },
 
   // Blockquote Type 3 (Epigraph)
   blockquote3: {
     container: 'relative mb-6 p-4 pl-12 md:pl-0 md:pr-12 text-on-sf-var flex flex-col items-end',
-    content: 'font-serif mb-4 md:w-1/2',
-    author: 'mb-1 md:w-1/2 text-right',
-    source: 'italic text-sm mt-0 text-right',
+    content: 'font-serif leading-relaxed mb-4 md:w-1/2 md:text-lg',
+    author: 'mb-1 md:w-1/2 max-sm:text-sm text-right',
+    source: 'italic max-sm:text-sm mt-0 text-right',
   },
 
   // Blockquote Type 4 (Profile with Avatar)
@@ -258,18 +262,18 @@ export const NAVIGATION_STYLES = {
     
     // CategoriesAndRubricSection - Combined layout
     categoriesAndRubric: {
-      container: 'w-full max-w-2xl mx-auto pb-8',
+      container: 'w-full max-w-2xl pb-8 md:pb-12 lg:pb-16',
       // Wrapper: column on mobile, row on desktop
-      wrapper: 'flex flex-col sm:flex-row sm:items-center sm:justify-center gap-3',
+      wrapper: 'flex flex-row items-center gap-3',
       
       // Categories navigation - maintains original tag design
       categoriesNav: 'flex flex-wrap gap-2',
-      categoryTag: 'px-2 py-0.5 text-sm text-pr-cont border border-pr-cont hover:text-pr transition-colors',
+      categoryTag: 'px-2 py-0.5 max-lg:text-sm text-pr-cont border border-pr-cont rounded-full hover:text-pr transition-colors',
       
       // Rubric link - similar to author section
-      rubricLink: 'inline-flex items-center gap-3 pr-4 border border-pr-cont rounded-full hover:bg-sf-hi transition-colors',
+      rubricLink: 'max-md:hidden inline-flex items-center gap-3 pr-4 border border-pr-cont rounded-full hover:bg-sf-hi transition-colors',
       rubricIcon: 'relative w-10 h-10 rounded-full overflow-hidden',
-      rubricText: 'text-sm font-medium text-on-sf whitespace-nowrap',
+      rubricText: 'max-lg:text-sm font-medium text-on-sf whitespace-nowrap',
     },
     
     // AuthorSection (single author - standalone)
@@ -278,13 +282,13 @@ export const NAVIGATION_STYLES = {
       link: 'inline-flex items-center gap-3 pr-4 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
       avatar: 'relative w-10 h-10 rounded-full overflow-hidden',
       info: 'flex flex-col',
-      name: 'text-sm font-medium text-on-sf',
+      name: 'max-lg:text-sm font-medium text-on-sf',
       label: 'text-xs text-on-sf-var',
     },
     
     // AuthorsSection (multiple authors)
     authors: {
-      container: 'w-full max-w-2xl mx-auto py-4',
+      container: 'w-full max-w-2xl py-4',
       grid: 'flex flex-wrap gap-1',
       heading: 'sr-only',
       // Card styles for authors in grid

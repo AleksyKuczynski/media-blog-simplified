@@ -269,19 +269,19 @@ export default async function ArticlePage({
               datePublished={article.published_at}
             />
 
-            {authorsWithDetails.length > 0 && (
-              <AuthorsSection 
-                authors={authorsWithDetails}
-                dictionary={dictionary}
-              />
-            )}
-
             <CategoriesAndRubricSection
               categories={categoriesData}
               rubric={rubricData}
               lang={lang}
               dictionary={dictionary}
             />
+
+            {authorsWithDetails.length > 0 && (
+              <AuthorsSection 
+                authors={authorsWithDetails}
+                dictionary={dictionary}
+              />
+            )}
 
             <QuickNavigation 
               lang={lang}
