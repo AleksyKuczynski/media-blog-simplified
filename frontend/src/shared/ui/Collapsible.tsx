@@ -18,8 +18,23 @@ export default function Collapsible({
   ariaLabel,
 }: CollapsibleProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
-  const toggleOpen = () => setIsOpen(!isOpen);
+  const toggleOpen = () => {
+    if (!isOpen) {
+      // Opening: expand height first, then fade in content
+      setIsOpen(true);
+      setTimeout(() => {
+        setShowContent(true);
+      }, 300); // After height animation
+    } else {
+      // Closing: fade out content first, then collapse height
+      setShowContent(false);
+      setTimeout(() => {
+        setIsOpen(false);
+      }, 200); // After opacity animation
+    }
+  };
 
   const buttonId = `collapsible-${title.replace(/\s+/g, '-').toLowerCase()}`;
   const contentId = `${buttonId}-content`;
@@ -28,7 +43,7 @@ export default function Collapsible({
     <div className="collapsible mb-6">
       {/* Mobile: Collapsible with pill button and connecting line */}
       <div className="md:hidden">
-        <div className="flex items-center gap-0">
+        <div className="flex items-center gap-0 relative z-10">
           {/* Pill-shaped button */}
           <button
             id={buttonId}
@@ -62,19 +77,30 @@ export default function Collapsible({
           </button>
         </div>
 
-        {/* Expanded content box */}
-        {isOpen && (
-          <div
-            id={contentId}
-            role="region"
-            aria-labelledby={buttonId}
-            className="-mt-6 border-ol-var/20 pl-0"
+        {/* Content box - always rendered, animated */}
+        <div
+          id={contentId}
+          role="region"
+          aria-labelledby={buttonId}
+          className="-mt-6 pl-0 relative"
+          style={{
+            height: isOpen ? 'auto' : '1px',
+            maxHeight: isOpen ? '2000px' : '1px',
+            transition: 'max-height 300ms ease-in-out',
+            overflow: 'hidden',
+          }}
+        >
+          <div 
+            className="bg-sf border border-ol-var/20 rounded-md p-4 pt-8"
+            style={{
+              opacity: showContent ? 1 : 0,
+              transition: 'opacity 200ms ease-in-out',
+              minHeight: '1px',
+            }}
           >
-            <div className="bg-sf border border-ol-var/20 rounded-md p-4 pt-8">
-              {children}
-            </div>
+            {children}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Desktop: Static heading with always-visible content */}
