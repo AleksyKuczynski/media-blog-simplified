@@ -120,8 +120,7 @@ export interface EpigraphBlockquote extends BlockquoteBase {
 
 export interface ProfileBlockquote extends BlockquoteBase {
   type: '4';
-  author: string;
-  avatarUrl: string;
+  content: string;
 }
 
 export type BlockquoteProps = 

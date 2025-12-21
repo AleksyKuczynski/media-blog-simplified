@@ -34,9 +34,9 @@ export function Type2Blockquote({ content, author }: Type2Props) {
       <p className={styles.content}>
         {content}
       </p>
-      <p className={styles.author}>
-        — {author}
-      </p>
+      <footer className={styles.footer}>
+        — <cite className={styles.cite}>{author}</cite>
+      </footer>
     </blockquote>
   );
 }

@@ -172,38 +172,38 @@ export const BLOCKS_STYLES = {
             lg:text-3xl lg:leading-[1.75]`,
   },
 
-  // Blockquote Type 2 (Quote with Author)
+// Blockquote Type 2 (Quote with Author)
   blockquote2: {
     container: `relative mb-6 p-6 pt-8
             max-w-xl mx-auto
             lg:my-12
-            before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
+            before:content-["""] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
     content: `text-on-sf-var my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif 
             text-xl leading-[1.75] 
             md:text-2xl md:leading-[1.75] 
             lg:text-3xl lg:leading-[1.75]`,
-    author: 'text-on-sf-var text-right mb-2 max-sm:text-sm font-medium',
+    footer: 'text-right mb-2',
+    cite: 'text-on-sf-var max-sm:text-sm font-medium not-italic',
   },
 
   // Blockquote Type 3 (Epigraph)
   blockquote3: {
     container: 'relative mb-6 p-4 pl-12 md:pl-0 md:pr-12 text-on-sf-var flex flex-col items-end',
     content: 'font-serif leading-relaxed mb-4 md:w-1/2 md:text-lg',
-    author: 'mb-1 md:w-1/2 max-sm:text-sm text-right',
-    source: 'italic max-sm:text-sm mt-0 text-right',
+    footer: 'md:w-1/2 text-right',
+    cite: 'not-italic flex flex-col',
+    author: 'mb-1 max-sm:text-sm',
+    source: 'italic max-sm:text-sm mt-0',
   },
 
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
-    container: `mb-6 p-8 pb-10 grid grid-cols-4 rounded-2xl border-t border-ol-var shadow-md
+    container: `relative mb-6 p-6 pt-12 rounded-2xl border-2 border-sec-cont
             max-w-xl mx-auto 
             lg:my-12`,
-    avatarWrapper: 'rounded-full relative w-20 h-20 overflow-hidden',
-    avatar: 'h-full w-full object-cover my-0',
-    authorName: 'col-span-3 pl-4 self-center font-medium text-xl text-on-sf-var',
-    content: 'col-span-4 pt-4 text-lg font-serif text-on-sf-var',
+    label: 'absolute -top-3 left-6 px-3 py-1 bg-sf text-sec-cont font-semibold text-sm uppercase tracking-wide',
+    content: 'text-lg font-serif text-on-sf-var',
   },
-
   // Table
   table: {
     wrapper: 'w-full overflow-x-auto my-8',

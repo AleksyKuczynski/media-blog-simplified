@@ -265,6 +265,7 @@ export default async function ArticlePage({
 
               <ArticleContentRenderer
                 chunks={contentChunks}
+                lang={lang}
               />
 
               <CategoriesAndRubricSection

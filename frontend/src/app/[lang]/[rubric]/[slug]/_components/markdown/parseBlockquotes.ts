@@ -23,7 +23,6 @@
  */
 
 import { BlockquoteProps, ContentChunk, EpigraphBlockquote, HighlightBlockquote, ProfileBlockquote, QuoteBlockquote } from './markdownTypes';
-import { convertImageUrl } from './convertImageUrl';
 
 function parseHighlight(content: string): HighlightBlockquote | null {
   const paragraphs = content.trim().split('\n');
@@ -72,24 +71,12 @@ function parseEpigraph(content: string): EpigraphBlockquote | null {
 }
 
 function parseProfile(content: string): ProfileBlockquote | null {
-  const lines = content.trim().split('\n');
-  const authorMatch = lines[0].match(/^## (.+)$/);
-  const avatarMatch = lines[1]?.match(/^!\[.*?\]\((.+?)\)$/);
-  
-  if (!authorMatch || !avatarMatch) return null;
-  
-  const profileContent = lines.slice(2).join('\n').trim();
-  if (!profileContent) return null;
-
-  // ✅ FIX: Convert avatar URL to use current DIRECTUS_URL
-  // This handles URLs from different Directus instances (dev/prod)
-  const normalizedAvatarUrl = convertImageUrl(avatarMatch[1]);
+  const cleanContent = content.trim();
+  if (!cleanContent) return null;
 
   return {
     type: '4',
-    author: authorMatch[1].trim(),
-    avatarUrl: normalizedAvatarUrl,
-    content: profileContent
+    content: cleanContent
   };
 }
 

@@ -227,6 +227,7 @@ const dictionaryRU: Dictionary = {
       readingTime: 'Время чтения: {minutes} мин',
       wordsCount: 'Слов: {count}',
       articleImage: 'Изображение к статье',
+      portalAdvice: 'Совет от портала',
     },
     templates: {
       emptyRubric: 'В рубрике {name} пока нет статей',

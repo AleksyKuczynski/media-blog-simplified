@@ -1,22 +1,28 @@
 // src/app/[lang]/[rubric]/[slug]/_components/content/ArticleContentRenderer.tsx
 
 import { ContentChunk } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes';
-import { LAYOUT_STYLES } from '../article.styles';
 import { MarkdownContent } from './MarkdownContent';
 import { CustomBlockquote } from './CustomBlockquote';
 import ImageFrame from '../ImageFrame';
 import Table from './Table';
 import InlineArticleCard from './InlineArticleCard';
+import { Lang } from '@/config/i18n';
 
 interface ArticleContentRendererProps {
   chunks: ContentChunk[];
+  lang: Lang;
 }
 
-export default function ArticleContentRenderer({ chunks }: ArticleContentRendererProps) {
+export default function ArticleContentRenderer({ 
+  chunks, 
+  lang 
+}: ArticleContentRendererProps) {
   
   const renderChunk = (chunk: ContentChunk, index: number) => {
     switch (chunk.type) {
       case 'markdown':
+        // This parses HTML and converts it to React components via componentMap
+        // Enables custom Tailwind classes in ArticleParagraph and other components
         return (
           <div key={index}>
             <MarkdownContent content={chunk.content || ''} />
@@ -25,12 +31,17 @@ export default function ArticleContentRenderer({ chunks }: ArticleContentRendere
 
       case 'blockquote':
         return chunk.blockquoteProps ? (
+          // Blockquotes escape prose styling for proper theme control
           <div key={index} className="not-prose">
-            <CustomBlockquote {...chunk.blockquoteProps} />
+            <CustomBlockquote 
+              blockquoteProps={chunk.blockquoteProps} 
+              lang={lang} 
+            />
           </div>
         ) : null;
 
       case 'image-frame':
+        // Render individual image frames
         return (
           <ImageFrame
             key={index}
@@ -41,6 +52,7 @@ export default function ArticleContentRenderer({ chunks }: ArticleContentRendere
         );
 
       case 'image-group':
+        // Simple image group layout
         return (
           <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
             {chunk.images?.map((image, imgIndex) => (
@@ -55,6 +67,7 @@ export default function ArticleContentRenderer({ chunks }: ArticleContentRendere
         );
 
       case 'article-card':
+        // Render inline article cards
         return chunk.articleCardData ? (
           <InlineArticleCard
             key={index}
@@ -77,11 +90,8 @@ export default function ArticleContentRenderer({ chunks }: ArticleContentRendere
   };
 
   return (
-    <article 
-      className={LAYOUT_STYLES.content.container} 
-      itemProp="articleBody"
-    >
+    <>
       {chunks.map(renderChunk)}
-    </article>
+    </>
   );
 }

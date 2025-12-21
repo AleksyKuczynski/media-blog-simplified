@@ -21,7 +21,6 @@
 
 import { BLOCKS_STYLES } from "../article.styles";
 
-
 interface Type3Props {
   content: string;
   author: string;
@@ -36,12 +35,12 @@ export function Type3Blockquote({ content, author, source }: Type3Props) {
       <p className={styles.content}>
         {content}
       </p>
-      <p className={styles.author}>
-        — {author}
-      </p>
-      <p className={styles.source}>
-        {source}
-      </p>
+      <footer className={styles.footer}>
+        <cite className={styles.cite}>
+          <span className={styles.author}>— {author}</span>
+          <span className={styles.source}>{source}</span>
+        </cite>
+      </footer>
     </blockquote>
   );
 }

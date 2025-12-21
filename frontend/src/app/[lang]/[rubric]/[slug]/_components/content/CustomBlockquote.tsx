@@ -16,13 +16,21 @@
  * @param content - HTML content (may contain inline formatting)
  */
 
+// app/[lang]/[rubric]/[slug]/_components/content/CustomBlockquote.tsx
+
 import { BlockquoteProps } from '../markdown/markdownTypes';
 import { Type1Blockquote } from './Type1Blockquote';
 import { Type2Blockquote } from './Type2Blockquote';
 import { Type3Blockquote } from './Type3Blockquote';
 import { Type4Blockquote } from './Type4Blockquote';
+import { Lang } from '@/config/i18n';
 
-export function CustomBlockquote(props: BlockquoteProps) {
+interface CustomBlockquoteProps {
+  blockquoteProps: BlockquoteProps;
+  lang: Lang;
+}
+
+export function CustomBlockquote({ blockquoteProps: props, lang }: CustomBlockquoteProps) {
   switch (props.type) {
     case '1':
       return <Type1Blockquote content={props.content} />;
@@ -36,9 +44,8 @@ export function CustomBlockquote(props: BlockquoteProps) {
       />;
     case '4':
       return <Type4Blockquote 
-        content={props.content} 
-        author={props.author} 
-        avatarUrl={props.avatarUrl}
+        content={props.content}
+        lang={lang}
       />;
     default:
       console.error('Unknown blockquote type');

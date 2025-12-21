@@ -18,9 +18,10 @@ export default async function RootLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ lang: Lang }>;
+  params: Promise<Record<string, never>>;
 }) {
-  const { lang } = await params;
+  // Root layout always uses DEFAULT_LANG
+  const lang = DEFAULT_LANG;
 
   // Analytics configuration from environment variables
   const yandexMetrikaId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;

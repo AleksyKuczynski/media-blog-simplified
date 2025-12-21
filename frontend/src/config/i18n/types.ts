@@ -246,6 +246,7 @@ export interface ContentLabels {
   readonly readingTime: string;
   readonly wordsCount: string;
   readonly articleImage: string;
+  readonly portalAdvice:string;
 }
 
 export interface ContentTemplates {
