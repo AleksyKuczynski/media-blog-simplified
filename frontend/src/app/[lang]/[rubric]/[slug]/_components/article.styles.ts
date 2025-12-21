@@ -69,7 +69,7 @@ export const LAYOUT_STYLES = {
 
   // Content wrapper
   content: {
-    container: 'pb-12',
+    container: 'pb-6',
   },
 } as const;
 
@@ -262,7 +262,7 @@ export const NAVIGATION_STYLES = {
     
     // CategoriesAndRubricSection - Combined layout
     categoriesAndRubric: {
-      container: 'w-full max-w-2xl pb-8 md:pb-12 lg:pb-16',
+      container: 'w-full max-w-2xl mb-8 md:mb-12 lg:mb-16',
       // Wrapper: column on mobile, row on desktop
       wrapper: 'flex flex-row items-center gap-3',
       
@@ -288,7 +288,7 @@ export const NAVIGATION_STYLES = {
     
     // AuthorsSection (multiple authors)
     authors: {
-      container: 'w-full max-w-2xl py-4',
+      container: 'w-full max-w-2xl my-4',
       grid: 'flex flex-wrap gap-1',
       heading: 'sr-only',
       // Card styles for authors in grid
