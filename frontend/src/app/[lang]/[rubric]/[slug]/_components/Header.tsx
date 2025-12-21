@@ -78,7 +78,10 @@ export function Header({
 
       {/* Right column: Title + Metadata - order-2 on both mobile and desktop */}
       <div className={styles.rightColumn}>
-        <h1 className={styles.title}>
+        <h1 
+          className={styles.title}
+          itemProp="headline"
+        >
           {title}
         </h1>
         

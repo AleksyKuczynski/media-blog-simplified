@@ -8,23 +8,27 @@ import GoogleAnalyticsScript from '@/features/analytics/GoogleAnalyticsScript'
 import GoogleAnalyticsNoScript from '@/features/analytics/GoogleAnalyticsNoScript'
 import ConsentBanner from '@/features/analytics/ConsentBanner'
 import ScrollRestorationClient from '@/features/navigation/ScrollRestorationClient' // Changed import
-import { dictionary } from '@/config/i18n';
+import { dictionary, Lang } from '@/config/i18n';
 import { fontCustom, fontDisplay, fontSans, fontSerif } from './fonts/fonts'
 
 const consentDictionary = dictionary.consent
 
 export default async function RootLayout({
   children,
+  params,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
+  params: Promise<{ lang: Lang }>;
 }) {
+  const { lang } = await params;
+
   // Analytics configuration from environment variables
   const yandexMetrikaId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
   const googleAnalyticsId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
   return (
     <html 
-      lang={DEFAULT_LANG} 
+      lang={lang} 
       className={`${fontSans.variable} ${fontSerif.variable} ${fontDisplay.variable} ${fontCustom.variable}`}
     >
       <head>

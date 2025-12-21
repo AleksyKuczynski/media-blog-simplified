@@ -68,7 +68,11 @@ export const ImageFrame = memo(function ImageFrame({
   const hasCaption = Boolean(processedCaption || caption);
 
   return (
-    <figure className={styles.figure}>
+    <figure 
+      className={styles.figure}
+      itemScope 
+      itemType="https://schema.org/ImageObject"
+    >
       <div 
         className={cn(styles.container, className)}
         style={{
@@ -76,6 +80,7 @@ export const ImageFrame = memo(function ImageFrame({
         }}
       >
         <Image
+          itemProp="contentUrl"
           src={imageAttributes.src}
           alt={imageAttributes.alt || 'Image'}
           width={imageAttributes.width || 1200}
@@ -87,6 +92,7 @@ export const ImageFrame = memo(function ImageFrame({
           placeholder="blur"
           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
         />
+        <meta itemProp="description" content={imageAttributes.alt} />
       </div>
             
       {hasCaption && (

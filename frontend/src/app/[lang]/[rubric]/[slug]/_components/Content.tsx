@@ -48,7 +48,7 @@ export function Content({ chunks, title, author, datePublished }: ContentProps) 
   } : null;
 
   return (
-    <article className={LAYOUT_STYLES.content.container}>
+    <article className={LAYOUT_STYLES.content.container} itemProp="articleBody">
       {structuredData && (
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
