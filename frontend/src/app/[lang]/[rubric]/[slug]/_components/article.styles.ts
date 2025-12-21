@@ -135,7 +135,7 @@ export const MEDIA_STYLES = {
   imageFrame: {
     figure: `max-w-svw -mx-2 my-8 md:my-12 lg:my-16
               md:mx-auto`,
-    container: `relative mx-auto overflow-hidden bg-sf-cont md:rounded-lg
+    container: `relative mx-auto overflow-hidden bg-sf-cont
             max-h-[90vh] w-auto max-w-full 
             flex items-center justify-center`,
     image: 'w-full max-w-full object-contain',

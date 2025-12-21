@@ -40,9 +40,9 @@ export default function Collapsible({
   const contentId = `${buttonId}-content`;
 
   return (
-    <div className="collapsible mb-6">
+    <div className="collapsible mb-16">
       {/* Mobile: Collapsible with pill button and connecting line */}
-      <div className="md:hidden">
+      <div className="xl:hidden">
         <div className="flex items-center gap-0 relative z-10">
           {/* Pill-shaped button */}
           <button
@@ -53,10 +53,11 @@ export default function Collapsible({
             aria-label={ariaLabel || title}
             className="
               flex items-center gap-3
-              px-6 py-3 mx-auto
-              bg-sf hover:bg-sf rounded-full
+              px-6 py-2 mx-auto
+              bg-sf-cont rounded-full
+              shadow-md focus:shadow-sm
               transition-colors duration-200
-              border border-ol-var/20
+              border border-ol-var
             "
             type="button"
           >
@@ -72,7 +73,7 @@ export default function Collapsible({
               style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
               aria-hidden="true"
             >
-              <ChevronDownIcon className="w-5 h-5" />
+              <ChevronDownIcon className="w-8 h-8 text-pr-cont" />
             </span>
           </button>
         </div>
@@ -82,7 +83,7 @@ export default function Collapsible({
           id={contentId}
           role="region"
           aria-labelledby={buttonId}
-          className="-mt-6 pl-0 relative"
+          className="-mt-6 pl-0 relative border border-ol-var shadow-md"
           style={{
             height: isOpen ? 'auto' : '1px',
             maxHeight: isOpen ? '2000px' : '1px',
@@ -91,7 +92,7 @@ export default function Collapsible({
           }}
         >
           <div 
-            className="bg-sf border border-ol-var/20 rounded-md p-4 pt-8"
+            className="p-4 pt-8"
             style={{
               opacity: showContent ? 1 : 0,
               transition: 'opacity 200ms ease-in-out',
@@ -104,7 +105,7 @@ export default function Collapsible({
       </div>
 
       {/* Desktop: Static heading with always-visible content */}
-      <div className="hidden md:block bg-sf-cont/50 border border-ol-var/20">
+      <div className="hidden xl:block bg-sf-cont/50 border border-ol-var/20">
         <h2 className="flex items-center gap-3 px-4 py-3 font-medium text-on-sf">
           {icon && <span className="text-on-sf-var">{icon}</span>}
           <span>{title}</span>
