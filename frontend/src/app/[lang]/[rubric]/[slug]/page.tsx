@@ -14,7 +14,6 @@ import Collapsible from '@/shared/ui/Collapsible';
 import { Header } from './_components/Header';
 import ArticleEngagement from './_components/engagement/ArticleEngagement';
 import { TableOfContents } from './_components/navigation/TableOfContents';
-import { Content } from './_components/Content';
 import QuickNavigation from './_components/navigation/QuickNavigation';
 import AuthorsSection from './_components/navigation/AuthorsSection';
 import { ScrollToTopButton } from './_components/ScrollToTopButton';
@@ -23,6 +22,7 @@ import StandardError from '@/shared/errors/StandardError';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import CategoriesAndRubricSection from './_components/navigation/CategoriesAndRubricSection';
 import { processContent } from './_components/markdown/processContent';
+import ArticleContentRenderer from './_components/content/ArticleContentRenderer';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -262,11 +262,8 @@ export default async function ArticlePage({
               </Collapsible>
             )}
 
-            <Content
+            <ArticleContentRenderer
               chunks={contentChunks}
-              title={translation.title}
-              author={article.authors?.[0]?.name || 'EventForMe Editorial'}
-              datePublished={article.published_at}
             />
 
             <CategoriesAndRubricSection

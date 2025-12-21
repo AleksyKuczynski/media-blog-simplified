@@ -78,6 +78,9 @@ export function Header({
 
       {/* Right column: Title + Metadata - order-2 on both mobile and desktop */}
       <div className={styles.rightColumn}>
+        <meta itemProp="datePublished" content={publishedDate} />
+        <meta itemProp="dateModified" content={publishedDate} />
+        
         <h1 
           className={styles.title}
           itemProp="headline"

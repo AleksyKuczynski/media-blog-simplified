@@ -69,7 +69,7 @@ export const LAYOUT_STYLES = {
 
   // Content wrapper
   content: {
-    container: 'pb-6',
+    container: 'pb-6 not-prose',
   },
 } as const;
 
