@@ -2,25 +2,33 @@
 /**
  * Article Engagement - Icon Components
  * 
- * SVG icon components for engagement metrics.
- * Optimized for responsive sizing and color theming.
+ * SVG icon set for engagement metrics and social sharing.
+ * Pure components with no internal state or logic.
  * 
- * Icons:
- * - EyeIcon (views - static)
- * - HeartIcon (likes - filled state support)
- * - ShareIcon (shares)
- * - Social media icons (Telegram, WhatsApp, Twitter, Facebook, Instagram, VK)
+ * Architecture:
+ * - Inline SVG for optimal performance
+ * - CurrentColor inheritance for theming
+ * - Responsive sizing via className prop
+ * - Accessibility: aria-hidden on decorative icons
+ * 
+ * Icons Included:
+ * - EyeIcon (views - outline only)
+ * - HeartIcon (likes - filled/outline states)
+ * - ShareIcon (share action)
+ * - TelegramIcon, WhatsAppIcon, TwitterIcon
+ * - FacebookIcon, InstagramIcon, VKIcon
  * - CopyLinkIcon
  * 
  * Features:
- * - Filled/outline variants
- * - Responsive sizing via className
+ * - Filled state support (HeartIcon only)
+ * - Stroke-based (outline) and fill-based icons
  * - Color inheritance from parent
+ * - No hardcoded dimensions (controlled by parent)
  * 
  * Dependencies: None (pure SVG)
  * 
- * @param className - Tailwind size/color classes
- * @param filled - Enable filled state (HeartIcon only)
+ * @param className - Tailwind classes for size/color
+ * @param filled - Filled state (HeartIcon only)
  */
 
 export interface IconProps {

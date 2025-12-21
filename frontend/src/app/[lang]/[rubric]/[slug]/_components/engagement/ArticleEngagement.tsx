@@ -1,3 +1,36 @@
+// app/[lang]/[rubric]/[slug]/_components/engagement/ArticleEngagement.tsx
+/**
+ * Article Engagement - Main Container Component
+ * 
+ * Fixed sidebar displaying article engagement metrics (views, likes, shares).
+ * Orchestrates data fetching, visibility tracking, and user interactions.
+ * 
+ * Architecture:
+ * - Fixed positioning: Bottom-left sidebar with auto-hide
+ * - Visibility logic: Hides on scroll threshold and section overlap
+ * - State composition: Combines data fetch, engagement logic, visibility
+ * 
+ * Features:
+ * - Conditional rendering based on loading states
+ * - Optimistic view count display (+1 if tracked)
+ * - Share modal trigger and state management
+ * - Error toast integration
+ * - Responsive layout (horizontal mobile, vertical desktop)
+ * 
+ * Dependencies:
+ * - ./hooks/useEngagementData (initial data fetch)
+ * - ./hooks/useEngagement (like/share logic)
+ * - ./hooks/useEngagementVisibility (auto-hide logic)
+ * - ./EngagementMetric (metric display component)
+ * - ./SharePopup (share modal)
+ * - ./engagement.styles (style constants)
+ * 
+ * @param slug - Article slug for data fetching
+ * @param title - Article title for sharing
+ * @param url - Full article URL for sharing
+ * @param className - Optional additional styles
+ */
+
 'use client';
 
 import { useState, useRef } from 'react';
@@ -86,6 +119,13 @@ export default function ArticleEngagement({
     <>
       <EngagementErrorToast error={error} onClose={clearError} />
 
+      <SharePopup
+        isOpen={isSharePopupOpen}
+        onClose={handleClosePopup}
+        onShare={handleShare}
+        showCopySuccess={showCopySuccess}
+      />
+
       <aside
         ref={engagementBarRef}
         className={containerClasses}
@@ -130,24 +170,15 @@ export default function ArticleEngagement({
         {isLoadingInitial ? (
           <EngagementMetricSkeleton />
         ) : (
-          <div className="relative">
-            <EngagementMetric
-              type="share"
-              count={engagement.shares}
-              icon={<ShareIcon className="w-full h-full" />}
-              interactive
-              isActive={isSharePopupOpen}
-              onClick={handleShareButtonClick}
-              ariaLabel="Share article"
-            />
-            
-            <SharePopup
-              isOpen={isSharePopupOpen}
-              onClose={handleClosePopup}
-              onShare={handleShare}
-              showCopySuccess={showCopySuccess}
-            />
-          </div>
+          <EngagementMetric
+            type="share"
+            count={engagement.shares}
+            icon={<ShareIcon className="w-full h-full" />}
+            interactive
+            isActive={isSharePopupOpen}
+            onClick={handleShareButtonClick}
+            ariaLabel="Share article"
+          />
         )}
       </aside>
     </>

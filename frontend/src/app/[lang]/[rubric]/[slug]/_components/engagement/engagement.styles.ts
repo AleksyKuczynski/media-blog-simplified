@@ -1,13 +1,38 @@
 // app/[lang]/[rubric]/[slug]/_components/engagement/engagement.styles.ts
 /**
- * Engagement Components - Centralized Style Constants
+ * Article Engagement - Centralized Style Constants
  * 
- * Organized by component:
- * - ENGAGEMENT_BAR_STYLES: Main fixed sidebar container
- * - ENGAGEMENT_METRIC_STYLES: Individual metric display
- * - SHARE_POPUP_STYLES: Share modal and platform buttons
- * - ENGAGEMENT_ERROR_STYLES: Error toast notifications
- * - ENGAGEMENT_LOADING_STYLES: Skeleton loading states
+ * Tailwind class constants organized by component.
+ * Supports theming, responsive design, and state variations.
+ * 
+ * Architecture:
+ * - Const assertions (as const) for type safety
+ * - Nested object structure by component
+ * - Semantic naming (container, icon, button, etc.)
+ * - State-specific style sets (active, inactive, hover)
+ * 
+ * Style Sets:
+ * - ENGAGEMENT_BAR_STYLES: Fixed sidebar container
+ * - ENGAGEMENT_METRIC_STYLES: Metric display states
+ * - SHARE_POPUP_STYLES: Modal and platform buttons
+ * - ENGAGEMENT_ERROR_STYLES: Error toast styling
+ * - ENGAGEMENT_LOADING_STYLES: Skeleton placeholders
+ * 
+ * Features:
+ * - Type-specific color states (view/like/share)
+ * - Platform-specific hover colors (social icons)
+ * - Responsive breakpoint variants (md, sm, lg)
+ * - Transition/animation classes
+ * - Dark mode variants where applicable
+ * 
+ * Dependencies: None (pure Tailwind classes)
+ * 
+ * Usage:
+ * ```typescript
+ * import { ENGAGEMENT_BAR_STYLES } from './engagement.styles';
+ * const styles = ENGAGEMENT_BAR_STYLES;
+ * <div className={styles.container.base} />
+ * ```
  */
 
 export const ENGAGEMENT_BAR_STYLES = {

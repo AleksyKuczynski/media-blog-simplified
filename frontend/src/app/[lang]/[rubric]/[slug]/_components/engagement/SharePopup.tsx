@@ -1,3 +1,43 @@
+// app/[lang]/[rubric]/[slug]/_components/engagement/SharePopup.tsx
+/**
+ * Article Engagement - Share Modal Component
+ * 
+ * Modal dialog with social sharing platform buttons.
+ * Handles native Web Share API, clipboard, and external windows.
+ * 
+ * Architecture:
+ * - Modal wrapper: Uses shared Modal component
+ * - Platform grid: 2-3 columns responsive layout
+ * - Success feedback: Conditional message display
+ * - Auto-close: Closes on native/window share methods
+ * 
+ * Features:
+ * - 7 share platforms (Telegram, WhatsApp, VK, Twitter, Facebook, Instagram, Copy)
+ * - Platform-specific icons with hover colors
+ * - Success message variants (link copied vs Instagram copied)
+ * - Modal positioning (center, md size)
+ * - Share method detection (native/copy/window)
+ * 
+ * Flow:
+ * 1. User clicks platform button
+ * 2. Parent onShare handler executes
+ * 3. Returns share method type
+ * 4. Auto-close on native/window, stay open on copy
+ * 5. Show success message on copy
+ * 
+ * Dependencies:
+ * - @/shared/ui/Modal/Modal (modal wrapper)
+ * - ./EngagementIcons (social platform icons)
+ * - ./engagement.styles (SHARE_POPUP_STYLES)
+ * - ./lib/types (SharePlatform type)
+ * - @/config/i18n (dictionary for labels)
+ * 
+ * @param isOpen - Modal visibility state
+ * @param onClose - Close handler
+ * @param onShare - Share handler returning Promise<ShareMethod>
+ * @param showCopySuccess - Show success message flag
+ */
+
 'use client';
 
 import { useState } from 'react';
