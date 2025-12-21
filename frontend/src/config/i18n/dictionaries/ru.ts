@@ -226,6 +226,7 @@ const dictionaryRU: Dictionary = {
       editorial: 'Редакция {siteName}',
       readingTime: 'Время чтения: {minutes} мин',
       wordsCount: 'Слов: {count}',
+      articleImage: 'Изображение к статье',
     },
     templates: {
       emptyRubric: 'В рубрике {name} пока нет статей',

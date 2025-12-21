@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { ChevronRightIcon } from '@/shared/primitives/Icons';
 import { RubricBasic } from '@/api/directus';
-import { Lang } from '@/config/i18n';
+import { dictionary, Lang } from '@/config/i18n';
 import { BREADCRUMB_STYLES, SIMPLE_BREADCRUMB_STYLES } from './styles';
 
 export interface BreadcrumbItem {
@@ -57,7 +57,7 @@ export default function Breadcrumbs({ items, lang, translations }: BreadcrumbsPr
 
   return (
     <nav 
-      aria-label="Breadcrumb" 
+      aria-label={dictionary.navigation.accessibility.breadcrumbNavigation} 
       className={BREADCRUMB_STYLES.nav.container}
       itemScope 
       itemType="https://schema.org/BreadcrumbList"

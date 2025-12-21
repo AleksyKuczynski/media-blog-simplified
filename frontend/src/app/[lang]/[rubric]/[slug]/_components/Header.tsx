@@ -78,9 +78,6 @@ export function Header({
 
       {/* Right column: Title + Metadata - order-2 on both mobile and desktop */}
       <div className={styles.rightColumn}>
-        <meta itemProp="datePublished" content={publishedDate} />
-        <meta itemProp="dateModified" content={publishedDate} />
-        
         <h1 
           className={styles.title}
           itemProp="headline"
@@ -104,6 +101,36 @@ export function Header({
           {lead}
         </div>
       )}
+
+      <meta itemProp="datePublished" content={publishedDate} />
+      <meta itemProp="dateModified" content={publishedDate} />
+      
+      {imagePath && (
+        <meta itemProp="image" content={`${DIRECTUS_URL}/assets/${imagePath}`} />
+      )}
+      
+      <div className={styles.metadata}>
+        <time 
+          dateTime={publishedDate} 
+          className={styles.mobileDateText}
+          itemProp="datePublished"
+        >
+          {publishedDate}
+        </time>
+        
+        {authors.map((author) => (
+          <span 
+            key={author.slug} 
+            itemProp="author" 
+            itemScope 
+            itemType="https://schema.org/Person"
+          >
+            <meta itemProp="name" content={author.name} />
+            <meta itemProp="url" content={`/ru/authors/${author.slug}`} />
+          </span>
+        ))}
+      </div>
+
     </header>
   );
 }

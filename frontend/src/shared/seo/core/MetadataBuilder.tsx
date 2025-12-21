@@ -15,6 +15,10 @@ export const buildMetadata = (seoData: SEOData): Metadata => {
 
     alternates: {
       canonical: seoData.canonicalUrl,
+      languages: {
+        'ru-RU': seoData.canonicalUrl,
+        'x-default': seoData.canonicalUrl,
+      },
     },
 
     openGraph: {

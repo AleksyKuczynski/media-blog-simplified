@@ -245,6 +245,7 @@ export interface ContentLabels {
   readonly editorial: string;
   readonly readingTime: string;
   readonly wordsCount: string;
+  readonly articleImage: string;
 }
 
 export interface ContentTemplates {

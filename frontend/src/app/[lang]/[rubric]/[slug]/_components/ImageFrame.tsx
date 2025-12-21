@@ -38,6 +38,7 @@ import { memo } from 'react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
 import { MEDIA_STYLES } from './article.styles';
+import { dictionary } from '@/config/i18n';
 
 export interface ImageAttributes {
   src: string;
@@ -80,9 +81,9 @@ export const ImageFrame = memo(function ImageFrame({
         }}
       >
         <Image
-          itemProp="contentUrl"
+          itemProp="image"
           src={imageAttributes.src}
-          alt={imageAttributes.alt || 'Image'}
+          alt={imageAttributes.alt || imageAttributes.title || dictionary.content.labels.articleImage}
           width={imageAttributes.width || 1200}
           height={imageAttributes.height || 800}
           className={styles.image}

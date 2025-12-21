@@ -224,6 +224,7 @@ export const dictionaryEN: Dictionary = {
       editorial: '{siteName} Editorial Team',
       readingTime: 'Reading time: {minutes} min',
       wordsCount: 'Words: {count}',
+      articleImage: 'Article illustration',
     },
     templates: {
       emptyRubric: 'No articles in rubric {name} yet',

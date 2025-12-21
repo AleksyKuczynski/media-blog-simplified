@@ -224,70 +224,72 @@ export default async function ArticlePage({
           articleData={articleBreadcrumbData}
           dictionary={dictionary}
         />
-
-        <article itemScope itemType="https://schema.org/Article" className="container overflow-x-hidden max-w-7xl mx-auto px-2 md:px-4">
-          <Suspense fallback={
-            <div className="text-center py-8">
-              <div className="text-lg">{dictionary.common.status.loading}</div>
-            </div>
-          }>
-            <CategoriesAndRubricSection
-              categories={categoriesData}
-              rubric={rubricData}
-              lang={lang}
-              dictionary={dictionary}
-            />
-
-            <Header
-              title={translation.title}
-              lead={translation.lead}
-              imagePath={article.article_heading_img}
-              authors={authorsWithDetails}
-              publishedDate={formattedDate}
-              dictionary={dictionary}
-            />
-
-            <ArticleEngagement
-              slug={articleSlug}
-              title={translation.title}
-              url={currentArticleUrl}
-            />
-
-            {tocItems.length > 0 && (
-              <Collapsible
-                title={dictionary.content.labels.tableOfContents}
-                ariaLabel={dictionary.content.labels.tableOfContents}
-              >
-                <TableOfContents items={tocItems} />
-              </Collapsible>
-            )}
-
-            <ArticleContentRenderer
-              chunks={contentChunks}
-            />
-
-            <CategoriesAndRubricSection
-              categories={categoriesData}
-              rubric={rubricData}
-              lang={lang}
-              dictionary={dictionary}
-            />
-
-            {authorsWithDetails.length > 0 && (
-              <AuthorsSection 
-                authors={authorsWithDetails}
+        
+        <main role="main" id="main-content">
+          <article itemScope itemType="https://schema.org/Article" className="container overflow-x-hidden max-w-7xl mx-auto px-2 md:px-4">
+            <Suspense fallback={
+              <div className="text-center py-8">
+                <div className="text-lg">{dictionary.common.status.loading}</div>
+              </div>
+            }>
+              <CategoriesAndRubricSection
+                categories={categoriesData}
+                rubric={rubricData}
+                lang={lang}
                 dictionary={dictionary}
               />
-            )}
 
-            <QuickNavigation 
-              lang={lang}
-              dictionary={dictionary}
-            />
+              <Header
+                title={translation.title}
+                lead={translation.lead}
+                imagePath={article.article_heading_img}
+                authors={authorsWithDetails}
+                publishedDate={formattedDate}
+                dictionary={dictionary}
+              />
 
-            <ScrollToTopButton />
-          </Suspense>
-        </article>
+              <ArticleEngagement
+                slug={articleSlug}
+                title={translation.title}
+                url={currentArticleUrl}
+              />
+
+              {tocItems.length > 0 && (
+                <Collapsible
+                  title={dictionary.content.labels.tableOfContents}
+                  ariaLabel={dictionary.content.labels.tableOfContents}
+                >
+                  <TableOfContents items={tocItems} />
+                </Collapsible>
+              )}
+
+              <ArticleContentRenderer
+                chunks={contentChunks}
+              />
+
+              <CategoriesAndRubricSection
+                categories={categoriesData}
+                rubric={rubricData}
+                lang={lang}
+                dictionary={dictionary}
+              />
+
+              {authorsWithDetails.length > 0 && (
+                <AuthorsSection 
+                  authors={authorsWithDetails}
+                  dictionary={dictionary}
+                />
+              )}
+
+              <QuickNavigation 
+                lang={lang}
+                dictionary={dictionary}
+              />
+
+              <ScrollToTopButton />
+            </Suspense>
+          </article>
+        </main>
 
         <RelatedArticles
           id="related-articles-section"
