@@ -84,7 +84,7 @@ export const ELEMENTS_STYLES = {
            max-w-2xl mx-auto
           `,
     h2: `font-semibold font-serif 
-          text-3xl mb-8 mt-16 
+          text-3xl my-8 mt-12 
           md:text-3xl
           lg:text-5xl lg:max-w-4xl`,
     h3: `font-medium font-serif 

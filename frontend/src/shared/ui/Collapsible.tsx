@@ -70,7 +70,10 @@ export default function Collapsible({
 
             <span 
               className="text-on-sf-var transition-transform duration-200"
-              style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+              style={{ 
+                transform: isOpen ? 'scaleY(-1)' : 'scaleY(1)',
+                transformOrigin: 'center center'
+              }}
               aria-hidden="true"
             >
               <ChevronDownIcon className="w-8 h-8 text-pr-cont" />
