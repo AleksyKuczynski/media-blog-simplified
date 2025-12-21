@@ -37,7 +37,11 @@
 
 export const ENGAGEMENT_BAR_STYLES = {
   container: {
-    base: 'fixed bottom-4 left-4 z-[60] flex md:flex-col gap-2 py-3 px-4 bg-pr-cont hover:bg-pr-fix text-on-pr rounded-full shadow-lg hover:shadow-xl transition-all duration-300',
+    base: `fixed bottom-4 left-4 z-[60] 
+            flex xl:flex-col gap-2 
+            py-3 px-4 
+            bg-pr-cont hover:bg-pr-fix text-on-pr rounded-full 
+            shadow-lg hover:shadow-xl transition-all duration-300`,
     visible: 'opacity-100 translate-y-0',
     hidden: 'opacity-0 translate-y-4 pointer-events-none',
   },
@@ -46,7 +50,7 @@ export const ENGAGEMENT_BAR_STYLES = {
 
 export const ENGAGEMENT_METRIC_STYLES = {
   container: {
-    base: 'flex md:flex-col gap-1 items-center justify-center transition-all rounded-lg',
+    base: 'flex xl:flex-col gap-1 items-center justify-center transition-all rounded-lg',
     interactive: 'cursor-pointer hover:scale-105',
     disabled: 'opacity-50 cursor-not-allowed',
     loading: 'animate-pulse',
