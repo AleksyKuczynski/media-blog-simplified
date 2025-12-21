@@ -13,6 +13,7 @@ interface RelatedArticlesProps {
   }>;
   lang: Lang;
   dictionary: Dictionary;
+  id?: string;
 }
 
 const MINIMUM_ARTICLES = 10;
@@ -34,6 +35,7 @@ export default async function RelatedArticles({
   articleCategories,
   lang,
   dictionary,
+  id,
 }: RelatedArticlesProps) {
   
   try {
@@ -135,6 +137,7 @@ export default async function RelatedArticles({
     // Step 5: Render carousel
     return (
       <section 
+        id={id}
         className={RELATED_ARTICLES_STYLES.section}
         aria-label={dictionary.sections.rubrics.readMoreAbout}
       >

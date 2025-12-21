@@ -293,6 +293,7 @@ export default async function ArticlePage({
         </article>
 
         <RelatedArticles
+          id="related-articles-section"
           currentArticleSlug={articleSlug}
           articleCategories={categoriesData}
           lang={lang}

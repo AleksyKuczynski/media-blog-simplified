@@ -1,43 +1,15 @@
-// app/[lang]/[rubric]/[slug]/_components/engagement/ArticleEngagement.tsx
-/**
- * Article Engagement - Main Container
- * 
- * Client component orchestrating engagement metrics display.
- * Fixed position sidebar with views, likes, shares.
- * 
- * Architecture:
- * - Server-side view tracking (API GET endpoint)
- * - Client-side like state (localStorage persistence)
- * - Share popup modal
- * 
- * Features:
- * - Initial data fetch on mount
- * - Session-based view deduplication
- * - Optimistic UI updates
- * - Error toast notifications
- * - Loading skeletons
- * 
- * Dependencies:
- * - ./hooks/useEngagement (main hook)
- * - ./EngagementMetric (metric display)
- * - ./EngagementIcons (SVG icons)
- * - ./SharePopup (share modal)
- * - ./lib/types (EngagementData type)
- * 
- * @param slug - Article slug
- * @param title - Article title for sharing
- * @param url - Full article URL for sharing
- * @param className - Optional styling
- */
-
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { EngagementMetric } from './EngagementMetric';
+import { EngagementMetricSkeleton } from './EngagementMetricSkeleton';
+import { EngagementErrorToast } from './EngagementErrorToast';
 import { EyeIcon, HeartIcon, ShareIcon } from './EngagementIcons';
 import { SharePopup } from './SharePopup';
-import { EngagementData } from './lib';
 import { useEngagement } from './hooks/useEngagement';
+import { useEngagementData } from './hooks/useEngagementData';
+import { useEngagementVisibility } from './hooks/useEngagementVisibility';
+import { ENGAGEMENT_BAR_STYLES } from './engagement.styles';
 
 export interface ArticleEngagementProps {
   slug: string;
@@ -46,11 +18,7 @@ export interface ArticleEngagementProps {
   className?: string;
 }
 
-interface EngagementResponse {
-  success: boolean;
-  data: EngagementData;
-  viewTracked?: boolean;
-}
+const styles = ENGAGEMENT_BAR_STYLES;
 
 export default function ArticleEngagement({
   slug,
@@ -58,61 +26,24 @@ export default function ArticleEngagement({
   url,
   className = '',
 }: ArticleEngagementProps) {
-  const [fetchedData, setFetchedData] = useState<EngagementData>({
-    slug,
-    views: 0,
-    likes: 0,
-    shares: 0,
-  });
-  const [viewWasTracked, setViewWasTracked] = useState(false);
-  const [isLoadingInitial, setIsLoadingInitial] = useState(true);
   const [isSharePopupOpen, setIsSharePopupOpen] = useState(false);
+  const engagementBarRef = useRef<HTMLElement>(null);
 
-  // Fetch engagement data on mount
-  useEffect(() => {
-    // Check if article was already viewed in this browser session
-    const sessionKey = `viewed_${slug}`;
-    const alreadyViewedInSession = typeof window !== 'undefined' 
-      ? sessionStorage.getItem(sessionKey) === 'true'
-      : false;
+  // Fetch initial engagement data
+  const { 
+    data: fetchedData, 
+    isLoading: isLoadingInitial, 
+    viewWasTracked 
+  } = useEngagementData(slug);
 
-    async function fetchData() {
-      try {
-        const response = await fetch(`/api/engagement/${slug}`, {
-          method: 'GET',
-          cache: 'no-store',
-        });
+  // Track visibility based on scroll and overlap
+  const isVisible = useEngagementVisibility({
+    scrollThreshold: 300,
+    relatedSectionId: 'related-articles-section',
+    footerId: 'site-footer',
+  });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch engagement data');
-        }
-
-        const result: EngagementResponse = await response.json();
-
-        if (result.success && result.data) {
-          setFetchedData(result.data);
-          setViewWasTracked(result.viewTracked || false);
-
-          // Mark as viewed in session if not already
-          if (result.viewTracked && typeof window !== 'undefined') {
-            sessionStorage.setItem(sessionKey, 'true');
-          }
-        }
-      } catch (error) {
-        // Silent failure - use default values
-      } finally {
-        setIsLoadingInitial(false);
-      }
-    }
-
-    if (alreadyViewedInSession) {
-      setViewWasTracked(false);
-    }
-
-    fetchData();
-  }, [slug]);
-
-  // Engagement hook
+  // Engagement logic (likes, shares, etc.)
   const {
     engagement,
     isLiked,
@@ -145,49 +76,26 @@ export default function ArticleEngagement({
     ? fetchedData.views + 1 
     : fetchedData.views;
 
+  const containerClasses = `
+    ${styles.container.base}
+    ${isVisible ? styles.container.visible : styles.container.hidden}
+    ${className}
+  `;
+
   return (
     <>
-      {/* Error Toast */}
-      {error && (
-        <div
-          className="fixed top-20 left-1/2 -translate-x-1/2 z-[70] max-w-md w-full mx-4"
-          role="alert"
-        >
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 flex items-center justify-between shadow-lg">
-            <span>{error}</span>
-            <button
-              type="button"
-              onClick={clearError}
-              className="ml-2 text-red-600 hover:text-red-800 font-bold"
-              aria-label="Dismiss error"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
+      <EngagementErrorToast error={error} onClose={clearError} />
 
-      {/* Sticky Engagement Bar */}
       <aside
-        className={`
-          fixed bottom-4 left-4 z-60
-          flex md:flex-col gap-2
-          py-3 px-4
-          bg-pr-cont hover:bg-pr-fix
-          text-on-pr
-          rounded-full shadow-lg hover:shadow-xl
-          transition-all duration-200
-          ${className}
-        `}
+        ref={engagementBarRef}
+        className={containerClasses}
         role="complementary"
         aria-label="Article engagement metrics"
+        aria-hidden={!isVisible}
       >
         {/* Views */}
         {isLoadingInitial ? (
-          <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
-            <div className="w-8 h-3 bg-on-pr/20 rounded"></div>
-          </div>
+          <EngagementMetricSkeleton />
         ) : (
           <EngagementMetric
             type="view"
@@ -197,14 +105,11 @@ export default function ArticleEngagement({
           />
         )}
 
-        <div className="h-px bg-on-pr/20 mx-2" />
+        <div className={styles.divider} />
 
         {/* Likes */}
         {isLoadingInitial ? (
-          <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
-            <div className="w-8 h-3 bg-on-pr/20 rounded"></div>
-          </div>
+          <EngagementMetricSkeleton />
         ) : (
           <EngagementMetric
             type="like"
@@ -219,14 +124,11 @@ export default function ArticleEngagement({
           />
         )}
 
-        <div className="h-px bg-on-pr/20 mx-2" />
+        <div className={styles.divider} />
 
         {/* Shares */}
         {isLoadingInitial ? (
-          <div className="flex flex-col items-center gap-1 p-2 animate-pulse">
-            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-on-pr/20 rounded-full"></div>
-            <div className="w-8 h-3 bg-on-pr/20 rounded"></div>
-          </div>
+          <EngagementMetricSkeleton />
         ) : (
           <div className="relative">
             <EngagementMetric

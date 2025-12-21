@@ -231,7 +231,7 @@ export const BLOCKS_STYLES = {
   // BalloonTip (actual implementation from BalloonTip.tsx)
   balloonTip: {
     container: 'relative group',
-    trigger: 'cursor-help border-b-2 border-dotted border-tr-cont text-tr-cont hover:text-tr-fix transition-colors',
+    trigger: 'cursor-help border-b-4 border-sec-cont hover:border-sec-fix transition-colors',
     tooltip: `fixed mb-2 px-4 pt-2 pb-4 bg-sf border border-ol-var text-on-sf rounded-lg shadow-lg z-50 whitespace-normal w-[calc(100vw-2rem)] max-w-lg 
             max-md:text-sm`,  
   },
