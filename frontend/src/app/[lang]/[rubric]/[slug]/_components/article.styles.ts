@@ -198,11 +198,19 @@ export const BLOCKS_STYLES = {
 
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
-    container: `relative mb-6 p-6 pt-12 rounded-2xl border-2 border-sec-cont
-            max-w-xl mx-auto 
-            lg:my-12`,
-    label: 'absolute -top-3 left-6 px-3 py-1 bg-sf text-sec-cont font-semibold text-sm uppercase tracking-wide',
-    content: 'text-lg font-serif text-on-sf-var',
+    container: `relative flex flex-col 
+            rounded-2xl border border-ol shadow-sm
+            max-w-xl mx-auto my-12
+            max-sm:mx-6
+            lg:my-12 lg:max-w-2xl`,
+    label: `bg-sf text-sec-cont font-semibold tracking-wide
+            -mt-4 mx-auto px-3 py-1 
+            md:text-lg md:px-4
+            lg:text-2xl`,
+    content: `text-lg font-serif leading-relaxed text-on-sf-var
+            p-6 pt-2
+            md:p-8 md:pt-4
+            lg:text-2xl lg:leading-[1.75] lg:p-12 lg:pt-6`,
   },
   // Table
   table: {

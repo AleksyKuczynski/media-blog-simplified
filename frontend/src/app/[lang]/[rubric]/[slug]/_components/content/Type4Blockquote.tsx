@@ -15,9 +15,9 @@ export function Type4Blockquote({ content, lang }: Type4Props) {
   
   return (
     <blockquote className={styles.container}>
-      <div className={styles.label}>
+      <h2 className={styles.label}>
         {dictionary.content.labels.portalAdvice}
-      </div>
+      </h2>
       <div className={styles.content}>
         {content.split('\n\n').map((paragraph, index) => (
           <p key={index}>{paragraph}</p>

@@ -225,7 +225,7 @@ export const dictionaryEN: Dictionary = {
       readingTime: 'Reading time: {minutes} min',
       wordsCount: 'Words: {count}',
       articleImage: 'Article illustration',
-      portalAdvice: 'Advice from the portal',
+      portalAdvice: 'Advice from EventForMe',
     },
     templates: {
       emptyRubric: 'No articles in rubric {name} yet',

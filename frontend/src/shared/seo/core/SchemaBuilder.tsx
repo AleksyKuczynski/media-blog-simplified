@@ -10,8 +10,16 @@ import {
 } from './types';
 
 // ===================================================================
-// ENHANCED SCHEMA FACTORIES - Russian Market Optimized
+// ENHANCED SCHEMA FACTORIES
 // ===================================================================
+
+/**
+ * Extract ISO 639-1 language code from locale for Schema.org
+ * Schema.org requires 2-letter codes (ru, en) not BCP 47 (ru-RU, en-US)
+ */
+const getSchemaLanguage = (dictionary: Dictionary): string => {
+  return dictionary.locale.split('-')[0]; // 'ru-RU' -> 'ru', 'en-US' -> 'en'
+};
 
 /**
  * Create standardized Organization schema from dictionary
@@ -31,7 +39,7 @@ export const createStandardOrganizationSchema = (
     name: seo.site.name,
     url: baseUrl,
     description: seo.site.organizationDescription,
-    inLanguage: dictionary.locale,
+    inLanguage: getSchemaLanguage(dictionary),
     
     // Standard logo configuration
     logo: {
@@ -91,7 +99,7 @@ export const createStandardWebsiteSchema = (
     name: seo.site.name,
     url: baseUrl,
     description: seo.site.description,
-    inLanguage: dictionary.locale,
+    inLanguage: getSchemaLanguage(dictionary),
     
     // Publisher reference
     publisher: {
@@ -140,7 +148,7 @@ export const createStandardBreadcrumbSchema = (
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     '@id': `${canonicalUrl}#breadcrumb`,
-    inLanguage: dictionary.locale,
+    inLanguage: getSchemaLanguage(dictionary),
     numberOfItems: breadcrumbs.length,
     
     itemListElement: breadcrumbs.map((crumb, index) => ({
@@ -201,7 +209,7 @@ export const createStandardItemListSchema = (
   name,
   description,
   numberOfItems: items.length,
-  inLanguage: dictionary.locale,
+  inLanguage: getSchemaLanguage(dictionary),
   
   itemListElement: items.map((item, index) => ({
     '@type': 'ListItem',
@@ -275,7 +283,7 @@ export class SchemaComposer {
     const enhancedSchema: ExtendedSchemaData = {
       '@context': 'https://schema.org',
       '@type': schema['@type'] || 'Thing', // Ensure @type is always present
-      inLanguage: this.dictionary.locale,
+      inLanguage: getSchemaLanguage(this.dictionary),
       audience: createRussianAudienceSchema(this.dictionary),
       isPartOf: {
         '@type': 'WebSite',
