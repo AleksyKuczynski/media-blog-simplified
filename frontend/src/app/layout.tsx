@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import './globals.scss'
-import { DEFAULT_LANG } from '@/config/constants/constants'
+import { DEFAULT_LANG, SUPPORTED_LANGUAGES } from '@/config/constants/constants'
 import ConsentModeScript from '@/features/analytics/ConsentModeScript'
 import YandexMetrikaScript from '@/features/analytics/YandexMetrikaScript'
 import YandexMetrikaNoScript from '@/features/analytics/YandexMetrikaNoScript'
@@ -10,18 +10,30 @@ import ConsentBanner from '@/features/analytics/ConsentBanner'
 import ScrollRestorationClient from '@/features/navigation/ScrollRestorationClient' // Changed import
 import { dictionary, Lang } from '@/config/i18n';
 import { fontCustom, fontDisplay, fontSans, fontSerif } from './fonts/fonts'
+import { headers } from 'next/headers'
 
 const consentDictionary = dictionary.consent
 
+
+async function detectLanguageFromPath(): Promise<Lang> {
+  const headersList = await headers();
+  const pathname = headersList.get('x-pathname') || headersList.get('referer') || '';
+  
+  // Extract language from pathname (e.g., /ru/articles -> ru)
+  const langMatch = pathname.match(/\/([a-z]{2})(\/|$)/);
+  if (langMatch && SUPPORTED_LANGUAGES.includes(langMatch[1] as Lang)) {
+    return langMatch[1] as Lang;
+  }
+  
+  return DEFAULT_LANG;
+}
+
 export default async function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<Record<string, never>>;
 }) {
-  // Root layout always uses DEFAULT_LANG
-  const lang = DEFAULT_LANG;
+  const lang = await detectLanguageFromPath();
 
   // Analytics configuration from environment variables
   const yandexMetrikaId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;

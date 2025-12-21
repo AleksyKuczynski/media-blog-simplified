@@ -31,7 +31,7 @@ export const createStandardOrganizationSchema = (
     name: seo.site.name,
     url: baseUrl,
     description: seo.site.organizationDescription,
-    inLanguage: 'ru',
+    inLanguage: dictionary.locale,
     
     // Standard logo configuration
     logo: {
@@ -47,7 +47,7 @@ export const createStandardOrganizationSchema = (
       '@type': 'ContactPoint',
       email: seo.site.contactEmail,
       contactType,
-      availableLanguage: ['ru', 'Russian'],
+      availableLanguage: [dictionary.locale, 'Russian'],
       areaServed: {
         '@type': 'Country',
         name: 'Россия',
@@ -78,8 +78,7 @@ export const createStandardOrganizationSchema = (
  * Create standardized Website schema with search functionality
  */
 export const createStandardWebsiteSchema = (
-  dictionary: Dictionary,
-  currentPath?: string
+  dictionary: Dictionary
 ): ExtendedSchemaData => {
   const { seo } = dictionary;
   const baseUrl = generateCanonicalUrl('/', seo.site.url);
@@ -92,7 +91,7 @@ export const createStandardWebsiteSchema = (
     name: seo.site.name,
     url: baseUrl,
     description: seo.site.description,
-    inLanguage: 'ru',
+    inLanguage: dictionary.locale,
     
     // Publisher reference
     publisher: {
@@ -132,7 +131,8 @@ export const createStandardWebsiteSchema = (
 export const createStandardBreadcrumbSchema = (
   breadcrumbs: Array<{ name: string; href?: string }>,
   canonicalUrl: string,
-  baseUrl: string
+  baseUrl: string,
+  dictionary: Dictionary
 ): ExtendedSchemaData | null => {
   if (!breadcrumbs.length) return null;
   
@@ -140,6 +140,7 @@ export const createStandardBreadcrumbSchema = (
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     '@id': `${canonicalUrl}#breadcrumb`,
+    inLanguage: dictionary.locale,
     numberOfItems: breadcrumbs.length,
     
     itemListElement: breadcrumbs.map((crumb, index) => ({
@@ -191,7 +192,8 @@ export const createStandardItemListSchema = (
     description?: string;
     type?: string;
     additionalData?: Record<string, any>;
-  }>
+  }>,
+  dictionary: Dictionary
 ): ExtendedSchemaData => ({
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -199,7 +201,7 @@ export const createStandardItemListSchema = (
   name,
   description,
   numberOfItems: items.length,
-  inLanguage: 'ru',
+  inLanguage: dictionary.locale,
   
   itemListElement: items.map((item, index) => ({
     '@type': 'ListItem',
@@ -257,7 +259,8 @@ export class SchemaComposer {
     const breadcrumbSchema = createStandardBreadcrumbSchema(
       breadcrumbs, 
       this.canonicalUrl, 
-      this.baseUrl
+      this.baseUrl,
+      this.dictionary
     );
     if (breadcrumbSchema) {
       this.schemas.push(breadcrumbSchema);
@@ -272,7 +275,7 @@ export class SchemaComposer {
     const enhancedSchema: ExtendedSchemaData = {
       '@context': 'https://schema.org',
       '@type': schema['@type'] || 'Thing', // Ensure @type is always present
-      inLanguage: 'ru',
+      inLanguage: this.dictionary.locale,
       audience: createRussianAudienceSchema(this.dictionary),
       isPartOf: {
         '@type': 'WebSite',
@@ -382,7 +385,8 @@ export class SchemaComposer {
             `${this.canonicalUrl}#itemlist`,
             data.name,
             data.description,
-            data.items.map(item => ({ ...item, type: 'Article' }))
+            data.items.map(item => ({ ...item, type: 'Article' })),
+            this.dictionary
           )
         : {
             '@type': 'ItemList',
@@ -597,7 +601,8 @@ export const createNavigationElementSchema = (
   url: string,
   description: string,
   position: number,
-  geographicAreas: readonly string[] = ['Russia']
+  geographicAreas: readonly string[] = ['Russia'],
+  locale: string = 'ru'
 ) => ({
   '@context': 'https://schema.org',
   '@type': 'SiteNavigationElement',
@@ -605,7 +610,7 @@ export const createNavigationElementSchema = (
   name,
   description,
   url,
-  inLanguage: 'ru',
+  inLanguage: locale,
   position,
   audience: {
     '@type': 'Audience',
