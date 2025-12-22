@@ -1,5 +1,4 @@
-// src/main/components/SEO/schemas/ArticleSchema.tsx
-// REFACTORED: Using SchemaBuilder - Reduced from 200+ to 50 lines
+// frontend/src/shared/seo/schemas/ArticleSchema.tsx
 
 import React from 'react';
 import { Dictionary } from '@/config/i18n';

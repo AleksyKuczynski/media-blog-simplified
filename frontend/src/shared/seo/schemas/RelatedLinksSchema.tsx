@@ -1,4 +1,4 @@
-// src/main/components/SEO/schemas/RelatedLinksSchema.tsx
+// frontend/src/shared/seo/schemas/RelatedLinksSchema.tsx
 
 import { Dictionary } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';

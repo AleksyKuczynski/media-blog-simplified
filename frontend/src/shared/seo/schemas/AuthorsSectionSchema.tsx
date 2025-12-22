@@ -1,4 +1,4 @@
-// src/main/components/SEO/schemas/AuthorsSectionSchema.tsx
+// frontend/src/shared/seo/schemas/AuthorsSectionSchema.tsx
 
 import React from 'react';
 import AuthorSectionSchema from './AuthorSectionSchema';

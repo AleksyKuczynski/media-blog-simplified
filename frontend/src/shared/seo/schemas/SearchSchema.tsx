@@ -1,5 +1,4 @@
-// src/main/components/SEO/schemas/SearchSchema.tsx
-// REFACTORED: Using SchemaComposer - Reduced from 80+ to 35 lines
+// frontend/src/shared/seo/schemas/SearchSchema.tsx
 
 import React from 'react';
 import { Dictionary } from '@/config/i18n';

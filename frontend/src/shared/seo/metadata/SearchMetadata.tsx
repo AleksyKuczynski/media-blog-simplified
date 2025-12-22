@@ -1,4 +1,4 @@
-// frontend/src/main/components/SEO/metadata/SearchMetadata.tsx
+// frontend/src/shared/seo/metadata/SearchMetadata.tsx
 import { Metadata } from 'next';
 import { Dictionary } from '@/config/i18n';
 import { 

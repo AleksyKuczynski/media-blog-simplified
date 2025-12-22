@@ -1,5 +1,4 @@
-// src/main/components/SEO/core/SchemaBuilder.tsx
-// All TypeScript errors resolved
+// frontend/src/shared/seo/core/SchemaBuilder.tsx
 
 import React from 'react';
 import { Dictionary } from '@/config/i18n';

@@ -1,4 +1,4 @@
-// frontend/src/main/components/SEO/metadata/CollectionMetadata.tsx
+// frontend/src/shared/seo/metadata/CollectionMetadata.tsx
 import { Metadata } from 'next';
 import { Dictionary } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';

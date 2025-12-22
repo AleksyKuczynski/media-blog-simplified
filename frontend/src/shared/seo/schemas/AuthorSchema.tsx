@@ -1,5 +1,4 @@
-// src/main/components/SEO/schemas/AuthorSchema.tsx
-// REFACTORED: Using SchemaComposer - Reduced from 120+ to 40 lines
+// frontend/src/shared/seo/schemas/AuthorSchema.tsx
 
 import React from 'react';
 import { Dictionary } from '@/config/i18n';

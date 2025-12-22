@@ -1,5 +1,4 @@
-// src/main/components/SEO/schemas/CollectionPageSchema.tsx
-// REFACTORED: Using SchemaComposer - Reduced from 120+ to 35 lines
+// frontend/src/shared/seo/schemas/CollectionPageSchema.tsx
 
 import React from 'react';
 import { Dictionary } from '@/config/i18n';

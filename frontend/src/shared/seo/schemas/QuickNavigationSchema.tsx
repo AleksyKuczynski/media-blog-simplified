@@ -1,4 +1,4 @@
-// src/main/components/SEO/schemas/QuickNavigationSchema.tsx
+// frontend/src/shared/seo/schemas/QuickNavigationSchema.tsx
 
 import React from 'react';
 import { SchemaBuilder } from '../core/SchemaBuilder';

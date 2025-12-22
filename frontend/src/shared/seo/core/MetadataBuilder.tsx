@@ -1,4 +1,4 @@
-// frontend/src/main/components/SEO/core/MetadataBuilder.tsx
+// frontend/src/shared/seo/core/MetadataBuilder.tsx
 import { Metadata } from 'next';
 import { 
   SEOData, 

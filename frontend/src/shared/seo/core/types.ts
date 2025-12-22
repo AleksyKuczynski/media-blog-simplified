@@ -1,4 +1,4 @@
-// src/main/components/SEO/core/types.ts
+// frontend/src/shared/seo/core/types.ts
 
 import { Metadata } from 'next';
 import { Dictionary } from '@/config/i18n';

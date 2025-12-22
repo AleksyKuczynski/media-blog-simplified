@@ -1,4 +1,4 @@
-// src/main/components/SEO/schemas/AuthorSectionSchema.tsx
+// frontend/src/shared/seo/schemas/AuthorSectionSchema.tsx
 
 import React from 'react';
 import { SchemaBuilder } from '../core/SchemaBuilder';

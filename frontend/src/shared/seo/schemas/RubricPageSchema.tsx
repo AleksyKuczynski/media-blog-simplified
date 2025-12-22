@@ -1,5 +1,4 @@
-// src/main/components/SEO/schemas/RubricPageSchema.tsx
-// REFACTORED: Using SchemaComposer - Reduced from 150+ to 45 lines
+// frontend/src/shared/seo/schemas/RubricPageSchema.tsx
 
 import React from 'react';
 import { Dictionary } from '@/config/i18n';

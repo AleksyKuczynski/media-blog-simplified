@@ -1,4 +1,4 @@
-// frontend/src/main/components/SEO/metadata/RubricMetadata.tsx
+// frontend/src/shared/seo/metadata/RubricMetadata.tsx
 import { Metadata } from 'next';
 import { Dictionary } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';

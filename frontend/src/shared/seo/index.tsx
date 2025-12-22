@@ -1,5 +1,4 @@
-// src/main/components/SEO/index.tsx
-// Updated SEO public API with search components
+// frontend/src/shared/seo/index.tsx
 
 import { buildMetadata } from './core/MetadataBuilder';
 import { SchemaBuilder } from './core/SchemaBuilder';
