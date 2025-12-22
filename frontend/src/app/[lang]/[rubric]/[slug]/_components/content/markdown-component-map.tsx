@@ -26,6 +26,42 @@ import { ListItem } from './ListItem';
 import { ArticleParagraph } from './Paragraph';
 import ImageFrame from '../ImageFrame';
 import { BalloonTip } from './BalloonTip';
+import { BLOCKS_STYLES } from '../article.styles';
+
+// Handles tables that weren't caught by extractTables
+const TableHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableElement>) => {
+  return (
+    <figure className={BLOCKS_STYLES.table.wrapper}>
+      <div className={BLOCKS_STYLES.table.container}>
+        <table className={BLOCKS_STYLES.table.table} {...props}>
+          {children}
+        </table>
+      </div>
+    </figure>
+  );
+};
+
+const THeadHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => {
+  return <thead className={BLOCKS_STYLES.table.header} {...props}>{children}</thead>;
+};
+
+const TBodyHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => {
+  return <tbody {...props}>{children}</tbody>;
+};
+
+const TRHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => {
+  // Detect if this is in thead or tbody based on parent
+  const isHeader = props.className?.includes('table-header');
+  return <tr className={isHeader ? '' : BLOCKS_STYLES.table.bodyRow} {...props}>{children}</tr>;
+};
+
+const THHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => {
+  return <th className={BLOCKS_STYLES.table.headerCell} {...props}>{children}</th>;
+};
+
+const TDHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => {
+  return <td className={BLOCKS_STYLES.table.bodyCell} {...props}>{children}</td>;
+};
 
 // Helper to recursively extract text from React children
 const extractTextFromChildren = (children: React.ReactNode): string => {
@@ -55,13 +91,8 @@ const extractTextFromChildren = (children: React.ReactNode): string => {
 const SpanHandler = ({ children, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
   const balloonTipUrl = (props as any)['data-balloon-tip'];
   
-  // Debug logging
-  console.log('SpanHandler called with props:', props);
-  console.log('balloonTipUrl value:', balloonTipUrl);
-  
   if (balloonTipUrl) {
     const text = extractTextFromChildren(children);
-    console.log('Creating BalloonTip with text:', text, 'url:', balloonTipUrl);
     return <BalloonTip text={text} url={balloonTipUrl} />;
   }
   
@@ -80,10 +111,16 @@ export const componentMap: Record<string, React.ComponentType<any>> = {
   ol: (props) => <ArticleList ordered={true} {...props} />,
   li: ListItem,
   a: ArticleLink,
-  span: SpanHandler, // ✅ NEW: Handle balloon tip spans
+  span: SpanHandler,
   img: ({ caption, ...props }: React.ComponentProps<typeof ImageFrame> & { caption?: string }) => 
     <ImageFrame {...props} caption={caption} />,
   figure: ({ children }: { children: React.ReactNode }) => <figure className="my-4">{children}</figure>,
   figcaption: ({ children }: { children: React.ReactNode }) => 
     <figcaption className="text-center text-sm mt-2 text-gray-600">{children}</figcaption>,
+  table: TableHandler,
+  thead: THeadHandler,
+  tbody: TBodyHandler,
+  tr: TRHandler,
+  th: THHandler,
+  td: TDHandler,
 };
