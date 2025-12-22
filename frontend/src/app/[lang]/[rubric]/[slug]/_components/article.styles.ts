@@ -212,18 +212,39 @@ export const BLOCKS_STYLES = {
             md:p-8 md:pt-4
             lg:text-2xl lg:leading-[1.75] lg:p-12 lg:pt-6`,
   },
-  // Table
-  table: {
-    wrapper: 'w-full overflow-x-auto my-8',
-    container: 'min-w-full border-collapse bg-sf rounded-xl overflow-hidden shadow-md',
-    table: 'w-full min-w-full border-collapse',
-    header: 'bg-sf-cont',
-    headerCell: 'px-4 py-3 text-left font-semibold text-on-sf border-b-2 border-ol',
-    bodyRow: 'border-b border-ol-var last:border-0 hover:bg-sf-hi transition-colors',
-    bodyCell: 'px-4 py-3 text-on-sf-var',
-    caption: 'mt-2 text-sm text-on-sf-var text-center',
-  },
 
+// Table
+  table: {
+    wrapper: `max-w-svw -mx-2 my-8 md:my-12 lg:my-16 md:mx-auto`,
+    container: `relative mx-auto overflow-x-auto
+                max-w-full
+                [&::-webkit-scrollbar]:h-2
+                [&::-webkit-scrollbar-track]:bg-sf-cont
+                [&::-webkit-scrollbar-thumb]:bg-ol
+                [&::-webkit-scrollbar-thumb]:rounded-full`,
+    table: `w-full border-collapse
+            min-w-[600px]
+            max-w-4xl mx-auto`,
+    header: 'bg-sf-var',
+    headerCell: `px-4 py-3 font-semibold text-on-sf border-b-2 border-ol
+                 text-sm md:text-base
+                 min-w-[100px] max-w-[300px]
+                 first:sticky first:left-0 first:bg-sf-var first:z-10
+                 first:min-w-[120px]`,
+    bodyRow: `even:bg-sf-cont odd:bg-sf
+              hover:bg-sf-hi transition-colors`,
+    bodyCell: `px-4 py-3 text-on-sf-var border-b border-ol-var
+               text-sm md:text-base
+               min-w-[100px] max-w-[300px]
+               first:sticky first:left-0 first:z-10
+               first:font-medium first:text-on-sf
+               first:min-w-[120px]
+               even:first:bg-sf-cont odd:first:bg-sf
+               hover:first:bg-sf-hi`,
+    caption: `max-w-2xl mx-auto mt-2 px-4 prose lg:prose-lg text-on-sf-var
+              text-center italic`,
+  },
+  
   // InlineArticleCard
   inlineArticleCard: {
     container: 'not-prose my-6 md:my-12 w-full max-w-xl shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300',
