@@ -1,19 +1,25 @@
-// app/[lang]/[rubric]/[slug]/_components/content/markdown-component-map.ts
+// app/[lang]/[rubric]/[slug]/_components/content/markdown-component-map.tsx
 /**
  * Article Content - Markdown Component Mapping
  * 
  * Maps HTML element names to React components.
  * Used by MarkdownContent.tsx for rendering parsed HTML.
  * 
- * Mappings:
- * - h1-h6 → Heading
- * - p → Paragraph  
- * - a → Link
- * - ul, ol → List
- * - li → ListItem
+ * Component Categories:
+ * - Typography: Headings, paragraphs, links, lists
+ * - Tables: Table structure and cells
+ * - Special: Spans (balloon tips), images, figures
  * 
- * NOTE: Does not handle custom blocks (blockquote, image-frame, table)
- * which are processed separately by Content.tsx
+ * Architecture:
+ * - All styles referenced from article.styles.ts
+ * - Helper functions separated at top
+ * - Handlers grouped by category
+ * - Component map at bottom
+ * 
+ * Dependencies:
+ * - article.styles.ts (BLOCKS_STYLES, ELEMENTS_STYLES)
+ * - Typography components (Heading, Paragraph, Link, List, ListItem)
+ * - Special components (BalloonTip, ImageFrame)
  * 
  * @see MarkdownContent.tsx
  */
@@ -28,42 +34,14 @@ import ImageFrame from '../ImageFrame';
 import { BalloonTip } from './BalloonTip';
 import { BLOCKS_STYLES } from '../article.styles';
 
-// Handles tables that weren't caught by extractTables
-const TableHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableElement>) => {
-  return (
-    <figure className={BLOCKS_STYLES.table.wrapper}>
-      <div className={BLOCKS_STYLES.table.container}>
-        <table className={BLOCKS_STYLES.table.table} {...props}>
-          {children}
-        </table>
-      </div>
-    </figure>
-  );
-};
+// ================================================================
+// HELPER FUNCTIONS
+// ================================================================
 
-const THeadHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => {
-  return <thead className={BLOCKS_STYLES.table.header} {...props}>{children}</thead>;
-};
-
-const TBodyHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => {
-  return <tbody {...props}>{children}</tbody>;
-};
-
-const TRHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => {
-  // Detect if this is in thead or tbody based on parent
-  const isHeader = props.className?.includes('table-header');
-  return <tr className={isHeader ? '' : BLOCKS_STYLES.table.bodyRow} {...props}>{children}</tr>;
-};
-
-const THHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => {
-  return <th className={BLOCKS_STYLES.table.headerCell} {...props}>{children}</th>;
-};
-
-const TDHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => {
-  return <td className={BLOCKS_STYLES.table.bodyCell} {...props}>{children}</td>;
-};
-
-// Helper to recursively extract text from React children
+/**
+ * Recursively extract text content from React children
+ * Used by BalloonTip to get trigger text from nested elements
+ */
 const extractTextFromChildren = (children: React.ReactNode): string => {
   if (typeof children === 'string') {
     return children;
@@ -87,7 +65,55 @@ const extractTextFromChildren = (children: React.ReactNode): string => {
   return '';
 };
 
-// Span handler for balloon tips and regular spans
+// ================================================================
+// TABLE HANDLERS
+// ================================================================
+
+/**
+ * Handles tables that weren't caught by extractTables
+ * Applies wrapper and scroll container from BLOCKS_STYLES.table
+ */
+const TableHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableElement>) => {
+  return (
+    <figure className={BLOCKS_STYLES.table.wrapper}>
+      <div className={BLOCKS_STYLES.table.container}>
+        <table className={BLOCKS_STYLES.table.table} {...props}>
+          {children}
+        </table>
+      </div>
+    </figure>
+  );
+};
+
+const THeadHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => {
+  return <thead className={BLOCKS_STYLES.table.header} {...props}>{children}</thead>;
+};
+
+const TBodyHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableSectionElement>) => {
+  return <tbody {...props}>{children}</tbody>;
+};
+
+const TRHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableRowElement>) => {
+  const isHeader = props.className?.includes('table-header');
+  return <tr className={isHeader ? '' : BLOCKS_STYLES.table.bodyRow} {...props}>{children}</tr>;
+};
+
+const THHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => {
+  return <th className={BLOCKS_STYLES.table.headerCell} {...props}>{children}</th>;
+};
+
+const TDHandler = ({ children, ...props }: React.HTMLAttributes<HTMLTableCellElement>) => {
+  return <td className={BLOCKS_STYLES.table.bodyCell} {...props}>{children}</td>;
+};
+
+// ================================================================
+// SPECIAL HANDLERS
+// ================================================================
+
+/**
+ * Handles span elements - detects balloon tip data attribute
+ * and renders BalloonTip component, otherwise renders plain span
+ */
 const SpanHandler = ({ children, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
   const balloonTipUrl = (props as any)['data-balloon-tip'];
   
@@ -99,28 +125,60 @@ const SpanHandler = ({ children, ...props }: React.HTMLAttributes<HTMLSpanElemen
   return <span {...props}>{children}</span>;
 };
 
+/**
+ * Handles figure elements - applies styles from BLOCKS_STYLES.figure
+ */
+const FigureHandler = ({ children }: { children: React.ReactNode }) => {
+  return <figure className={BLOCKS_STYLES.figure.container}>{children}</figure>;
+};
+
+/**
+ * Handles figcaption elements - applies styles from BLOCKS_STYLES.figure
+ */
+const FigcaptionHandler = ({ children }: { children: React.ReactNode }) => {
+  return <figcaption className={BLOCKS_STYLES.figure.caption}>{children}</figcaption>;
+};
+
+// ================================================================
+// COMPONENT MAP
+// ================================================================
+
+/**
+ * Maps HTML tag names to React components
+ * Used by MarkdownContent to render parsed HTML
+ */
 export const componentMap: Record<string, React.ComponentType<any>> = {
+  // Typography - Headings
   h1: (props) => <ArticleHeading level={1} {...props} />,
   h2: (props) => <ArticleHeading level={2} {...props} />,
   h3: (props) => <ArticleHeading level={3} {...props} />,
   h4: (props) => <ArticleHeading level={4} {...props} />,
   h5: (props) => <ArticleHeading level={5} {...props} />,
   h6: (props) => <ArticleHeading level={6} {...props} />,
+  
+  // Typography - Text Elements
   p: ArticleParagraph,
+  
+  // Typography - Lists
   ul: (props) => <ArticleList ordered={false} {...props} />,
   ol: (props) => <ArticleList ordered={true} {...props} />,
   li: ListItem,
+  
+  // Typography - Links
   a: ArticleLink,
-  span: SpanHandler,
-  img: ({ caption, ...props }: React.ComponentProps<typeof ImageFrame> & { caption?: string }) => 
-    <ImageFrame {...props} caption={caption} />,
-  figure: ({ children }: { children: React.ReactNode }) => <figure className="my-4">{children}</figure>,
-  figcaption: ({ children }: { children: React.ReactNode }) => 
-    <figcaption className="text-center text-sm mt-2 text-gray-600">{children}</figcaption>,
+  
+  // Tables
   table: TableHandler,
   thead: THeadHandler,
   tbody: TBodyHandler,
   tr: TRHandler,
   th: THHandler,
   td: TDHandler,
+  
+  // Special Elements
+  span: SpanHandler,
+  img: ({ caption, ...props }: React.ComponentProps<typeof ImageFrame> & { caption?: string }) => 
+    <ImageFrame {...props} caption={caption} />,
+  figure: FigureHandler,
+  figcaption: FigcaptionHandler,
 };

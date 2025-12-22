@@ -244,7 +244,7 @@ export const BLOCKS_STYLES = {
     caption: `max-w-2xl mx-auto mt-2 px-4 prose lg:prose-lg text-on-sf-var
               text-center italic`,
   },
-  
+
   // InlineArticleCard
   inlineArticleCard: {
     container: 'not-prose my-6 md:my-12 w-full max-w-xl shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300',
@@ -266,6 +266,12 @@ export const BLOCKS_STYLES = {
     trigger: 'cursor-help bg-sf-cont border-b-4 border-dotted border-ol hover:border-sec-fix transition-colors',
     tooltip: `fixed mb-2 px-4 pt-2 pb-4 bg-sf border border-ol-var text-on-sf rounded-lg shadow-lg z-50 whitespace-normal w-[calc(100vw-2rem)] max-w-lg 
             max-md:text-sm`,  
+  },
+  
+  // Figure and Figcaption (for markdown-generated figures)
+  figure: {
+    container: 'my-4',
+    caption: 'text-center text-sm mt-2 text-on-sf-var',
   },
 } as const;
 
