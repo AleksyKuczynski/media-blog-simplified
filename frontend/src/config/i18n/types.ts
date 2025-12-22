@@ -1,4 +1,4 @@
-// src/main/lib/dictionary/types.ts
+// src/config/i18n/types.ts
 
 /**
  * Complete TypeScript type definitions for Dictionary structure

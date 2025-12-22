@@ -1,4 +1,4 @@
-// src/main/lib/constants.ts
+// src/config/constants.ts
 export const SITE_URL = 'https://event4me.vercel.app' as string;
 export const CONTACT_EMAIL = 'alehkuczynski@gmail.com' as string;
 export const DEFAULT_LANG = 'en' as const;

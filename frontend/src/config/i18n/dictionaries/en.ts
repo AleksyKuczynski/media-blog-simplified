@@ -1,4 +1,4 @@
-// src/main/lib/dictionary/dictionaries/en.ts
+// src/config/i18n/dictionaries/en.ts
 import { CONTACT_EMAIL, SITE_URL } from "../../constants/constants";
 import Dictionary from "../types";
 

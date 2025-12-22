@@ -1,4 +1,4 @@
-// src/main/lib/dictionary/helpers/validation.ts
+// src/config/i18n/helpers/validation.ts
 
 /**
  * Check if URL is valid

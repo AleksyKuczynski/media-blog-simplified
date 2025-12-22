@@ -1,4 +1,4 @@
-// src/main/lib/dictionary/helpers/templates.ts
+// src/config/i18n/helpers/templates.ts
 
 import Dictionary from "../types";
 

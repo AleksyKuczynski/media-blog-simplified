@@ -1,4 +1,4 @@
-// src/main/lib/dictionary/helpers/navigation.ts
+// src/config/i18n/helpers/navigation.ts
 
 import Dictionary, { Lang } from "../types";
 

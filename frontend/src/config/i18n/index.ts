@@ -1,4 +1,4 @@
-// src/main/lib/dictionary/index.ts
+// src/config/i18n/index.ts
 import type { SupportedLanguage } from '../constants/constants';
 import Dictionary from './types';
 import dictionaryEN from './dictionaries/en';

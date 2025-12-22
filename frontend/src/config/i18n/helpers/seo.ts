@@ -1,5 +1,4 @@
-// src/main/lib/dictionary/helpers/seo.ts
-// OPTIMIZED: Kept essential SEO functions used by navigation and metadata components
+// src/config/i18n/helpers/seo.ts
 
 import Dictionary from '../types';
 import { processTemplate } from './templates';

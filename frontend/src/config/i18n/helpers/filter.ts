@@ -1,4 +1,4 @@
-// src/main/lib/dictionary/helpers/filter.ts
+// src/config/i18n/helpers/filter.ts
 
 import { Category } from '@/api/directus';
 import { generateCanonicalUrl } from './seo';

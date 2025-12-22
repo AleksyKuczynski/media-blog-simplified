@@ -1,4 +1,4 @@
-// src/main/lib/dictionary/helpers/content.ts
+// src/config/i18n/helpers/content.ts
 import Dictionary from '../types';
 import { processTemplate } from './templates';
 
