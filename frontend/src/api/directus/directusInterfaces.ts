@@ -1,83 +1,5 @@
 // src/api/directus/interfaces.ts
 
-export interface AuthorTranslation {
-  languages_code: string;
-  name: string;
-  bio: string;
-  
-  // Enhanced fields
-  credentials?: string;
-  expertise_areas?: string;
-  meta_description?: string;
-}
-
-export interface Author {
-  slug: string;
-  avatar: string;
-  
-  // Social profiles
-  telegram_url?: string;
-  // Add these if/when you add them to Directus:
-  // twitter_url?: string;
-  // linkedin_url?: string;
-  // vk_url?: string;
-}
-
-export interface AuthorDetails extends Author {
-  name: string | '::EDITORIAL::';
-  bio: string;
-  
-  // Enhanced fields - ADDED
-  credentials?: string;
-  expertise_areas?: string;
-  meta_description?: string;
-}
-
-export interface BlockMarkdown {
-  id: string;
-  content: string;
-}
-
-export interface RubricTranslation {
-  languages_code: string;
-  name: string;
-  description: string;
-  meta_title?: string;
-  meta_description?: string;
-  og_title?: string;
-  og_description?: string;
-  yandex_description?: string;
-  focus_keyword?: string;
-}
-
-export interface Rubric {
-  slug: string;
-  nav_icon?: string;
-  translations: RubricTranslation[];
-  articleCount: number;
-  iconMetadata?: Asset | null;
-}
-
-export interface RubricBasic {
-  slug: string;
-  name: string; // Holds the translated name
-}
-
-export interface CategoryTranslation {
-  categories_slug: string;
-  languages_code: string;
-  name: string;
-}
-
-export interface Category {
-  slug: string;
-  name: string; // Holds the translated name
-}
-
-export interface PromotedArticle {
-  article: string; // Stores the promoted article slug
-}
-
 export interface ArticleBlockItem {
   id: string;
   content: string;
@@ -156,6 +78,85 @@ export interface ArticleTranslation {
   local_slug?: string;
 }
 
+export interface Author {
+  slug: string;
+  avatar: string;
+  
+  // Social profiles
+  telegram_url?: string;
+  // Add these if/when you add them to Directus:
+  // twitter_url?: string;
+  // linkedin_url?: string;
+  // vk_url?: string;
+}
+
+export interface AuthorDetails extends Author {
+  name: string | '::EDITORIAL::';
+  bio: string;
+  
+  // Enhanced fields - ADDED
+  credentials?: string;
+  expertise_areas?: string;
+  meta_description?: string;
+}
+
+export interface AuthorTranslation {
+  languages_code: string;
+  name: string;
+  bio: string;
+  
+  // Enhanced fields
+  credentials?: string;
+  expertise_areas?: string;
+  meta_description?: string;
+}
+
+export interface BlockMarkdown {
+  id: string;
+  content: string;
+}
+
+export interface RubricTranslation {
+  languages_code: string;
+  name: string;
+  description: string;
+  meta_title?: string;
+  meta_description?: string;
+  og_title?: string;
+  og_description?: string;
+  yandex_description?: string;
+  focus_keyword?: string;
+}
+
+export interface Rubric {
+  slug: string;
+  nav_icon?: string;
+  translations: RubricTranslation[];
+  articleCount: number;
+  iconMetadata?: Asset | null;
+}
+
+export interface RubricBasic {
+  slug: string;
+  name: string; // Holds the translated name
+}
+
+export interface CategoryTranslation {
+  categories_slug: string;
+  languages_code: string;
+  name: string;
+}
+
+export interface Category {
+  slug: string;
+  name: string; // Holds the translated name
+}
+
+export interface PromotedArticle {
+  article: string; // Stores the promoted article slug
+}
+
+
 
 export interface FullArticle {
   slug: string;
@@ -167,7 +168,7 @@ export interface FullArticle {
   article_heading_img: string;
   rubric_slug: ArticleRubric;
   translations: ArticleTranslation[];
-  authors: { name: string; slug: string; avatar?: string }[];
+  authors: AuthorDetails[];
   categories: Category[];
 }
 
@@ -211,11 +212,16 @@ export interface SearchProposition { //  Results of search in translated titles 
 
 export interface Asset {
   id: string;
-  width: number;
-  height: number;
+  filename_disk: string;
+  filename_download: string;
+  title?: string;
+  description?: string;
+  tags?: string[];
   type: string;
-  filename: string;
-  title: string;
+  filesize: number;
+  width: number | null;
+  height: number | null;
+  uploaded_on: string;
 }
 
 /**

@@ -44,7 +44,7 @@ export async function fetchFullArticle(
       // Content metrics - ADDED
       'translations.reading_time',
       'translations.word_count',
-      'translations.exerpt', // Note: typo in DB schema
+      'translations.excerpt', // Note: typo in DB schema
       
       // Local slug for alternate URLs
       'translations.local_slug',
@@ -141,11 +141,21 @@ export async function fetchFullArticle(
         // Content metrics - ADDED
         reading_time: translation.reading_time,
         word_count: translation.word_count,
-        excerpt: translation.exerpt, // Map typo to correct name
+        excerpt: translation.excerpt,
         
         local_slug: translation.local_slug,
       }],
-      authors: authors.length > 0 ? authors : [{ name: 'Editorial Team', slug: '' }],
+      authors: authors.length > 0 ? authors : [{
+        name: 'Editorial Team',
+        slug: '',
+        avatar: '',
+        bio: '',
+        // Optional enhanced fields can be undefined
+        credentials: undefined,
+        expertise_areas: undefined,
+        meta_description: undefined,
+        telegram_url: undefined,
+      }],
       categories: categories || [],
     };
 

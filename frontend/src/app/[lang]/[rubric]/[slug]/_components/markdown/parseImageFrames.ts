@@ -50,7 +50,7 @@ export async function parseImageFrames(chunks: ContentChunk[]): Promise<ContentC
       width: metadata?.width || 1200,
       height: metadata?.height || 800,
       title: metadata?.title,
-      filename: metadata?.filename
+      filename: metadata?.filename_download || metadata?.filename_disk // ✅ FIX: Use correct property names
     };
   }
 
@@ -70,18 +70,16 @@ export async function parseImageFrames(chunks: ContentChunk[]): Promise<ContentC
           type: 'image-frame',
           imageAttributes: enrichedAttributes,
           caption: hasCaption ? chunk.caption : undefined,
-          processedCaption,
+          processedCaption: hasCaption ? processedCaption : undefined,
         };
 
         processedChunks.push(imageFrameChunk);
-
       } catch (error) {
-        console.error('Error processing image for frame:', error);
-        // Fall back to original chunk if processing fails
+        console.error('Error enriching image:', error);
+        // Fallback: keep original chunk on error
         processedChunks.push(chunk);
       }
     } else {
-      // Non-image chunks pass through unchanged
       processedChunks.push(chunk);
     }
   }

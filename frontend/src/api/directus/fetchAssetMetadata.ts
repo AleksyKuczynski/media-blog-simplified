@@ -1,20 +1,7 @@
 // frontend/src/api/directus/fetchAssetMetadata.ts
 
 import { DIRECTUS_URL } from './directusConstants';
-
-export interface Asset {
-  id: string;
-  filename_disk: string;
-  filename_download: string;
-  title?: string;
-  description?: string;
-  tags?: string[];
-  type: string;
-  filesize: number;
-  width: number | null;
-  height: number | null;
-  uploaded_on: string;
-}
+import { Asset } from './directusInterfaces';
 
 export async function fetchAssetMetadata(assetId: string): Promise<Asset | null> {
   try {

@@ -1,11 +1,11 @@
-// src/features/rubric-display/RubricCard.tsx
+// frontend/src/features/rubric-display/RubricCard.tsx
 
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Dictionary, Lang } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import { DIRECTUS_URL } from '@/api/directus';
+import { DIRECTUS_URL, Asset } from '@/api/directus'; // ✅ Import Asset type
 import { RUBRIC_CARD_STYLES } from './styles';
 
 export interface RubricCardProps {
@@ -15,14 +15,7 @@ export interface RubricCardProps {
     description?: string;
     nav_icon?: string;
     articleCount?: number;
-    iconMetadata?: {
-      id: string;
-      width: number;
-      height: number;
-      type: string;
-      filename: string;
-      title: string;
-    } | null;
+    iconMetadata?: Asset | null; // ✅ CHANGED: Use the actual Asset type
   };
   lang: Lang;
   dictionary: Dictionary;
