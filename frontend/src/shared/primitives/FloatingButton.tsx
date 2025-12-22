@@ -1,4 +1,4 @@
-// src/main/components/Interface/FloatingButton.tsx - CLEANED UP
+// src/primitives/FloatingButton.tsx
 import { forwardRef } from 'react';
 
 interface FloatingButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

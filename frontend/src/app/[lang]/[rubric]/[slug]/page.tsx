@@ -2,7 +2,7 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
+import { fetchAssetMetadata, fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
 import { RelatedArticles } from '@/features/article-display/RelatedArticles';
@@ -23,6 +23,7 @@ import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import CategoriesAndRubricSection from './_components/navigation/CategoriesAndRubricSection';
 import { processContent } from './_components/markdown/processContent';
 import ArticleContentRenderer from './_components/content/ArticleContentRenderer';
+import { parseImageMetadata } from '@/lib/utils/bilingualParser';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -60,6 +61,15 @@ export async function generateMetadata({
     if (!translation) {
       throw new Error('Translation not found');
     }
+
+    // Fetch image metadata if article has heading image
+    let imageMetadata = null;
+    if (article.article_heading_img) {
+      const imageData = await fetchAssetMetadata(article.article_heading_img);
+      imageMetadata = parseImageMetadata(imageData, lang);
+    }
+
+    
 
     const articleData = {
       title: translation.title,

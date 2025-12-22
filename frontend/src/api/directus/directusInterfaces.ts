@@ -4,16 +4,33 @@ export interface AuthorTranslation {
   languages_code: string;
   name: string;
   bio: string;
+  
+  // Enhanced fields
+  credentials?: string;
+  expertise_areas?: string;
+  meta_description?: string;
 }
 
 export interface Author {
   slug: string;
   avatar: string;
+  
+  // Social profiles
+  telegram_url?: string;
+  // Add these if/when you add them to Directus:
+  // twitter_url?: string;
+  // linkedin_url?: string;
+  // vk_url?: string;
 }
 
 export interface AuthorDetails extends Author {
-  name: string | '::EDITORIAL::'; // Holds the translated name
-  bio: string; // Holds the translated bio
+  name: string | '::EDITORIAL::';
+  bio: string;
+  
+  // Enhanced fields - ADDED
+  credentials?: string;
+  expertise_areas?: string;
+  meta_description?: string;
 }
 
 export interface BlockMarkdown {
@@ -121,10 +138,24 @@ export interface ArticleTranslation {
   description: string;
   lead: string;
   article_body: ArticleBlock[];
+  
+  // SEO fields
   seo_title?: string;
   seo_description?: string;
+  og_title?: string;
+  og_description?: string;
+  focus_keyword?: string;
+  meta_keywords?: string;
+  yandex_description?: string;
+  
+  // Content metrics
+  reading_time?: number;
+  word_count?: number;
+  excerpt?: string;
+  
   local_slug?: string;
 }
+
 
 export interface FullArticle {
   slug: string;

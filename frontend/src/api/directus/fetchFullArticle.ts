@@ -1,4 +1,4 @@
-// src/api/directus/fetchFullArticle.ts
+// frontend/src/api/directus/fetchFullArticle.ts
 
 import { FullArticle, ArticleBlock, fetchAuthorsForArticle, fetchCategoriesForArticle } from "./index";
 import { Lang } from "@/config/i18n";
@@ -8,10 +8,11 @@ const DIRECTUS_URL = process.env.DIRECTUS_URL;
 export async function fetchFullArticle(
   slug: string, 
   lang: Lang,
-  includesDrafts: boolean = false // NEW PARAMETER
+  includesDrafts: boolean = false
 ): Promise<FullArticle | null> {
   try {
     const fields = [
+      // Base article fields
       'slug',
       'status',
       'layout',
@@ -19,16 +20,36 @@ export async function fetchFullArticle(
       'updated_at',
       'external_link',
       'article_heading_img',
+      
+      // Rubric fields
       'rubric_slug.slug',
       'rubric_slug.nav_icon',
+      
+      // Translation fields - ENHANCED with SEO
       'translations.languages_code',
       'translations.title',
       'translations.description',
       'translations.lead',
       'translations.body.item.*',
+      
+      // SEO fields - ADDED
+      'translations.seo_title',
+      'translations.seo_description',
+      'translations.og_title',
+      'translations.og_description',
+      'translations.focus_keyword',
+      'translations.meta_keywords',
+      'translations.yandex_description',
+      
+      // Content metrics - ADDED
+      'translations.reading_time',
+      'translations.word_count',
+      'translations.exerpt', // Note: typo in DB schema
+      
+      // Local slug for alternate URLs
+      'translations.local_slug',
     ].join(',');
 
-    // Build status filter based on preview mode
     const statusFilter = includesDrafts 
       ? { status: { _in: ['published', 'draft'] } }
       : { status: { _eq: 'published' } };
@@ -52,7 +73,6 @@ export async function fetchFullArticle(
     const url = `${DIRECTUS_URL}/items/articles?filter=${encodedFilter}&fields=${fields}&deep=${encodedDeepFilter}`;
 
     const response = await fetch(url, { 
-      // In preview mode, bypass cache
       cache: includesDrafts ? 'no-store' : 'default',
       next: includesDrafts ? undefined : { 
         revalidate: 3600,
@@ -107,9 +127,23 @@ export async function fetchFullArticle(
         title: translation.title,
         description: translation.description,
         lead: translation.lead,
+        article_body: articleBody,
+        
+        // SEO fields - ADDED
         seo_title: translation.seo_title,
         seo_description: translation.seo_description,
-        article_body: articleBody
+        og_title: translation.og_title,
+        og_description: translation.og_description,
+        focus_keyword: translation.focus_keyword,
+        meta_keywords: translation.meta_keywords,
+        yandex_description: translation.yandex_description,
+        
+        // Content metrics - ADDED
+        reading_time: translation.reading_time,
+        word_count: translation.word_count,
+        excerpt: translation.exerpt, // Map typo to correct name
+        
+        local_slug: translation.local_slug,
       }],
       authors: authors.length > 0 ? authors : [{ name: 'Editorial Team', slug: '' }],
       categories: categories || [],
@@ -117,6 +151,7 @@ export async function fetchFullArticle(
 
     return fullArticle;
   } catch (error) {
+    console.error('Error in fetchFullArticle:', error);
     return null;
   }
 }

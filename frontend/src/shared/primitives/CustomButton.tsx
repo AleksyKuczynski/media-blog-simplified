@@ -1,5 +1,4 @@
-// src/main/components/Interface/CustomButton.tsx - Ultra-simplified
-'use client';
+// src/primitives/CustomButton.tsx
 
 import React from 'react';
 
