@@ -33,8 +33,8 @@ export async function fetchFullArticle(
       'translations.body.item.*',
       
       // SEO fields - ADDED
-      //'translations.seo_title',
-      //'translations.seo_description',
+      'translations.meta_title',
+      'translations.meta_description',
       'translations.og_title',
       'translations.og_description',
       'translations.focus_keyword',
