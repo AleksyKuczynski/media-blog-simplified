@@ -17,13 +17,19 @@ export const buildMetadata = (seoData: SEOData): Metadata => {
       canonical: seoData.canonicalUrl,
       languages: {
         'ru-RU': seoData.canonicalUrl,
+        'en-US': seoData.canonicalUrl,
         'x-default': seoData.canonicalUrl,
       },
     },
 
     openGraph: {
-      title: seoData.title,
-      description: seoData.description,
+      // Use OG overrides if available, otherwise use main title/description
+      title: (seoData.type === 'article' && (seoData as ArticleSEOData).ogTitle) 
+        ? (seoData as ArticleSEOData).ogTitle! 
+        : seoData.title,
+      description: (seoData.type === 'article' && (seoData as ArticleSEOData).ogDescription)
+        ? (seoData as ArticleSEOData).ogDescription!
+        : seoData.description,
       url: seoData.canonicalUrl,
       siteName: seoData.siteName,
       locale: seoData.locale || 'en_US',
@@ -33,15 +39,22 @@ export const buildMetadata = (seoData: SEOData): Metadata => {
           url: seoData.imageUrl,
           width: 1200,
           height: 630,
-          alt: seoData.title,
+          alt: (seoData.type === 'article' && (seoData as ArticleSEOData).imageAlt)
+            ? (seoData as ArticleSEOData).imageAlt!
+            : seoData.title,
         },
       ] : [],
     },
 
     twitter: {
       card: 'summary_large_image',
-      title: seoData.title,
-      description: seoData.description,
+      // Twitter can use same OG overrides
+      title: (seoData.type === 'article' && (seoData as ArticleSEOData).ogTitle)
+        ? (seoData as ArticleSEOData).ogTitle!
+        : seoData.title,
+      description: (seoData.type === 'article' && (seoData as ArticleSEOData).ogDescription)
+        ? (seoData as ArticleSEOData).ogDescription!
+        : seoData.description,
       images: seoData.imageUrl ? [seoData.imageUrl] : [],
     },
 
@@ -75,6 +88,22 @@ export const buildMetadata = (seoData: SEOData): Metadata => {
     otherMetadata['article:modified_time'] = articleData.modifiedTime;
     otherMetadata['article:tag'] = articleData.tags.join(', ');
     otherMetadata['DC.type'] = 'Text.Article';
+    
+    // Add content metrics if available - ENHANCED
+    if (articleData.wordCount) {
+      otherMetadata['article:word_count'] = articleData.wordCount.toString();
+    }
+    if (articleData.readingTime) {
+      otherMetadata['article:reading_time'] = articleData.readingTime.toString();
+    }
+    if (articleData.focusKeyword) {
+      otherMetadata['article:focus_keyword'] = articleData.focusKeyword;
+    }
+    
+    // Yandex-specific meta description
+    if (articleData.yandexDescription) {
+      otherMetadata['yandex:description'] = articleData.yandexDescription;
+    }
   }
   else if (seoData.type === 'collection') {
     const collectionData = seoData as CollectionSEOData;
@@ -119,7 +148,18 @@ export const createArticleSEOData = (
   author: string,
   section: string,
   tags: readonly string[],
-  imageUrl?: string
+  imageUrl?: string,
+  
+  // OG overrides - ENHANCED
+  ogTitle?: string,
+  ogDescription?: string,
+  imageAlt?: string,
+  
+  // Content metrics - ENHANCED
+  wordCount?: number,
+  readingTime?: number,
+  focusKeyword?: string,
+  yandexDescription?: string
 ): ArticleSEOData => ({
   type: 'article',
   title,
@@ -134,7 +174,19 @@ export const createArticleSEOData = (
   author,
   section,
   tags,
+  
+  // OG overrides
+  ogTitle,
+  ogDescription,
+  imageAlt,
+  
+  // Content metrics
+  wordCount,
+  readingTime,
+  focusKeyword,
+  yandexDescription,
 });
+
 
 export const createCollectionSEOData = (
   title: string,

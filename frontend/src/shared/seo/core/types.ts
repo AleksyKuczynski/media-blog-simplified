@@ -28,6 +28,17 @@ export interface ArticleSEOData extends BaseSEOData {
   author: string;
   section: string;
   tags: readonly string[];
+  
+  // OG overrides
+  ogTitle?: string;
+  ogDescription?: string;
+  imageAlt?: string;
+  
+  // Content metrics
+  wordCount?: number;
+  readingTime?: number;
+  focusKeyword?: string;
+  yandexDescription?: string;
 }
 
 export interface CollectionSEOData extends BaseSEOData {

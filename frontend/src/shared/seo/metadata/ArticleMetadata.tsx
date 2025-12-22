@@ -1,4 +1,5 @@
 // frontend/src/shared/seo/metadata/ArticleMetadata.tsx
+
 import { Metadata } from 'next';
 import { Dictionary } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
@@ -14,10 +15,9 @@ import { getOptimizedImageUrl } from '@/lib/utils/imageOptimization';
 export interface ArticleMetadataProps {
   dictionary: Dictionary;
   articleData: {
+    // Basic fields
     title: string;
-    seoTitle?: string;
     description?: string;
-    seoDescription?: string;
     lead?: string;
     slug: string;
     rubricSlug: string;
@@ -26,7 +26,21 @@ export interface ArticleMetadataProps {
     publishedAt: string;
     updatedAt: string | null;
     imageId?: string | null;
+    imageAlt?: string;
     tags?: string[];
+    
+    // SEO fields
+    seoTitle?: string;
+    seoDescription?: string;
+    ogTitle?: string;           
+    ogDescription?: string;     
+    focusKeyword?: string;      
+    metaKeywords?: string;      
+    yandexDescription?: string; 
+    
+    // Content metrics
+    readingTime?: number;       
+    wordCount?: number;         
   };
 }
 
@@ -36,9 +50,7 @@ export const generateArticleMetadata = ({
 }: ArticleMetadataProps): Metadata => {
   const { 
     title, 
-    seoTitle, 
     description, 
-    seoDescription, 
     lead, 
     slug, 
     rubricSlug,
@@ -46,33 +58,66 @@ export const generateArticleMetadata = ({
     author, 
     publishedAt, 
     updatedAt, 
-    imageId, 
-    tags = [] 
+    imageId,
+    imageAlt,
+    tags = [],
+    
+    // SEO fields
+    seoTitle,
+    seoDescription,
+    ogTitle,
+    ogDescription,
+    focusKeyword,
+    metaKeywords,
+    yandexDescription,
+    
+    // Content metrics
+    readingTime,
+    wordCount,
   } = articleData;
 
   const safeDates = getSafeArticleDates(publishedAt, updatedAt);
+  
+  // Title hierarchy: seo_title > title
   const finalTitle = seoTitle || title;
+  
+  // Description hierarchy: seo_description > description > lead
   const finalDescription = seoDescription || description || lead || 
     processTemplate(dictionary.content.templates.publishedIn, {
       rubric: rubricName || rubricSlug,
     });
+
+  // OpenGraph overrides (different from meta title/description)
+  const finalOgTitle = ogTitle || finalTitle;
+  const finalOgDescription = ogDescription || finalDescription;
 
   const canonicalUrl = `${dictionary.seo.site.url}/ru/${rubricSlug}/${slug}`;
   const finalImageUrl = imageId 
     ? getOptimizedImageUrl(imageId, 'og')
     : `${dictionary.seo.site.url}/og-default.jpg`;
 
-  const baseKeywords = dictionary.seo.keywords.base;
-  const rubricKeywords = dictionary.seo.keywords.articles;
-  const tagKeywords = tags.length > 0 ? tags.slice(0, 5).join(', ') : '';
-  
-  const keywords = [
-    finalTitle,
-    rubricName || rubricSlug,
-    tagKeywords,
-    rubricKeywords,
-    baseKeywords,
-  ].filter(Boolean).join(', ');
+  // Keywords hierarchy: meta_keywords > focus_keyword > generated
+  let keywords: string;
+  if (metaKeywords) {
+    // Use custom meta_keywords as-is
+    keywords = metaKeywords;
+  } else {
+    // Generate keywords from available data
+    const baseKeywords = dictionary.seo.keywords.base;
+    const rubricKeywords = dictionary.seo.keywords.articles;
+    const tagKeywords = tags.length > 0 ? tags.slice(0, 5).join(', ') : '';
+    
+    const keywordParts = [
+      focusKeyword,              // Priority: focus keyword first
+      finalTitle,
+      rubricName || rubricSlug,
+      tagKeywords,
+      rubricKeywords,
+      baseKeywords,
+    ].filter(Boolean);
+    
+    keywords = keywordParts.join(', ');
+  }
 
   const seoData = createArticleSEOData(
     finalTitle,
@@ -85,7 +130,18 @@ export const generateArticleMetadata = ({
     author,
     rubricName || rubricSlug,
     tags,
-    finalImageUrl
+    finalImageUrl,
+    
+    // Add OG overrides - ENHANCED
+    finalOgTitle !== finalTitle ? finalOgTitle : undefined,
+    finalOgDescription !== finalDescription ? finalOgDescription : undefined,
+    imageAlt,
+    
+    // Add content metrics - ENHANCED
+    wordCount,
+    readingTime,
+    focusKeyword,
+    yandexDescription
   );
 
   if (!validateSEOData(seoData)) {

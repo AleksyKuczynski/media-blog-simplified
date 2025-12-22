@@ -41,14 +41,11 @@ export async function generateMetadata({
   return safeGenerateMetadata(params, 'article', async (lang, dictionary, resolvedParams) => {
     const { rubric, slug } = resolvedParams;
 
-    // Resolve slug first
     const articleSlug = await resolveArticleSlug(slug, lang);
     if (!articleSlug) {
-      // Neither main slug nor local_slug found
       throw new Error('Article not found');
     }
     
-    // Check for preview mode - read from headers/cookies
     const inPreview = false; // TODO: Implement proper preview detection
     
     const article = await fetchFullArticle(articleSlug, lang, inPreview);
@@ -69,13 +66,10 @@ export async function generateMetadata({
       imageMetadata = parseImageMetadata(imageData, lang);
     }
 
-    
-
     const articleData = {
+      // Basic fields
       title: translation.title,
-      seoTitle: translation.seo_title,
       description: translation.description,
-      seoDescription: translation.seo_description,
       lead: translation.lead,
       slug: slug,
       rubricSlug: rubric,
@@ -84,7 +78,21 @@ export async function generateMetadata({
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageId: article.article_heading_img || null,
+      imageAlt: imageMetadata?.altText,
       tags: article.categories?.map(cat => cat.name) || [rubric],
+      
+      // SEO fields - ENHANCED
+      seoTitle: translation.seo_title,
+      seoDescription: translation.seo_description,
+      ogTitle: translation.og_title,
+      ogDescription: translation.og_description,
+      focusKeyword: translation.focus_keyword,
+      metaKeywords: translation.meta_keywords,
+      yandexDescription: translation.yandex_description,
+      
+      // Content metrics - ENHANCED
+      readingTime: translation.reading_time,
+      wordCount: translation.word_count,
     };
 
     const metadata = generateArticleMetadata({
@@ -157,16 +165,19 @@ export default async function ArticlePage({
     const processedContent = await processContent(rawContent, lang);
     const { chunks: contentChunks, toc: tocItems } = processedContent;
 
-    const authorsWithDetails = article.authors?.map(author => ({
-      name: author.name || 'EventForMe Editorial',
-      slug: author.slug || '',
-      avatar: author.avatar || '',
-      bio: '',
-    }));
+    // fetchAuthorsForArticle already returns AuthorDetails with all fields
+    const authorsWithDetails = article.authors || [];
 
     // Get rubric name from rubricBasics
     const rubricDetails = rubricBasics.find(r => r.slug === rubric);
     const rubricName = rubricDetails?.name || rubric;
+
+    // Fetch image metadata if article has heading image
+    let imageMetadata = null;
+    if (article.article_heading_img) {
+      const imageData = await fetchAssetMetadata(article.article_heading_img);
+      imageMetadata = parseImageMetadata(imageData, lang);
+    }
 
     // Call enhanceArticleForBreadcrumbs with correct parameters
     const articleBreadcrumbData = enhanceArticleForBreadcrumbs(
@@ -179,22 +190,29 @@ export default async function ArticlePage({
 
     // Schema data
     const articleSchemaData = {
-      title: translation.title,
-      description: translation.description || translation.lead,
+      title: translation.og_title || translation.seo_title || translation.title,
+      description: translation.og_description || translation.seo_description || translation.description || translation.lead,
       slug: articleSlug,
       rubricSlug: rubric,
       rubricName: rubricName,
       author: {
-        name: article.authors?.[0]?.name || 'EventForMe Editorial',
-        slug: article.authors?.[0]?.slug,
+        name: authorsWithDetails[0]?.name || 'EventForMe Editorial',
+        slug: authorsWithDetails[0]?.slug,
+        credentials: authorsWithDetails[0]?.credentials,
+        telegram_url: authorsWithDetails[0]?.telegram_url,
+        expertise_areas: authorsWithDetails[0]?.expertise_areas,
       },
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageUrl: article.article_heading_img 
         ? `${dictionary.seo.site.url}/assets/${article.article_heading_img}`
         : undefined,
+      imageAlt: imageMetadata?.altText,
       tags: article.categories?.map(cat => cat.name) || [],
-      wordCount: rawContent.split(/\s+/).length,
+      
+      // Content metrics - ENHANCED
+      wordCount: translation.word_count,
+      readingTime: translation.reading_time,
     };
 
     const rubricData = {
