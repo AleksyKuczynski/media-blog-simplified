@@ -24,6 +24,7 @@ import CategoriesAndRubricSection from './_components/navigation/CategoriesAndRu
 import { processContent } from './_components/markdown/processContent';
 import ArticleContentRenderer from './_components/content/ArticleContentRenderer';
 import { parseImageMetadata } from '@/lib/utils/bilingualParser';
+import Section from '@/features/layout/Section';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -253,7 +254,13 @@ export default async function ArticlePage({
           dictionary={dictionary}
         />
         
-        <article itemScope itemType="https://schema.org/Article" className="container overflow-x-hidden max-w-7xl mx-auto px-2 md:px-4">
+        <Section 
+          className="container overflow-x-hidden max-w-7xl mx-auto px-2 md:px-4 lg:pb-16"
+          isOdd
+          as="article"
+          itemScope
+          itemType="https://schema.org/Article"
+        >
           <Suspense fallback={
             <div className="text-center py-8">
               <div className="text-lg">{dictionary.common.status.loading}</div>
@@ -302,29 +309,33 @@ export default async function ArticlePage({
               dictionary={dictionary}
             />
 
-            {authorsWithDetails.length > 0 && (
-              <AuthorsSection 
-                authors={authorsWithDetails}
-                dictionary={dictionary}
-              />
-            )}
-
-            <QuickNavigation 
-              lang={lang}
-              dictionary={dictionary}
-            />
-
             <ScrollToTopButton />
           </Suspense>
-        </article>
+        </Section>
 
-        <RelatedArticles
-          id="related-articles-section"
-          currentArticleSlug={articleSlug}
-          articleCategories={categoriesData}
-          lang={lang}
-          dictionary={dictionary}
-        />
+        <Section
+          as="div"
+        >
+          <RelatedArticles
+            id="related-articles-section"
+            currentArticleSlug={articleSlug}
+            articleCategories={categoriesData}
+            lang={lang}
+            dictionary={dictionary}
+          />
+
+          <QuickNavigation 
+            lang={lang}
+            dictionary={dictionary}
+          />
+
+          {authorsWithDetails.length > 0 && (
+            <AuthorsSection 
+              authors={authorsWithDetails}
+              dictionary={dictionary}
+            />
+          )}
+        </Section>
       </>
     );
 

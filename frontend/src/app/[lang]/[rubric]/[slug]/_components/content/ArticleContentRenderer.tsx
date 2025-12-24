@@ -32,7 +32,7 @@ export default function ArticleContentRenderer({
       case 'blockquote':
         return chunk.blockquoteProps ? (
           // Blockquotes escape prose styling for proper theme control
-          <div key={index} className="not-prose">
+          <div key={index}>
             <CustomBlockquote 
               blockquoteProps={chunk.blockquoteProps} 
               lang={lang} 

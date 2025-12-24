@@ -1,5 +1,6 @@
 // src/features/article-display/styles.ts
 
+import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
 import { cn } from '@/lib/utils/cn';
 
 // ================================================================
@@ -8,10 +9,10 @@ import { cn } from '@/lib/utils/cn';
 
 export const RELATED_ARTICLES_STYLES = {
   // Section container
-  section: 'mt-12 pt-8 border-t border-gray-200',
+  section: '',
   
   // Heading
-  heading: 'text-2xl font-bold mb-6 text-on-sf max-w-2xl mx-auto',
+  heading: 'text-4xl md:text-7xl uppercase font-bold mb-3 md:mb-6 text-sf-cont',
 } as const;
 
 export const RELATED_CAROUSEL_STYLES = {
@@ -19,34 +20,33 @@ export const RELATED_CAROUSEL_STYLES = {
   wrapper: cn(
     'relative group',
     'w-screen', // Full viewport width
-    '-mx-4 sm:-mx-6 2xl:-mx-8', // Negative margins to break out of container padding
-    'px-4 sm:px-6 2xl:px-8' // Add padding back for content
   ),
   
   // Scroll container
   scrollContainer: cn(
     'flex gap-4 overflow-x-auto scrollbar-hide',
     'snap-x snap-mandatory scroll-smooth',
-    'py-2'
+        'px-4 sm:px-6 2xl:px-8' // Add padding back for content
+
   ),
   
   // Individual card wrapper
   cardWrapper: cn(
-    'flex-none w-[280px] sm:w-[300px] lg:w-[320px]',
+    'flex-none w-[200px] sm:w-[220px] lg:w-[240px]',
     'snap-start'
   ),
   
   // Left gradient indicator
   gradientLeft: cn(
     'absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-10',
-    'bg-gradient-to-r from-sf to-transparent',
+    'bg-gradient-to-r from-sf-hst to-transparent',
     'transition-opacity duration-200'
   ),
   
   // Right gradient indicator
   gradientRight: cn(
     'absolute right-0 top-0 bottom-0 w-8 pointer-events-none z-10',
-    'bg-gradient-to-l from-sf to-transparent',
+    'bg-gradient-to-l from-sf-hst to-transparent',
     'transition-opacity duration-200'
   ),
   
@@ -75,13 +75,13 @@ export const RELATED_ARTICLE_STYLES = {
 
 export const RELATED_CARD_STYLES = {
   // Card container
-  container: 'group block w-full',
+  container: 'group block w-full h-full',
   
   // Card structure
-  card: 'bg-sf-cont rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col',
+  card: 'bg-sf-cont rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col',
   
   // Image container
-  imageContainer: 'relative w-full aspect-video overflow-hidden bg-sf-hi',
+  imageContainer: `relative w-full ${IMAGE_RATIO_STRING} overflow-hidden bg-sf-hi`,
   
   // Image element
   image: 'object-cover group-hover:scale-110 transition-transform duration-300',
@@ -90,10 +90,10 @@ export const RELATED_CARD_STYLES = {
   content: 'p-4 flex flex-col flex-grow',
   
   // Title
-  title: 'text-base font-semibold line-clamp-2 mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200 flex-grow',
+  title: 'text-base font-semibold line-clamp-3 md:line-clamp-4 mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200 flex-grow',
   
   // Date
-  date: 'text-xs text-on-sf-var mt-auto',
+  date: 'max-sm:hidden text-xs text-on-sf-var mt-auto',
 } as const;
 
 export const RELATED_CARD_SKELETON_STYLES = {
