@@ -293,9 +293,8 @@ export const NAVIGATION_STYLES = {
     relatedLinks: {
     // QuickNavigation
     quickNav: {
-      container: 'w-full max-w-2xl mx-auto py-4 border-b border-ol-var',
+      container: 'w-full py-4 px-2 md:px-4',
       nav: 'flex flex-wrap gap-x-4 gap-y-2',
-      link: 'text-on-sf-var hover:text-on-sf hover:underline transition-colors',
     },
     
     // CategoriesAndRubricSection - Combined layout

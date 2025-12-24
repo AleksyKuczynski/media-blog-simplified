@@ -41,6 +41,12 @@ export default function QuickNavigationSchema({
           url: `${baseUrl}/${lang}/rubrics`,
           description: dictionary.navigation.descriptions.rubrics,
         },
+        {
+          '@type': 'SiteNavigationElement',
+          name: dictionary.sections.labels.authors,
+          url: `${baseUrl}/${lang}/authors`,
+          description: dictionary.navigation.descriptions.authors,
+        },
       ],
     };
 

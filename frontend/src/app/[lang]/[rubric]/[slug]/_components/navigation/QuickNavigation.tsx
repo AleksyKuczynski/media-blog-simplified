@@ -1,30 +1,9 @@
 // app/[lang]/[rubric]/[slug]/_components/navigation/QuickNavigation.tsx
-/**
- * Article Navigation - Quick Site Links
- * 
- * Server component with links to main site sections.
- * Provides context and exit paths from article page.
- * 
- * SEO: Implements SiteNavigationElement schema.
- * 
- * Dependencies:
- * - article.styles.ts (NAVIGATION_STYLES.relatedLinks.quickNav)
- * - @/main/lib/dictionary (Dictionary, Lang)
- * 
- * @param lang - Language code for URL construction
- * @param dictionary - Translations
- */
 
 import Link from 'next/link';
 import { Dictionary, Lang } from '@/config/i18n';
 import { NAVIGATION_STYLES } from '../article.styles';
 
-/**
- * Quick navigation links for article page
- * Static SSR component - no props needed
- * Provides internal site structure links for SEO and UX
- * Implements SiteNavigationElement schema
- */
 export default function QuickNavigation({
   lang,
   dictionary
@@ -33,13 +12,15 @@ export default function QuickNavigation({
   dictionary: Dictionary 
 }) {
   const styles = NAVIGATION_STYLES.relatedLinks.quickNav;
+  const categoryStyles = NAVIGATION_STYLES.relatedLinks.categoriesAndRubric;
   
   const articlesUrl = `/${lang}/articles`;
   const rubricsUrl = `/${lang}/rubrics`;
+  const authorsUrl = `/${lang}/authors`;
   
-  // Generate aria labels
   const articlesLabel = dictionary.navigation.descriptions.articles;
   const rubricsLabel = dictionary.navigation.descriptions.rubrics;
+  const authorsLabel = dictionary.navigation.descriptions.authors;
   
   const headingId = 'quick-nav-heading';
 
@@ -52,7 +33,7 @@ export default function QuickNavigation({
       <nav className={styles.nav} aria-label={dictionary.sections.home.quickNavigation}>
         <Link 
           href={articlesUrl}
-          className={styles.link}
+          className={categoryStyles.categoryTag}
           aria-label={articlesLabel}
         >
           {dictionary.sections.labels.articles}
@@ -60,10 +41,18 @@ export default function QuickNavigation({
         
         <Link 
           href={rubricsUrl}
-          className={styles.link}
+          className={categoryStyles.categoryTag}
           aria-label={rubricsLabel}
         >
           {dictionary.sections.labels.rubrics}
+        </Link>
+
+        <Link 
+          href={authorsUrl}
+          className={categoryStyles.categoryTag}
+          aria-label={authorsLabel}
+        >
+          {dictionary.sections.labels.authors}
         </Link>
       </nav>
     </section>
