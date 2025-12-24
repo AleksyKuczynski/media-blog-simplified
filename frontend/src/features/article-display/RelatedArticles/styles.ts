@@ -12,14 +12,14 @@ export const RELATED_ARTICLES_STYLES = {
   section: '',
   
   // Heading
-  heading: 'text-4xl md:text-7xl uppercase font-bold mb-3 md:mb-6 text-sf-cont',
+  heading: 'text-4xl md:text-7xl uppercase font-bold md:mb-3 xl:mb-6 text-sf-cont',
 } as const;
 
 export const RELATED_CAROUSEL_STYLES = {
   // Outer wrapper
   wrapper: cn(
     'relative group',
-    'w-screen', // Full viewport width
+    'w-full',
   ),
   
   // Scroll container
@@ -27,6 +27,7 @@ export const RELATED_CAROUSEL_STYLES = {
     'flex gap-4 overflow-x-auto scrollbar-hide',
     'snap-x snap-mandatory scroll-smooth',
     'px-4 sm:px-6 2xl:px-8',
+    ' py-5', // Vertical padding to show shadows - should be equal to vertical margin of gradients
     'scroll-px-4 sm:scroll-px-6 2xl:scroll-px-8' // Scroll snap padding (matches visual padding)
   ),
   
@@ -40,14 +41,16 @@ export const RELATED_CAROUSEL_STYLES = {
   gradientLeft: cn(
     'absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-10',
     'bg-gradient-to-r from-sf-hst to-transparent',
-    'transition-opacity duration-200'
+    'transition-opacity duration-200',
+    'my-5' // Vertical margin to compensating scrollContainer vertical padding
   ),
   
   // Right gradient indicator
   gradientRight: cn(
     'absolute right-0 top-0 bottom-0 w-8 pointer-events-none z-10',
     'bg-gradient-to-l from-sf-hst to-transparent',
-    'transition-opacity duration-200'
+    'transition-opacity duration-200',
+    'my-5' // Vertical margin to compensating scrollContainer vertical padding
   ),
   
   // Navigation buttons
@@ -75,16 +78,16 @@ export const RELATED_ARTICLE_STYLES = {
 
 export const RELATED_CARD_STYLES = {
   // Card container
-  container: 'group block w-full h-full',
+  container: 'group block w-full h-full rounded-2xl shadow-md hover:shadow-lg transition-all duration-300',
   
   // Card structure
-  card: 'bg-sf-cont rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 h-full flex flex-col',
+  card: 'bg-sf-cont rounded-2xl overflow-hidden h-full flex flex-col',
   
   // Image container
   imageContainer: `relative w-full ${IMAGE_RATIO_STRING} overflow-hidden bg-sf-hi`,
   
   // Image element
-  image: 'object-cover group-hover:scale-110 transition-transform duration-300',
+  image: 'object-cover',
   
   // Content container
   content: 'p-4 flex flex-col flex-grow',

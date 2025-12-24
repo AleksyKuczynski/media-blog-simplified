@@ -13,7 +13,7 @@ export const SECTION_STYLES = {
     odd: 'bg-sf',
     even: 'bg-sf-hst',
   },
-  container: 'container mx-auto',
+  container: 'container-fluid mx-auto',
   header: {
     wrapper: 'mb-8',
     title: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 pl-1 text-sf-hst',
