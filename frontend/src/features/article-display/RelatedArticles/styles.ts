@@ -26,8 +26,8 @@ export const RELATED_CAROUSEL_STYLES = {
   scrollContainer: cn(
     'flex gap-4 overflow-x-auto scrollbar-hide',
     'snap-x snap-mandatory scroll-smooth',
-        'px-4 sm:px-6 2xl:px-8' // Add padding back for content
-
+    'px-4 sm:px-6 2xl:px-8',
+    'scroll-px-4 sm:scroll-px-6 2xl:scroll-px-8' // Scroll snap padding (matches visual padding)
   ),
   
   // Individual card wrapper
