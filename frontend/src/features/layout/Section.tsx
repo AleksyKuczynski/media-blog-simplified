@@ -8,6 +8,7 @@ interface SectionProps {
   className?: string;
   isOdd?: boolean;
   title?: string;
+  titleLevel?: 'h1' | 'h2';
   ariaLabel?: string;
   id?: string;
   as?: 'section' | 'article' | 'aside' | 'nav' | 'div';
@@ -21,6 +22,7 @@ export default function Section({
   className = '', 
   isOdd = false,
   title,
+  titleLevel = 'h2',
   ariaLabel,
   id,
   as: Component = 'section',
@@ -35,6 +37,11 @@ export default function Section({
     className
   );
 
+  const titleClasses = cn(
+    SECTION_STYLES.header.title.base,
+    isOdd ? SECTION_STYLES.header.title.odd : SECTION_STYLES.header.title.even
+  );
+
   const sectionProps = {
     className: sectionClasses,
     ...(ariaLabel && { 'aria-label': ariaLabel }),
@@ -45,14 +52,16 @@ export default function Section({
     ...props
   };
 
+  const TitleTag = titleLevel;
+
   return (
     <Component {...sectionProps}>
       <div className={SECTION_STYLES.container}>
         {title && (
           <header className={SECTION_STYLES.header.wrapper}>
-            <h2 className={SECTION_STYLES.header.title}>
+            <TitleTag className={titleClasses}>
               {title}
-            </h2>
+            </TitleTag>
           </header>
         )}
         {children}

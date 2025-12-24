@@ -16,7 +16,11 @@ export const SECTION_STYLES = {
   container: 'container-fluid mx-auto',
   header: {
     wrapper: 'mb-8',
-    title: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 pl-1 text-sf-hst',
+    title: {
+      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 pl-1',
+      odd: 'text-sf bg-sf-hst',
+      even: 'text-sf-hst bg-sf',
+    },
   },
 } as const;
 

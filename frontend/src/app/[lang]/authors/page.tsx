@@ -43,12 +43,11 @@ export default async function AllAuthorsPage({
         />
       </Suspense>
       
-      {/* ✅ FIXED: Added proper H1 tag for SEO */}
-      <Section>
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-8 text-center">
-          {dictionary.sections.authors.ourAuthors}
-        </h1>
-        
+      <Section
+        title={dictionary.sections.authors.ourAuthors}
+        titleLevel="h1"
+        isOdd={false}
+      >
         <Suspense fallback={
           <Section>
             <div className="mb-8 text-center">
