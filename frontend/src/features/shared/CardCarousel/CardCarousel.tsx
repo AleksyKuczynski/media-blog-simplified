@@ -1,13 +1,17 @@
-// src/features/article-display/RelatedArticles/RelatedArticlesCarousel.tsx
+// src/features/shared/CardCarousel/CardCarousel.tsx
 
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import RelatedArticleCard, { RelatedArticleCardSkeleton } from './RelatedArticleCard';
-import { Lang } from '@/config/i18n';
-import { RELATED_CAROUSEL_STYLES } from './styles';
+import { Lang, Dictionary } from '@/config/i18n';
+import { CAROUSEL_STYLES } from '../styles';
+import ArticleCarouselCard from '../cards/ArticleCarouselCard';
+import RubricCarouselCard from '../cards/RubricCarouselCard';
+import AuthorCarouselCard from '../cards/AuthorCarouselCard';
 
-export interface CarouselArticle {
+// Card data types
+export interface ArticleCardData {
+  type: 'article';
   slug: string;
   title: string;
   publishedAt: string;
@@ -16,17 +20,40 @@ export interface CarouselArticle {
   formattedDate: string;
 }
 
-interface RelatedArticlesCarouselProps {
-  articles: CarouselArticle[];
+export interface RubricCardData {
+  type: 'rubric';
+  slug: string;
+  name: string;
+  description?: string;
+  iconSrc?: string;
+  url: string;
+  articleCount?: number;
+}
+
+export interface AuthorCardData {
+  type: 'author';
+  slug: string;
+  name: string;
+  bio?: string;
+  avatarSrc?: string;
+  url: string;
+}
+
+type CardData = ArticleCardData | RubricCardData | AuthorCardData;
+
+interface CardCarouselProps {
+  cards: CardData[];
   lang: Lang;
+  dictionary: Dictionary;
   isLoading?: boolean;
 }
 
-export default function RelatedArticlesCarousel({
-  articles,
+export default function CardCarousel({
+  cards,
   lang,
+  dictionary,
   isLoading = false
-}: RelatedArticlesCarouselProps) {
+}: CardCarouselProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -48,7 +75,7 @@ export default function RelatedArticlesCarousel({
     updateScrollButtons();
     container.addEventListener('scroll', updateScrollButtons);
     return () => container.removeEventListener('scroll', updateScrollButtons);
-  }, [articles]);
+  }, [cards]);
 
   useEffect(() => {
     const handleResize = () => updateScrollButtons();
@@ -60,7 +87,7 @@ export default function RelatedArticlesCarousel({
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const cardWidth = 300;
+    const cardWidth = 320; // Average card width
     const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
 
     container.scrollBy({
@@ -71,30 +98,30 @@ export default function RelatedArticlesCarousel({
 
   if (isLoading) {
     return (
-      <div className={RELATED_CAROUSEL_STYLES.scrollContainer}>
+      <div className={CAROUSEL_STYLES.scrollContainer}>
         {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className={RELATED_CAROUSEL_STYLES.cardWrapper}>
-            <RelatedArticleCardSkeleton />
+          <div key={index} className={CAROUSEL_STYLES.cardWrapper}>
+            <div className="w-80 h-48 bg-sf-hi rounded-lg animate-pulse" />
           </div>
         ))}
       </div>
     );
   }
 
-  if (!articles || articles.length === 0) {
+  if (!cards || cards.length === 0) {
     return null;
   }
 
   return (
     <div 
-      className={RELATED_CAROUSEL_STYLES.wrapper}
+      className={CAROUSEL_STYLES.wrapper}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Left gradient */}
       {canScrollLeft && (
         <div 
-          className={RELATED_CAROUSEL_STYLES.gradientLeft}
+          className={CAROUSEL_STYLES.gradientLeft}
           style={{ opacity: canScrollLeft ? 1 : 0 }}
           aria-hidden="true"
         />
@@ -103,29 +130,52 @@ export default function RelatedArticlesCarousel({
       {/* Scroll container */}
       <div
         ref={scrollContainerRef}
-        className={RELATED_CAROUSEL_STYLES.scrollContainer}
+        className={CAROUSEL_STYLES.scrollContainer}
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
         }}
         role="list"
-        aria-label="Related articles carousel"
+        aria-label="Card carousel"
       >
-        {articles.map((article) => (
+        {cards.map((card) => (
           <div 
-            key={article.slug} 
+            key={`${card.type}-${card.slug}`}
             role="listitem"
-            className={RELATED_CAROUSEL_STYLES.cardWrapper}
+            className={CAROUSEL_STYLES.cardWrapper}
           >
-            <RelatedArticleCard
-              slug={article.slug}
-              title={article.title}
-              publishedAt={article.publishedAt}
-              imageSrc={article.imageSrc}
-              rubricSlug={article.rubricSlug}
-              formattedDate={article.formattedDate}
-              lang={lang}
-            />
+            {card.type === 'article' && (
+              <ArticleCarouselCard
+                slug={card.slug}
+                title={card.title}
+                publishedAt={card.publishedAt}
+                imageSrc={card.imageSrc}
+                rubricSlug={card.rubricSlug}
+                formattedDate={card.formattedDate}
+                lang={lang}
+              />
+            )}
+            {card.type === 'rubric' && (
+              <RubricCarouselCard
+                slug={card.slug}
+                name={card.name}
+                description={card.description}
+                iconSrc={card.iconSrc}
+                url={card.url}
+                articleCount={card.articleCount}
+                dictionary={dictionary}
+              />
+            )}
+            {card.type === 'author' && (
+              <AuthorCarouselCard
+                slug={card.slug}
+                name={card.name}
+                bio={card.bio}
+                avatarSrc={card.avatarSrc}
+                url={card.url}
+                dictionary={dictionary}
+              />
+            )}
           </div>
         ))}
       </div>
@@ -133,7 +183,7 @@ export default function RelatedArticlesCarousel({
       {/* Right gradient */}
       {canScrollRight && (
         <div 
-          className={RELATED_CAROUSEL_STYLES.gradientRight}
+          className={CAROUSEL_STYLES.gradientRight}
           style={{ opacity: canScrollRight ? 1 : 0 }}
           aria-hidden="true"
         />
@@ -143,13 +193,13 @@ export default function RelatedArticlesCarousel({
       {canScrollLeft && (
         <button
           onClick={() => scroll('left')}
-          className={`${RELATED_CAROUSEL_STYLES.navButton.base} ${RELATED_CAROUSEL_STYLES.navButton.left}`}
+          className={`${CAROUSEL_STYLES.navButton.base} ${CAROUSEL_STYLES.navButton.left}`}
           style={{ opacity: isHovered ? 1 : 0 }}
-          aria-label="Scroll to previous articles"
+          aria-label="Scroll to previous items"
           type="button"
         >
           <svg 
-            className={RELATED_CAROUSEL_STYLES.navButton.icon}
+            className={CAROUSEL_STYLES.navButton.icon}
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
@@ -163,13 +213,13 @@ export default function RelatedArticlesCarousel({
       {canScrollRight && (
         <button
           onClick={() => scroll('right')}
-          className={`${RELATED_CAROUSEL_STYLES.navButton.base} ${RELATED_CAROUSEL_STYLES.navButton.right}`}
+          className={`${CAROUSEL_STYLES.navButton.base} ${CAROUSEL_STYLES.navButton.right}`}
           style={{ opacity: isHovered ? 1 : 0 }}
-          aria-label="Scroll to next articles"
+          aria-label="Scroll to next items"
           type="button"
         >
           <svg 
-            className={RELATED_CAROUSEL_STYLES.navButton.icon}
+            className={CAROUSEL_STYLES.navButton.icon}
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"

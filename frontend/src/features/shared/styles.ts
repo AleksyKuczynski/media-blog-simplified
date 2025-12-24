@@ -1,21 +1,13 @@
-// src/features/article-display/styles.ts
+// src/features/shared/CardCarousel/styles.ts
 
 import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
 import { cn } from '@/lib/utils/cn';
 
 // ================================================================
-// RELATED ARTICLES STYLES
+// CAROUSEL WRAPPER STYLES (from RELATED_CAROUSEL_STYLES)
 // ================================================================
 
-export const RELATED_ARTICLES_STYLES = {
-  // Section container
-  section: '',
-  
-  // Heading
-  heading: 'text-4xl md:text-7xl uppercase font-bold md:mb-3 xl:mb-6 text-sf-cont',
-} as const;
-
-export const RELATED_CAROUSEL_STYLES = {
+export const CAROUSEL_STYLES = {
   // Outer wrapper
   wrapper: cn(
     'relative group',
@@ -70,13 +62,11 @@ export const RELATED_CAROUSEL_STYLES = {
   },
 } as const;
 
+// ================================================================
+// ARTICLE CAROUSEL CARD STYLES (from RELATED_CARD_STYLES)
+// ================================================================
 
-export const RELATED_ARTICLE_STYLES = {
-  section: 'mt-12 pt-8 border-t border-gray-200',
-  h2: 'text-2xl font-bold mb-6 text-on-sf'
-} as const;
-
-export const RELATED_CARD_STYLES = {
+export const ARTICLE_CAROUSEL_CARD_STYLES = {
   // Card container
   container: 'group block w-full h-full rounded-2xl shadow-md hover:shadow-lg transition-all duration-300',
   
@@ -99,12 +89,37 @@ export const RELATED_CARD_STYLES = {
   date: 'max-sm:hidden text-xs text-on-sf-var mt-auto',
 } as const;
 
-export const RELATED_CARD_SKELETON_STYLES = {
-  container: RELATED_CARD_STYLES.container,
-  card: cn(RELATED_CARD_STYLES.card, 'animate-pulse'),
-  imageContainer: cn(RELATED_CARD_STYLES.imageContainer, 'bg-sf-hi'),
-  content: RELATED_CARD_STYLES.content,
-  title: 'h-4 bg-on-sf/10 rounded mb-2',
-  titleSecond: 'h-4 w-3/4 bg-on-sf/10 rounded mb-2',
-  date: 'h-3 w-20 bg-on-sf/10 rounded',
+// ================================================================
+// RUBRIC CAROUSEL CARD STYLES (horizontal, wider)
+// ================================================================
+
+export const RUBRIC_CAROUSEL_CARD_STYLES = {
+  container: 'block w-[320px] group',
+  card: 'h-full bg-sf-cont rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  content: 'p-4 flex items-center gap-4',
+  iconWrapper: 'relative w-12 h-12 flex-shrink-0 rounded-full overflow-hidden bg-sf-hi',
+  iconImage: 'object-contain',
+  iconFallback: 'w-full h-full flex items-center justify-center bg-gradient-to-br from-pr-cont to-pr-fix',
+  iconFallbackText: 'text-on-pr-cont text-xl font-bold',
+  textContent: 'flex-1 min-w-0',
+  name: 'font-semibold text-on-sf group-hover:text-pr-cont transition-colors text-sm truncate',
+  description: 'text-xs text-on-sf-var line-clamp-2 mt-1',
+  articleCount: 'text-xs text-on-sf-var mt-1',
+} as const;
+
+// ================================================================
+// AUTHOR CAROUSEL CARD STYLES (horizontal, medium)
+// ================================================================
+
+export const AUTHOR_CAROUSEL_CARD_STYLES = {
+  container: 'block w-[300px] group',
+  card: 'h-full bg-sf-cont rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  content: 'p-4 flex items-center gap-4',
+  avatarWrapper: 'relative w-14 h-14 flex-shrink-0 rounded-full overflow-hidden bg-sf-hi',
+  avatarImage: 'object-cover',
+  avatarFallback: 'w-full h-full flex items-center justify-center bg-gradient-to-br from-pr-cont to-pr-fix',
+  avatarFallbackText: 'text-on-pr-cont text-xl font-bold',
+  textContent: 'flex-1 min-w-0',
+  name: 'font-semibold text-on-sf group-hover:text-pr-cont transition-colors text-sm truncate',
+  bio: 'text-xs text-on-sf-var line-clamp-2 mt-1',
 } as const;

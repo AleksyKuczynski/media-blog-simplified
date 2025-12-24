@@ -4,14 +4,13 @@ import SearchTips from '@/features/search/page/SearchTips';
 import SearchBarForm from '@/features/search/page/SearchBarForm';
 import SearchResults from '@/features/search/page/SearchResults';
 import Section from '@/features/layout/Section';
-import { RelatedArticlesCarousel } from '@/features/article-display/RelatedArticles';
 import { getDictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchAllRubrics, fetchArticleCard, DIRECTUS_URL, ArticleSlugInfo, Rubric, ITEMS_PER_PAGE } from '@/api/directus';
 import { SearchSchema } from '@/shared/seo/schemas/SearchSchema';
 import { generateSearchMetadataSimple } from '@/shared/seo/metadata/SearchMetadata';
-import { CarouselArticle } from '@/features/article-display/RelatedArticles/RelatedArticlesCarousel';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import RubricsSection from '@/features/rubric-display/RubricsSection';
+import CardCarousel, { ArticleCardData } from '@/features/shared/CardCarousel/CardCarousel';
 
 export const revalidate = 0;
 
@@ -52,7 +51,7 @@ export default async function SearchPage({
   let currentPageSlugs: ArticleSlugInfo[] = [];
   let totalCount = 0;
   let totalPages = 1;
-  let carouselArticles: CarouselArticle[] = [];
+  let carouselCards: ArticleCardData[] = [];
   let rubrics: Rubric[] = [];
 
   // Fetch search results if valid query
@@ -84,12 +83,12 @@ export default async function SearchPage({
     const recentSlugs = recentResult.slugs;
     rubrics = allRubrics;
 
-    // Transform recent slugs to CarouselArticle format
+    // Transform recent slugs to ArticleCardData format for CardCarousel
     if (recentSlugs.length > 0) {
       const articleCardsPromises = recentSlugs.map(s => fetchArticleCard(s.slug, lang));
       const articleCards = await Promise.all(articleCardsPromises);
 
-      carouselArticles = articleCards
+      carouselCards = articleCards
         .filter(article => article !== null)
         .map(article => {
           const formattedDate = new Date(article!.published_at).toLocaleDateString(lang, {
@@ -103,6 +102,7 @@ export default async function SearchPage({
             : undefined;
 
           return {
+            type: 'article' as const,
             slug: article!.slug,
             title: article!.translations[0]?.title || '',
             publishedAt: article!.published_at,
@@ -186,14 +186,16 @@ export default async function SearchPage({
           />
         )}
 
-        {carouselArticles.length > 0 && dictionary.search.hub && (
-          <Section className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 text-on-sf text-center">
-              {dictionary.search.hub.exploreHeading}
-            </h2>
-            <RelatedArticlesCarousel
-              articles={carouselArticles}
+        {carouselCards.length > 0 && dictionary.search.hub && (
+          <Section 
+            className="mb-12"
+            title={dictionary.search.hub.exploreHeading}
+            titleLevel="h2"
+          >
+            <CardCarousel
+              cards={carouselCards}
               lang={lang}
+              dictionary={dictionary}
             />
           </Section>
         )}

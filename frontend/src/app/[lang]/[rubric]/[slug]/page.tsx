@@ -5,7 +5,6 @@ import { Suspense } from 'react';
 import { fetchAssetMetadata, fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
-import { RelatedArticles } from '@/features/article-display/RelatedArticles';
 import generateArticleMetadata from '@/shared/seo/metadata/ArticleMetadata';
 import ArticleSchema from '@/shared/seo/schemas/ArticleSchema';
 import QuickNavigationSchema from '@/shared/seo/schemas/QuickNavigationSchema';
@@ -25,6 +24,7 @@ import { processContent } from './_components/markdown/processContent';
 import ArticleContentRenderer from './_components/content/ArticleContentRenderer';
 import { parseImageMetadata } from '@/lib/utils/bilingualParser';
 import Section from '@/features/layout/Section';
+import RelatedArticles from '@/features/article-display/RelatedArticles';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -315,9 +315,11 @@ export default async function ArticlePage({
 
         <Section
           as="div"
+          title={dictionary.sections.rubrics.readMoreAbout}
+          titleLevel="h2"
+          id="related-articles-section"
         >
           <RelatedArticles
-            id="related-articles-section"
             currentArticleSlug={articleSlug}
             articleCategories={categoriesData}
             lang={lang}
