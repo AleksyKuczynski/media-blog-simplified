@@ -68,6 +68,7 @@ const config: Config = {
           cont: 'var(--color-primary-container)',
           fix: 'var(--color-primary-fixed)',
           dim: 'var(--color-primary-fixed-dim)',
+          sf: 'var(--color-primary-surface)',
           inv: 'var(--color-primary-container-inverted)',
           'fix-inv': 'var(--color-primary-fixed-inverted)',
           'dim-inv': 'var(--color-primary-fixed-dim-inverted)',
@@ -78,6 +79,7 @@ const config: Config = {
           cont: 'var(--color-secondary-container)',
           fix: 'var(--color-secondary-fixed)',
           dim: 'var(--color-secondary-fixed-dim)',
+          sf: 'var(--color-secondary-surface)',
         },
         
         // Tertiary colors
@@ -85,6 +87,7 @@ const config: Config = {
           cont: 'var(--color-tertiary-container)',
           fix: 'var(--color-tertiary-fixed)',
           dim: 'var(--color-tertiary-fixed-dim)',
+          sf: 'var(--color-tertiary-surface)',
         },
         
         // Text colors

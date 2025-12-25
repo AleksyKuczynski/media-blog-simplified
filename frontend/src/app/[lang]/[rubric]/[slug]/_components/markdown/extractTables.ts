@@ -31,6 +31,9 @@
 
 import { ContentChunk, TableData } from './markdownTypes';
 import { extractCaption } from './captionUtils';
+import { remark } from 'remark';
+import html from 'remark-html';
+import remarkGfm from 'remark-gfm';
 
 /**
  * Detects if a line is a markdown table row
@@ -78,44 +81,46 @@ function parseAlignment(cell: string): 'left' | 'center' | 'right' | 'none' {
 }
 
 /**
- * Convert inline markdown to HTML without block-level processing
- * Handles: bold, italic, links, inline code, line breaks
- * Avoids remark's <p> wrapper and nested structure issues
+ * Convert inline markdown to HTML using remark
+ * Handles placeholder links by converting them to valid but non-functional URLs
  */
 function convertInlineMarkdownToHtml(text: string): string {
-  // HTML escape first
-  let html = text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  // Convert <br> markdown (two spaces or explicit <br>)
-  html = html.replace(/  \n/g, '<br>')
-    .replace(/&lt;br&gt;/g, '<br>');
-
-  // Convert inline code: `code`
-  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-  // Convert bold: **text** or __text__
-  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
-
-  // Convert italic: *text* or _text_ (but not if surrounded by word characters)
-  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-  html = html.replace(/\b_([^_]+)_\b/g, '<em>$1</em>');
-
-  // Convert links: [text](url)
-  // Must unescape the parts that were escaped earlier
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, url) => {
-    const unescapedUrl = url
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
+  try {
+    // Pre-process placeholder links to make them valid for remark
+    // Convert [text](link) or [text](invalid) to [text](#)
+    const processedText = text.replace(
+      /\[([^\]]*)\]\(([^)]+)\)/g,
+      (match, linkText, url) => {
+        const trimmedUrl = url.trim();
+        
+        // Keep valid external/internal links as-is
+        if (/^https?:\/\//i.test(trimmedUrl) || /^[\.\/]/.test(trimmedUrl)) {
+          return match;
+        }
+        
+        // Convert placeholder/invalid URLs to # so remark can process them
+        // This renders as a link element but non-functional
+        return `[${linkText}](#)`;
+      }
+    );
+    
+    const result = remark()
+      .use(remarkGfm)
+      .use(html, { sanitize: false })
+      .processSync(processedText)
+      .toString()
       .trim();
-    return `<a href="${unescapedUrl}">${text}</a>`;
-  });
-
-  return html.trim();
+    
+    // Remove wrapping <p> tags if present
+    if (result.startsWith('<p>') && result.endsWith('</p>')) {
+      return result.slice(3, -4);
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Error converting markdown in table cell:', error, 'Text:', text);
+    return text;
+  }
 }
 
 /**

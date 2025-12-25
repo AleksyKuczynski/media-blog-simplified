@@ -11,7 +11,7 @@ export const SECTION_STYLES = {
   wrapper: {
     base: 'w-full pb-6 lg:pb-8 xl:pb-12',
     odd: 'bg-sf',
-    even: 'bg-sf-hst',
+    even: 'bg-pr-sf',
   },
   container: 'container-fluid mx-auto',
   header: {
@@ -22,8 +22,8 @@ export const SECTION_STYLES = {
     },
     title: {
       base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase -mt-1 pl-1',
-      odd: 'text-sf',
-      even: 'text-sf-hst',
+      odd: 'text-sec-sf',
+      even: 'text-pr-sf',
     },
   },
 } as const;
