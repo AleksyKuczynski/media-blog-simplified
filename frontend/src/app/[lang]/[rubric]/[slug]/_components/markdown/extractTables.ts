@@ -24,7 +24,6 @@
  * Dependencies:
  * - ./markdownTypes (ContentChunk, TableData)
  * - ./captionUtils (extractCaption)
- * - ./markdownToHtml (convertSimpleMarkdownToHtml)
  * 
  * @param content - Markdown string
  * @returns {chunks: ContentChunk[]} Table and text chunks
@@ -32,13 +31,24 @@
 
 import { ContentChunk, TableData } from './markdownTypes';
 import { extractCaption } from './captionUtils';
-import { convertSimpleMarkdownToHtml } from './markdownToHtml';
 
 /**
  * Detects if a line is a markdown table row
+ * Must have pipes with actual content between them
  */
 function isTableRow(line: string): boolean {
-  return /^\s*\|.*\|\s*$/.test(line);
+  const trimmed = line.trim();
+  // Must start and end with pipe
+  if (!trimmed.startsWith('|') || !trimmed.endsWith('|')) return false;
+  
+  // Remove outer pipes and check if there's content
+  const content = trimmed.slice(1, -1).trim();
+  
+  // Reject standalone pipe separators like just "|"
+  if (content === '') return false;
+  
+  // Must contain at least one pipe separator between cells
+  return content.includes('|');
 }
 
 /**
@@ -68,22 +78,105 @@ function parseAlignment(cell: string): 'left' | 'center' | 'right' | 'none' {
 }
 
 /**
- * Parse a table row into cells and process markdown to HTML
+ * Convert inline markdown to HTML without block-level processing
+ * Handles: bold, italic, links, inline code, line breaks
+ * Avoids remark's <p> wrapper and nested structure issues
+ */
+function convertInlineMarkdownToHtml(text: string): string {
+  // HTML escape first
+  let html = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Convert <br> markdown (two spaces or explicit <br>)
+  html = html.replace(/  \n/g, '<br>')
+    .replace(/&lt;br&gt;/g, '<br>');
+
+  // Convert inline code: `code`
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Convert bold: **text** or __text__
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+  // Convert italic: *text* or _text_ (but not if surrounded by word characters)
+  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  html = html.replace(/\b_([^_]+)_\b/g, '<em>$1</em>');
+
+  // Convert links: [text](url)
+  // Must unescape the parts that were escaped earlier
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, text, url) => {
+    const unescapedUrl = url
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .trim();
+    return `<a href="${unescapedUrl}">${text}</a>`;
+  });
+
+  return html.trim();
+}
+
+/**
+ * Split table row by pipes, respecting markdown link syntax
+ * Handles cases like: [text](url) | [other](url)
+ */
+function splitTableCells(content: string): string[] {
+  const cells: string[] = [];
+  let currentCell = '';
+  let inLink = false;
+  let inLinkUrl = false;
+  
+  for (let i = 0; i < content.length; i++) {
+    const char = content[i];
+    const prevChar = i > 0 ? content[i - 1] : '';
+    
+    // Track if we're inside a markdown link
+    if (char === '[' && prevChar !== '\\') {
+      inLink = true;
+      currentCell += char;
+    } else if (char === ']' && prevChar !== '\\' && inLink) {
+      inLink = false;
+      currentCell += char;
+      // Check if URL part follows
+      if (i + 1 < content.length && content[i + 1] === '(') {
+        inLinkUrl = true;
+      }
+    } else if (char === '(' && prevChar === ']') {
+      inLinkUrl = true;
+      currentCell += char;
+    } else if (char === ')' && prevChar !== '\\' && inLinkUrl) {
+      inLinkUrl = false;
+      currentCell += char;
+    } else if (char === '|' && !inLink && !inLinkUrl) {
+      // This is a cell separator
+      cells.push(currentCell);
+      currentCell = '';
+    } else {
+      currentCell += char;
+    }
+  }
+  
+  // Add the last cell
+  if (currentCell || cells.length > 0) {
+    cells.push(currentCell);
+  }
+  
+  return cells;
+}
+
+/**
+ * Parse a table row into cells and process inline markdown to HTML
  */
 function parseTableRow(line: string): string[] {
   // Remove leading/trailing pipes and whitespace
   const content = line.trim().replace(/^\||\|$/g, '');
   
-  // Split by pipe and process each cell
-  return content.split('|').map(cell => {
+  // Split by pipe respecting markdown link syntax
+  return splitTableCells(content).map(cell => {
     const trimmed = cell.trim();
-    // Convert markdown formatting to HTML (bold, italic, links, etc.)
-    // Remove wrapping <p> tags that remark adds
-    const html = convertSimpleMarkdownToHtml(trimmed)
-      .replace(/^<p>/, '')
-      .replace(/<\/p>\s*$/, '')
-      .trim();
-    return html;
+    return convertInlineMarkdownToHtml(trimmed);
   });
 }
 
@@ -189,7 +282,7 @@ export async function extractTables(content: string): Promise<{
             tableData: {
               ...tableData,
               caption,
-              processedCaption: convertSimpleMarkdownToHtml(caption)
+              processedCaption: convertInlineMarkdownToHtml(caption)
             }
           });
           i = captionEndIndex + 1;

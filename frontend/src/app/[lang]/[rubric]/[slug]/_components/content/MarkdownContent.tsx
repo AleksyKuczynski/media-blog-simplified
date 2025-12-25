@@ -24,12 +24,18 @@ import React from 'react';
 import { parse, HTMLElement, Node, NodeType } from 'node-html-parser';
 import { componentMap } from './markdown-component-map';
 
+// Void elements that must not have children
+const VOID_ELEMENTS = new Set([
+  'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+  'link', 'meta', 'param', 'source', 'track', 'wbr'
+]);
+
 export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
   const root = parse(content);
   
   const renderNode = (node: Node): React.ReactNode => {
     if (node.nodeType === NodeType.TEXT_NODE) {
-        // For whitespace-only text nodes in table contexts, skip them
+      // For whitespace-only text nodes in table contexts, skip them
       const text = node.text;
       if (!text || text.trim() === '') return null;
       return text;
@@ -56,6 +62,11 @@ export const MarkdownContent: React.FC<{ content: string }> = ({ content }) => {
           props[key] = value;
         }
       });
+
+      // Handle void elements - must not have children
+      if (VOID_ELEMENTS.has(tagName)) {
+        return <Component {...props} />;
+      }
 
       const children = element.childNodes.map((child, index) => 
         <React.Fragment key={index}>{renderNode(child)}</React.Fragment>
