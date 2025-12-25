@@ -8,6 +8,7 @@ interface SectionProps {
   isOdd?: boolean;
   title?: string;
   titleLevel?: 'h1' | 'h2';
+  hasNextSectionTitle?: boolean;
   ariaLabel?: string;
   id?: string;
   as?: 'section' | 'article' | 'aside' | 'nav' | 'div';
@@ -22,6 +23,7 @@ export default function Section({
   isOdd = false,
   title,
   titleLevel = 'h2',
+  hasNextSectionTitle = false,
   ariaLabel,
   id,
   as: Component = 'section',
@@ -33,6 +35,7 @@ export default function Section({
   const sectionClasses = cn(
     SECTION_STYLES.wrapper.base,
     isOdd ? SECTION_STYLES.wrapper.odd : SECTION_STYLES.wrapper.even,
+    hasNextSectionTitle && SECTION_STYLES.wrapper.withNextTitle,
     className
   );
 

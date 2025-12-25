@@ -9,19 +9,20 @@
 
 export const SECTION_STYLES = {
   wrapper: {
-    base: 'w-full pb-6 lg:pb-8 xl:pb-12',
-    odd: 'bg-sf',
+    base: 'w-full pb-6 lg:pb-8 xl:pb-12 relative',
+    odd: 'bg-sec-sf',
     even: 'bg-pr-sf',
+    withNextTitle: 'pb-16 sm:pb-20 lg:pb-24',
   },
-  container: 'container-fluid mx-auto',
+  container: 'container-fluid mx-auto pt-16 sm:pt-20 lg:pt-24',
   header: {
     wrapper: {
-      base: 'mb-8',
-      odd: ' bg-sf-hst',
-      even: ' bg-sf',
+      base: 'absolute -top-8 sm:-top-10 lg:-top-12 left-0 right-0',
+      odd: '',
+      even: '',
     },
     title: {
-      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase -mt-1 pl-1',
+      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase pl-1 leading-tight',
       odd: 'text-sec-sf',
       even: 'text-pr-sf',
     },

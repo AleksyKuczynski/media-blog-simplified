@@ -189,6 +189,7 @@ export default async function SearchPage({
         <Section 
           title={dictionary.search.hub.exploreHeading}
           titleLevel="h2"
+          hasNextSectionTitle={true}
         >
           <CardCarousel
             cards={carouselCards}
