@@ -2,7 +2,7 @@
 import { cn } from '@/lib/utils';
 import { SECTION_STYLES } from './styles';
 
-type SectionVariant = 'default' | 'primary' | 'secondary' | 'tertiary';
+type SectionVariant = 'primary' | 'secondary' | 'tertiary' | 'default';
 
 interface SectionProps {
   children: React.ReactNode;
@@ -41,9 +41,9 @@ export default function Section({
     className
   );
 
-  const headerWrapperClasses = cn(
-    SECTION_STYLES.header.wrapper.base,
-    SECTION_STYLES.header.wrapper[variant]
+  const containerClasses = cn(
+    SECTION_STYLES.container.base,
+    title && SECTION_STYLES.container.withTitle
   );
 
   const titleClasses = cn(
@@ -65,9 +65,9 @@ export default function Section({
 
   return (
     <Component {...sectionProps}>
-      <div className={SECTION_STYLES.container}>
+      <div className={containerClasses}>
         {title && (
-          <header className={headerWrapperClasses}>
+          <header className={SECTION_STYLES.header.wrapper}>
             <TitleTag className={titleClasses}>
               {title}
             </TitleTag>

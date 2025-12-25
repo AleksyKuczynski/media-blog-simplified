@@ -16,15 +16,12 @@ export const SECTION_STYLES = {
     default: 'bg-sf',
     withNextTitle: 'pb-16 sm:pb-20 lg:pb-24',
   },
-  container: 'container-fluid mx-auto pt-16 sm:pt-20 lg:pt-24',
+  container: {
+    base: 'container-fluid mx-auto',
+    withTitle: 'pt-16 sm:pt-20 lg:pt-24',
+  },
   header: {
-    wrapper: {
-      base: 'absolute -top-8 sm:-top-10 lg:-top-12 left-0 right-0',
-      primary: '',
-      secondary: '',
-      tertiary: '',
-      default: '',
-    },
+    wrapper: 'absolute -top-7 sm:-top-8 md:-top-10 lg:-top-12 left-0 right-0',
     title: {
       base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase pl-1 leading-tight',
       primary: 'text-pr-sf',
