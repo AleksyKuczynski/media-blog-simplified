@@ -15,11 +15,15 @@ export const SECTION_STYLES = {
   },
   container: 'container-fluid mx-auto',
   header: {
-    wrapper: 'mb-8',
+    wrapper: {
+      base: 'mb-8',
+      odd: ' bg-sf-hst',
+      even: ' bg-sf',
+    },
     title: {
-      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 -pb-1 pl-1',
-      odd: 'text-sf bg-sf-hst',
-      even: 'text-sf-hst bg-sf',
+      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase -mt-1 pl-1',
+      odd: 'text-sf',
+      even: 'text-sf-hst',
     },
   },
 } as const;

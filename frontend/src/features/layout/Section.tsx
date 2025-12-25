@@ -1,5 +1,4 @@
 // src/features/layout/Section.tsx
-import React from 'react';
 import { cn } from '@/lib/utils';
 import { SECTION_STYLES } from './styles';
 
@@ -37,6 +36,11 @@ export default function Section({
     className
   );
 
+  const headerWrapperClasses = cn(
+    SECTION_STYLES.header.wrapper.base,
+    isOdd ? SECTION_STYLES.header.wrapper.odd : SECTION_STYLES.header.wrapper.even
+  );
+
   const titleClasses = cn(
     SECTION_STYLES.header.title.base,
     isOdd ? SECTION_STYLES.header.title.odd : SECTION_STYLES.header.title.even
@@ -58,7 +62,7 @@ export default function Section({
     <Component {...sectionProps}>
       <div className={SECTION_STYLES.container}>
         {title && (
-          <header className={SECTION_STYLES.header.wrapper}>
+          <header className={headerWrapperClasses}>
             <TitleTag className={titleClasses}>
               {title}
             </TitleTag>
