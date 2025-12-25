@@ -11,6 +11,7 @@ import { generateSearchMetadataSimple } from '@/shared/seo/metadata/SearchMetada
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import RubricsSection from '@/features/rubric-display/RubricsSection';
 import CardCarousel, { ArticleCardData } from '@/features/shared/CardCarousel/CardCarousel';
+import Link from 'next/link';
 
 export const revalidate = 0;
 
@@ -149,68 +150,104 @@ export default async function SearchPage({
         resultCount={totalCount}
       />
 
-      <div className="container mx-auto px-4 py-8">
-        
-        <SearchTips dictionary={dictionary} />
+      <SearchTips dictionary={dictionary} />
 
-        <div className="mb-8">
-          <SearchBarForm
-            dictionary={dictionary}
-            lang={lang}
-            currentQuery={searchQuery}
-          />
-        </div>
-
-        {isEmptyState && dictionary.search.hub && (
-          <div 
-            className="text-center py-8 mb-8"
-            role="status"
-          >
-            <p className="text-lg text-on-sf-var">
-              {dictionary.search.hub.emptyStateMessage}
-            </p>
-          </div>
-        )}
-
-        {resultsMode && (
-          <SearchResults
-            dictionary={dictionary}
-            lang={lang}
-            searchQuery={searchQuery}
-            slugs={currentPageSlugs}
-            totalCount={totalCount}
-            totalPages={totalPages}
-            currentPage={currentPage}
-            currentSort={currentSort}
-            mode={resultsMode}
-          />
-        )}
-
-        {carouselCards.length > 0 && dictionary.search.hub && (
-          <Section 
-            className="mb-12"
-            title={dictionary.search.hub.exploreHeading}
-            titleLevel="h2"
-          >
-            <CardCarousel
-              cards={carouselCards}
-              lang={lang}
-              dictionary={dictionary}
-            />
-          </Section>
-        )}
-
-        {transformedRubrics.length > 0 && dictionary.search.hub && (
-          <RubricsSection
-            rubrics={transformedRubrics}
-            dictionary={dictionary}
-            lang={lang}
-            heading={dictionary.search.hub.browseCategories}
-            showViewAll={true}
-            className="bg-muted/30"
-          />
-        )}
+      <div className="mb-8">
+        <SearchBarForm
+          dictionary={dictionary}
+          lang={lang}
+          currentQuery={searchQuery}
+        />
       </div>
+
+      {isEmptyState && dictionary.search.hub && (
+        <div 
+          className="text-center py-8 mb-8"
+          role="status"
+        >
+          <p className="text-lg text-on-sf-var">
+            {dictionary.search.hub.emptyStateMessage}
+          </p>
+        </div>
+      )}
+
+      {resultsMode && (
+        <SearchResults
+          dictionary={dictionary}
+          lang={lang}
+          searchQuery={searchQuery}
+          slugs={currentPageSlugs}
+          totalCount={totalCount}
+          totalPages={totalPages}
+          currentPage={currentPage}
+          currentSort={currentSort}
+          mode={resultsMode}
+        />
+      )}
+
+      {carouselCards.length > 0 && dictionary.search.hub && (
+        <Section 
+          title={dictionary.search.hub.exploreHeading}
+          titleLevel="h2"
+        >
+          <CardCarousel
+            cards={carouselCards}
+            lang={lang}
+            dictionary={dictionary}
+          />
+        </Section>
+      )}
+
+      {transformedRubrics.length > 0 && dictionary.search.hub && (
+        <Section 
+          title={dictionary.search.hub.browseCategories}
+          titleLevel="h2"
+          isOdd={true}
+        >
+          {/* Optional description */}
+          {dictionary.sections.home?.rubricsDescription && (
+            <p className="text-lg text-on-sf-var max-w-2xl mx-auto mb-8 text-center">
+              {dictionary.sections.home.rubricsDescription}
+            </p>
+          )}
+
+          {/* Carousel */}
+          <CardCarousel
+            cards={transformedRubrics.map(rubric => {
+              const iconField = rubric.nav_icon || rubric.icon;
+              const iconSrc = iconField ? `${DIRECTUS_URL}/assets/${iconField}` : undefined;
+
+              return {
+                type: 'rubric' as const,
+                slug: rubric.slug,
+                name: rubric.name,
+                description: rubric.description,
+                iconSrc,
+                url: rubric.url,
+                articleCount: rubric.articleCount,
+              };
+            })}
+            lang={lang}
+            dictionary={dictionary}
+          />
+
+          {/* View All Link */}
+          <div className="text-center mt-8">
+            <Link 
+              href={`/${lang}/rubrics`}
+              className="inline-flex items-center gap-2 text-pr-cont hover:text-pr-fix font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2 rounded group"
+            >
+              {dictionary.sections.home?.viewAllRubrics || 'Смотреть все рубрики'}
+              <span 
+                className="transform transition-transform duration-200 group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                →
+              </span>
+            </Link>
+          </div>
+        </Section>
+      )}
     </>
   );
 }

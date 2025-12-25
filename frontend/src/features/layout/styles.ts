@@ -17,7 +17,7 @@ export const SECTION_STYLES = {
   header: {
     wrapper: 'mb-8',
     title: {
-      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 pl-1',
+      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase mb-6 -pb-1 pl-1',
       odd: 'text-sf bg-sf-hst',
       even: 'text-sf-hst bg-sf',
     },
