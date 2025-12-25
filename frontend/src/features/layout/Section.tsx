@@ -2,51 +2,53 @@
 import { cn } from '@/lib/utils';
 import { SECTION_STYLES } from './styles';
 
+type SectionVariant = 'default' | 'primary' | 'secondary' | 'tertiary';
+
 interface SectionProps {
   children: React.ReactNode;
   className?: string;
-  isOdd?: boolean;
+  variant?: SectionVariant;
   title?: string;
   titleLevel?: 'h1' | 'h2';
-  hasNextSectionTitle?: boolean;
   ariaLabel?: string;
   id?: string;
   as?: 'section' | 'article' | 'aside' | 'nav' | 'div';
   role?: string;
   itemScope?: boolean;
   itemType?: string;
+  hasNextSectionTitle?: boolean;
 }
 
 export default function Section({ 
   children, 
   className = '', 
-  isOdd = false,
+  variant = 'default',
   title,
   titleLevel = 'h2',
-  hasNextSectionTitle = false,
   ariaLabel,
   id,
   as: Component = 'section',
   role,
   itemScope,
   itemType,
+  hasNextSectionTitle = false,
   ...props 
 }: SectionProps) {
   const sectionClasses = cn(
     SECTION_STYLES.wrapper.base,
-    isOdd ? SECTION_STYLES.wrapper.odd : SECTION_STYLES.wrapper.even,
+    SECTION_STYLES.wrapper[variant],
     hasNextSectionTitle && SECTION_STYLES.wrapper.withNextTitle,
     className
   );
 
   const headerWrapperClasses = cn(
     SECTION_STYLES.header.wrapper.base,
-    isOdd ? SECTION_STYLES.header.wrapper.odd : SECTION_STYLES.header.wrapper.even
+    SECTION_STYLES.header.wrapper[variant]
   );
 
   const titleClasses = cn(
     SECTION_STYLES.header.title.base,
-    isOdd ? SECTION_STYLES.header.title.odd : SECTION_STYLES.header.title.even
+    SECTION_STYLES.header.title[variant]
   );
 
   const sectionProps = {

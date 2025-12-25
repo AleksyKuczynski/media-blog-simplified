@@ -256,7 +256,6 @@ export default async function ArticlePage({
         
         <Section 
           className="container overflow-x-hidden max-w-7xl mx-auto px-2 md:px-4 lg:pb-16"
-          isOdd
           as="article"
           itemScope
           itemType="https://schema.org/Article"
@@ -315,6 +314,7 @@ export default async function ArticlePage({
 
         <Section
           as="div"
+          variant='primary'
           title={dictionary.sections.rubrics.readMoreAbout}
           titleLevel="h2"
           id="related-articles-section"

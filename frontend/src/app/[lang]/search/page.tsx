@@ -190,6 +190,7 @@ export default async function SearchPage({
           title={dictionary.search.hub.exploreHeading}
           titleLevel="h2"
           hasNextSectionTitle={true}
+          variant='primary'
         >
           <CardCarousel
             cards={carouselCards}
@@ -203,7 +204,7 @@ export default async function SearchPage({
         <Section 
           title={dictionary.search.hub.browseCategories}
           titleLevel="h2"
-          isOdd={true}
+          variant='secondary'
         >
           {/* Optional description */}
           {dictionary.sections.home?.rubricsDescription && (

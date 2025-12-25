@@ -10,21 +10,27 @@
 export const SECTION_STYLES = {
   wrapper: {
     base: 'w-full pb-6 lg:pb-8 xl:pb-12 relative',
-    odd: 'bg-sec-sf',
-    even: 'bg-pr-sf',
+    primary: 'bg-pr-sf',
+    secondary: 'bg-sec-sf',
+    tertiary: 'bg-tr-sf',
+    default: 'bg-sf',
     withNextTitle: 'pb-16 sm:pb-20 lg:pb-24',
   },
   container: 'container-fluid mx-auto pt-16 sm:pt-20 lg:pt-24',
   header: {
     wrapper: {
       base: 'absolute -top-8 sm:-top-10 lg:-top-12 left-0 right-0',
-      odd: '',
-      even: '',
+      primary: '',
+      secondary: '',
+      tertiary: '',
+      default: '',
     },
     title: {
       base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase pl-1 leading-tight',
-      odd: 'text-sec-sf',
-      even: 'text-pr-sf',
+      primary: 'text-pr-sf',
+      secondary: 'text-sec-sf',
+      tertiary: 'text-tr-sf',
+      default: 'text-sf',
     },
   },
 } as const;
