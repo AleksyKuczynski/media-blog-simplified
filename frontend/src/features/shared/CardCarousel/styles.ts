@@ -125,14 +125,27 @@ export const RUBRIC_CAROUSEL_CARD_STYLES = {
 // ================================================================
 
 export const AUTHOR_CAROUSEL_CARD_STYLES = {
-  container: 'block w-[300px] group',
-  card: 'h-full bg-sf-cont rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
-  content: 'p-4 flex items-center gap-4',
-  avatarWrapper: 'relative w-14 h-14 flex-shrink-0 rounded-full overflow-hidden bg-sf-hi',
+  // Card container
+  container: 'block w-full h-full group',
+
+  // Card structure
+  card: 'h-full bg-sf-cont rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  
+  // Content container
+  content: 'p-6 flex flex-col gap-4',
+  
+  // Image container
+  avatarWrapper: 'relative w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden bg-sf-hi',
+  
+  // Image element
   avatarImage: 'object-cover',
   avatarFallback: 'w-full h-full flex items-center justify-center bg-gradient-to-br from-pr-cont to-pr-fix',
   avatarFallbackText: 'text-on-pr-cont text-xl font-bold',
+  
+  // Text content container
   textContent: 'flex-1 min-w-0',
-  name: 'font-semibold text-on-sf group-hover:text-pr-cont transition-colors text-sm truncate',
-  bio: 'text-xs text-on-sf-var line-clamp-2 mt-1',
+
+  // Text content
+  name: 'font-semibold text-on-sf group-hover:text-pr-cont transition-colors truncate',
+  bio: 'text-sm text-on-sf-var line-clamp-4 mt-1',
 } as const;

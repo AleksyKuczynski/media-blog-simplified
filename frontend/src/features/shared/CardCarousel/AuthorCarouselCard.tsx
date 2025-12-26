@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Dictionary } from '@/config/i18n';
-import { AUTHOR_CAROUSEL_CARD_STYLES } from '../styles';
+import { AUTHOR_CAROUSEL_CARD_STYLES } from './styles';
 
 interface AuthorCarouselCardProps {
   slug: string;

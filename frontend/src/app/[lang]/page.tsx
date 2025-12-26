@@ -122,7 +122,7 @@ export default async function HomePage({
       <Section 
         title={dictionary.sections.home.quickNavigation}
         titleLevel="h2"
-        variant='primary'
+        variant='tertiary'
       >
         <QuickNavigationSection lang={lang} dictionary={dictionary} />
       </Section>

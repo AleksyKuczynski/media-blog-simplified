@@ -4,10 +4,10 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { Lang, Dictionary } from '@/config/i18n';
-import { CAROUSEL_STYLES } from '../styles';
-import ArticleCarouselCard from '../cards/ArticleCarouselCard';
-import RubricCarouselCard from '../cards/RubricCarouselCard';
-import AuthorCarouselCard from '../cards/AuthorCarouselCard';
+import { CAROUSEL_STYLES } from './styles';
+import ArticleCarouselCard from './ArticleCarouselCard';
+import RubricCarouselCard from './RubricCarouselCard';
+import AuthorCarouselCard from './AuthorCarouselCard';
 
 // Card data types
 export interface ArticleCardData {

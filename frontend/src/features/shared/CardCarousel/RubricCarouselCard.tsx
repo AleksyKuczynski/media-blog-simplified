@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Dictionary } from '@/config/i18n';
-import { RUBRIC_CAROUSEL_CARD_STYLES } from '../styles';
+import { RUBRIC_CAROUSEL_CARD_STYLES } from './styles';
 
 interface RubricCarouselCardProps {
   slug: string;
