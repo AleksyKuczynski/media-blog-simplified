@@ -46,7 +46,6 @@ export default async function AllAuthorsPage({
       <Section
         title={dictionary.sections.authors.ourAuthors}
         titleLevel="h1"
-        isOdd={false}
       >
         <Suspense fallback={
           <Section>
