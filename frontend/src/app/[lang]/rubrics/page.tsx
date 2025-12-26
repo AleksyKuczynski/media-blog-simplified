@@ -147,7 +147,6 @@ export default async function RubricsPage({
         </header>
 
         <Section 
-          isOdd={true}
           ariaLabel={dictionary.sections.rubrics.rubricsCatalog}
         >
           {transformedRubrics.length > 0 ? (
