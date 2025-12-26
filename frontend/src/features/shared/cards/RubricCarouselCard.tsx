@@ -65,7 +65,7 @@ export default function RubricCarouselCard({
             )}
             {articleCount !== undefined && articleCount > 0 && (
               <p className={RUBRIC_CAROUSEL_CARD_STYLES.articleCount}>
-                {articleCount} {dictionary.sections.labels.articles}
+                {dictionary.sections.labels.articles} {articleCount} 
               </p>
             )}
           </div>

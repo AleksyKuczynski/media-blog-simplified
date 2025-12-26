@@ -10,13 +10,13 @@ import { cn } from '@/lib/utils/cn';
 export const CAROUSEL_STYLES = {
   // Outer wrapper
   wrapper: cn(
-    'relative group',
+    'relative',
     'w-full',
   ),
   
   // Scroll container
   scrollContainer: cn(
-    'flex gap-4 overflow-x-auto scrollbar-hide',
+    'flex gap-6 overflow-x-auto scrollbar-hide',
     'snap-x snap-mandatory scroll-smooth',
     'px-4 sm:px-6 2xl:px-8',
     ' py-5', // Vertical padding to show shadows - should be equal to vertical margin of gradients
@@ -68,7 +68,7 @@ export const CAROUSEL_STYLES = {
 
 export const ARTICLE_CAROUSEL_CARD_STYLES = {
   // Card container
-  container: 'group block w-full h-full rounded-2xl shadow-md hover:shadow-lg transition-all duration-300',
+  container: 'group block w-full h-full rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300',
   
   // Card structure
   card: 'bg-sf-cont rounded-2xl overflow-hidden h-full flex flex-col',
@@ -94,17 +94,30 @@ export const ARTICLE_CAROUSEL_CARD_STYLES = {
 // ================================================================
 
 export const RUBRIC_CAROUSEL_CARD_STYLES = {
-  container: 'block w-[320px] group',
-  card: 'h-full bg-sf-cont rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
-  content: 'p-4 flex items-center gap-4',
-  iconWrapper: 'relative w-12 h-12 flex-shrink-0 rounded-full overflow-hidden bg-sf-hi',
+  // Card container
+  container: 'block w-full h-full group',
+
+  // Card structure
+  card: 'h-full bg-sf-cont rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  
+  // Content container
+  content: 'p-6 flex flex-col items-center gap-8',
+  
+  // Image container
+  iconWrapper: 'relative w-16 h-16 flex-shrink-0 rounded-full overflow-hidden bg-sf-hi',
+  
+  // Image element
   iconImage: 'object-contain',
   iconFallback: 'w-full h-full flex items-center justify-center bg-gradient-to-br from-pr-cont to-pr-fix',
   iconFallbackText: 'text-on-pr-cont text-xl font-bold',
-  textContent: 'flex-1 min-w-0',
-  name: 'font-semibold text-on-sf group-hover:text-pr-cont transition-colors text-sm truncate',
-  description: 'text-xs text-on-sf-var line-clamp-2 mt-1',
-  articleCount: 'text-xs text-on-sf-var mt-1',
+  
+  // Text content container
+  textContent: 'flex flex-col gap-4 min-w-0',
+
+  // Text content
+  name: 'font-semibold text-on-sf group-hover:text-pr-cont transition-colors truncate',
+  description: 'text-sm text-on-sf-var line-clamp-2 mt-1',
+  articleCount: 'text-sm font-semibold text-on-sf-var mt-1',
 } as const;
 
 // ================================================================
