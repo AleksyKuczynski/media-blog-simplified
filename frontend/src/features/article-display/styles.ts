@@ -3,6 +3,34 @@
 import { cn } from '@/lib/utils/cn';
 
 // ================================================================
+// HERO SECTION STYLES
+// ================================================================
+
+export const HERO_SECTION_STYLES = {
+  // Section wrapper (applied to Section component)
+  section: 'py-8 bg-gradient-to-br from-sf-cont to-sf-hi',
+  
+  // Container
+  container: 'container mx-auto px-4',
+  
+  // Header
+  header: 'text-center mb-12',
+  title: 'text-4xl md:text-5xl font-bold mb-6 text-on-sf',
+  description: 'text-xl text-on-sf-var max-w-3xl mx-auto leading-relaxed',
+  
+  // Featured content wrapper
+  featuredWrapper: 'mb-8',
+  featuredTitle: 'text-2xl font-semibold mb-6 text-on-sf',
+  
+  // Loading state
+  loading: {
+    wrapper: 'text-center py-12',
+    spinner: 'animate-spin rounded-full h-12 w-12 border-b-2 border-prcolor mx-auto mb-4',
+    text: 'text-on-sf-var',
+  },
+} as const;
+
+// ================================================================
 // ARTICLE LIST STYLES
 // ================================================================
 

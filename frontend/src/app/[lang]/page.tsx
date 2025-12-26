@@ -1,316 +1,131 @@
 // src/app/[lang]/page.tsx
 
 import { Suspense } from 'react';
-import { Metadata } from 'next';
-import Link from 'next/link';
-import { getDictionary, Lang } from '@/config/i18n';
-import { fetchAllRubrics, Rubric, fetchHeroSlugs } from '@/api/directus/index';
-import HeroArticles from '@/features/article-display/HeroArticles';
+import HeroSection from '@/features/article-display/HeroSection';
 import Section from '@/features/layout/Section';
-import CardGrid from '@/features/layout/CardGrid';
-import RubricCard from '@/features/rubric-display/RubricCard';
+import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
+import QuickNavigationSection from '@/features/navigation/QuickNavigationSection';
+import HomePageSchema from '@/shared/seo/schemas/HomePageSchema';
+import { getDictionary, Lang } from '@/config/i18n';
+import { fetchHeroSlugs } from '@/api/directus';
+import { transformRubricsToCarousel } from '@/api/directus/transformToCarouselCards';
+import { transformAuthorsToCarousel } from '@/api/directus/transformToCarouselCards';
+import Link from 'next/link';
 
-export const dynamic = 'force-dynamic';
-
-// Enhanced SEO metadata generation
-export async function generateMetadata({
-  params
-}: {
-  params: Promise<{ lang: string }>
-}): Promise<Metadata> {
-  const { lang } = await params;
-  const dictionary = getDictionary(lang as Lang);
-  
-  return {
-    title: dictionary.seo.site.fullName,
-    description: dictionary.seo.site.description,
-    keywords: dictionary.seo.keywords.base,
-    openGraph: {
-      title: dictionary.seo.site.fullName,
-      description: dictionary.seo.site.description,
-      url: dictionary.seo.site.url,
-      siteName: dictionary.seo.site.name,
-      locale: dictionary.locale,
-      type: 'website',
-      images: [
-        {
-          url: `${dictionary.seo.site.url}/og-home.jpg`,
-          width: 1200,
-          height: 630,
-          alt: dictionary.seo.site.fullName,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: dictionary.seo.site.fullName,
-      description: dictionary.seo.site.description,
-      images: [`${dictionary.seo.site.url}/og-home.jpg`],
-    },
-    alternates: {
-      canonical: dictionary.seo.site.url,
-    },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
-  };
-}
+export const revalidate = 3600;
 
 export default async function HomePage({
   params,
 }: {
   params: Promise<{ lang: Lang }>;
 }) {
-  // Extract lang from params
   const { lang } = await params;
   const dictionary = getDictionary(lang as Lang);
 
-  // Single unified dictionary call with proper error handling
-  const [heroSlugs, rubrics] = await Promise.all([
+  const [heroSlugs, rubricCards, authorCards] = await Promise.all([
     fetchHeroSlugs(lang).catch(error => {
       console.error('Error fetching hero articles:', error);
       return [];
     }),
-    fetchAllRubrics(lang).catch(error => {
-      console.error('Error fetching rubrics:', error);
+    transformRubricsToCarousel(lang, 8).catch(error => {
+      console.error('Error transforming rubrics:', error);
+      return [];
+    }),
+    transformAuthorsToCarousel(lang, 8).catch(error => {
+      console.error('Error transforming authors:', error);
       return [];
     })
   ]);
 
-  // Transform rubrics with proper typing and error handling
-  const transformedRubrics = rubrics.map((rubric: Rubric) => {
-    const translation = rubric.translations?.find(t => t.languages_code === lang);
-    return {
-      ...rubric, // Spread all original Rubric properties (includes any id if present)
-      name: translation?.name || rubric.slug,
-      description: translation?.description || '',
-      icon: rubric.nav_icon, // Map nav_icon to expected icon property
-      url: `/${lang}/${rubric.slug}`, // Add required url property
-    };
-  }).slice(0, 6); // Show only first 6 rubrics on home page
-
-  // Enhanced structured data for home page
-  const homePageSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": dictionary.seo.site.name,
-    "alternateName": dictionary.seo.site.fullName,
-    "url": dictionary.seo.site.url,
-    "description": dictionary.seo.site.description,
-    "inLanguage": "ru",
-    "publisher": {
-      "@type": "Organization",
-      "name": dictionary.seo.site.name,
-      "url": dictionary.seo.site.url,
-      "logo": {
-        "@type": "ImageObject",
-        "url": `${dictionary.seo.site.url}/logo.png`,
-        "width": 200,
-        "height": 80,
-      },
-    },
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": {
-        "@type": "EntryPoint",
-        "urlTemplate": `${dictionary.seo.site.url}/search?search={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
-    "mainEntity": {
-      "@type": "ItemList",
-      "name": `${dictionary.navigation.accessibility.primarySectionsLabel}`,
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "item": {
-            "@type": "CollectionPage",
-            "name": `${dictionary.navigation.labels.articles}`,
-            "url": `${dictionary.seo.site.url}/ru/articles`,
-          },
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "item": {
-            "@type": "CollectionPage",
-            "name": `${dictionary.navigation.labels.rubrics}`,
-            "url": `${dictionary.seo.site.url}/ru/rubrics`,
-          },
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "item": {
-            "@type": "CollectionPage",
-            "name": `${dictionary.navigation.labels.authors}`,
-            "url": `${dictionary.seo.site.url}/ru/authors`,
-          },
-        },
-      ],
-    },
-  };
-
   return (
     <>
-      {/* Enhanced structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(homePageSchema, null, 2)
-        }}
+      <HomePageSchema
+        dictionary={dictionary}
+        lang={lang}
+        currentPath={`/${lang}`}
       />
-      
-      {/* Main content with enhanced semantic structure */}
-      <article itemScope itemType="https://schema.org/WebPage">
-        {/* Hero section */}
-        <Section className="py-8 bg-gradient-to-br from-sf-cont to-sf-hi">
-          <div className="container mx-auto px-4">
-            <header className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-on-sf">
-                {dictionary.sections.home.welcomeTitle}
-              </h1>
-              <p className="text-xl text-on-sf-var max-w-3xl mx-auto leading-relaxed">
-                {dictionary.sections.home.welcomeDescription}
-              </p>
-            </header>
-            
-            {/* Featured articles section */}
-            {heroSlugs.length > 0 && (
-              <div className="mb-8">
-                <h2 className="text-2xl font-semibold mb-6 text-on-sf">
-                  {dictionary.sections.home.featuredContent}
-                </h2>
-                <Suspense fallback={
-                  <div className="text-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-prcolor mx-auto mb-4"></div>
-                    <p className="text-on-sf-var">{dictionary.common.status.loading}</p>
-                  </div>
-                }>
-                  <HeroArticles 
-                    slugs={heroSlugs}
-                    lang={lang} 
-                    dictionary={dictionary}
-                  />
-                </Suspense>
-              </div>
-            )}
-          </div>
-        </Section>
 
-        {/* Rubrics section */}
-        <Section className="py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <header className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4 text-on-sf">
-                {dictionary.sections.home.exploreRubrics}
-              </h2>
-              <p className="text-lg text-on-sf-var max-w-2xl mx-auto mb-8">
-                {dictionary.sections.home.rubricsDescription}
-              </p>
-              <Link 
-                href={`/${lang}/rubrics`}
-                className="
-                  inline-flex items-center gap-2 
-                  text-pr-cont hover:text-pr-fix 
-                  font-medium transition-colors duration-200
-                  focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2 rounded
-                "
-                aria-label={`${dictionary.sections.home.viewAllRubrics} - посмотреть полный каталог рубрик`}
-              >
-                {dictionary.sections.home.viewAllRubrics}
-                <span 
-                  className="transform transition-transform duration-200 group-hover:translate-x-1" 
-                  aria-hidden="true"
-                >
-                  →
-                </span>
-              </Link>
-            </header>
-            
-            {/* Rubrics grid */}
-            {transformedRubrics.length > 0 ? (
-              <CardGrid 
-                cols={{
-                  mobile: 1,
-                  tablet: 2,
-                  desktop: 3,
-                  large: 3
-                }}
-                className="max-w-6xl mx-auto"
-              >
-                {transformedRubrics.map((rubric) => (
-                  <RubricCard
-                    key={rubric.slug}
-                    rubric={rubric}
-                    lang={lang}
-                    dictionary={dictionary}
-                  />
-                ))}
-              </CardGrid>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-on-sf-var text-lg mb-4">
-                  {dictionary.sections.rubrics.noRubricsAvailable}
-                </p>
-                <p className="text-on-sf-var">
-                  {dictionary.sections.rubrics.checkBackLater}
-                </p>
-              </div>
-            )}
-          </div>
-        </Section>
+      <Suspense fallback={<div className="h-screen bg-sf" />}>
+        <HeroSection 
+          lang={lang} 
+          dictionary={dictionary} 
+          heroSlugs={heroSlugs} 
+        />
+      </Suspense>
 
-        {/* Call-to-action section */}
-        <Section className="py-16 bg-pr-cont text-on-pr-cont">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-6">
-              {dictionary.sections.home.quickNavigation}
-            </h2>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Link
-                href={`/${lang}/articles`}
-                className="
-                  px-6 py-3 bg-on-pr-cont text-pr-cont rounded-lg
-                  hover:bg-on-pr-cont/90 transition-colors duration-200
-                  font-medium focus:outline-none focus:ring-2 focus:ring-on-pr-cont focus:ring-offset-2
-                "
+      {rubricCards.length > 0 && (
+        <Section 
+          title={dictionary.sections.home.featuredRubrics}
+          titleLevel="h2"
+          variant='primary'
+          hasNextSectionTitle={true}
+        >
+          {dictionary.sections.home.rubricsDescription && (
+            <p className="text-lg text-on-sf-var max-w-2xl mx-auto mb-8 text-center">
+              {dictionary.sections.home.rubricsDescription}
+            </p>
+          )}
+
+          <CardCarousel
+            cards={rubricCards}
+            lang={lang}
+            dictionary={dictionary}
+          />
+
+          <div className="text-center mt-8">
+            <Link 
+              href={`/${lang}/rubrics`}
+              className="inline-flex items-center gap-2 text-pr-cont hover:text-pr-fix font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2 rounded group"
+            >
+              {dictionary.sections.home.viewAllRubrics}
+              <span 
+                className="transform transition-transform duration-200 group-hover:translate-x-1"
+                aria-hidden="true"
               >
-                {dictionary.navigation.labels.articles}
-              </Link>
-              <Link
-                href={`/${lang}/authors`}
-                className="
-                  px-6 py-3 bg-transparent border-2 border-on-pr-cont text-on-pr-cont rounded-lg
-                  hover:bg-on-pr-cont hover:text-pr-cont transition-colors duration-200
-                  font-medium focus:outline-none focus:ring-2 focus:ring-on-pr-cont focus:ring-offset-2
-                "
-              >
-                {dictionary.navigation.labels.authors}
-              </Link>
-              <Link
-                href={`/${lang}/search`}
-                className="
-                  px-6 py-3 bg-transparent border-2 border-on-pr-cont text-on-pr-cont rounded-lg
-                  hover:bg-on-pr-cont hover:text-pr-cont transition-colors duration-200
-                  font-medium focus:outline-none focus:ring-2 focus:ring-on-pr-cont focus:ring-offset-2
-                "
-              >
-                {dictionary.navigation.labels.search}
-              </Link>
-            </div>
+                →
+              </span>
+            </Link>
           </div>
         </Section>
-      </article>
+      )}
+
+      {authorCards.length > 0 && (
+        <Section 
+          title={dictionary.sections.authors.ourAuthors}
+          titleLevel="h2"
+          variant='secondary'
+          hasNextSectionTitle={true}
+        >
+          <CardCarousel
+            cards={authorCards}
+            lang={lang}
+            dictionary={dictionary}
+          />
+
+          <div className="text-center mt-8">
+            <Link 
+              href={`/${lang}/authors`}
+              className="inline-flex items-center gap-2 text-pr-cont hover:text-pr-fix font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2 rounded group"
+            >
+              {dictionary.sections.authors.allAuthors}
+              <span 
+                className="transform transition-transform duration-200 group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                →
+              </span>
+            </Link>
+          </div>
+        </Section>
+      )}
+
+      <Section 
+        title={dictionary.sections.home.quickNavigation}
+        titleLevel="h2"
+        variant='primary'
+      >
+        <QuickNavigationSection lang={lang} dictionary={dictionary} />
+      </Section>
     </>
   );
 }
