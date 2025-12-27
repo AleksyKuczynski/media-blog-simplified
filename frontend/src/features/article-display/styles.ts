@@ -79,7 +79,7 @@ export const ARTICLE_LIST_SKELETON_STYLES = {
 export const HERO_ARTICLES_STYLES = {
   container: `grid grid-cols-1 
           2xl:grid-cols-2 
-          py-6 md:py-8 lg:py-12 2xl:px-8 gap-6 lg:gap-8`,
+          pb-6 md:pb-8 lg:pb-12 md:px-8 xl:px-12 gap-6 lg:gap-4 xl:gap-8`,
   
   // Promoted article section
   promoted: {
@@ -90,7 +90,7 @@ export const HERO_ARTICLES_STYLES = {
   latest: {
     wrapper: `grid grid-cols-1 
             lg:max-2xl:grid-cols-3 gap-8 lg:gap-8
-            max-sm:px-4 sm:max-2xl:px-12`,
+            max-sm:px-4`,
   },
   
   // Empty state
@@ -115,8 +115,10 @@ export const STANDARD_CARD_STYLES = {
   
   layouts: {
     regular: 'bg-sf-cont flex flex-col h-full shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
-    promoted: `grid grid-cols-1 items-center
-            md:max-2xl:grid-cols-2`,
+    promoted: `flex flex-col items-center overflow-hidden
+            md:bg-sf md:grid md:rounded-2xl md:shadow-sm md:hover:shadow-xl md:transition-shadow md:duration-200
+            md:max-2xl:grid-cols-2 
+            2xl:grid-cols-1`,
     latest: `w-full bg-sf-cont shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden
             grid 
             max-sm:mx-4 max-sm:max-w-[400]
@@ -129,12 +131,12 @@ export const STANDARD_CARD_STYLES = {
     regular: `w-full ${IMAGE_RATIO_STRING}`,
     promoted: `order-2 md:max-2xl:order-1
             -mt-6 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]
-            md:max-2xl:mt-0
+            md:max-2xl:mt-0 md:max-2xl:rounded-r-2xl
             2xl:-mt-16 2xl:rounded-b-2xl 2xl:shadow-sm`,
     latest: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md`,
   },
 
-  imageElement: 'object-cover group-hover:scale-110 transition-transform duration-300',
+  imageElement: 'object-cover group-hover:scale-105 transition-transform duration-300',
   
   content: {
     regular: `p-4 lg:p-6 flex flex-col flex-grow`,
@@ -142,8 +144,9 @@ export const STANDARD_CARD_STYLES = {
             order-1 md:max-2xl:order-2
             shadow-sm hover:shadow-xl transition-shadow duration-200
             rounded-2xl overflow-hidden 
-            max-w-[400] mx-4 
-            md:mx-0 md:max-2xl:-ml-12 md:w-full md:max-w-full md:h-full
+            max-w-[400] mx-4
+            md:mx-0 md:w-full md:max-w-full md:h-full
+            md:max-2xl:rounded-none
             p-6 lg:p-8 flex flex-col lg:max-xl:justify-center`,
     latest: `flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center
           p-4 lg:p-6 

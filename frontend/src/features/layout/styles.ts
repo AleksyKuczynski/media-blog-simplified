@@ -10,10 +10,10 @@
 export const SECTION_STYLES = {
   wrapper: {
     base: 'w-full pb-6 lg:pb-8 xl:pb-12 relative',
-    primary: 'bg-gradient-to-br from-pr-sf to-pr-fix',
-    secondary: 'bg-gradient-to-br from-sec-sf to-sec-fix',
-    tertiary: 'bg-tr-sf',
-    default: ' bg-gradient-to-br from-sf-hi to-sf-hst',
+    primary: 'bg-gradient-to-br from-pr-fix to-pr-sf',
+    secondary: 'bg-gradient-to-br from-sec-fix to-sec-sf',
+    tertiary: 'bg-gradient-to-br from-tr-fix to-tr-sf',
+    default: ' bg-gradient-to-br from-sf-hst to-sf-hi',
     withNextTitle: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px]',
   },
   container: {
@@ -33,10 +33,10 @@ export const SECTION_STYLES = {
               md:text-5xl 
               lg:text-6xl 
               xl:text-7xl`,
-      primary: 'text-pr-sf',
-      secondary: 'text-sec-sf',
-      tertiary: 'text-tr-sf',
-      default: 'text-sf-hi',
+      primary: 'text-pr-fix',
+      secondary: 'text-sec-fix',
+      tertiary: 'text-tr-fix',
+      default: 'text-sf-hst',
     },
   },
 } as const;
