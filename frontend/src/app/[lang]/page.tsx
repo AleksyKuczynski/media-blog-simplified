@@ -2,6 +2,8 @@
 
 import { Suspense } from 'react';
 import HeroSection from '@/features/article-display/HeroSection';
+import HeroArticles from '@/features/article-display/HeroArticles';
+import { HeroArticlesSkeleton } from '@/features/article-display/HeroArticlesSkeleton';
 import Section from '@/features/layout/Section';
 import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
 import QuickNavigationSection from '@/features/navigation/QuickNavigationSection';
@@ -45,13 +47,24 @@ export default async function HomePage({
         currentPath={`/${lang}`}
       />
 
-      <Suspense fallback={<div className="h-screen bg-sf" />}>
-        <HeroSection 
-          lang={lang} 
-          dictionary={dictionary} 
-          heroSlugs={heroSlugs} 
-        />
-      </Suspense>
+      <HeroSection dictionary={dictionary} />
+
+      {heroSlugs.length > 0 && (
+        <Section 
+          title={dictionary.sections.home.featuredContent}
+          titleLevel="h2"
+          variant='default'
+          hasNextSectionTitle={true}
+        >
+          <Suspense fallback={<HeroArticlesSkeleton latestCount={3} />}>
+            <HeroArticles 
+              slugs={heroSlugs}
+              lang={lang} 
+              dictionary={dictionary}
+            />
+          </Suspense>
+        </Section>
+      )}
 
       {rubricCards.length > 0 && (
         <Section 

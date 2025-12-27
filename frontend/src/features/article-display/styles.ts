@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils/cn';
 
 export const HERO_SECTION_STYLES = {
   // Section wrapper (applied to Section component)
-  section: 'py-8 bg-gradient-to-br from-sf-cont to-sf-hi',
+  section: 'py-8',
   
   // Container
   container: 'container mx-auto px-4',

@@ -10,10 +10,10 @@
 export const SECTION_STYLES = {
   wrapper: {
     base: 'w-full pb-6 lg:pb-8 xl:pb-12 relative',
-    primary: 'bg-pr-sf',
-    secondary: 'bg-sec-sf',
+    primary: 'bg-gradient-to-br from-pr-sf to-pr-fix',
+    secondary: 'bg-gradient-to-br from-sec-sf to-sec-fix',
     tertiary: 'bg-tr-sf',
-    default: 'bg-sf',
+    default: ' bg-gradient-to-br from-sf-hi to-sf-hst',
     withNextTitle: 'pb-16 sm:pb-20 lg:pb-24',
   },
   container: {
@@ -21,13 +21,22 @@ export const SECTION_STYLES = {
     withTitle: 'pt-16 sm:pt-20 lg:pt-24',
   },
   header: {
-    wrapper: 'absolute -top-7 sm:-top-8 md:-top-10 lg:-top-12 left-0 right-0',
+    wrapper: `absolute -top-7 -left-[2px] right-0 
+            sm:-top-8 
+            md:-top-10 md:-left-[3px] 
+            lg:-top-[50px] lg:-left-[4px]
+            xl:-top-[60px] xl:-left-[5px]`,
     title: {
-      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display uppercase pl-1 leading-tight',
+      base: `font-semibold uppercase leading-tight
+              text-3xl 
+              sm:text-4xl 
+              md:text-5xl 
+              lg:text-6xl 
+              xl:text-7xl`,
       primary: 'text-pr-sf',
       secondary: 'text-sec-sf',
       tertiary: 'text-tr-sf',
-      default: 'text-sf',
+      default: 'text-sf-hi',
     },
   },
 } as const;
