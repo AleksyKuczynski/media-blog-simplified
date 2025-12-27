@@ -14,11 +14,11 @@ export const SECTION_STYLES = {
     secondary: 'bg-gradient-to-br from-sec-sf to-sec-fix',
     tertiary: 'bg-tr-sf',
     default: ' bg-gradient-to-br from-sf-hi to-sf-hst',
-    withNextTitle: 'pb-16 sm:pb-20 lg:pb-24',
+    withNextTitle: 'pb-16 md:pb-[72px]',
   },
   container: {
     base: 'container-fluid mx-auto',
-    withTitle: 'pt-16 sm:pt-20 lg:pt-24',
+    withTitle: 'pt-8 md:pt-12',
   },
   header: {
     wrapper: `absolute -top-7 -left-[2px] right-0 
@@ -27,7 +27,7 @@ export const SECTION_STYLES = {
             lg:-top-[50px] lg:-left-[4px]
             xl:-top-[60px] xl:-left-[5px]`,
     title: {
-      base: `font-semibold uppercase leading-tight
+      base: `font-semibold max-md:font-bold uppercase leading-tight
               text-3xl 
               sm:text-4xl 
               md:text-5xl 
