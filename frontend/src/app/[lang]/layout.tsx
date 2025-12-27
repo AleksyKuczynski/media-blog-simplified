@@ -61,7 +61,7 @@ export default async function LanguageLayout({
   const dictionary = getDictionary(lang as Lang)
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="container mx-auto flex flex-col min-h-screen">
       {/* Navigation */}
       <Suspense fallback={
         <div className="h-16 xl:h-24 bg-white border-b border-gray-200 flex items-center">

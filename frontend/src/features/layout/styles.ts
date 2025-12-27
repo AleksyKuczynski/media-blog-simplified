@@ -23,7 +23,7 @@ export const SECTION_STYLES = {
   header: {
     wrapper: 'absolute -top-7 sm:-top-8 md:-top-10 lg:-top-12 left-0 right-0',
     title: {
-      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold uppercase pl-1 leading-tight',
+      base: 'text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display uppercase pl-1 leading-tight',
       primary: 'text-pr-sf',
       secondary: 'text-sec-sf',
       tertiary: 'text-tr-sf',

@@ -15,12 +15,12 @@ export const HERO_SECTION_STYLES = {
   
   // Header
   header: 'text-center mb-12',
-  title: 'text-4xl md:text-5xl font-bold mb-6 text-on-sf',
+  title: 'text-4xl md:text-5xl font-bold font-display mb-6 text-on-sf',
   description: 'text-xl text-on-sf-var max-w-3xl mx-auto leading-relaxed',
   
   // Featured content wrapper
   featuredWrapper: 'mb-8',
-  featuredTitle: 'text-2xl font-semibold mb-6 text-on-sf',
+  featuredTitle: 'text-2xl font-semibold font-display mb-6 text-on-sf',
   
   // Loading state
   loading: {
@@ -184,8 +184,8 @@ export const STANDARD_CARD_STYLES = {
   title: {
     base: 'font-bold mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
     regular: 'line-clamp-3',
-    promoted: 'text-2xl lg:max-xl:text-3xl',
-    latest: 'line-clamp-3 text-lg 2xl:text-xl',
+    promoted: 'text-2xl font-display lg:max-xl:text-3xl',
+    latest: 'line-clamp-3 text-lg font-display 2xl:text-xl',
   },
   
   // Date variants
