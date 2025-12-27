@@ -78,19 +78,20 @@ export const ARTICLE_LIST_SKELETON_STYLES = {
 
 export const HERO_ARTICLES_STYLES = {
   container: `grid grid-cols-1 
-          2xl:grid-cols-2 
+          2xl:grid-cols-2 2xl:gap-12
           pb-6 md:pb-8 lg:pb-12 md:px-8 xl:px-12 gap-6 lg:gap-4 xl:gap-8`,
   
   // Promoted article section
   promoted: {
-    wrapper: 'col-span-full 2xl:col-span-1 pb-12 sm:pb-6',
+    wrapper: 'col-span-full 2xl:col-span-1 sm:pb-6 max-2xl:pb-12',
   },
   
   // Latest articles grid
   latest: {
-    wrapper: `grid grid-cols-1 
-            lg:max-2xl:grid-cols-3 gap-8 lg:gap-8
-            max-sm:px-4`,
+    wrapper: `grid grid-cols-1 gap-8
+            lg:max-2xl:grid-cols-3
+            max-sm:px-4
+            2xl:pb-6 2xl:gap-12`,
   },
   
   // Empty state
@@ -119,7 +120,7 @@ export const STANDARD_CARD_STYLES = {
             md:bg-sf md:grid md:rounded-2xl md:shadow-sm md:hover:shadow-xl md:transition-shadow md:duration-200
             md:max-2xl:grid-cols-2 
             2xl:grid-cols-1`,
-    latest: `w-full bg-sf-cont shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden
+    latest: `w-full h-full bg-sf-cont shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden
             grid 
             max-sm:mx-4 max-sm:max-w-[400]
             sm:max-lg:grid-cols-3
@@ -130,9 +131,9 @@ export const STANDARD_CARD_STYLES = {
     base: `relative overflow-hidden bg-sf-hi`,
     regular: `w-full ${IMAGE_RATIO_STRING}`,
     promoted: `order-2 md:max-2xl:order-1
-            -mt-6 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]
-            md:max-2xl:mt-0 md:max-2xl:rounded-r-2xl
-            2xl:-mt-16 2xl:rounded-b-2xl 2xl:shadow-sm`,
+            max-md:-mt-8 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]
+            md:max-2xl:rounded-r-2xl
+            2xl:rounded-2xl`,
     latest: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md`,
   },
 
@@ -158,7 +159,7 @@ export const STANDARD_CARD_STYLES = {
   title: {
     base: 'font-bold mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
     regular: 'line-clamp-3',
-    promoted: 'text-2xl font-display lg:max-xl:text-3xl lg:grow',
+    promoted: 'text-2xl font-display lg:max-xl:text-3xl 2xl:text-4xl lg:grow',
     latest: 'line-clamp-3 text-lg font-display 2xl:text-xl',
   },
   
@@ -174,7 +175,7 @@ export const STANDARD_CARD_STYLES = {
   description: {
     base: 'text-sm lg:text-base line-clamp-3 mb-4 text-on-sf-var',
     regular: 'max-sm:hidden',
-    promoted: 'max-sm:hidden xl:grow',
+    promoted: 'max-sm:hidden xl:grow 2xl:hidden',
     latest: 'max-md:hidden',
   },
   
