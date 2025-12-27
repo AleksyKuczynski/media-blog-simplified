@@ -14,7 +14,7 @@ export const SECTION_STYLES = {
     secondary: 'bg-gradient-to-br from-sec-sf to-sec-fix',
     tertiary: 'bg-tr-sf',
     default: ' bg-gradient-to-br from-sf-hi to-sf-hst',
-    withNextTitle: 'pb-16 md:pb-[72px]',
+    withNextTitle: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px]',
   },
   container: {
     base: 'container-fluid mx-auto',
