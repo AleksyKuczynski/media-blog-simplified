@@ -106,23 +106,25 @@ export const HERO_ARTICLES_SKELETON_STYLES = {
 // ================================================================
 
 export const STANDARD_CARD_STYLES = {
-  base: '',
+  base: 'w-full',
 
-  link: 'block group',
+  link: 'block group flex flex-col items-center',
   linkPromoted: 'lg:max-xl:hover:scale-100',
   
   layouts: {
     regular: 'bg-sf-cont flex flex-col h-full shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
-    promoted: 'grid grid-cols-1 md:grid-cols-2 -gap-4 lg:gap-6',
+    promoted: `flex flex-col items-center
+            lg:grid lg:grid-cols-2 lg:gap-6 `,
     latest: `w-full bg-sf-cont shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden
-            flex flex-col items-center md:flex-row 
+             
             mx-4 max-w-[400]`,
   },
   
   image: {
     base: `relative overflow-hidden bg-sf-hi`,
     regular: `w-full ${IMAGE_RATIO_STRING}`,
-    promoted: `order-2 -mt-6 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]`,
+    promoted: `order-2 lg:order-1
+            -mt-6 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]`,
     latest: `w-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md`,
   },
 
@@ -130,7 +132,13 @@ export const STANDARD_CARD_STYLES = {
   
   content: {
     regular: `p-4 lg:p-6 flex flex-col flex-grow`,
-    promoted: `bg-sf z-10 order-1 shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden mx-4 p-6 lg:p-6 flex flex-col lg:max-xl:w-1/2 lg:max-xl:justify-center`,
+    promoted: `bg-sf z-10 
+            order-1 lg:order-2
+            shadow-sm hover:shadow-xl transition-shadow duration-200
+            rounded-2xl overflow-hidden 
+            max-w-[400] mx-4 
+            lg:w-full lg:max-w-full
+            p-6 lg:p-6 flex flex-col lg:max-xl:w-1/2 lg:max-xl:justify-center`,
     latest: `p-4 lg:p-6 flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center`,
   },
   
