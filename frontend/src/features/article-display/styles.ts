@@ -78,17 +78,19 @@ export const ARTICLE_LIST_SKELETON_STYLES = {
 
 export const HERO_ARTICLES_STYLES = {
   container: `grid grid-cols-1 
-          xl:grid-cols-2 
-          py-6 md:py-8 lg:py-12 sm:px-6 2xl:px-8 gap-6 lg:gap-8`,
+          2xl:grid-cols-2 
+          py-6 md:py-8 lg:py-12 2xl:px-8 gap-6 lg:gap-8`,
   
   // Promoted article section
   promoted: {
-    wrapper: 'col-span-full xl:col-span-1 pb-12 md:pb-0',
+    wrapper: 'col-span-full 2xl:col-span-1 pb-12 sm:pb-6',
   },
   
   // Latest articles grid
   latest: {
-    wrapper: 'grid grid-cols-1 md:max-xl:grid-cols-3 gap-8 lg:gap-8',
+    wrapper: `grid grid-cols-1 
+            lg:max-2xl:grid-cols-3 gap-8 lg:gap-8
+            max-sm:px-4 sm:max-2xl:px-12`,
   },
   
   // Empty state
@@ -109,23 +111,27 @@ export const STANDARD_CARD_STYLES = {
   base: 'w-full',
 
   link: 'block group flex flex-col items-center',
-  linkPromoted: 'lg:max-xl:hover:scale-100',
+  linkPromoted: '',
   
   layouts: {
     regular: 'bg-sf-cont flex flex-col h-full shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
-    promoted: `flex flex-col items-center
-            lg:grid lg:grid-cols-2 lg:gap-6 `,
+    promoted: `grid grid-cols-1 items-center
+            md:max-2xl:grid-cols-2`,
     latest: `w-full bg-sf-cont shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden
-             
-            mx-4 max-w-[400]`,
+            grid 
+            max-sm:mx-4 max-sm:max-w-[400]
+            sm:max-lg:grid-cols-3
+            2xl:grid-cols-3`,
   },
   
   image: {
     base: `relative overflow-hidden bg-sf-hi`,
     regular: `w-full ${IMAGE_RATIO_STRING}`,
-    promoted: `order-2 lg:order-1
-            -mt-6 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]`,
-    latest: `w-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md`,
+    promoted: `order-2 md:max-2xl:order-1
+            -mt-6 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]
+            md:max-2xl:mt-0
+            2xl:-mt-16 2xl:rounded-b-2xl 2xl:shadow-sm`,
+    latest: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md`,
   },
 
   imageElement: 'object-cover group-hover:scale-110 transition-transform duration-300',
@@ -133,20 +139,23 @@ export const STANDARD_CARD_STYLES = {
   content: {
     regular: `p-4 lg:p-6 flex flex-col flex-grow`,
     promoted: `bg-sf z-10 
-            order-1 lg:order-2
+            order-1 md:max-2xl:order-2
             shadow-sm hover:shadow-xl transition-shadow duration-200
             rounded-2xl overflow-hidden 
             max-w-[400] mx-4 
-            lg:w-full lg:max-w-full
-            p-6 lg:p-6 flex flex-col lg:max-xl:w-1/2 lg:max-xl:justify-center`,
-    latest: `p-4 lg:p-6 flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center`,
+            md:mx-0 md:max-2xl:-ml-12 md:w-full md:max-w-full md:h-full
+            p-6 lg:p-8 flex flex-col lg:max-xl:justify-center`,
+    latest: `flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center
+          p-4 lg:p-6 
+          sm:max-lg:col-span-2
+          2xl:col-span-2`,
   },
   
   // Title variants
   title: {
     base: 'font-bold mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
     regular: 'line-clamp-3',
-    promoted: 'text-2xl font-display lg:max-xl:text-3xl',
+    promoted: 'text-2xl font-display lg:max-xl:text-3xl lg:grow',
     latest: 'line-clamp-3 text-lg font-display 2xl:text-xl',
   },
   
@@ -163,7 +172,7 @@ export const STANDARD_CARD_STYLES = {
     base: 'text-sm lg:text-base line-clamp-3 mb-4 text-on-sf-var',
     regular: 'max-sm:hidden',
     promoted: 'max-sm:hidden xl:grow',
-    latest: 'max-sm:hidden',
+    latest: 'max-md:hidden',
   },
   
   // Read more
