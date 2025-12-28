@@ -19,9 +19,9 @@ html {
 :root {
   // Surface hierarchy
   --color-surface: #ffffff;
-  --color-surface-container: #f4f4f4;
-  --color-surface-container-high: #d8d8d8;
-  --color-surface-container-highest: #cacaca;
+  --color-surface-container: #c6c8ce;
+  --color-surface-container-high: #dde1e8;
+  --color-surface-container-highest: #edeef4;
 
   // Primary hierarchy
   --color-primary-container: #077777;
@@ -63,8 +63,8 @@ html {
 @media (prefers-color-scheme: dark) {
   :root {
     // Surface hierarchy
-    --color-surface: #18222d;
-    --color-surface-container: #06090c;
+    --color-surface: #10151c;
+    --color-surface-container: #18222d;
     --color-surface-container-high: #2b3949;
     --color-surface-container-highest: #324454;
 
