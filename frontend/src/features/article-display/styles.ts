@@ -159,8 +159,8 @@ export const STANDARD_CARD_STYLES = {
   title: {
     base: 'font-bold mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
     regular: 'line-clamp-3',
-    promoted: 'text-2xl font-display lg:text-4xl',
-    latest: `line-clamp-5 font-display 
+    promoted: 'text-2xl font-display lg:text-3xl xl:text-4xl',
+    latest: `line-clamp-4 font-display 
             text-lg sm:text-xl 2xl:text-2xl`,
   },
   
@@ -176,8 +176,8 @@ export const STANDARD_CARD_STYLES = {
   description: {
     base: 'text-sm lg:text-base line-clamp-3 mb-4 text-on-sf-var',
     regular: 'max-sm:hidden',
-    promoted: 'max-md:hidden xl:grow 2xl:hidden',
-    latest: 'max-md:hidden',
+    promoted: 'max-md:hidden xl:grow lg:text-xl lg:pt-4 2xl:hidden',
+    latest: 'max-md:hidden xl:text-lg',
   },
   
   // Footer (Date + Read More)
