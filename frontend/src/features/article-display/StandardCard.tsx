@@ -61,13 +61,6 @@ export function StandardCard({
             {translation.title}
           </h3>
           
-          <time className={cn(
-            STANDARD_CARD_STYLES.date.base,
-            STANDARD_CARD_STYLES.date[layout]
-          )}>
-            {formattedDate}
-          </time>
-          
           {translation.description && (
             <p className={cn(
               STANDARD_CARD_STYLES.description.base,
@@ -76,6 +69,13 @@ export function StandardCard({
               {translation.description}
             </p>
           )}
+          
+          <time className={cn(
+            STANDARD_CARD_STYLES.date.base,
+            STANDARD_CARD_STYLES.date[layout]
+          )}>
+            {formattedDate}
+          </time>
           
           <div className={STANDARD_CARD_STYLES.readMore}>
             <span>{dictionary.common.actions.readMore}</span>

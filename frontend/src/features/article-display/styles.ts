@@ -90,7 +90,7 @@ export const HERO_ARTICLES_STYLES = {
   latest: {
     wrapper: `grid grid-cols-1 gap-8
             lg:max-2xl:grid-cols-3
-            max-sm:px-4
+            px-4 md:px-0
             2xl:pb-6 2xl:gap-12`,
   },
   
@@ -124,7 +124,7 @@ export const STANDARD_CARD_STYLES = {
             grid 
             max-sm:mx-4 max-sm:max-w-[400]
             sm:max-lg:grid-cols-3
-            2xl:grid-cols-3`,
+            2xl:grid-cols-5`,
   },
   
   image: {
@@ -134,7 +134,7 @@ export const STANDARD_CARD_STYLES = {
             max-md:-mt-8 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]
             md:max-2xl:rounded-r-2xl
             2xl:rounded-2xl`,
-    latest: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md`,
+    latest: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md 2xl:col-span-2`,
   },
 
   imageElement: 'object-cover group-hover:scale-105 transition-transform duration-300',
@@ -143,39 +143,40 @@ export const STANDARD_CARD_STYLES = {
     regular: `p-4 lg:p-6 flex flex-col flex-grow`,
     promoted: `bg-sf z-10 
             order-1 md:max-2xl:order-2
-            shadow-sm hover:shadow-xl transition-shadow duration-200
-            rounded-2xl overflow-hidden 
-            max-w-[400] mx-4
+            max-md:shadow-sm max-md:hover:shadow-xl max-md:transition-shadow max-md:duration-200
+            max-md:rounded-2xl max-md:overflow-hidden 
+            max-md:max-w-[400] max-md:mx-4
             md:mx-0 md:w-full md:max-w-full md:h-full
             md:max-2xl:rounded-none
             p-6 lg:p-8 flex flex-col lg:max-xl:justify-center`,
     latest: `flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center
           p-4 lg:p-6 
           sm:max-lg:col-span-2
-          2xl:col-span-2`,
+          2xl:col-span-3`,
   },
   
   // Title variants
   title: {
     base: 'font-bold mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
     regular: 'line-clamp-3',
-    promoted: 'text-2xl font-display lg:max-xl:text-3xl 2xl:text-4xl lg:grow',
-    latest: 'line-clamp-3 text-lg font-display 2xl:text-xl',
+    promoted: 'text-2xl font-display lg:text-4xl',
+    latest: `line-clamp-5 font-display 
+            text-lg sm:text-xl 2xl:text-2xl`,
   },
   
   // Date variants
   date: {
     base: 'text-xs lg:text-sm text-on-sf-var',
     regular: 'mb-2',
-    promoted: 'sm:max-lg:grow',
-    latest: 'sm:max-lg:grow xl:grow',
+    promoted: 'grow',
+    latest: 'grow',
   },
   
   // Description variants
   description: {
     base: 'text-sm lg:text-base line-clamp-3 mb-4 text-on-sf-var',
     regular: 'max-sm:hidden',
-    promoted: 'max-sm:hidden xl:grow 2xl:hidden',
+    promoted: 'max-md:hidden xl:grow 2xl:hidden',
     latest: 'max-md:hidden',
   },
   
