@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils/cn';
 import { ChevronRightIcon } from '../../shared/primitives/Icons';
 import { StandardCardProps, getImageDimensions } from './interfaces';
 import { STANDARD_CARD_STYLES } from './styles';
+import { ActionLink } from '@/shared/primitives/ActionLink';
 
 export function StandardCard({ 
   article, 
@@ -77,10 +78,11 @@ export function StandardCard({
             {formattedDate}
           </time>
           
-          <div className={STANDARD_CARD_STYLES.readMore}>
-            <span>{dictionary.common.actions.readMore}</span>
-            <ChevronRightIcon className={STANDARD_CARD_STYLES.readMoreIcon} />
-          </div>
+          <ActionLink 
+            variant="default"
+          >
+            {dictionary.common.actions.readMore}
+          </ActionLink>
         </div>
       </article>
     </Link>

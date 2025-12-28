@@ -12,7 +12,7 @@ import { getDictionary, Lang } from '@/config/i18n';
 import { fetchHeroSlugs } from '@/api/directus';
 import { transformRubricsToCarousel } from '@/api/directus/transformToCarouselCards';
 import { transformAuthorsToCarousel } from '@/api/directus/transformToCarouselCards';
-import Link from 'next/link';
+import { ActionLink } from '@/shared/primitives/ActionLink';
 
 export const revalidate = 3600;
 
@@ -85,20 +85,12 @@ export default async function HomePage({
             dictionary={dictionary}
           />
 
-          <div className="text-center mt-8">
-            <Link 
-              href={`/${lang}/rubrics`}
-              className="inline-flex items-center gap-2 text-pr-cont hover:text-pr-fix font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2 rounded group"
-            >
-              {dictionary.sections.home.viewAllRubrics}
-              <span 
-                className="transform transition-transform duration-200 group-hover:translate-x-1"
-                aria-hidden="true"
-              >
-                →
-              </span>
-            </Link>
-          </div>
+          <ActionLink 
+            href={`/${lang}/rubrics`}
+            variant="primary"
+          >
+            {dictionary.sections.home.viewAllRubrics}
+          </ActionLink>
         </Section>
       )}
 
@@ -115,20 +107,12 @@ export default async function HomePage({
             dictionary={dictionary}
           />
 
-          <div className="text-center mt-8">
-            <Link 
-              href={`/${lang}/authors`}
-              className="inline-flex items-center gap-2 text-pr-cont hover:text-pr-fix font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2 rounded group"
-            >
-              {dictionary.sections.authors.allAuthors}
-              <span 
-                className="transform transition-transform duration-200 group-hover:translate-x-1"
-                aria-hidden="true"
-              >
-                →
-              </span>
-            </Link>
-          </div>
+          <ActionLink 
+            href={`/${lang}/authors`}
+            variant="secondary"
+          >
+            {dictionary.sections.authors.allAuthors}
+          </ActionLink>
         </Section>
       )}
 
