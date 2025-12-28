@@ -83,7 +83,7 @@ export const HERO_ARTICLES_STYLES = {
   
   // Promoted article section
   promoted: {
-    wrapper: 'col-span-full 2xl:col-span-1 sm:pb-6 max-2xl:pb-12',
+    wrapper: 'col-span-full 2xl:col-span-1 sm:pb-6 max-2xl:pb-12 2xl:items-stretch',
   },
   
   // Latest articles grid
@@ -109,7 +109,7 @@ export const HERO_ARTICLES_SKELETON_STYLES = {
 // ================================================================
 
 export const STANDARD_CARD_STYLES = {
-  base: 'w-full',
+  base: 'w-full h-full',
 
   link: 'block group flex flex-col items-center',
   linkPromoted: '',
@@ -179,10 +179,6 @@ export const STANDARD_CARD_STYLES = {
     promoted: 'max-md:hidden xl:grow 2xl:hidden',
     latest: 'max-md:hidden',
   },
-  
-  // Read more
-  readMore: 'text-xs lg:text-sm font-medium transition-colors duration-200 flex justify-end items-end text-pr-cont hover:text-pr-fix',
-  readMoreIcon: 'ml-1 w-3 h-3',
 } as const;
 
 export const STANDARD_CARD_SKELETON_STYLES = {
