@@ -18,7 +18,7 @@ const VARIANT_STYLES = {
   default: 'text-pr-cont hover:text-pr-fix',
 } as const;
 
-const BASE_STYLES = 'text-xs lg:text-sm font-medium transition-colors duration-200 flex justify-end items-end';
+const BASE_STYLES = 'font-medium transition-colors duration-200 flex justify-end items-end';
 const INNER_STYLES = 'inline-flex items-center gap-2 group';
 
 export function ActionLink({ 

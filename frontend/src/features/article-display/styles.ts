@@ -83,7 +83,7 @@ export const HERO_ARTICLES_STYLES = {
   
   // Promoted article section
   promoted: {
-    wrapper: 'col-span-full 2xl:col-span-1 sm:pb-6 max-2xl:pb-12 2xl:items-stretch',
+    wrapper: 'col-span-full 2xl:col-span-1 2xl:h-full sm:pb-6 max-2xl:pb-12',
   },
   
   // Latest articles grid
@@ -112,14 +112,14 @@ export const STANDARD_CARD_STYLES = {
   base: 'w-full h-full',
 
   link: 'block group flex flex-col items-center',
-  linkPromoted: '',
+  linkPromoted: '2xl:h-full',
   
   layouts: {
     regular: 'bg-sf-cont flex flex-col h-full shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
     promoted: `flex flex-col items-center overflow-hidden
             md:bg-sf md:grid md:rounded-2xl md:shadow-sm md:hover:shadow-xl md:transition-shadow md:duration-200
             md:max-2xl:grid-cols-2 
-            2xl:grid-cols-1`,
+            2xl:grid-cols-1 2xl:h-full`,
     latest: `w-full h-full bg-sf-cont shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden
             grid 
             max-sm:mx-4 max-sm:max-w-[400]
@@ -166,10 +166,10 @@ export const STANDARD_CARD_STYLES = {
   
   // Date variants
   date: {
-    base: 'text-xs lg:text-sm text-on-sf-var',
-    regular: 'mb-2',
-    promoted: 'grow',
-    latest: 'grow',
+    base: ' text-on-sf-var',
+    regular: '',
+    promoted: '',
+    latest: '',
   },
   
   // Description variants
@@ -179,12 +179,21 @@ export const STANDARD_CARD_STYLES = {
     promoted: 'max-md:hidden xl:grow 2xl:hidden',
     latest: 'max-md:hidden',
   },
+  
+  // Footer (Date + Read More)
+  footer: {
+    base: 'flex items-end justify-between gap-4 mt-auto max-lg:text-xs lg-max-xl:text-sm',
+    regular: '',
+    promoted: ' pt-4',
+    latest: ' pt-2',
+  },
 } as const;
 
 export const STANDARD_CARD_SKELETON_STYLES = {
   base: STANDARD_CARD_STYLES.base,
   layouts: STANDARD_CARD_STYLES.layouts,
   content: STANDARD_CARD_STYLES.content,
+  footer: 'flex items-end justify-between gap-4 mt-auto',
   
   image: {
     regular: cn(STANDARD_CARD_STYLES.image.base, STANDARD_CARD_STYLES.image.regular, 'bg-sf-hi animate-pulse'),
@@ -194,7 +203,7 @@ export const STANDARD_CARD_SKELETON_STYLES = {
   
   title: 'h-5 bg-on-sf/10 rounded mb-2 animate-pulse',
   titleSecond: 'h-5 w-3/4 bg-on-sf/10 rounded mb-2 animate-pulse',
-  date: 'h-4 w-24 bg-on-sf/10 rounded mb-2 animate-pulse',
+  date: 'h-4 w-24 bg-on-sf/10 rounded animate-pulse',
   description: 'h-4 bg-on-sf/10 rounded mb-1 animate-pulse',
   readMore: 'h-4 w-20 bg-on-sf/10 rounded animate-pulse',
 } as const;

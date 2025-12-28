@@ -71,18 +71,24 @@ export function StandardCard({
             </p>
           )}
           
-          <time className={cn(
-            STANDARD_CARD_STYLES.date.base,
-            STANDARD_CARD_STYLES.date[layout]
+          {/* Footer: Date + Read More Link */}
+          <div className={cn(
+            STANDARD_CARD_STYLES.footer.base,
+            STANDARD_CARD_STYLES.footer[layout]
           )}>
-            {formattedDate}
-          </time>
-          
-          <ActionLink 
-            variant="default"
-          >
-            {dictionary.common.actions.readMore}
-          </ActionLink>
+            <time className={cn(
+              STANDARD_CARD_STYLES.date.base,
+              STANDARD_CARD_STYLES.date[layout]
+            )}>
+              {formattedDate}
+            </time>
+            
+            {layout !== 'regular' && (
+              <ActionLink variant="default">
+                {dictionary.common.actions.readMore}
+              </ActionLink>
+            )}
+          </div>
         </div>
       </article>
     </Link>
