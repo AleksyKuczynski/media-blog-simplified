@@ -254,9 +254,8 @@ export default async function ArticlePage({
           dictionary={dictionary}
         />
         
-        <Section 
+        <article 
           className="container overflow-x-hidden max-w-7xl mx-auto px-2 md:px-4 lg:pb-16"
-          as="article"
           itemScope
           itemType="https://schema.org/Article"
         >
@@ -310,7 +309,7 @@ export default async function ArticlePage({
 
             <ScrollToTopButton />
           </Suspense>
-        </Section>
+        </article>
 
         <Section
           as="div"
