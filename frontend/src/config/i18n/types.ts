@@ -326,6 +326,7 @@ export interface SectionHome {
   readonly featuredContent: string;
   readonly latestUpdates: string;
   readonly exploreRubrics: string;
+  readonly viewAllArticles: string;
   readonly viewAllRubrics: string;
   readonly featuredRubrics: string;
   readonly featuredDescription: string;

@@ -293,6 +293,7 @@ export const dictionaryEN: Dictionary = {
       featuredContent: 'Featured',
       latestUpdates: 'Latest Updates',
       exploreRubrics: 'Explore Rubrics',
+      viewAllArticles: 'View All Articles',
       viewAllRubrics: 'View All Rubrics',
       featuredRubrics: 'Featured Rubrics',
       featuredDescription: 'Recommended materials',

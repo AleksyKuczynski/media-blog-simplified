@@ -295,6 +295,7 @@ const dictionaryRU: Dictionary = {
       featuredContent: 'Избранное',
       latestUpdates: 'Последние обновления',
       exploreRubrics: 'Изучить рубрики',
+      viewAllArticles: 'Посмотреть все статьи',
       viewAllRubrics: 'Посмотреть все рубрики',
       featuredRubrics: 'Избранные рубрики',
       featuredDescription: 'Рекомендуемые материалы',

@@ -63,6 +63,12 @@ export default async function HomePage({
               dictionary={dictionary}
             />
           </Suspense>
+
+          <ActionLink 
+            href={`/${lang}/articles`}
+          >
+            {dictionary.sections.home.viewAllArticles}
+          </ActionLink>
         </Section>
       )}
 
