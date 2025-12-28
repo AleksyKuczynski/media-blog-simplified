@@ -54,7 +54,7 @@ export default async function RootLayout({
         {/* Google Analytics 4 - Global analytics with Consent Mode v2 */}
         {googleAnalyticsId && <GoogleAnalyticsScript measurementId={googleAnalyticsId} />}
       </head>
-      <body className="flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+      <body className="flex flex-col bg-sf min-h-screen">
         {/* Analytics noscript fallbacks - required in body */}
         {yandexMetrikaId && <YandexMetrikaNoScript counterId={yandexMetrikaId} />}
         {googleAnalyticsId && <GoogleAnalyticsNoScript measurementId={googleAnalyticsId} />}
