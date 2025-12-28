@@ -44,7 +44,7 @@ export function ActionLink({
       {href ? (
         <Link 
           href={href}
-          className={cn(INNER_STYLES, VARIANT_STYLES[variant], 'uppercase')}
+          className={cn(INNER_STYLES, VARIANT_STYLES[variant], 'uppercase pr-4 md:pr-6 xl:pr-8')}
         >
           {content}
         </Link>

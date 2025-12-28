@@ -79,7 +79,7 @@ export const ARTICLE_LIST_SKELETON_STYLES = {
 export const HERO_ARTICLES_STYLES = {
   container: `grid grid-cols-1 
           2xl:grid-cols-2 2xl:gap-12
-          pb-6 md:pb-8 lg:pb-12 md:px-8 xl:px-12 gap-6 lg:gap-4 xl:gap-8`,
+          pb-6 md:pb-8 md:px-8 xl:px-12 gap-6 lg:gap-4 xl:gap-8`,
   
   // Promoted article section
   promoted: {
@@ -174,7 +174,7 @@ export const STANDARD_CARD_STYLES = {
   
   // Description variants
   description: {
-    base: 'text-sm lg:text-base line-clamp-3 mb-4 text-on-sf-var',
+    base: 'text-sm md:text-base line-clamp-3 mb-4 text-on-sf-var',
     regular: 'max-sm:hidden',
     promoted: 'max-md:hidden xl:grow lg:text-xl lg:pt-4 2xl:hidden',
     latest: 'max-md:hidden xl:text-lg',
@@ -182,7 +182,7 @@ export const STANDARD_CARD_STYLES = {
   
   // Footer (Date + Read More)
   footer: {
-    base: 'flex items-end justify-between gap-4 mt-auto max-lg:text-xs lg-max-xl:text-sm',
+    base: 'flex items-end justify-between gap-4 mt-auto max-lg:text-xs lg:max-xl:text-sm',
     regular: '',
     promoted: ' pt-4',
     latest: ' pt-2',
