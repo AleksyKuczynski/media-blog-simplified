@@ -3,64 +3,73 @@
 import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
 import { cn } from '@/lib/utils/cn';
 
+type CardType = 'article' | 'rubric' | 'author';
+
 // ================================================================
-// CAROUSEL WRAPPER STYLES (from RELATED_CAROUSEL_STYLES)
+// CAROUSEL WRAPPER STYLES - Dynamic based on card type
 // ================================================================
 
-export const CAROUSEL_STYLES = {
-  // Outer wrapper
-  wrapper: cn(
-    'relative',
-    'w-full',
-  ),
+export function getCarouselStyles(cardType: CardType) {
+  // Card width variations:
+  // - author: 4 cards fit on xl/2xl → ~23% width (accounting for gaps)
+  // - rubric: 6 cards fit on xl/2xl → ~15% width (accounting for gaps)
+  // - article: default scrollable
   
-  // Scroll container
-  scrollContainer: cn(
-    'flex gap-6 overflow-x-auto scrollbar-hide',
-    'snap-x snap-mandatory scroll-smooth',
-    'px-4 sm:px-6 2xl:px-8',
-    ' py-5', // Vertical padding to show shadows - should be equal to vertical margin of gradients
-    'scroll-px-4 sm:scroll-px-6 2xl:scroll-px-8' // Scroll snap padding (matches visual padding)
-  ),
-  
-  // Individual card wrapper
-  cardWrapper: cn(
-    'flex-none w-[200px] sm:w-[220px] lg:w-[240px]',
-    'snap-start'
-  ),
-  
-  // Left gradient indicator
-  gradientLeft: cn(
-    'absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-10',
-    'bg-gradient-to-r from-sf-hst to-transparent',
-    'transition-opacity duration-200',
-    'my-5' // Vertical margin to compensating scrollContainer vertical padding
-  ),
-  
-  // Right gradient indicator
-  gradientRight: cn(
-    'absolute right-0 top-0 bottom-0 w-8 pointer-events-none z-10',
-    'bg-gradient-to-l from-sf-hst to-transparent',
-    'transition-opacity duration-200',
-    'my-5' // Vertical margin to compensating scrollContainer vertical padding
-  ),
-  
-  // Navigation buttons
-  navButton: {
-    base: cn(
-      'absolute top-1/2 -translate-y-1/2 z-20',
-      'bg-sf-cont hover:bg-sf-hi',
-      'rounded-full p-2 shadow-lg',
-      'transition-all duration-200',
-      'opacity-0 group-hover:opacity-100',
-      'disabled:opacity-0 disabled:cursor-not-allowed',
-      'hidden lg:flex items-center justify-center'
+  const cardWrapperWidths = {
+    article: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px]',
+    rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] xl:w-[15%] 2xl:w-[15%]',
+    author: 'flex-none w-[220px] sm:w-[240px] lg:w-[260px] xl:w-[23%] 2xl:w-[23%]',
+  };
+
+  return {
+    wrapper: cn(
+      'relative',
+      'w-full',
     ),
-    left: 'left-4',
-    right: 'right-4',
-    icon: 'w-6 h-6 text-on-sf',
-  },
-} as const;
+    
+    scrollContainer: cn(
+      'flex gap-6 overflow-x-auto scrollbar-hide',
+      'snap-x snap-mandatory scroll-smooth',
+      'px-4 sm:px-6 2xl:px-8',
+      'py-5',
+      'scroll-px-4 sm:scroll-px-6 2xl:scroll-px-8'
+    ),
+    
+    cardWrapper: cn(
+      cardWrapperWidths[cardType],
+      'snap-start'
+    ),
+    
+    gradientLeft: cn(
+      'absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-10',
+      'bg-gradient-to-r from-sf-hst to-transparent',
+      'transition-opacity duration-200',
+      'my-5'
+    ),
+    
+    gradientRight: cn(
+      'absolute right-0 top-0 bottom-0 w-8 pointer-events-none z-10',
+      'bg-gradient-to-l from-sf-hst to-transparent',
+      'transition-opacity duration-200',
+      'my-5'
+    ),
+    
+    navButton: {
+      base: cn(
+        'absolute top-1/2 -translate-y-1/2 z-20',
+        'bg-sf-cont hover:bg-sf-hi',
+        'rounded-full p-2 shadow-lg',
+        'transition-all duration-200',
+        'opacity-0 group-hover:opacity-100',
+        'disabled:opacity-0 disabled:cursor-not-allowed',
+        'hidden lg:flex items-center justify-center'
+      ),
+      left: 'left-4',
+      right: 'right-4',
+      icon: 'w-6 h-6 text-on-sf',
+    },
+  };
+}
 
 // ================================================================
 // ARTICLE CAROUSEL CARD STYLES (from RELATED_CARD_STYLES)

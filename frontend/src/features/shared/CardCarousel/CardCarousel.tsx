@@ -4,7 +4,7 @@
 
 import { useRef, useState, useEffect } from 'react';
 import { Lang, Dictionary } from '@/config/i18n';
-import { CAROUSEL_STYLES } from './styles';
+import { getCarouselStyles } from './styles';
 import ArticleCarouselCard from './ArticleCarouselCard';
 import RubricCarouselCard from './RubricCarouselCard';
 import AuthorCarouselCard from './AuthorCarouselCard';
@@ -59,6 +59,10 @@ export default function CardCarousel({
   const [canScrollRight, setCanScrollRight] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  // Determine card type from first card
+  const cardType = cards[0]?.type || 'article';
+  const CAROUSEL_STYLES = getCarouselStyles(cardType);
+
   const updateScrollButtons = () => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -87,7 +91,7 @@ export default function CardCarousel({
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    const cardWidth = 320; // Average card width
+    const cardWidth = cardType === 'author' ? 280 : cardType === 'rubric' ? 240 : 320;
     const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
 
     container.scrollBy({
@@ -195,16 +199,9 @@ export default function CardCarousel({
           onClick={() => scroll('left')}
           className={`${CAROUSEL_STYLES.navButton.base} ${CAROUSEL_STYLES.navButton.left}`}
           style={{ opacity: isHovered ? 1 : 0 }}
-          aria-label="Scroll to previous items"
-          type="button"
+          aria-label="Scroll left"
         >
-          <svg 
-            className={CAROUSEL_STYLES.navButton.icon}
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
+          <svg className={CAROUSEL_STYLES.navButton.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
@@ -215,26 +212,13 @@ export default function CardCarousel({
           onClick={() => scroll('right')}
           className={`${CAROUSEL_STYLES.navButton.base} ${CAROUSEL_STYLES.navButton.right}`}
           style={{ opacity: isHovered ? 1 : 0 }}
-          aria-label="Scroll to next items"
-          type="button"
+          aria-label="Scroll right"
         >
-          <svg 
-            className={CAROUSEL_STYLES.navButton.icon}
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
+          <svg className={CAROUSEL_STYLES.navButton.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </button>
       )}
-
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </div>
   );
 }

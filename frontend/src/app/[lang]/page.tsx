@@ -29,11 +29,11 @@ export default async function HomePage({
       console.error('Error fetching hero articles:', error);
       return [];
     }),
-    transformRubricsToCarousel(lang, 8).catch(error => {
+    transformRubricsToCarousel(lang, 6).catch(error => {
       console.error('Error transforming rubrics:', error);
       return [];
     }),
-    transformAuthorsToCarousel(lang, 8).catch(error => {
+    transformAuthorsToCarousel(lang, 4).catch(error => {
       console.error('Error transforming authors:', error);
       return [];
     })
