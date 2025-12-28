@@ -166,6 +166,7 @@ export interface FullArticle {
   updated_at: string | null;
   external_link: string | null;
   article_heading_img: string;
+  toc: boolean;
   rubric_slug: ArticleRubric;
   translations: ArticleTranslation[];
   authors: AuthorDetails[];

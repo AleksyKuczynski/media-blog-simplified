@@ -286,7 +286,7 @@ export default async function ArticlePage({
               url={currentArticleUrl}
             />
 
-            {tocItems.length > 0 && (
+            {article.toc && tocItems.length > 0 && (
               <Collapsible
                 title={dictionary.content.labels.tableOfContents}
                 ariaLabel={dictionary.content.labels.tableOfContents}

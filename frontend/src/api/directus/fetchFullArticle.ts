@@ -20,6 +20,7 @@ export async function fetchFullArticle(
       'updated_at',
       'external_link',
       'article_heading_img',
+      'toc',
       
       // Rubric fields
       'rubric_slug.slug',
@@ -118,6 +119,7 @@ export async function fetchFullArticle(
       updated_at: article.updated_at,
       external_link: article.external_link,
       article_heading_img: article.article_heading_img,
+      toc: article.toc,
       rubric_slug: {
         slug: article.rubric_slug?.slug || '',
         nav_icon: article.rubric_slug?.nav_icon
