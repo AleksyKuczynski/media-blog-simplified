@@ -3,9 +3,20 @@
 import { Lang } from "@/config/i18n";
 import { AuthorDetails, DIRECTUS_URL } from "./index";
 
-export async function fetchAllAuthors(lang: Lang): Promise<AuthorDetails[]> {
+export async function fetchAllAuthors(
+  lang: Lang,
+  roleFilter?: 'author' | 'illustrator' // Keep simple
+): Promise<AuthorDetails[]> {
   try {
-    const authorsUrl = `${DIRECTUS_URL}/items/authors?fields=slug,avatar&sort=slug`;
+    // Build filter based on role
+    const roleQueryFilter = roleFilter === 'author'
+      ? '&filter[is_author][_eq]=true'
+      : roleFilter === 'illustrator'
+      ? '&filter[is_illustrator][_eq]=true'
+      : ''; // No filter = all
+
+    const authorsUrl = `${DIRECTUS_URL}/items/authors?fields=slug,avatar,is_author,is_illustrator${roleQueryFilter}&sort=slug`;
+    
     const authorsResponse = await fetch(authorsUrl, { 
       next: { 
         revalidate: 3600,
@@ -22,6 +33,7 @@ export async function fetchAllAuthors(lang: Lang): Promise<AuthorDetails[]> {
 
     const slugs = authors.map((author: any) => author.slug);
     const translationsUrl = `${DIRECTUS_URL}/items/authors_translations?filter[authors_slug][_in]=${slugs.join(',')}&filter[languages_code][_eq]=${lang}&fields=authors_slug,name,bio`;
+    
     const translationsResponse = await fetch(translationsUrl, { 
       next: { 
         revalidate: 3600,
@@ -41,7 +53,9 @@ export async function fetchAllAuthors(lang: Lang): Promise<AuthorDetails[]> {
       return {
         slug: author.slug,
         avatar: author.avatar || '',
-        name: translation ? translation.name : author.slug,  // Changed from last_name to name
+        is_author: author.is_author,
+        is_illustrator: author.is_illustrator,
+        name: translation ? translation.name : author.slug,
         bio: translation ? translation.bio : ''
       };
     });

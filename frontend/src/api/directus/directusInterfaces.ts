@@ -81,7 +81,6 @@ export interface ArticleTranslation {
 export interface Author {
   slug: string;
   avatar: string;
-  roles: AuthorRole[];
   // Social profiles
   telegram_url?: string;
   // Add these if/when you add them to Directus:
@@ -93,12 +92,12 @@ export interface Author {
 export interface AuthorDetails extends Author {
   name: string | '::EDITORIAL::';
   bio: string;
+  is_author: boolean;
+  is_illustrator: boolean;
   credentials?: string;
   expertise_areas?: string;
   meta_description?: string;
 }
-
-export type AuthorRole = 'author' | 'illustrator';
 
 export interface AuthorTranslation {
   languages_code: string;
