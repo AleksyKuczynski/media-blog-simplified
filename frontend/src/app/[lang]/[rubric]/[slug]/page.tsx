@@ -75,7 +75,8 @@ export async function generateMetadata({
       slug: slug,
       rubricSlug: rubric,
       rubricName: rubric,
-      author: article.authors?.[0]?.name || 'EventForMe Editorial',
+      author: article.authorsWithDetails?.[0]?.name || 'EventForMe Editorial',
+      illustrator: article.illustratorWithDetails,
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageId: article.article_heading_img || null,
@@ -166,9 +167,6 @@ export default async function ArticlePage({
     const processedContent = await processContent(rawContent, lang);
     const { chunks: contentChunks, toc: tocItems } = processedContent;
 
-    // fetchAuthorsForArticle already returns AuthorDetails with all fields
-    const authorsWithDetails = article.authors || [];
-
     // Get rubric name from rubricBasics
     const rubricDetails = rubricBasics.find(r => r.slug === rubric);
     const rubricName = rubricDetails?.name || rubric;
@@ -197,12 +195,17 @@ export default async function ArticlePage({
       rubricSlug: rubric,
       rubricName: rubricName,
       author: {
-        name: authorsWithDetails[0]?.name || 'EventForMe Editorial',
-        slug: authorsWithDetails[0]?.slug,
-        credentials: authorsWithDetails[0]?.credentials,
-        telegram_url: authorsWithDetails[0]?.telegram_url,
-        expertise_areas: authorsWithDetails[0]?.expertise_areas,
+        name: article.authorsWithDetails[0]?.name || 'EventForMe Editorial',
+        slug: article.authorsWithDetails[0]?.slug,
+        credentials: article.authorsWithDetails[0]?.credentials,
+        telegram_url: article.authorsWithDetails[0]?.telegram_url,
+        expertise_areas: article.authorsWithDetails[0]?.expertise_areas,
       },
+      illustrator: article.illustratorWithDetails ? {
+        name: article.illustratorWithDetails.name,
+        slug: article.illustratorWithDetails.slug,
+        credentials: article.illustratorWithDetails.credentials,
+      } : undefined,
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageUrl: article.article_heading_img 
@@ -245,7 +248,7 @@ export default async function ArticlePage({
         <AuthorsSectionSchema
           lang={lang}
           dictionary={dictionary}
-          authors={authorsWithDetails}
+          authors={article.authorsWithDetails}
         />
 
         <SmartBreadcrumbs
@@ -275,7 +278,7 @@ export default async function ArticlePage({
               title={translation.title}
               lead={translation.lead}
               imagePath={article.article_heading_img}
-              authors={authorsWithDetails}
+              authors={article.authorsWithDetails}
               publishedDate={formattedDate}
               dictionary={dictionary}
             />
@@ -330,9 +333,9 @@ export default async function ArticlePage({
             dictionary={dictionary}
           />
 
-          {authorsWithDetails.length > 0 && (
+          {article.authorsWithDetails.length > 0 && (
             <AuthorsSection 
-              authors={authorsWithDetails}
+              authors={article.authorsWithDetails}
               dictionary={dictionary}
             />
           )}

@@ -1,5 +1,12 @@
 // src/api/directus/interfaces.ts
 
+// Minimal author data for article display
+export interface ArticleAuthor {
+  slug: string;
+  name: string;
+  avatar: string;
+}
+
 export interface ArticleBlockItem {
   id: string;
   content: string;
@@ -168,8 +175,9 @@ export interface FullArticle {
   toc: boolean;
   rubric_slug: ArticleRubric;
   translations: ArticleTranslation[];
-  authors: AuthorDetails[];
   categories: Category[];
+  authorsWithDetails: AuthorDetails[];
+  illustratorWithDetails?: AuthorDetails;
 }
 
 export type SearchResultType = 'author' | 'category' | 'article';

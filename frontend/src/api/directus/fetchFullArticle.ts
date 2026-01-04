@@ -1,6 +1,7 @@
 // frontend/src/api/directus/fetchFullArticle.ts
 
-import { FullArticle, ArticleBlock, fetchAuthorsForArticle, fetchCategoriesForArticle } from "./index";
+import { FullArticle, ArticleBlock, fetchCategoriesForArticle } from "./index";
+import { fetchArticleContributors } from './fetchArticleContributors'; // CHANGED
 import { Lang } from "@/config/i18n";
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
@@ -26,14 +27,14 @@ export async function fetchFullArticle(
       'rubric_slug.slug',
       'rubric_slug.nav_icon',
       
-      // Translation fields - ENHANCED with SEO
+      // Translation fields
       'translations.languages_code',
       'translations.title',
       'translations.description',
       'translations.lead',
       'translations.body.item.*',
       
-      // SEO fields - ADDED
+      // SEO fields
       'translations.meta_title',
       'translations.meta_description',
       'translations.og_title',
@@ -42,12 +43,12 @@ export async function fetchFullArticle(
       'translations.meta_keywords',
       'translations.yandex_description',
       
-      // Content metrics - ADDED
+      // Content metrics
       'translations.reading_time',
       'translations.word_count',
-      'translations.excerpt', // Note: typo in DB schema
+      'translations.excerpt',
       
-      // Local slug for alternate URLs
+      // Local slug
       'translations.local_slug',
     ].join(',');
 
@@ -107,9 +108,11 @@ export async function fetchFullArticle(
       }
     }));
 
-    // Fetch authors and categories
-    const authors = await fetchAuthorsForArticle(slug, lang);
-    const categories = await fetchCategoriesForArticle(slug, lang);
+    // Fetch contributors and categories in parallel
+    const [contributors, categories] = await Promise.all([
+      fetchArticleContributors(slug, lang),
+      fetchCategoriesForArticle(slug, lang),
+    ]);
     
     const fullArticle: FullArticle = {
       slug: article.slug,
@@ -131,7 +134,7 @@ export async function fetchFullArticle(
         lead: translation.lead,
         article_body: articleBody,
         
-        // SEO fields - ADDED
+        // SEO fields
         seo_title: translation.seo_title,
         seo_description: translation.seo_description,
         og_title: translation.og_title,
@@ -140,25 +143,25 @@ export async function fetchFullArticle(
         meta_keywords: translation.meta_keywords,
         yandex_description: translation.yandex_description,
         
-        // Content metrics - ADDED
+        // Content metrics
         reading_time: translation.reading_time,
         word_count: translation.word_count,
         excerpt: translation.excerpt,
         
         local_slug: translation.local_slug,
       }],
-      authors: authors.length > 0 ? authors : [{
-        name: 'Editorial Team',
-        slug: '',
-        avatar: '',
-        bio: '',
-        // Optional enhanced fields can be undefined
-        credentials: undefined,
-        expertise_areas: undefined,
-        meta_description: undefined,
-        telegram_url: undefined,
-      }],
       categories: categories || [],
+      authorsWithDetails: contributors.authorsWithDetails.length > 0 ? contributors.authorsWithDetails : [
+        { 
+          name: 'Editorial Team', 
+          slug: '', 
+          avatar: '', 
+          bio: '',
+          is_author: true,
+          is_illustrator: false,
+        }
+      ],
+      illustratorWithDetails: contributors.illustratorWithDetails,
     };
 
     return fullArticle;

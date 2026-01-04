@@ -22,6 +22,14 @@ export interface ArticleSchemaProps {
     author: {
       name: string;
       slug?: string;
+      credentials?: string;
+      telegram_url?: string;
+      expertise_areas?: string;
+    };
+    illustrator?: {  // ADD
+      name: string;
+      slug?: string;
+      credentials?: string;
     };
     publishedAt: string;
     updatedAt: string | null;
@@ -51,6 +59,7 @@ export const ArticleSchema: React.FC<ArticleSchemaProps> = ({
       rubricSlug, 
       rubricName,
       author, 
+      illustrator,
       publishedAt, 
       updatedAt, 
       imageUrl, 
@@ -70,36 +79,43 @@ export const ArticleSchema: React.FC<ArticleSchemaProps> = ({
 
     // Create comprehensive schema using SchemaComposer
     const schema = new SchemaComposer(dictionary, canonicalUrl)
-      .addOrganization('editorial')
-      .addWebsite()
-      .addBreadcrumbs(breadcrumbs)
-      .addArticle({
-        title,
-        description: finalDescription,
-        author,
-        publishedAt: safeDates.publishedTime,
-        modifiedAt: safeDates.modifiedTime,
-        imageUrl: finalImageUrl,
-        section: rubricName || rubricSlug,
-        tags,
-        wordCount,
-        readingTime,
-      })
-      .addCustomSchema({
-        '@type': 'WebPage',
-        '@id': `${canonicalUrl}#webpage`,
-        name: title,
-        description: finalDescription,
-        url: canonicalUrl,
-        mainEntity: {
-          '@id': `${canonicalUrl}#article`,
-        },
-        primaryImageOfPage: {
-          '@type': 'ImageObject',
-          url: finalImageUrl,
-        },
-      })
-      .build();
+    .addOrganization('editorial')
+    .addWebsite()
+    .addBreadcrumbs(breadcrumbs)
+    .addArticle({
+      title,
+      description: finalDescription,
+      author,
+      publishedAt: safeDates.publishedTime,
+      modifiedAt: safeDates.modifiedTime,
+      imageUrl: finalImageUrl,
+      section: rubricName || rubricSlug,
+      tags,
+      wordCount,
+      readingTime,
+    });
+
+  // Add illustrator as contributor if present
+  if (illustrator?.slug) {
+    schema.addCustomSchema({
+      '@type': 'Person',
+      '@id': `${baseUrl}/ru/authors/${illustrator.slug}#person`,
+      name: illustrator.name,
+      url: `${baseUrl}/ru/authors/${illustrator.slug}`,
+      jobTitle: 'Illustrator',
+      ...(illustrator.credentials && { description: illustrator.credentials }),
+    });
+    
+    // Link illustrator to article
+    schema.addCustomSchema({
+      '@type': 'Article',
+      '@id': `${canonicalUrl}#article`,
+      contributor: {
+        '@type': 'Person',
+        '@id': `${baseUrl}/ru/authors/${illustrator.slug}#person`,
+      },
+    });
+  }
 
     return (
       <SchemaBuilder
