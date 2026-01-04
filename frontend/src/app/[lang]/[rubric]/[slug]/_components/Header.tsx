@@ -17,7 +17,7 @@
  * 
  * Dependencies:
  * - article.styles.ts (LAYOUT_STYLES.header)
- * - @/api/directus (DIRECTUS_URL, AuthorDetails)
+ * - @/api/directus (DIRECTUS_URL, ArticleAuthor)
  * - navigation/AuthorsSection (author cards)
  * 
  * @param title - Article title
@@ -29,19 +29,21 @@
  */
 
 import Image from 'next/image';
-import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
+import { DIRECTUS_URL, ArticleAuthor } from '@/api/directus';
 import { Dictionary } from '@/config/i18n';
 import { LAYOUT_STYLES } from './article.styles';
 import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
 import AuthorsSection from './navigation/AuthorsSection';
+import Link from 'next/link';
 
 interface HeaderProps {
   title: string;
   publishedDate: string;
-  authors: AuthorDetails[];
+  authors: ArticleAuthor[];
   dictionary: Dictionary;
   imagePath?: string;
   lead?: string;
+  illustrator?: ArticleAuthor;
 }
 
 const styles = LAYOUT_STYLES.header;
@@ -52,7 +54,8 @@ export function Header({
   authors,
   dictionary,
   imagePath,
-  lead
+  lead,
+  illustrator,
 }: HeaderProps) {
   return (
     <header className={styles.container}>
@@ -73,6 +76,19 @@ export function Header({
               className={styles.image}
             />
           </div>
+
+          {/* Illustrator credit - simple text link below image */}
+          {illustrator && (
+            <p className={styles.illustratorCredit}>
+              <span className={styles.illustratorLabel}>{dictionary.sections.labels.illustratedBy}: </span>
+              <Link 
+                href={`/ru/authors/${illustrator.slug}`}
+                className={styles.illustratorLink}
+              >
+                {illustrator.name}
+              </Link>
+            </p>
+          )}
         </div>
       )}
 
@@ -129,6 +145,19 @@ export function Header({
             <meta itemProp="url" content={`/ru/authors/${author.slug}`} />
           </span>
         ))}
+
+        {/* Add illustrator to schema */}
+        {illustrator && (
+          <span 
+            itemProp="contributor" 
+            itemScope 
+            itemType="https://schema.org/Person"
+          >
+            <meta itemProp="name" content={illustrator.name} />
+            <meta itemProp="url" content={`/ru/authors/${illustrator.slug}`} />
+            <meta itemProp="jobTitle" content="Illustrator" />
+          </span>
+        )}
       </div>
 
     </header>

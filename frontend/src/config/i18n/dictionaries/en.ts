@@ -269,6 +269,7 @@ export const dictionaryEN: Dictionary = {
       rubrics: 'rubrics',
       author: 'author',
       authors: 'authors',
+      illustratedBy: 'Illustrated by',
       categories: 'categories',
       collection: 'collection',
       //catalog: 'catalog',

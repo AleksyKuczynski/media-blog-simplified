@@ -43,6 +43,11 @@ export const LAYOUT_STYLES = {
     imageWrapper: 'order-3 mb-6 md:order-1 md:mb-0',
     imageContainer: `relative ${IMAGE_RATIO_STRING} overflow-hidden rounded-3xl border border-ol-var shadow-lg w-full h-full`,
     image: 'w-full h-full object-cover',
+
+    // Illustrator credit below image
+    illustratorCredit: 'mt-2 text-sm text-on-sf-var',
+    illustratorLabel: 'text-muted-foreground',
+    illustratorLink: 'text-on-sf hover:text-pr-cont transition-colors underline decoration-1 underline-offset-2',   
     
     // Right column: Title + metadata - order-2 on both mobile and desktop
     rightColumn: 'order-2 mb-6 md:mb-0 md:flex md:flex-col md:justify-between',

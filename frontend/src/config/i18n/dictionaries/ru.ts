@@ -271,6 +271,7 @@ const dictionaryRU: Dictionary = {
       rubrics: 'рубрики',
       author: 'автор',
       authors: 'авторы',
+      illustratedBy: 'Иллюстрации',
       categories: 'категории',
       collection: 'коллекция',
       //catalog: 'каталог',

@@ -301,6 +301,7 @@ export interface SectionLabels {
   readonly rubrics: string;
   readonly author: string;
   readonly authors: string;
+  readonly illustratedBy: string;
   readonly categories: string;
   readonly collection: string;
 }

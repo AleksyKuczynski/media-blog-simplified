@@ -45,6 +45,7 @@ export interface ArticleSchemaProps {
  * Complete Article structured data component
  * REFACTORED: Uses SchemaComposer for standardized schema generation
  */
+
 export const ArticleSchema: React.FC<ArticleSchemaProps> = ({
   dictionary,
   articleData,
@@ -78,44 +79,37 @@ export const ArticleSchema: React.FC<ArticleSchemaProps> = ({
     const safeDates = getSafeArticleDates(publishedAt, updatedAt);
 
     // Create comprehensive schema using SchemaComposer
-    const schema = new SchemaComposer(dictionary, canonicalUrl)
-    .addOrganization('editorial')
-    .addWebsite()
-    .addBreadcrumbs(breadcrumbs)
-    .addArticle({
-      title,
-      description: finalDescription,
-      author,
-      publishedAt: safeDates.publishedTime,
-      modifiedAt: safeDates.modifiedTime,
-      imageUrl: finalImageUrl,
-      section: rubricName || rubricSlug,
-      tags,
-      wordCount,
-      readingTime,
-    });
+    const composer = new SchemaComposer(dictionary, canonicalUrl)
+      .addOrganization('editorial')
+      .addWebsite()
+      .addBreadcrumbs(breadcrumbs)
+      .addArticle({
+        title,
+        description: finalDescription,
+        author,
+        publishedAt: safeDates.publishedTime,
+        modifiedAt: safeDates.modifiedTime,
+        imageUrl: finalImageUrl,
+        section: rubricName || rubricSlug,
+        tags,
+        wordCount,
+        readingTime,
+      });
 
-  // Add illustrator as contributor if present
-  if (illustrator?.slug) {
-    schema.addCustomSchema({
-      '@type': 'Person',
-      '@id': `${baseUrl}/ru/authors/${illustrator.slug}#person`,
-      name: illustrator.name,
-      url: `${baseUrl}/ru/authors/${illustrator.slug}`,
-      jobTitle: 'Illustrator',
-      ...(illustrator.credentials && { description: illustrator.credentials }),
-    });
-    
-    // Link illustrator to article
-    schema.addCustomSchema({
-      '@type': 'Article',
-      '@id': `${canonicalUrl}#article`,
-      contributor: {
+    // Add illustrator as contributor if present
+    if (illustrator?.slug) {
+      composer.addCustomSchema({
         '@type': 'Person',
         '@id': `${baseUrl}/ru/authors/${illustrator.slug}#person`,
-      },
-    });
-  }
+        name: illustrator.name,
+        url: `${baseUrl}/ru/authors/${illustrator.slug}`,
+        jobTitle: 'Illustrator',
+        ...(illustrator.credentials && { description: illustrator.credentials }),
+      });
+    }
+
+    // BUILD the schema before passing to SchemaBuilder
+    const schema = composer.build();
 
     return (
       <SchemaBuilder
@@ -135,7 +129,6 @@ export const ArticleSchema: React.FC<ArticleSchemaProps> = ({
 
 /**
  * Minimal Article schema for performance-critical pages
- * REFACTORED: Even simpler with quick schema builder
  */
 export const MinimalArticleSchema: React.FC<Pick<ArticleSchemaProps, 'dictionary' | 'articleData'>> = ({
   dictionary,
@@ -176,28 +169,3 @@ export const MinimalArticleSchema: React.FC<Pick<ArticleSchemaProps, 'dictionary
 };
 
 export default ArticleSchema;
-
-// ===================================================================
-// COMPARISON: BEFORE vs AFTER
-// ===================================================================
-
-/*
-BEFORE (Old ArticleSchema.tsx): ~200 lines
-- Manual organization schema creation
-- Manual website schema creation  
-- Manual breadcrumb schema creation
-- Manual JSON-LD rendering
-- Repeated error handling
-- Hardcoded Russian market properties
-- No validation or optimization
-
-AFTER (Refactored ArticleSchema.tsx): ~50 lines  
-- Automated schema composition
-- Standardized Russian market targeting
-- Built-in validation and optimization
-- Centralized error handling
-- Reusable schema components
-- Type-safe schema building
-
-REDUCTION: 75% fewer lines, 90% less repetitive code
-*/
