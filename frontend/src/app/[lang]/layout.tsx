@@ -12,7 +12,6 @@ interface LayoutProps {
   params: Promise<{ lang: string }>
 }
 
-// Generate metadata dynamically based on language
 export async function generateMetadata({
   params
 }: {
@@ -37,7 +36,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
     },
     alternates: {
-      canonical: dictionary.seo.site.url,
+      canonical: `/${lang}`,
       languages: {
         'en': '/en',
         'ru': '/ru',
@@ -52,17 +51,14 @@ export default async function LanguageLayout({
 }: LayoutProps) {
   const { lang } = await params
   
-  // Validate language parameter
   if (!SUPPORTED_LANGUAGES.includes(lang as Lang)) {
     notFound()
   }
   
-  // Get dictionary for current language
   const dictionary = getDictionary(lang as Lang)
 
   return (
-    <div className="container mx-auto flex flex-col min-h-screen">
-      {/* Navigation */}
+    <div lang={lang} className="container mx-auto flex flex-col min-h-screen">
       <Suspense fallback={
         <div className="h-16 xl:h-24 bg-white border-b border-gray-200 flex items-center">
           <div className="container mx-auto px-4">
@@ -78,7 +74,6 @@ export default async function LanguageLayout({
         />
       </Suspense>
       
-      {/* Main content */}
       <main 
         id="main-content" 
         className="flex-grow pt-16 xl:pt-24 min-h-screen" 
@@ -91,7 +86,6 @@ export default async function LanguageLayout({
         </div>
       </main>
       
-      {/* Footer */}
       <Suspense fallback={
         <div className="h-32 bg-gray-50 border-t border-gray-200" />
       }>
@@ -104,7 +98,6 @@ export default async function LanguageLayout({
   )
 }
 
-// Generate static params for both languages
 export async function generateStaticParams() {
   return SUPPORTED_LANGUAGES.map((lang) => ({
     lang: lang,

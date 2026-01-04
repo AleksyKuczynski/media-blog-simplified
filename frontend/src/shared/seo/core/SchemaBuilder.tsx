@@ -535,7 +535,7 @@ export const SchemaBuilder: React.FC<SchemaBuilderProps & {
 // ===================================================================
 
 /**
- * Enhanced schema validation with Russian market checks
+ * Enhanced schema validation with language consistency checks
  */
 const validateEnhancedSchema = (
   schema: ExtendedSchemaData, 
@@ -552,9 +552,14 @@ const validateEnhancedSchema = (
     return false;
   }
 
-  // Russian market validation
-  if (dictionary && schema.inLanguage !== 'ru') {
-    console.warn('Schema: inLanguage should be "ru" for Russian market');
+  // Language consistency validation
+  if (dictionary && schema.inLanguage) {
+    const expectedLang = getSchemaLanguage(dictionary);
+    if (schema.inLanguage !== expectedLang) {
+      console.warn(
+        `Schema: inLanguage mismatch. Expected "${expectedLang}" (from dictionary), got "${schema.inLanguage}"`
+      );
+    }
   }
 
   // URL validation
@@ -595,72 +600,6 @@ const isValidUrl = (url: string): boolean => {
   } catch {
     return false;
   }
-};
-
-// ===================================================================
-// LEGACY COMPATIBILITY EXPORTS
-// ===================================================================
-
-// Keep existing exports for backward compatibility
-export const validateSchema = validateEnhancedSchema;
-export const createNavigationElementSchema = (
-  name: string,
-  url: string,
-  description: string,
-  position: number,
-  geographicAreas: readonly string[] = ['Russia'],
-  locale: string = 'ru'
-) => ({
-  '@context': 'https://schema.org',
-  '@type': 'SiteNavigationElement',
-  '@id': `${url}#navigation-${position}`,
-  name,
-  description,
-  url,
-  inLanguage: locale,
-  position,
-  audience: {
-    '@type': 'Audience',
-    geographicArea: geographicAreas.map(area => ({ '@type': 'Country', name: area })),
-  },
-});
-
-export const createWebsiteSchema = createStandardWebsiteSchema;
-export const createOrganizationSchema = createStandardOrganizationSchema;
-export const createBreadcrumbSchema = createStandardBreadcrumbSchema;
-
-// ===================================================================
-// CONVENIENCE EXPORTS
-// ===================================================================
-
-/**
- * Quick schema generation for common page types
- */
-export const createQuickSchema = {
-  article: (dictionary: Dictionary, canonicalUrl: string, data: any) => 
-    new SchemaComposer(dictionary, canonicalUrl)
-      .addOrganization()
-      .addWebsite()
-      .addArticle(data)
-      .build(),
-      
-  collection: (dictionary: Dictionary, canonicalUrl: string, data: any) =>
-    new SchemaComposer(dictionary, canonicalUrl)
-      .addOrganization()
-      .addWebsite()
-      .addCollectionPage(data)
-      .build(),
-      
-  authorProfile: (dictionary: Dictionary, canonicalUrl: string, data: any) =>
-    new SchemaComposer(dictionary, canonicalUrl)
-      .addOrganization()
-      .addWebsite()
-      .addCustomSchema({
-        '@type': 'ProfilePage',
-        '@id': `${canonicalUrl}#profile`,
-        ...data,
-      })
-      .build(),
 };
 
 export default SchemaBuilder;
