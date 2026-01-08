@@ -10,10 +10,10 @@
 export const SECTION_STYLES = {
   wrapper: {
     base: 'w-full pb-6 lg:pb-8 xl:pb-12 relative',
-    primary: 'bg-gradient-to-br from-pr-fix to-pr-sf',
-    secondary: 'bg-gradient-to-br from-sec-fix to-sec-sf',
-    tertiary: 'bg-gradient-to-br from-tr-fix to-tr-sf',
-    default: ' bg-gradient-to-br from-sf-hst to-sf-hi',
+    primary: 'bg-gradient-to-b from-pr-fix to-pr-sf',
+    secondary: 'bg-gradient-to-b from-sec-fix to-sec-sf',
+    tertiary: 'bg-gradient-to-b from-tr-fix to-tr-sf',
+    default: ' bg-gradient-to-b from-sf-hst to-sf-hi',
     withNextTitle: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px]',
   },
   container: {
