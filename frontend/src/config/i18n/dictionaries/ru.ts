@@ -267,7 +267,7 @@ const dictionaryRU: Dictionary = {
   // ===================================================================
   sections: {
     labels: {
-      articles: 'статьи',
+      articles: 'Статей:',
       rubrics: 'рубрики',
       author: 'автор',
       authors: 'авторы',

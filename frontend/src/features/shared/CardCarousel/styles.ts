@@ -107,7 +107,7 @@ export const RUBRIC_CAROUSEL_CARD_STYLES = {
   container: 'block w-full h-full group',
 
   // Card structure
-  card: 'h-full bg-sf-cont rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  card: 'h-full w-full bg-sf-cont rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
   
   // Content container
   content: 'h-full p-6 flex flex-col items-center gap-8',
@@ -121,12 +121,12 @@ export const RUBRIC_CAROUSEL_CARD_STYLES = {
   iconFallbackText: 'text-on-pr-cont text-xl font-bold',
   
   // Text content container
-  textContent: 'flex flex-col gap-6 min-w-0 grow',
+  textContent: 'w-full flex flex-col gap-6 min-w-0 grow',
 
   // Text content
-  name: 'text-2xl text-on-sf group-hover:text-pr-cont transition-colors grow',
+  name: 'text-2xl text-on-sf text-center group-hover:text-pr-cont transition-colors grow',
   description: 'max-md:text-sm text-on-sf-var line-clamp-2 mt-1',
-  articleCount: 'text-sm font-semibold text-on-sf-var mt-1',
+  articleCount: 'text-sm font-semibold text-on-sf bg-sf-hi rounded-full mt-1 p-2 px-4',
 } as const;
 
 // ================================================================
@@ -138,7 +138,7 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   container: 'block w-full h-full group',
 
   // Card structure
-  card: 'h-full bg-sf-cont rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  card: 'h-full bg-sf rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
   
   // Content container
   content: 'flex flex-col gap-4',

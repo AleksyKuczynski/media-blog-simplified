@@ -265,7 +265,7 @@ export const dictionaryEN: Dictionary = {
   // ===================================================================
   sections: {
     labels: {
-      articles: 'articles',
+      articles: 'Article count:',
       rubrics: 'rubrics',
       author: 'author',
       authors: 'authors',
