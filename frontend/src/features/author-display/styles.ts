@@ -1,8 +1,16 @@
+// src/features/author-display/styles.ts
 import { cn } from "@/lib/utils";
 
 export const AUTHOR_CARD_STYLES = {
-  // Container styling
-  container: 'h-full relative overflow-hidden bg-sf-cont rounded-3xl shadow-sm hover:shadow-md dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)] transition-shadow duration-200 group',
+  // Container styling - manages its own responsive width
+  container: cn(
+    'h-full relative overflow-hidden',
+    'bg-sf-cont rounded-3xl shadow-sm hover:shadow-md',
+    'dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]',
+    'transition-shadow duration-200 group',
+    // Width control: full width below lg, 2 cols on lg+
+    'w-full lg:w-[calc(50%-16px)]',
+  ),
   
   // Link wrapper (when linkToProfile is true)
   link: 'block h-full',
@@ -10,7 +18,7 @@ export const AUTHOR_CARD_STYLES = {
   // Grid layout
   grid: 'grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 gap-4 p-6',
   
-  // Avatar container
+  // Avatar container (larger than carousel)
   avatarContainer: 'relative w-full aspect-square sm:row-span-1 rounded-2xl overflow-hidden',
   
   // Avatar image
@@ -21,7 +29,7 @@ export const AUTHOR_CARD_STYLES = {
   avatarFallbackText: 'text-on-pr-cont text-4xl font-bold',
   
   // Author name
-  name: 'font-bold text-lg sm:text-xl transition-colors duration-600 self-end text-on-sf hover:text-pr-cont',
+  name: 'font-bold text-xl sm:text-2xl transition-colors duration-600 self-end text-on-sf hover:text-pr-cont',
   
   // Bio text
   bio: 'text-on-sf-var sm:col-span-2 transition-colors duration-600 line-clamp-5 text-sm sm:text-base',

@@ -1,66 +1,38 @@
 // src/features/rubric-display/styles.ts
 
 export const RUBRIC_CARD_STYLES = {
-  // Card container
-  card: 'group relative overflow-hidden rounded-lg border bg-card p-6 transition-all hover:shadow-lg',
+  // Card container - manages its own responsive width
+  card: [
+    'group relative overflow-hidden rounded-2xl',
+    'bg-sf-cont shadow-sm hover:shadow-lg transition-all duration-200',
+    // Width control: 2 cols on small screens, 3 cols on lg+
+    'w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-22px)]',
+    'p-6 flex flex-col'
+  ].join(' '),
   
   // Header with icon and count
   header: 'mb-4 flex items-center justify-between',
   
-  // Icon container
-  iconWrapper: 'relative h-8 w-8',
+  // Icon container (larger than carousel - 48px)
+  iconWrapper: 'relative h-12 w-12',
   iconImage: 'object-contain',
-  iconFallback: 'h-8 w-8 rounded bg-muted flex items-center justify-center',
-  iconFallbackText: 'text-muted-foreground text-xs',
+  iconFallback: 'h-12 w-12 rounded-lg bg-gradient-to-br from-pr-cont to-pr-fix flex items-center justify-center',
+  iconFallbackText: 'text-on-pr-cont text-lg font-bold',
   
   // Article count
-  articleCount: 'text-sm text-muted-foreground',
+  articleCount: 'text-sm text-on-sf-var font-medium',
   
   // Title
-  title: 'mb-2 text-xl font-semibold group-hover:text-primary transition-colors',
+  title: 'mb-3 text-2xl font-semibold group-hover:text-pr-cont transition-colors',
   titleLink: 'before:absolute before:inset-0',
   
   // Description
-  description: 'text-sm text-muted-foreground mb-4 line-clamp-3',
+  description: 'text-sm text-on-sf-var mb-4 line-clamp-3 flex-grow',
   
   // Action link
-  action: 'mt-auto',
-  actionText: 'text-sm font-medium text-primary group-hover:underline',
+  action: 'mt-auto pt-2',
+  actionText: 'text-sm font-medium text-pr-cont group-hover:underline inline-flex items-center gap-1',
   
   // Screen reader
   srOnly: 'sr-only',
-} as const;
-
-export const RUBRICS_SECTION_STYLES = {
-  // Section wrapper
-  section: 'py-16',
-  container: 'container mx-auto px-4',
-  
-  // Header
-  header: 'text-center mb-12',
-  heading: 'text-3xl font-bold mb-4 text-on-sf',
-  description: 'text-lg text-on-sf-var max-w-2xl mx-auto mb-8',
-  
-  // View all link
-  viewAll: {
-    link: 'inline-flex items-center gap-2 text-pr-cont hover:text-pr-fix font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2 rounded group',
-    arrow: 'transform transition-transform duration-200 group-hover:translate-x-1',
-  },
-  
-  // Grid wrapper
-  grid: 'max-w-7xl mx-auto',
-} as const;
-
-export const RUBRIC_SECTION_STYLES = {
-  // Container (for article page rubric display)
-  container: 'mb-4',
-  
-  // Link
-  link: 'inline-flex items-center gap-2 text-pr-cont hover:text-pr-fix transition-colors duration-200',
-  
-  // Icon
-  icon: 'relative w-6 h-6 flex-shrink-0',
-  
-  // Text
-  text: 'font-medium',
 } as const;

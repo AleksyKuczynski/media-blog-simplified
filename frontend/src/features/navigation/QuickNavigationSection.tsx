@@ -6,7 +6,7 @@ import { AuthorsBigIcon } from '@/shared/primitives/Icons';
 
 const STYLES = {
 nav: 'flex flex-wrap gap-3 justify-center',
-link: 'inline-flex flex-col items-center gap-2 px-6 py-4 hover:text-on-pr rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md text-on-sf',
+link: 'inline-flex flex-col items-center gap-2 px-6 py-4 text-on-tr rounded-lg font-medium transition-all duration-200 uppercase',
 icon: 'w-12 h-12',
 } as const;
 
