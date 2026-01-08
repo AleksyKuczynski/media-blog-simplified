@@ -18,7 +18,7 @@ export function getCarouselStyles(cardType: CardType) {
   const cardWrapperWidths = {
     article: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px]',
     rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] xl:w-[15%] 2xl:w-[15%]',
-    author: 'flex-none w-[220px] sm:w-[240px] lg:w-[260px] xl:w-[23%] 2xl:w-[23%]',
+    author: 'flex-none w-[220px] sm:w-[240px] lg:w-[260px] xl:w-[24%] 2xl:w-[24%]',
   };
 
   return {
@@ -28,7 +28,7 @@ export function getCarouselStyles(cardType: CardType) {
     ),
     
     scrollContainer: cn(
-      'flex gap-6 overflow-x-auto scrollbar-hide',
+      'flex gap-4 overflow-x-auto scrollbar-hide',
       'snap-x snap-mandatory scroll-smooth',
       'px-4 sm:px-6 2xl:px-8',
       'py-5',
@@ -138,13 +138,13 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   container: 'block w-full h-full group',
 
   // Card structure
-  card: 'h-full bg-sf-cont rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  card: 'h-full bg-sf-cont rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
   
   // Content container
-  content: 'p-6 flex flex-col gap-4',
+  content: 'flex flex-col gap-4',
   
   // Image container
-  avatarWrapper: 'relative w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden bg-sf-hi',
+  avatarWrapper: 'relative aspect-square flex-shrink-0 overflow-hidden rounded-3xl',
   
   // Image element
   avatarImage: 'object-cover',
@@ -152,9 +152,9 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   avatarFallbackText: 'text-on-pr-cont text-xl font-bold',
   
   // Text content container
-  textContent: 'flex-1 min-w-0',
+  textContent: 'p-8 pt-0 flex-1 min-w-0',
 
   // Text content
-  name: 'font-semibold text-on-sf group-hover:text-pr-cont transition-colors truncate',
-  bio: 'text-sm text-on-sf-var line-clamp-4 mt-1',
+  name: 'text-2xl md:text-3xl lg:text-4xl text-on-sf group-hover:text-pr-cont transition-colors',
+  bio: 'max-md:hidden max-lg:text-sm text-on-sf-var line-clamp-4 mt-8',
 } as const;

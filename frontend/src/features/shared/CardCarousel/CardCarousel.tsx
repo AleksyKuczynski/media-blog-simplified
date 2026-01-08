@@ -3,50 +3,13 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { Lang, Dictionary } from '@/config/i18n';
 import { getCarouselStyles } from './styles';
 import ArticleCarouselCard from './ArticleCarouselCard';
 import RubricCarouselCard from './RubricCarouselCard';
 import AuthorCarouselCard from './AuthorCarouselCard';
+import { CardCarouselProps } from './types';
 
-// Card data types
-export interface ArticleCardData {
-  type: 'article';
-  slug: string;
-  title: string;
-  publishedAt: string;
-  imageSrc?: string;
-  rubricSlug: string;
-  formattedDate: string;
-}
 
-export interface RubricCardData {
-  type: 'rubric';
-  slug: string;
-  name: string;
-  description?: string;
-  iconSrc?: string;
-  url: string;
-  articleCount?: number;
-}
-
-export interface AuthorCardData {
-  type: 'author';
-  slug: string;
-  name: string;
-  bio?: string;
-  avatarSrc?: string;
-  url: string;
-}
-
-type CardData = ArticleCardData | RubricCardData | AuthorCardData;
-
-interface CardCarouselProps {
-  cards: CardData[];
-  lang: Lang;
-  dictionary: Dictionary;
-  isLoading?: boolean;
-}
 
 export default function CardCarousel({
   cards,
