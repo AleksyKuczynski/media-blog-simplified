@@ -127,11 +127,11 @@ export const dictionaryEN: Dictionary = {
   // ===================================================================
   common: {
     count: {
-      articles: 'Articles:',
-      rubrics: 'Rubrics:',
-      authors: 'Authors:',
-      results: 'Results:',
-      items: 'Items:',
+      articles: 'articles',
+      rubrics: 'rubrics',
+      authors: 'authors',
+      results: 'results',
+      items: 'items',
     },
     pagination: {
       previous: 'Previous',
@@ -265,7 +265,7 @@ export const dictionaryEN: Dictionary = {
   // ===================================================================
   sections: {
     labels: {
-      articles: 'Article count:',
+      articles: 'articles',
       rubrics: 'rubrics',
       author: 'author',
       authors: 'authors',
@@ -283,7 +283,7 @@ export const dictionaryEN: Dictionary = {
       itemsInCollectionDescription: '{items} in {collection} on {siteName}',
       authorWorksDescription: 'Works by {author} on {siteName}',
       emptyCollection: 'No {items} in {collection} yet',
-      totalCount: 'Total: {count} {countLabel}',
+      totalCount: 'Total {countLabel}: {count}',
       itemDescription: 'Article {name}',
       categoryDescription: 'Articles in {categoryName} category',
       noCategoryArticles: 'No articles in {categoryName} category yet',
