@@ -25,6 +25,7 @@ import ArticleContentRenderer from './_components/content/ArticleContentRenderer
 import { parseImageMetadata } from '@/lib/utils/bilingualParser';
 import Section from '@/features/layout/Section';
 import RelatedArticles from '@/features/article-display/RelatedArticles';
+import QuickNavigationSection from '@/features/navigation/QuickNavigationSection';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -311,16 +312,23 @@ export default async function ArticlePage({
               dictionary={dictionary}
             />
 
+            {article.authorsWithDetails.length > 0 && (
+              <AuthorsSection 
+                authors={article.authorsWithDetails}
+                dictionary={dictionary}
+              />
+            )}
+
             <ScrollToTopButton />
           </Suspense>
         </article>
 
         <Section
           as="div"
-          variant='primary'
           title={dictionary.sections.rubrics.readMoreAbout}
           titleLevel="h2"
           id="related-articles-section"
+          hasNextSectionTitle={true}
         >
           <RelatedArticles
             currentArticleSlug={articleSlug}
@@ -328,19 +336,15 @@ export default async function ArticlePage({
             lang={lang}
             dictionary={dictionary}
           />
-
-          <QuickNavigation 
-            lang={lang}
-            dictionary={dictionary}
-          />
-
-          {article.authorsWithDetails.length > 0 && (
-            <AuthorsSection 
-              authors={article.authorsWithDetails}
-              dictionary={dictionary}
-            />
-          )}
         </Section>
+
+        <Section 
+          title={dictionary.sections.home.quickNavigation}
+          titleLevel="h2"
+          variant='primary'
+        >
+          <QuickNavigationSection lang={lang} dictionary={dictionary} />
+        </Section>        
       </>
     );
 

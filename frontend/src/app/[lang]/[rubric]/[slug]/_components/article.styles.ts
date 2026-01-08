@@ -21,6 +21,7 @@
  */
 
 import { IMAGE_RATIO_STRING } from "@/features/mainConstants";
+import { cn } from "@/lib/utils";
 
 
 // ================================================================
@@ -52,10 +53,13 @@ export const LAYOUT_STYLES = {
     // Right column: Title + metadata - order-2 on both mobile and desktop
     rightColumn: 'order-2 mb-6 md:mb-0 md:flex md:flex-col md:justify-between',
     
-    title: `mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl leading-[1.2] 
-            sm:text-4xl sm:leading-[1.2] 
-            md:text-3xl md:leading-[1.2] md:mb-0 
-            lg:text-5xl lg:leading-[1.2]`,
+    title: cn(
+      'mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl leading-[1.2]',
+      'sm:text-4xl sm:leading-[1.2]',
+      'md:text-3xl md:leading-[1.2] md:mb-0',
+      'lg:text-4xl lg:leading-[1.2]',
+      'xl:text-5xl xl:leading-[1.2]'
+    ),
     
     // Metadata box - hidden on mobile, visible on desktop at bottom of right column
     metadataBox: 'hidden md:block mt-8',
@@ -66,18 +70,20 @@ export const LAYOUT_STYLES = {
     dateText: 'font-medium max-lg:text-sm text-on-sf-var',
     
     // Lead paragraph - order-4, full width
-    lead: `order-4 font-light text-on-sf
-            max-sm:px-4 pt-6 
-            md:col-span-2 md:max-w-2xl md:mx-auto 
-            text-xl leading-9
-            md:text-2xl md:leading-9
-            lg:text-2xl lg:leading-9 lg:max-w-3xl
-            xl:max-w-4xl`,
+    lead: cn(
+      'order-4 font-light text-on-sf',
+      'max-sm:px-4 pt-6', 
+      'md:col-span-2 md:max-w-2xl md:mx-auto', 
+      'text-xl leading-9',
+      'md:text-2xl md:leading-9',
+      'lg:text-2xl lg:leading-9 lg:max-w-3xl',
+      'xl:max-w-4xl',
+    ),
   },
 
   // Content wrapper
   content: {
-    container: 'pb-6 not-prose',
+    container: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px] not-prose',
   },
 } as const;
 
@@ -88,21 +94,28 @@ export const LAYOUT_STYLES = {
 export const ELEMENTS_STYLES = {
   // Heading levels
   heading: {
-    base: `text-on-sf 
-           max-w-2xl mx-auto
-          `,
-    h2: `font-semibold font-serif 
-          text-3xl my-8 mt-12 
-          md:text-3xl
-          lg:text-5xl lg:max-w-4xl`,
-    h3: `font-medium font-serif 
-          text-2xl mb-6 mt-8 
-          md:text-2xl
-          lg:text-4xl lg:max-w-4xl`,
-    h4: `uppercase font-medium font-serif
-          text-xl mb-4 mt-6 
-          md:text-xl
-          lg:text-2xl lg:max-w-4xl`,
+    base: cn(
+      'text-on-sf', 
+      'max-w-2xl mx-auto'
+    ),
+    h2: cn(
+      'font-semibold font-serif', 
+      'text-3xl my-8 mt-12', 
+      'md:text-3xl',
+      'lg:text-5xl lg:max-w-4xl'
+    ),
+    h3: cn(
+      'font-medium font-serif', 
+      'text-2xl mb-6 mt-8', 
+      'md:text-2xl',
+      'lg:text-4xl lg:max-w-4xl'
+    ),
+    h4: cn(
+      'uppercase font-medium font-serif',
+      'text-xl mb-4 mt-6', 
+      'md:text-xl',
+      'lg:text-2xl lg:max-w-4xl'
+    ),
   },
 
   // Paragraph
@@ -313,9 +326,9 @@ export const NAVIGATION_STYLES = {
       categoryTag: 'px-2 py-0.5 max-lg:text-sm rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
       
       // Rubric link - similar to author section
-      rubricLink: 'max-md:hidden inline-flex items-center gap-3 pr-4 rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
-      rubricIcon: 'relative w-10 h-10 rounded-full overflow-hidden',
-      rubricText: 'max-lg:text-sm font-medium whitespace-nowrap',
+      rubricLink: 'max-md:hidden inline-flex items-center gap-3 p-1.5 pr-4 rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
+      rubricIcon: 'relative w-8 h-8',
+      rubricText: 'max-lg:text-sm font-medium whitespace-nowrap lowercase',
     },
     
     // AuthorSection (single author - standalone)

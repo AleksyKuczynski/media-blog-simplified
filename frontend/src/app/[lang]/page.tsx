@@ -104,7 +104,7 @@ export default async function HomePage({
         <Section 
           title={dictionary.sections.authors.ourAuthors}
           titleLevel="h2"
-          variant='secondary'
+          variant='tertiary'
           hasNextSectionTitle={true}
         >
           <CardCarousel
@@ -125,7 +125,7 @@ export default async function HomePage({
       <Section 
         title={dictionary.sections.home.quickNavigation}
         titleLevel="h2"
-        variant='tertiary'
+        variant='secondary'
       >
         <QuickNavigationSection lang={lang} dictionary={dictionary} />
       </Section>

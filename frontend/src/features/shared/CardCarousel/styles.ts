@@ -125,7 +125,7 @@ export const RUBRIC_CAROUSEL_CARD_STYLES = {
 
   // Text content
   name: 'text-2xl text-on-sf text-center group-hover:text-pr-cont transition-colors grow',
-  description: 'max-md:text-sm text-on-sf-var line-clamp-2 mt-1',
+  description: 'max-md:hidden text-on-sf-var line-clamp-2 mt-1',
   articleCount: 'text-sm font-semibold text-on-sf bg-sf-hi rounded-full mt-1 p-2 px-4',
 } as const;
 
