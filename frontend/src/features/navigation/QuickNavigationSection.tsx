@@ -1,13 +1,13 @@
 // src/features/navigation/QuickNavigationSection.tsx
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Dictionary, Lang } from '@/config/i18n';
-import { AuthorsBigIcon } from '@/shared/primitives/Icons';
 
 const STYLES = {
-nav: 'flex flex-wrap gap-3 justify-center',
-link: 'inline-flex flex-col items-center gap-2 px-6 py-4 text-on-tr rounded-lg font-medium transition-all duration-200 uppercase',
-icon: 'w-12 h-12',
+  nav: 'flex flex-wrap gap-3 justify-center',
+  link: 'inline-flex flex-col items-center gap-2 px-6 py-4 font-medium transition-all duration-200 text-on-sf uppercase',
+  icon: 'w-40 h-40 relative',
 } as const;
 
 export default function QuickNavigationSection({
@@ -32,7 +32,15 @@ export default function QuickNavigationSection({
         className={STYLES.link}
         aria-label={articlesLabel}
       >
-        <AuthorsBigIcon className={STYLES.icon} />
+        <div className={STYLES.icon}>
+          <Image
+            src="/articles.png"
+            alt=""
+            fill
+            className="object-contain"
+            sizes="48px"
+          />
+        </div>
         {dictionary.sections.labels.articles}
       </Link>
       
@@ -41,7 +49,15 @@ export default function QuickNavigationSection({
         className={STYLES.link}
         aria-label={rubricsLabel}
       >
-        <AuthorsBigIcon className={STYLES.icon} />
+        <div className={STYLES.icon}>
+          <Image
+            src="/articles.png"
+            alt=""
+            fill
+            className="object-contain"
+            sizes="48px"
+          />
+        </div>
         {dictionary.sections.labels.rubrics}
       </Link>
 
@@ -50,7 +66,15 @@ export default function QuickNavigationSection({
         className={STYLES.link}
         aria-label={authorsLabel}
       >
-        <AuthorsBigIcon className={STYLES.icon} />
+        <div className={STYLES.icon}>
+          <Image
+            src="/articles.png"
+            alt=""
+            fill
+            className="object-contain"
+            sizes="48px"
+          />
+        </div>
         {dictionary.sections.labels.authors}
       </Link>
     </nav>

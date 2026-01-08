@@ -328,6 +328,7 @@ export default async function ArticlePage({
           title={dictionary.sections.rubrics.readMoreAbout}
           titleLevel="h2"
           id="related-articles-section"
+          variant="tertiary"
           hasNextSectionTitle={true}
         >
           <RelatedArticles
@@ -341,7 +342,7 @@ export default async function ArticlePage({
         <Section 
           title={dictionary.sections.home.quickNavigation}
           titleLevel="h2"
-          variant='primary'
+          variant="secondary"
         >
           <QuickNavigationSection lang={lang} dictionary={dictionary} />
         </Section>        
