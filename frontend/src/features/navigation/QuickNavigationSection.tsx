@@ -2,10 +2,12 @@
 
 import Link from 'next/link';
 import { Dictionary, Lang } from '@/config/i18n';
+import { AuthorsBigIcon } from '@/shared/primitives/Icons';
 
 const STYLES = {
-  nav: 'flex flex-wrap gap-3 justify-center',
-  link: 'inline-flex items-center px-6 py-3 bg-sf-hi hover:bg-pr-cont hover:text-on-pr rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md text-on-sf',
+nav: 'flex flex-wrap gap-3 justify-center',
+link: 'inline-flex flex-col items-center gap-2 px-6 py-4 hover:text-on-pr rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md text-on-sf',
+icon: 'w-12 h-12',
 } as const;
 
 export default function QuickNavigationSection({
@@ -30,6 +32,7 @@ export default function QuickNavigationSection({
         className={STYLES.link}
         aria-label={articlesLabel}
       >
+        <AuthorsBigIcon className={STYLES.icon} />
         {dictionary.sections.labels.articles}
       </Link>
       
@@ -38,6 +41,7 @@ export default function QuickNavigationSection({
         className={STYLES.link}
         aria-label={rubricsLabel}
       >
+        <AuthorsBigIcon className={STYLES.icon} />
         {dictionary.sections.labels.rubrics}
       </Link>
 
@@ -46,6 +50,7 @@ export default function QuickNavigationSection({
         className={STYLES.link}
         aria-label={authorsLabel}
       >
+        <AuthorsBigIcon className={STYLES.icon} />
         {dictionary.sections.labels.authors}
       </Link>
     </nav>
