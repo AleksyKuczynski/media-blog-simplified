@@ -53,7 +53,7 @@ export default async function HomePage({
         <Section 
           title={dictionary.sections.home.featuredContent}
           titleLevel="h2"
-          variant='default'
+          variant="default"
           hasNextSectionTitle={true}
         >
           <Suspense fallback={<HeroArticlesSkeleton latestCount={3} />}>
@@ -76,7 +76,7 @@ export default async function HomePage({
         <Section 
           title={dictionary.sections.home.featuredRubrics}
           titleLevel="h2"
-          variant='primary'
+          variant="primary"
           hasNextSectionTitle={true}
         >
           {dictionary.sections.home.rubricsDescription && (
@@ -104,7 +104,7 @@ export default async function HomePage({
         <Section 
           title={dictionary.sections.authors.ourAuthors}
           titleLevel="h2"
-          variant='tertiary'
+          variant="tertiary"
           hasNextSectionTitle={true}
         >
           <CardCarousel
@@ -115,7 +115,7 @@ export default async function HomePage({
 
           <ActionLink 
             href={`/${lang}/authors`}
-            variant="secondary"
+            variant="tertiary"
           >
             {dictionary.sections.authors.allAuthors}
           </ActionLink>
@@ -125,7 +125,7 @@ export default async function HomePage({
       <Section 
         title={dictionary.sections.home.quickNavigation}
         titleLevel="h2"
-        variant='secondary'
+        variant="secondary"
       >
         <QuickNavigationSection lang={lang} dictionary={dictionary} />
       </Section>
