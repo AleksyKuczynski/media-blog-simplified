@@ -55,7 +55,9 @@ export async function fetchAuthorsForArticle(slug: string, lang: Lang): Promise<
         name: '::EDITORIAL::', 
         slug: '', 
         bio: '', 
-        avatar: '' 
+        avatar: '',
+        is_author: true,
+        is_illustrator: false, 
       }];
     }
 
@@ -67,7 +69,8 @@ export async function fetchAuthorsForArticle(slug: string, lang: Lang): Promise<
         slug: authorData.slug,
         avatar: authorData.avatar || '',
         telegram_url: authorData.telegram_url,
-        
+        is_author: authorData.is_author,
+        is_illustrator: authorData.is_illustrator,
         name: translation?.name || authorData.slug,
         bio: translation?.bio || '',
         

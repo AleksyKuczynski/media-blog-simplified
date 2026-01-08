@@ -134,9 +134,9 @@ export default async function AuthorPage({
         />
 
         {/* Author Profile Section */}
-        <Section 
-          className="py-8"
-          ariaLabel={processTemplate(dictionary.breadcrumb.templates.authorProfile, {
+        <section 
+          className="pb-16"
+          aria-label={processTemplate(dictionary.breadcrumb.templates.authorProfile, {
             name: author.name
           })}
         >
@@ -191,7 +191,7 @@ export default async function AuthorPage({
               </div>
             </div>
           </div>
-        </Section>
+        </section>
 
         {/* Articles Section */}
         <Section 
@@ -204,16 +204,11 @@ export default async function AuthorPage({
             }),
             siteName: dictionary.seo.site.name
           })}
-        >
-          <div className="container mx-auto px-4">
-            <header className="mb-8">
-              <h2 className="text-3xl font-bold text-on-sf">
-                {processTemplate(dictionary.sections.authors.articlesWrittenBy, {
+          title={processTemplate(dictionary.sections.authors.articlesWrittenBy, {
                   author: author.name
                 })}
-              </h2>
-            </header>
-            
+        >
+          <div className="container mx-auto px-4">
             <Suspense fallback={
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-prcolor mx-auto mb-4"></div>

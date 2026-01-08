@@ -9,9 +9,9 @@ import { fetchArticleSlugs, fetchAllRubrics, fetchArticleCard, DIRECTUS_URL, Art
 import { SearchSchema } from '@/shared/seo/schemas/SearchSchema';
 import { generateSearchMetadataSimple } from '@/shared/seo/metadata/SearchMetadata';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
-import RubricsSection from '@/features/rubric-display/RubricsSection';
-import CardCarousel, { ArticleCardData } from '@/features/shared/CardCarousel/CardCarousel';
 import Link from 'next/link';
+import { ArticleCardData } from '@/features/shared/CardCarousel/types';
+import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
 
 export const revalidate = 0;
 

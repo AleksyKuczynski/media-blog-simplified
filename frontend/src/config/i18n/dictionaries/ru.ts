@@ -312,7 +312,7 @@ const dictionaryRU: Dictionary = {
       moreAuthorsToLoad: 'Еще авторы для загрузки',
       collectionPageDescription: 'Познакомьтесь с нашими авторами и экспертами, которые создают контент о культурных событиях и современных идеях',
       profileDescription: 'Профиль автора и его публикации',
-      articlesWrittenBy: 'Статьи автора {author}',
+      articlesWrittenBy: '{author} / статьи',
       authorPhoto: 'Аватар автора'
     },
     rubrics: {

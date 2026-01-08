@@ -3,7 +3,7 @@
 import { Dictionary, Lang } from "@/config/i18n";
 
 // Card data types
-interface ArticleCardData {
+export interface ArticleCardData {
   type: 'article';
   slug: string;
   title: string;
@@ -13,7 +13,7 @@ interface ArticleCardData {
   formattedDate: string;
 }
 
-interface RubricCardData {
+export interface RubricCardData {
   type: 'rubric';
   slug: string;
   name: string;
@@ -23,7 +23,7 @@ interface RubricCardData {
   articleCount?: number;
 }
 
-interface AuthorCardData {
+export interface AuthorCardData {
   type: 'author';
   slug: string;
   name: string;
@@ -32,7 +32,7 @@ interface AuthorCardData {
   url: string;
 }
 
-type CardData = ArticleCardData | RubricCardData | AuthorCardData;
+export type CardData = ArticleCardData | RubricCardData | AuthorCardData;
 
 export interface CardCarouselProps {
   cards: CardData[];

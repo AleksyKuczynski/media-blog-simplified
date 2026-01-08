@@ -3,7 +3,7 @@
 import { Lang } from '@/config/i18n';
 import { DIRECTUS_URL } from './directusConstants';
 import { Rubric, AuthorDetails, ArticleSlugInfo } from './directusInterfaces';
-import type { ArticleCardData, RubricCardData, AuthorCardData } from '@/features/shared/CardCarousel/CardCarousel';
+import type { ArticleCardData, RubricCardData, AuthorCardData } from '@/features/shared/CardCarousel/types';
 import { fetchAllRubrics } from './fetchAllRubrics';
 import { fetchAllAuthors } from './fetchAllAuthors';
 import { fetchArticleCard } from './fetchArticleCard';

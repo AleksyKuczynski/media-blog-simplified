@@ -2,7 +2,8 @@
 
 import { Dictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchArticleCard, fetchRelatedArticles, DIRECTUS_URL } from '@/api/directus';
-import CardCarousel, { ArticleCardData } from '../shared/CardCarousel/CardCarousel';
+import CardCarousel from '../shared/CardCarousel/CardCarousel';
+import { ArticleCardData } from '../shared/CardCarousel/types';
 
 interface RelatedArticlesProps {
   currentArticleSlug: string;
