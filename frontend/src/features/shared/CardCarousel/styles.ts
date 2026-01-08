@@ -17,7 +17,7 @@ export function getCarouselStyles(cardType: CardType) {
   
   const cardWrapperWidths = {
     article: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px]',
-    rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] xl:w-[15%] 2xl:w-[15%]',
+    rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] xl:w-[16%] 2xl:w-[16%]',
     author: 'flex-none w-[220px] sm:w-[240px] lg:w-[260px] xl:w-[24%] 2xl:w-[24%]',
   };
 
@@ -110,10 +110,10 @@ export const RUBRIC_CAROUSEL_CARD_STYLES = {
   card: 'h-full bg-sf-cont rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
   
   // Content container
-  content: 'p-6 flex flex-col items-center gap-8',
+  content: 'h-full p-6 flex flex-col items-center gap-8',
   
   // Image container
-  iconWrapper: 'relative w-16 h-16 flex-shrink-0 rounded-full overflow-hidden bg-sf-hi',
+  iconWrapper: 'relative w-24 h-24',
   
   // Image element
   iconImage: 'object-contain',
@@ -121,11 +121,11 @@ export const RUBRIC_CAROUSEL_CARD_STYLES = {
   iconFallbackText: 'text-on-pr-cont text-xl font-bold',
   
   // Text content container
-  textContent: 'flex flex-col gap-4 min-w-0',
+  textContent: 'flex flex-col gap-6 min-w-0 grow',
 
   // Text content
-  name: 'font-semibold text-on-sf group-hover:text-pr-cont transition-colors truncate',
-  description: 'text-sm text-on-sf-var line-clamp-2 mt-1',
+  name: 'text-2xl text-on-sf group-hover:text-pr-cont transition-colors grow',
+  description: 'max-md:text-sm text-on-sf-var line-clamp-2 mt-1',
   articleCount: 'text-sm font-semibold text-on-sf-var mt-1',
 } as const;
 
