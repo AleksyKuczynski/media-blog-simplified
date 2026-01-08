@@ -41,13 +41,7 @@ export {
   MetadataBuilder,
 } from './core/MetadataBuilder';
 
-export {
-  SchemaBuilder,
-  createNavigationElementSchema,
-  createWebsiteSchema,
-  createOrganizationSchema,
-  createBreadcrumbSchema,
-} from './core/SchemaBuilder';
+export { SchemaBuilder } from './core/SchemaBuilder';
 
 // ===================================================================
 // NAVIGATION EXPORTS - Navigation-specific components
