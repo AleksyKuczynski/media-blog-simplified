@@ -7,6 +7,8 @@
  * - FOOTER_STYLES: Footer grid, columns, links, copyright
  */
 
+import { cn } from "@/lib/utils";
+
 export const SECTION_STYLES = {
   wrapper: {
     base: 'w-full pb-6 lg:pb-8 xl:pb-12 relative',
@@ -21,18 +23,18 @@ export const SECTION_STYLES = {
     withTitle: 'pt-8 md:pt-12',
   },
   header: {
-    wrapper: `absolute -top-7 -left-[2px] right-0 
-            sm:-top-8 
-            md:-top-10 md:-left-[3px] 
-            lg:-top-[50px] lg:-left-[4px]
-            xl:-top-[60px] xl:-left-[5px]`,
+    wrapper: cn('absolute -top-7 -left-[2px] right-0', 
+            'sm:-top-8', 
+            'md:-top-10 md:-left-[3px]', 
+            'lg:-top-[50px] lg:-left-[4px]',
+            'xl:-top-[60px] xl:-left-[5px]'),
     title: {
-      base: `font-semibold max-md:font-bold uppercase leading-tight
-              text-3xl 
-              sm:text-4xl 
-              md:text-5xl 
-              lg:text-6xl 
-              xl:text-7xl`,
+      base: cn('font-semibold max-md:font-bold uppercase leading-tight',
+              'text-3xl', 
+              'sm:text-4xl', 
+              'md:text-5xl', 
+              'lg:text-6xl', 
+              'xl:text-7xl'),
       primary: 'text-pr-fix',
       secondary: 'text-sec-fix',
       tertiary: 'text-tr-fix',
