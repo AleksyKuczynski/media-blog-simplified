@@ -10,6 +10,8 @@
  * - NAV_LINK_STYLES: Common navigation link states
  */
 
+import { cn } from "@/lib/utils";
+
 export const HEADER_STYLES = {
   wrapper: 'fixed top-0 left-0 right-0 z-50',
 } as const;
@@ -54,4 +56,15 @@ export const NAV_LINK_STYLES = {
   base: 'px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200',
   active: 'pointer-events-none bg-pr-cont text-on-pr hover:bg-pr-cont hover:text-on-pr',
   listItem: 'list-none',
+} as const;
+
+export const QUICK_NAV_STYLES = {
+  nav: 'flex flex-wrap gap-2 md:gap-8 lg:gap-12 xl:gap-16 justify-center',
+  link: cn(
+    'inline-flex flex-col items-center gap-2',
+    'text-pr-fix font-medium uppercase max-md:text-sm xl:text-lg', 
+    'px-4 md:px-8 py-2 md:py-4 rounded-xl md:rounded-2xl', 
+    'hover:shadow-[0_0_7px_rgba(0,0,0,0.25)] focus:shadow-[0_0_3px_rgba(0,0,0,0.5)] transition-all duration-200', 
+  ),
+  icon: 'w-16 md:w-20 xl:w-24 aspect-square relative',
 } as const;
