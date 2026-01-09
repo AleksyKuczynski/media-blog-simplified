@@ -1,5 +1,6 @@
 // src/features/layout/CardGrid.tsx
 import React from 'react';
+import { CARD_GRID_STYLES } from './styles';
 
 interface CardGridProps {
   children: React.ReactNode;
@@ -12,10 +13,7 @@ export default function CardGrid({
 }: CardGridProps) {
   return (
     <div className={`
-      w-full 
-      flex flex-wrap
-      gap-6 lg:gap-8
-      p-2  lg:p-8
+      ${CARD_GRID_STYLES}
       ${className}
     `}>
       {children}

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
-import { Lang } from '@/config/i18n';
+import { dictionary, Lang } from '@/config/i18n';
 import { AUTHOR_CARD_STYLES } from './styles';
 
 interface AuthorCardProps {
@@ -44,6 +44,13 @@ export default function AuthorCard({ author, linkToProfile = true, lang }: Autho
         {author.bio && (
           <p className={AUTHOR_CARD_STYLES.bio}>
             {author.bio}
+          </p>
+        )}
+        
+        {/* Article Count */}
+        {author.articleCount !== undefined && (
+          <p className={AUTHOR_CARD_STYLES.count}>
+            {dictionary.common.count.articles}: {author.articleCount}
           </p>
         )}
       </div>

@@ -104,6 +104,7 @@ export interface AuthorDetails extends Author {
   credentials?: string;
   expertise_areas?: string;
   meta_description?: string;
+  articleCount?: number;
 }
 
 export interface AuthorTranslation {
