@@ -5,21 +5,22 @@ export const AUTHOR_CARD_STYLES = {
   // Container styling - manages its own responsive width
   container: cn(
     'h-full relative overflow-hidden',
-    'bg-sf-cont rounded-3xl shadow-sm hover:shadow-md',
+    'bg-sf-cont rounded-2xl shadow-sm hover:shadow-md',
     'dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)]',
     'transition-shadow duration-200 group',
     // Width control: full width below lg, 2 cols on lg+
-    'w-full lg:w-[calc(50%-16px)]',
+    'w-full',
+    'flex'
   ),
   
   // Link wrapper (when linkToProfile is true)
   link: 'block h-full',
   
   // Grid layout
-  grid: 'grid grid-cols-1 sm:grid-cols-2 sm:grid-rows-2 gap-4 p-6',
+  grid: 'flex flex-col gap-4 p-3 w-3/5',
   
   // Avatar container (larger than carousel)
-  avatarContainer: 'relative w-full aspect-square sm:row-span-1 rounded-2xl overflow-hidden',
+  avatarContainer: 'relative w-2/5 aspect-square rounded-md overflow-hidden',
   
   // Avatar image
   avatarImage: 'object-cover w-full h-full group-hover:scale-105 transition-transform duration-200',
@@ -29,10 +30,10 @@ export const AUTHOR_CARD_STYLES = {
   avatarFallbackText: 'text-on-pr-cont text-4xl font-bold',
   
   // Author name
-  name: 'font-bold text-xl sm:text-2xl transition-colors duration-600 self-end text-on-sf hover:text-pr-cont',
+  name: 'text-xl sm:text-2xl transition-colors duration-600 text-on-sf hover:text-pr-cont',
   
   // Bio text
-  bio: 'text-on-sf-var sm:col-span-2 transition-colors duration-600 line-clamp-5 text-sm sm:text-base',
+  bio: 'text-on-sf-var sm:col-span-2 transition-colors duration-600 line-clamp-3 text-sm sm:text-base',
 } as const;
 
 export const AUTHOR_CARD_SKELETON_STYLES = {

@@ -15,26 +15,26 @@ interface AuthorCardProps {
 export default function AuthorCard({ author, linkToProfile = true, lang }: AuthorCardProps) {
   const CardContent = () => (
     <div className={AUTHOR_CARD_STYLES.container}>
-      <div className={AUTHOR_CARD_STYLES.grid}>
-        {/* Avatar Section */}
-        <div className={AUTHOR_CARD_STYLES.avatarContainer}>
-          {author.avatar ? (
-            <Image
-              src={`${DIRECTUS_URL}/assets/${author.avatar}?width=400&height=400&quality=80&format=webp`}
-              alt={author.name}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              className={AUTHOR_CARD_STYLES.avatarImage}
-            />
-          ) : (
-            <div className={AUTHOR_CARD_STYLES.avatarFallback}>
-              <span className={AUTHOR_CARD_STYLES.avatarFallbackText}>
-                {author.name.charAt(0).toUpperCase()}
-              </span>
-            </div>
-          )}
-        </div>
+      {/* Avatar Section */}
+      <div className={AUTHOR_CARD_STYLES.avatarContainer}>
+        {author.avatar ? (
+          <Image
+            src={`${DIRECTUS_URL}/assets/${author.avatar}?width=400&height=400&quality=80&format=webp`}
+            alt={author.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className={AUTHOR_CARD_STYLES.avatarImage}
+          />
+        ) : (
+          <div className={AUTHOR_CARD_STYLES.avatarFallback}>
+            <span className={AUTHOR_CARD_STYLES.avatarFallbackText}>
+              {author.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+        )}
+      </div>
         
+      <div className={AUTHOR_CARD_STYLES.grid}>
         {/* Author Name */}
         <h3 className={AUTHOR_CARD_STYLES.name}>
           {author.name}
