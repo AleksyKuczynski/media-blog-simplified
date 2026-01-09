@@ -11,9 +11,9 @@ import { cn } from "@/lib/utils";
 
 export const CARD_GRID_STYLES = cn(
   'w-full', 
-  'flex flex-wrap',
-  'gap-6 lg:gap-8',
-  'p-2  lg:p-8'
+  'flex flex-wrap justify-center',
+  'gap-4 lg:gap-6 2xl:gap-8',
+  'p-2 sm:p-4 md:p-8  2xl:p-16'
 )
 
 export const SECTION_STYLES = {

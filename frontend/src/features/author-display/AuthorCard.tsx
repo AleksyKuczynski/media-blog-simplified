@@ -3,16 +3,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
-import { dictionary, Lang } from '@/config/i18n';
+import { Dictionary, Lang } from '@/config/i18n';
 import { AUTHOR_CARD_STYLES } from './styles';
+import { processTemplate } from '@/config/i18n/helpers/templates';
 
 interface AuthorCardProps {
   author: AuthorDetails;
   linkToProfile?: boolean;
   lang: Lang;
+  dictionary: Dictionary;
 }
 
-export default function AuthorCard({ author, linkToProfile = true, lang }: AuthorCardProps) {
+export default function AuthorCard({ author, linkToProfile = true, lang, dictionary }: AuthorCardProps) {
   const CardContent = () => (
     <div className={AUTHOR_CARD_STYLES.container}>
       {/* Avatar Section */}
@@ -50,7 +52,10 @@ export default function AuthorCard({ author, linkToProfile = true, lang }: Autho
         {/* Article Count */}
         {author.articleCount !== undefined && (
           <p className={AUTHOR_CARD_STYLES.count}>
-            {dictionary.common.count.articles}: {author.articleCount}
+            {processTemplate(dictionary.sections.templates.totalCount, {
+              count: author.articleCount.toString(),
+              countLabel: dictionary.common.count.articles
+            })} 
           </p>
         )}
       </div>

@@ -17,7 +17,6 @@ interface RubricCarouselCardProps {
 }
 
 export default function RubricCarouselCard({
-  slug,
   name,
   description,
   iconSrc,
@@ -67,9 +66,9 @@ export default function RubricCarouselCard({
             {articleCount !== undefined && articleCount > 0 && (
               <p className={RUBRIC_CAROUSEL_CARD_STYLES.articleCount}>
                 {processTemplate(dictionary.sections.templates.totalCount, {
-              count: articleCount.toString(),
-              countLabel: dictionary.common.count.articles
-            })} 
+                  count: articleCount.toString(),
+                  countLabel: dictionary.common.count.articles
+                })} 
               </p>
             )}
           </div>

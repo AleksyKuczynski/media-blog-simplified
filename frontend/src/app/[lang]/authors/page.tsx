@@ -66,6 +66,7 @@ export default async function AllAuthorsPage({
                   key={author.slug}
                   author={author}
                   lang={lang}
+                  dictionary={dictionary}
                 />
               ))}
             </CardGrid>
