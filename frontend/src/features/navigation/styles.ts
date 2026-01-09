@@ -62,7 +62,7 @@ export const QUICK_NAV_STYLES = {
   nav: 'flex flex-wrap gap-2 md:gap-8 lg:gap-12 xl:gap-16 justify-center',
   link: cn(
     'inline-flex flex-col items-center gap-2',
-    'text-pr-fix font-medium uppercase max-md:text-sm xl:text-lg', 
+    'text-pr-cont font-medium uppercase max-md:text-sm xl:text-lg', 
     'px-4 md:px-8 py-2 md:py-4 rounded-xl md:rounded-2xl', 
     'hover:shadow-[0_0_7px_rgba(0,0,0,0.25)] focus:shadow-[0_0_3px_rgba(0,0,0,0.5)] transition-all duration-200', 
   ),
