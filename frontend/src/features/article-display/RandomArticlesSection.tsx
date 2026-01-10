@@ -1,8 +1,8 @@
 // src/features/article-display/RandomArticlesSection.tsx
-'use client';
 
 import { Dictionary, Lang } from '@/config/i18n';
-import RandomArticles from './RandomArticles';
+import CardCarousel from '../shared/CardCarousel/CardCarousel';
+import { getRandomArticles } from './actions/getRandomArticles';
 
 interface RandomArticlesSectionProps {
   lang: Lang;
@@ -10,22 +10,22 @@ interface RandomArticlesSectionProps {
   limit?: number;
 }
 
-/**
- * Client wrapper for RandomArticles
- * Ensures client-side hydration works properly
- */
-export default function RandomArticlesSection({
+export default async function RandomArticlesSection({
   lang,
   dictionary,
   limit = 6,
 }: RandomArticlesSectionProps) {
-  console.log('🎯 RandomArticlesSection rendering');
-  
+  const cards = await getRandomArticles(lang, limit);
+
+  if (cards.length === 0) {
+    return null;
+  }
+
   return (
-    <RandomArticles
+    <CardCarousel
+      cards={cards}
       lang={lang}
       dictionary={dictionary}
-      limit={limit}
     />
   );
 }

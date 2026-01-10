@@ -129,24 +129,18 @@ export default async function RubricsPage({
             allAuthors: dictionary.navigation.labels.authors,
           }}
         />
-        
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold mb-4">
-            {dictionary.sections.rubrics.allRubrics}
-          </h1>
-          
-          <p className="text-lg text-on-sf-var mb-4 max-w-3xl">
-            {dictionary.sections.rubrics.categoriesDescription}
-          </p>
-          
-          <p className="text-sm text-muted-foreground">
-            {getLocalizedRubricCount(dictionary, rubrics.length)}
-          </p>
-        </header>
 
         <Section 
+          title={dictionary.sections.rubrics.allRubrics}
+          titleLevel="h1"
           ariaLabel={dictionary.sections.rubrics.rubricsCatalog}
         >
+          <div className="mb-8">
+            <p className="text-lg text-on-sf-var mb-4 max-w-3xl">
+              {dictionary.sections.rubrics.categoriesDescription}
+            </p>
+          </div>
+
           {transformedRubrics.length > 0 ? (
             <CardGrid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {transformedRubrics.map((rubric) => (
@@ -170,7 +164,6 @@ export default async function RubricsPage({
           )}
         </Section>
 
-        {/* Random Articles Section */}
         <Section
           title={dictionary.sections.rubrics.readMoreAbout}
           titleLevel="h2"
