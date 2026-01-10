@@ -6,11 +6,12 @@ import Section from '@/features/layout/Section';
 import CardGrid from '@/features/layout/CardGrid';
 import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
-import { getLocalizedRubricCount } from '@/config/i18n/helpers/content'; // FIXED: Correct import
+import { getLocalizedRubricCount } from '@/config/i18n/helpers/content';
 import { getDictionary, Lang } from '@/config/i18n';
 import { Rubric, fetchAllRubrics } from '@/api/directus';
 import { createErrorHandler } from '@/shared/errors/lib/errorUtils';
 import RubricCard from '@/features/rubric-display/RubricCard';
+import RandomArticles from '@/features/article-display/RandomArticles';
 
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;
@@ -35,11 +36,11 @@ export async function generateMetadata({
     const rubricsData = rubrics.map((rubric: Rubric) => {
     const translation = rubric.translations?.find(t => t.languages_code === lang);
     return {
-      ...rubric, // Spread all original Rubric properties (includes any id if present)
+      ...rubric,
       name: translation?.name || rubric.slug,
       description: translation?.description || '',
-      icon: rubric.nav_icon, // Map nav_icon to expected icon property
-      url: `/${lang}/${rubric.slug}`, // Add required url property
+      icon: rubric.nav_icon,
+      url: `/${lang}/${rubric.slug}`,
     };
   });
 
@@ -69,7 +70,7 @@ export default async function RubricsPage({
 }) {
   const { lang } = await params;
   const dictionary = getDictionary(lang);
-        console.log(lang)
+
   try {
     const [rubrics] = await Promise.all([
       fetchAllRubrics(lang),
@@ -85,9 +86,6 @@ export default async function RubricsPage({
         url: `/${lang}/${rubric.slug}`,
       };
     });
-
-        console.log(lang)
-
 
     // Transform rubrics for schema
     const schemaItems = transformedRubrics.map(rubric => ({
@@ -170,6 +168,20 @@ export default async function RubricsPage({
               </p>
             </div>
           )}
+        </Section>
+
+        {/* Random Articles Section */}
+        <Section
+          title={dictionary.sections.rubrics.readMoreAbout}
+          titleLevel="h2"
+          variant="tertiary"
+          hasNextSectionTitle={true}
+        >
+          <RandomArticles
+            lang={lang}
+            dictionary={dictionary}
+            limit={6}
+          />
         </Section>
       </>
     );
