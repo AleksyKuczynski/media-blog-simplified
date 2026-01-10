@@ -98,6 +98,12 @@ export default async function AllAuthorsPage({
         hasNextSectionTitle={true}
         id="authors"
       >
+        <div className="mb-8">
+          <p className="text-lg text-on-sf-var mb-4 max-w-3xl">
+            {dictionary.sections.authors.collectionPageDescription}
+          </p>
+        </div>
+
         <Suspense fallback={
           <div className={AUTHORS_GRID_STYLES}>
             {Array.from({ length: 6 }, (_, i) => (
