@@ -9,6 +9,11 @@
 
 import { cn } from "@/lib/utils";
 
+export const COLLECTION_DESCRIPTION_STYLES = cn(
+      'text-xl text-on-sf-var mb-8 mx-auto max-w-3xl',
+      'bg-sf-hi p-8 rounded-lg',
+    )
+
 export const CARD_GRID_STYLES = cn(
   'w-full', 
   'flex flex-wrap justify-center',

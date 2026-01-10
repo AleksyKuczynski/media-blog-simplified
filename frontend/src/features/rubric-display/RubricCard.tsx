@@ -55,7 +55,7 @@ export const RubricCard: React.FC<RubricCardProps> = ({
               alt={iconAltText}
               fill
               className={RUBRIC_CARD_STYLES.iconImage}
-              sizes="32px"
+              sizes="160px"
               loading="lazy"
             />
           </div>
@@ -70,11 +70,6 @@ export const RubricCard: React.FC<RubricCardProps> = ({
           </div>
         )}
         
-        {rubric.articleCount !== undefined && rubric.articleCount > 0 && (
-          <span className={RUBRIC_CARD_STYLES.articleCount}>
-            {rubric.articleCount} {dictionary.sections.labels.articles}
-          </span>
-        )}
       </div>
       
       {/* Title */}
@@ -94,9 +89,20 @@ export const RubricCard: React.FC<RubricCardProps> = ({
           {rubric.description}
         </p>
       )}
+
+
       
       {/* Action */}
       <div className={RUBRIC_CARD_STYLES.action}>
+        {rubric.articleCount !== undefined && rubric.articleCount > 0 && (
+          <span className={RUBRIC_CARD_STYLES.articleCount}>
+            {processTemplate(dictionary.sections.templates.totalCount, {
+              count: rubric.articleCount.toString(),
+              countLabel: dictionary.common.count.articles
+            })}
+          </span>
+        )}
+
         <span className={RUBRIC_CARD_STYLES.actionText}>
           {dictionary.common.actions.explore} →
         </span>

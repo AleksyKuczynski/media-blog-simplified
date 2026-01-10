@@ -11,6 +11,7 @@ import { getDictionary, Lang } from '@/config/i18n';
 import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
+import CollectionDescription from '@/features/layout/CollectionDescription';
 
 // ISR CONFIGURATION: 1 hour (authors list is structural)
 export const revalidate = 3600;
@@ -98,11 +99,9 @@ export default async function AllAuthorsPage({
         hasNextSectionTitle={true}
         id="authors"
       >
-        <div className="mb-8">
-          <p className="text-lg text-on-sf-var mb-4 max-w-3xl">
-            {dictionary.sections.authors.collectionPageDescription}
-          </p>
-        </div>
+        <CollectionDescription>
+          {dictionary.sections.authors.collectionPageDescription}
+        </CollectionDescription>
 
         <Suspense fallback={
           <div className={AUTHORS_GRID_STYLES}>

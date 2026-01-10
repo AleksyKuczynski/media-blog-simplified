@@ -12,6 +12,8 @@ import { Rubric, fetchAllRubrics } from '@/api/directus';
 import { createErrorHandler } from '@/shared/errors/lib/errorUtils';
 import RubricCard from '@/features/rubric-display/RubricCard';
 import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
+import CollectionDescription from '@/features/layout/CollectionDescription';
+import { RUBRICS_GRID_STYLES } from '@/features/rubric-display/styles';
 
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;
@@ -134,15 +136,14 @@ export default async function RubricsPage({
           title={dictionary.sections.rubrics.allRubrics}
           titleLevel="h1"
           ariaLabel={dictionary.sections.rubrics.rubricsCatalog}
+          hasNextSectionTitle={true}
         >
-          <div className="mb-8">
-            <p className="text-lg text-on-sf-var mb-4 max-w-3xl">
-              {dictionary.sections.rubrics.categoriesDescription}
-            </p>
-          </div>
+          <CollectionDescription>
+            {dictionary.sections.rubrics.categoriesDescription}
+          </CollectionDescription>
 
           {transformedRubrics.length > 0 ? (
-            <CardGrid className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className={RUBRICS_GRID_STYLES}>
               {transformedRubrics.map((rubric) => (
                 <RubricCard
                   key={rubric.slug}
@@ -151,7 +152,7 @@ export default async function RubricsPage({
                   dictionary={dictionary}
                 />
               ))}
-            </CardGrid>
+            </div>
           ) : (
             <div className="text-center py-12">
               <p className="text-lg text-muted-foreground mb-4">
