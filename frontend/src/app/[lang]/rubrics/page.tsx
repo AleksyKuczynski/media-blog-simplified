@@ -11,7 +11,7 @@ import { getDictionary, Lang } from '@/config/i18n';
 import { Rubric, fetchAllRubrics } from '@/api/directus';
 import { createErrorHandler } from '@/shared/errors/lib/errorUtils';
 import RubricCard from '@/features/rubric-display/RubricCard';
-import RandomArticles from '@/features/article-display/RandomArticles';
+import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
 
 // ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;
@@ -177,7 +177,7 @@ export default async function RubricsPage({
           variant="tertiary"
           hasNextSectionTitle={true}
         >
-          <RandomArticles
+          <RandomArticlesSection
             lang={lang}
             dictionary={dictionary}
             limit={6}
