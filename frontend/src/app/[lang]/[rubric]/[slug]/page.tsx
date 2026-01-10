@@ -338,13 +338,6 @@ export default async function ArticlePage({
             dictionary={dictionary}
           />
         </Section>
-
-        <Section 
-          title={dictionary.sections.home.quickNavigation}
-          titleLevel="h2"
-        >
-          <QuickNavigationSection lang={lang} dictionary={dictionary} />
-        </Section>        
       </>
     );
 

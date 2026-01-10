@@ -6,6 +6,8 @@ import Navigation from '@/features/navigation/Navigation'
 import { getDictionary, type Lang } from '@/config/i18n'
 import { SUPPORTED_LANGUAGES } from '@/config/constants/constants'
 import Footer from '@/features/layout/Footer'
+import Section from '@/features/layout/Section'
+import QuickNavigationSection from '@/features/navigation/QuickNavigationSection'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -89,6 +91,13 @@ export default async function LanguageLayout({
       <Suspense fallback={
         <div className="h-32 bg-gray-50 border-t border-gray-200" />
       }>
+        <Section 
+          title={dictionary.sections.home.quickNavigation}
+          titleLevel="h2"
+        >
+          <QuickNavigationSection lang={lang as Lang} dictionary={dictionary} />
+        </Section>
+
         <Footer
           lang={lang as Lang}
           dictionary={dictionary}

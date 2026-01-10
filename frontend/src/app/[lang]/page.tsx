@@ -121,13 +121,6 @@ export default async function HomePage({
           </ActionLink>
         </Section>
       )}
-
-      <Section 
-        title={dictionary.sections.home.quickNavigation}
-        titleLevel="h2"
-      >
-        <QuickNavigationSection lang={lang} dictionary={dictionary} />
-      </Section>
     </>
   );
 }
