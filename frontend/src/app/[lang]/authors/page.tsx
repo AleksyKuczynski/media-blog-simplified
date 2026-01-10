@@ -20,7 +20,11 @@ export default async function AllAuthorsPage({
   const dictionary = getDictionary(lang as Lang);
   const rubricBasics = await fetchRubricBasics(lang);
   
-  const authors = await fetchAllAuthors(lang);
+  // Fetch both authors and illustrators in parallel
+  const [authors, illustrators] = await Promise.all([
+    fetchAllAuthors(lang, 'author'),
+    fetchAllAuthors(lang, 'illustrator'),
+  ]);
 
   const breadcrumbItems = [
     { label: dictionary.sections.authors.ourAuthors, href: `/${lang}/authors` },
@@ -43,9 +47,11 @@ export default async function AllAuthorsPage({
         />
       </Suspense>
       
+      {/* Authors Section */}
       <Section
         title={dictionary.sections.authors.ourAuthors}
         titleLevel="h1"
+        hasNextSectionTitle={true}
       >
         <Suspense fallback={
           <Section>
@@ -73,6 +79,41 @@ export default async function AllAuthorsPage({
           ) : (
             <p className="text-center text-gray-600 dark:text-gray-400">
               {dictionary.sections.authors.noAuthorsFound}
+            </p>
+          )}
+        </Suspense>
+      </Section>
+
+      {/* Illustrators Section */}
+      <Section
+        title={dictionary.sections.illustrators.ourIllustrators}
+        titleLevel="h2"
+        variant="tertiary"
+        hasNextSectionTitle={true}
+      >
+        <Suspense fallback={
+          <Section>
+            <CardGrid>
+              {Array.from({ length: 6 }, (_, i) => (
+                <AuthorCardSkeleton key={i} />
+              ))}
+            </CardGrid>
+          </Section>
+        }>
+          {illustrators.length > 0 ? (
+            <CardGrid>
+              {illustrators.map((illustrator) => (
+                <AuthorCard 
+                  key={illustrator.slug}
+                  author={illustrator}
+                  lang={lang}
+                  dictionary={dictionary}
+                />
+              ))}
+            </CardGrid>
+          ) : (
+            <p className="text-center text-gray-600 dark:text-gray-400">
+              {dictionary.sections.illustrators.noIllustratorsFound}
             </p>
           )}
         </Suspense>

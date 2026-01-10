@@ -313,6 +313,11 @@ export const dictionaryEN: Dictionary = {
       articlesWrittenBy: 'Articles by {author}',
       authorPhoto: 'Author avatar'
     },
+    illustrators: {
+      ourIllustrators: 'Illustrators',
+      noIllustratorsFound: 'No illustrators found',
+      collectionPageDescription: 'Meet our illustrators who create visual content for our materials',
+    },
     rubrics: {
       allRubrics: 'All Rubrics',
       featuredRubric: 'Featured Rubric',

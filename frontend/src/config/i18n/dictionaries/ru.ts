@@ -315,6 +315,11 @@ const dictionaryRU: Dictionary = {
       articlesWrittenBy: '{author} / статьи',
       authorPhoto: 'Аватар автора'
     },
+    illustrators: {
+      ourIllustrators: 'Иллюстраторы',
+      noIllustratorsFound: 'Иллюстраторы не найдены',
+      collectionPageDescription: 'Познакомьтесь с нашими иллюстраторами, которые создают визуальный контент для наших материалов',
+    },
     rubrics: {
       allRubrics: 'Все рубрики',
       featuredRubric: 'Избранная рубрика',

@@ -348,6 +348,12 @@ export interface SectionAuthors {
   readonly authorPhoto: string;
 }
 
+export interface SectionIlustrators {
+  readonly ourIllustrators: string;
+  readonly noIllustratorsFound: string;
+  readonly collectionPageDescription: string;
+}
+
 export interface SectionRubrics {
   readonly allRubrics: string;
   readonly featuredRubric: string;
@@ -384,6 +390,7 @@ export interface SectionsDictionary {
   readonly templates: SectionTemplates;
   readonly home: SectionHome;
   readonly authors: SectionAuthors;
+  readonly illustrators: SectionIlustrators;
   readonly rubrics: SectionRubrics;
   readonly articles: SectionArticles;
 }
