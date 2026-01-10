@@ -1,12 +1,16 @@
 // src/app/[lang]/authors/page.tsx
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchAllAuthors, fetchRubricBasics } from '@/api/directus';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import Section from '@/features/layout/Section';
-import CardGrid from '@/features/layout/CardGrid';
 import { AuthorCardSkeleton } from '@/features/author-display/AuthorCardSkeleton';
+import { AuthorsList } from '@/features/author-display/AuthorsList';
+import { AUTHORS_GRID_STYLES } from '@/features/author-display/styles';
 import { getDictionary, Lang } from '@/config/i18n';
-import AuthorCard from '@/features/author-display/AuthorCard';
+import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMetadata';
+import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
+import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 
 // ISR CONFIGURATION: 1 hour (authors list is structural)
 export const revalidate = 3600;
@@ -20,7 +24,7 @@ export default async function AllAuthorsPage({
   const dictionary = getDictionary(lang as Lang);
   const rubricBasics = await fetchRubricBasics(lang);
   
-  // Fetch both authors and illustrators in parallel
+  // Fetch both for schema generation
   const [authors, illustrators] = await Promise.all([
     fetchAllAuthors(lang, 'author'),
     fetchAllAuthors(lang, 'illustrator'),
@@ -30,8 +34,48 @@ export default async function AllAuthorsPage({
     { label: dictionary.sections.authors.ourAuthors, href: `/${lang}/authors` },
   ];
 
+  // Prepare schema items for authors
+  const authorSchemaItems = authors.map(author => ({
+    name: author.name,
+    slug: author.slug,
+    url: `/${lang}/authors/${author.slug}`,
+    description: author.bio || `${author.name} - ${dictionary.sections.labels.author}`,
+    articleCount: author.articleCount,
+  }));
+
+  // Prepare schema items for illustrators
+  const illustratorSchemaItems = illustrators.map(illustrator => ({
+    name: illustrator.name,
+    slug: illustrator.slug,
+    url: `/${lang}/authors/${illustrator.slug}`,
+    description: illustrator.bio || `${illustrator.name} - ${dictionary.sections.illustrators.ourIllustrators}`,
+    articleCount: illustrator.articleCount,
+  }));
+
   return (
     <>
+      {/* Authors Collection Schema */}
+      <CollectionPageSchema
+        dictionary={dictionary}
+        collectionType="authors"
+        items={authorSchemaItems}
+        totalCount={authors.length}
+        currentPath={`/${lang}/authors`}
+        featured={false}
+      />
+
+      {/* Illustrators Collection Schema - separate schema */}
+      {illustrators.length > 0 && (
+        <CollectionPageSchema
+          dictionary={dictionary}
+          collectionType="illustrators"
+          items={illustratorSchemaItems}
+          totalCount={illustrators.length}
+          currentPath={`/${lang}/authors#illustrators`}
+          featured={false}
+        />
+      )}
+
       <Suspense fallback={
         <div className="h-8 bg-gray-100 rounded animate-pulse mb-4" />
       }>
@@ -52,35 +96,20 @@ export default async function AllAuthorsPage({
         title={dictionary.sections.authors.ourAuthors}
         titleLevel="h1"
         hasNextSectionTitle={true}
+        id="authors"
       >
         <Suspense fallback={
-          <Section>
-            <div className="mb-8 text-center">
-              <div className="h-8 w-64 bg-on-sf/10 rounded mx-auto animate-pulse" />
-            </div>
-            <CardGrid>
-              {Array.from({ length: 6 }, (_, i) => (
-                <AuthorCardSkeleton key={i} />
-              ))}
-            </CardGrid>
-          </Section>
+          <div className={AUTHORS_GRID_STYLES}>
+            {Array.from({ length: 6 }, (_, i) => (
+              <AuthorCardSkeleton key={i} />
+            ))}
+          </div>
         }>
-          {authors.length > 0 ? (
-            <CardGrid>
-              {authors.map((author) => (
-                <AuthorCard 
-                  key={author.slug}
-                  author={author}
-                  lang={lang}
-                  dictionary={dictionary}
-                />
-              ))}
-            </CardGrid>
-          ) : (
-            <p className="text-center text-gray-600 dark:text-gray-400">
-              {dictionary.sections.authors.noAuthorsFound}
-            </p>
-          )}
+          <AuthorsList 
+            lang={lang} 
+            roleFilter="author"
+            emptyMessage={dictionary.sections.authors.noAuthorsFound}
+          />
         </Suspense>
       </Section>
 
@@ -90,34 +119,55 @@ export default async function AllAuthorsPage({
         titleLevel="h2"
         variant="tertiary"
         hasNextSectionTitle={true}
+        id="illustrators"
       >
         <Suspense fallback={
-          <Section>
-            <CardGrid>
-              {Array.from({ length: 6 }, (_, i) => (
-                <AuthorCardSkeleton key={i} />
-              ))}
-            </CardGrid>
-          </Section>
+          <div className={AUTHORS_GRID_STYLES}>
+            {Array.from({ length: 6 }, (_, i) => (
+              <AuthorCardSkeleton key={i} />
+            ))}
+          </div>
         }>
-          {illustrators.length > 0 ? (
-            <CardGrid>
-              {illustrators.map((illustrator) => (
-                <AuthorCard 
-                  key={illustrator.slug}
-                  author={illustrator}
-                  lang={lang}
-                  dictionary={dictionary}
-                />
-              ))}
-            </CardGrid>
-          ) : (
-            <p className="text-center text-gray-600 dark:text-gray-400">
-              {dictionary.sections.illustrators.noIllustratorsFound}
-            </p>
-          )}
+          <AuthorsList 
+            lang={lang} 
+            roleFilter="illustrator"
+            emptyMessage={dictionary.sections.illustrators.noIllustratorsFound}
+          />
         </Suspense>
       </Section>
     </>
   );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: Lang }>;
+}): Promise<Metadata> {
+  return safeGenerateMetadata(params, 'page', async (lang, dictionary) => {
+    const [authors, illustrators] = await Promise.all([
+      fetchAllAuthors(lang, 'author'),
+      fetchAllAuthors(lang, 'illustrator'),
+    ]);
+    
+    // Combine both collections for metadata
+    const totalCount = authors.length + illustrators.length;
+    
+    // Use first 5 authors for metadata items
+    const authorItems = authors.slice(0, 5).map(author => ({
+      name: author.name,
+      slug: author.slug,
+      description: author.bio || `${author.name} - ${dictionary.sections.labels.author}`,
+      articleCount: author.articleCount,
+    }));
+
+    return await generateCollectionMetadata({
+      dictionary,
+      collectionType: 'authors',
+      items: authorItems,
+      totalCount,
+      currentPath: `/${lang}/authors`,
+      featured: false,
+    });
+  });
 }

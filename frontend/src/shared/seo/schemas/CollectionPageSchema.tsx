@@ -11,7 +11,7 @@ import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';
 
 export interface CollectionPageSchemaProps {
   dictionary: Dictionary;
-  collectionType: 'rubrics' | 'authors' | 'articles';
+  collectionType: 'rubrics' | 'authors' | 'articles' | 'illustrators';
   items: Array<{
     name: string;
     slug: string;
@@ -52,9 +52,14 @@ export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
     const canonicalUrl = `${baseUrl}${currentPath}`;
 
     // Get collection data from dictionary
-    const collectionLabel = dictionary.sections.labels[collectionType];
-    const collectionTitle = processTemplate(dictionary.sections.templates.collectionTitle, {
-      section: collectionLabel,
+    const collectionLabel = collectionType === 'illustrators' 
+      ? dictionary.sections.illustrators?.ourIllustrators || 'Иллюстраторы'
+      : dictionary.sections.labels[collectionType as 'rubrics' | 'authors' | 'articles'];
+
+    const collectionTitle = collectionType === 'illustrators'
+      ? collectionLabel
+      : processTemplate(dictionary.sections.templates.collectionTitle, {
+          section: collectionLabel,
     });
 
     // Get collection description using helper
