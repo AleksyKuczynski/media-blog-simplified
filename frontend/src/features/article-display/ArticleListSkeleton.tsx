@@ -2,36 +2,26 @@
 
 import { cn } from '@/lib/utils/cn';
 import { ArticleCardSkeletonVariant } from './ArticleCardVariant';
-import { ARTICLE_LIST_SKELETON_STYLES } from './styles';
+import { ARTICLE_LIST_STYLES } from './styles';
 
 interface ArticleListSkeletonProps {
-  variant?: 'grid' | 'list';
   count?: number;
-  showCount?: boolean;
   className?: string;
+  ariaLabel?: string;
 }
 
 export function ArticleListSkeleton({ 
-  variant = 'grid', 
   count = 6,
-  showCount = false,
-  className 
+  className,
+  ariaLabel = 'Loading articles...'
 }: ArticleListSkeletonProps) {
-  const gridClasses = variant === 'grid' 
-    ? ARTICLE_LIST_SKELETON_STYLES.container.grid
-    : ARTICLE_LIST_SKELETON_STYLES.container.list;
-
   return (
     <section 
-      className={cn(ARTICLE_LIST_SKELETON_STYLES.section, className)} 
+      className={cn(ARTICLE_LIST_STYLES.section, className)}
       role="status" 
-      aria-label="Loading articles..."
+      aria-label={ariaLabel}
     >
-      {/* Grid skeleton */}
-      <div className={cn(
-        ARTICLE_LIST_SKELETON_STYLES.container.base,
-        gridClasses
-      )}>
+      <div className={ARTICLE_LIST_STYLES.container}>
         {Array.from({ length: count }, (_, index) => (
           <ArticleCardSkeletonVariant 
             key={index}
@@ -41,7 +31,7 @@ export function ArticleListSkeleton({
         ))}
       </div>
       
-      <span className={ARTICLE_LIST_SKELETON_STYLES.srOnly}>Loading articles...</span>
+      <span className="sr-only">{ariaLabel}</span>
     </section>
   );
 }
