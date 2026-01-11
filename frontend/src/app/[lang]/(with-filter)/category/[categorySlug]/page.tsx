@@ -3,14 +3,12 @@
 
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
 import ArticleList from '@/features/article-display/ArticleList';
 import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics, ITEMS_PER_PAGE } from '@/api/directus';
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
-import { processTemplate } from '@/config/i18n/helpers/templates';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import CollectionCount from '@/features/layout/CollectionCount';
 import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
@@ -39,7 +37,6 @@ export default async function CategoryPage({
   const currentPage = Number(resolvedSearchParams.page) || 1;
   const currentSort = resolvedSearchParams.sort || 'desc';
 
-  // FIXED: Get totalCount
   const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
     currentPage,
     currentSort,
@@ -47,7 +44,6 @@ export default async function CategoryPage({
     categorySlug
   );
 
-  // FIXED: Calculate totalPages correctly
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   const breadcrumbItems = [
@@ -93,7 +89,7 @@ export default async function CategoryPage({
           allAuthors: dictionary.navigation.labels.authors,
         }}
       />
-      
+
       <Section
         as="article"
         itemScope
