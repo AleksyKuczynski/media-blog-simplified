@@ -9,8 +9,6 @@ import RubricCarouselCard from './RubricCarouselCard';
 import AuthorCarouselCard from './AuthorCarouselCard';
 import { CardCarouselProps } from './types';
 
-
-
 export default function CardCarousel({
   cards,
   lang,
@@ -20,9 +18,7 @@ export default function CardCarousel({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
-  // Determine card type from first card
   const cardType = cards[0]?.type || 'article';
   const CAROUSEL_STYLES = getCarouselStyles(cardType);
 
@@ -80,20 +76,7 @@ export default function CardCarousel({
   }
 
   return (
-    <div 
-      className={CAROUSEL_STYLES.wrapper}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Left gradient */}
-      {canScrollLeft && (
-        <div 
-          className={CAROUSEL_STYLES.gradientLeft}
-          style={{ opacity: canScrollLeft ? 1 : 0 }}
-          aria-hidden="true"
-        />
-      )}
-
+    <div className={CAROUSEL_STYLES.wrapper}>
       {/* Scroll container */}
       <div
         ref={scrollContainerRef}
@@ -147,40 +130,31 @@ export default function CardCarousel({
         ))}
       </div>
 
-      {/* Right gradient */}
-      {canScrollRight && (
-        <div 
-          className={CAROUSEL_STYLES.gradientRight}
-          style={{ opacity: canScrollRight ? 1 : 0 }}
-          aria-hidden="true"
-        />
-      )}
-
       {/* Navigation buttons */}
-      {canScrollLeft && (
-        <button
-          onClick={() => scroll('left')}
-          className={`${CAROUSEL_STYLES.navButton.base} ${CAROUSEL_STYLES.navButton.left}`}
-          style={{ opacity: isHovered ? 1 : 0 }}
-          aria-label="Scroll left"
-        >
-          <svg className={CAROUSEL_STYLES.navButton.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-      )}
+      {(canScrollLeft || canScrollRight) && (
+        <div className={CAROUSEL_STYLES.navButtonContainer}>
+          <button
+            onClick={() => scroll('left')}
+            className={CAROUSEL_STYLES.navButton.base}
+            disabled={!canScrollLeft}
+            aria-label="Scroll left"
+          >
+            <svg className={CAROUSEL_STYLES.navButton.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
 
-      {canScrollRight && (
-        <button
-          onClick={() => scroll('right')}
-          className={`${CAROUSEL_STYLES.navButton.base} ${CAROUSEL_STYLES.navButton.right}`}
-          style={{ opacity: isHovered ? 1 : 0 }}
-          aria-label="Scroll right"
-        >
-          <svg className={CAROUSEL_STYLES.navButton.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+          <button
+            onClick={() => scroll('right')}
+            className={CAROUSEL_STYLES.navButton.base}
+            disabled={!canScrollRight}
+            aria-label="Scroll right"
+          >
+            <svg className={CAROUSEL_STYLES.navButton.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
       )}
     </div>
   );

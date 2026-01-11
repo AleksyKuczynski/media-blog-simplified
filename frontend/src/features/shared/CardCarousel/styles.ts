@@ -17,7 +17,7 @@ export function getCarouselStyles(cardType: CardType) {
   
   const cardWrapperWidths = {
     article: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px]',
-    rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] xl:w-[16%] 2xl:w-[16%]',
+    rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] 2xl:w-[232px]',
     author: 'flex-none w-[220px] sm:w-[240px] lg:w-[260px] xl:w-[24%] 2xl:w-[24%]',
   };
 
@@ -25,6 +25,7 @@ export function getCarouselStyles(cardType: CardType) {
     wrapper: cn(
       'relative',
       'w-full',
+      'flex flex-col gap-4'
     ),
     
     scrollContainer: cn(
@@ -40,32 +41,19 @@ export function getCarouselStyles(cardType: CardType) {
       'snap-start'
     ),
     
-    gradientLeft: cn(
-      'absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-10',
-      'bg-gradient-to-r from-sf-hst to-transparent',
-      'transition-opacity duration-200',
-      'my-5'
-    ),
-    
-    gradientRight: cn(
-      'absolute right-0 top-0 bottom-0 w-8 pointer-events-none z-10',
-      'bg-gradient-to-l from-sf-hst to-transparent',
-      'transition-opacity duration-200',
-      'my-5'
+    navButtonContainer: cn(
+      'flex justify-center items-center gap-4',
+      'pb-2'
     ),
     
     navButton: {
       base: cn(
-        'absolute top-1/2 -translate-y-1/2 z-20',
         'bg-sf-cont hover:bg-sf-hi',
-        'rounded-full p-2 shadow-lg',
+        'rounded-full p-3 shadow-md',
         'transition-all duration-200',
-        'opacity-0 group-hover:opacity-100',
-        'disabled:opacity-0 disabled:cursor-not-allowed',
-        'hidden lg:flex items-center justify-center'
+        'disabled:opacity-30 disabled:cursor-not-allowed',
+        'flex items-center justify-center'
       ),
-      left: 'left-4',
-      right: 'right-4',
       icon: 'w-6 h-6 text-on-sf',
     },
   };

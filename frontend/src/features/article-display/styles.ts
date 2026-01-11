@@ -70,21 +70,26 @@ export const ARTICLE_LIST_SKELETON_STYLES = {
 // ================================================================
 
 export const HERO_ARTICLES_STYLES = {
-  container: `grid grid-cols-1 
-          2xl:grid-cols-2 2xl:gap-12
-          pb-6 md:pb-8 md:px-8 xl:px-12 gap-6 lg:gap-4 xl:gap-8`,
+  container: cn(
+    'grid grid-cols-1', 
+    '2xl:grid-cols-2',
+    'gap-6 lg:gap-4 xl:gap-6',
+    'pb-6 md:pb-8 md:px-8 xl:px-12',
+  ),
   
   // Promoted article section
   promoted: {
-    wrapper: 'col-span-full 2xl:col-span-1 2xl:h-full sm:pb-6 max-2xl:pb-12',
+    wrapper: 'col-span-full 2xl:col-span-1 2xl:h-full',
   },
   
   // Latest articles grid
   latest: {
-    wrapper: `grid grid-cols-1 gap-8
-            lg:max-2xl:grid-cols-3
-            px-4 md:px-0
-            2xl:pb-6 2xl:gap-12`,
+    wrapper: cn(
+      'grid grid-cols-1 gap-6',
+      'lg:max-2xl:grid-cols-3',
+      'px-4 md:px-0',
+      '',
+    ),
   },
   
   // Empty state
@@ -134,14 +139,14 @@ export const STANDARD_CARD_STYLES = {
     regular: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 sm:rounded-2xl`,
     promoted: cn(
       'order-2 md:max-2xl:order-1',
-      'max-md:-mt-8 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]',
+      `max-md:-mt-8 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]`,
       'md:max-2xl:rounded-r-2xl',
       '2xl:rounded-2xl',
     ),
     latest: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md 2xl:col-span-2`,
   },
 
-  imageElement: 'object-cover group-hover:scale-105 transition-transform duration-300',
+  imageElement: 'object-cover',
   
   content: {
     regular: cn(

@@ -64,7 +64,7 @@ export const QUICK_NAV_STYLES = {
     'inline-flex flex-col items-center gap-2',
     'text-pr-cont font-medium uppercase max-md:text-sm xl:text-lg', 
     'px-4 md:px-8 py-2 md:py-4 rounded-xl md:rounded-2xl', 
-    'hover:shadow-[0_0_7px_rgba(0,0,0,0.25)] focus:shadow-[0_0_3px_rgba(0,0,0,0.5)] transition-all duration-200', 
+    'hover:bg-sf-hi hover:shadow-lg focus:shadow-sm transition-all duration-200', 
   ),
   icon: 'w-16 md:w-20 xl:w-24 aspect-square relative',
 } as const;
