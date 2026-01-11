@@ -309,11 +309,6 @@ export const NAVIGATION_STYLES = {
 
   // RelatedLinks
     relatedLinks: {
-    // QuickNavigation
-    quickNav: {
-      container: 'w-full py-4 px-2 md:px-4',
-      nav: 'flex flex-wrap gap-x-4 gap-y-2',
-    },
     
     // CategoriesAndRubricSection - Combined layout
     categoriesAndRubric: {
@@ -322,8 +317,8 @@ export const NAVIGATION_STYLES = {
       wrapper: 'flex flex-row items-center gap-3',
       
       // Categories navigation - maintains original tag design
-      categoriesNav: 'flex flex-wrap gap-2',
-      categoryTag: 'px-2 py-0.5 max-lg:text-sm rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
+      categoriesNav: 'flex flex-wrap gap-2 lg:gap-3',
+      categoryTag: 'px-2 lg:px-3 py-0.5 lg:px-1 max-lg:text-sm rounded-full text-pr-cont border border-dotted border-pr-cont hover:border-solid transition-colors',
       
       // Rubric link - similar to author section
       rubricLink: 'max-md:hidden inline-flex items-center gap-3 p-1.5 pr-4 rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
