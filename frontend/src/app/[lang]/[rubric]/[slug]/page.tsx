@@ -13,7 +13,6 @@ import Collapsible from '@/shared/ui/Collapsible';
 import { Header } from './_components/Header';
 import ArticleEngagement from './_components/engagement/ArticleEngagement';
 import { TableOfContents } from './_components/navigation/TableOfContents';
-import QuickNavigation from './_components/navigation/QuickNavigation';
 import AuthorsSection from './_components/navigation/AuthorsSection';
 import { ScrollToTopButton } from './_components/ScrollToTopButton';
 import PreviewBanner from './_components/PreviewBanner';
