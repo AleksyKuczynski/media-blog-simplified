@@ -18,6 +18,7 @@ export default function CardCarousel({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isScrollable, setIsScrollable] = useState(false);
 
   const cardType = cards[0]?.type || 'article';
   const CAROUSEL_STYLES = getCarouselStyles(cardType);
@@ -27,6 +28,9 @@ export default function CardCarousel({
     if (!container) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = container;
+    const hasScroll = scrollWidth > clientWidth;
+    
+    setIsScrollable(hasScroll);
     setCanScrollLeft(scrollLeft > 10);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
   };
@@ -130,8 +134,8 @@ export default function CardCarousel({
         ))}
       </div>
 
-      {/* Navigation buttons */}
-      {(canScrollLeft || canScrollRight) && (
+      {/* Navigation buttons - only show if scrollable */}
+      {isScrollable && (
         <div className={CAROUSEL_STYLES.navButtonContainer}>
           <button
             onClick={() => scroll('left')}
