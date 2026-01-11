@@ -1,17 +1,19 @@
 // src/app/[lang]/(with-filter)/articles/page.tsx
-// FIXED: Uses totalCount from backend, proper totalPages calculation
 
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import ArticleList from '@/features/article-display/ArticleList';
 import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
+import CollectionCount from '@/features/layout/CollectionCount';
+import CollectionDescription from '@/features/layout/CollectionDescription';
 import { getDictionary, Lang } from '@/config/i18n';
 import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import { fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus';
+import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -22,7 +24,7 @@ export async function generateMetadata({
   params: Promise<{ lang: string }>;
 }): Promise<Metadata> {
   return safeGenerateMetadata(params, 'page', async (lang, dictionary) => {
-    const { slugs } = await fetchArticleSlugs(1, lang, 'desc');
+    const { slugs } = await fetchArticleSlugs(1, 'desc', lang);
     
     const articleItems = slugs.slice(0, 5).map(slug => ({
       name: slug.slug,
@@ -48,7 +50,7 @@ export default async function ArticlesPage({
   searchParams 
 }: {
   params: Promise<{ lang: Lang }>;
-  searchParams: Promise<{ page?: string; sort?: string; category?: string }>;
+  searchParams: Promise<{ page?: string; sort?: string; category?: string }>
 }) {
   const { lang } = await params;
   const dictionary = getDictionary(lang as Lang);
@@ -58,7 +60,6 @@ export default async function ArticlesPage({
   const currentSort = resolvedSearchParams.sort || 'desc';
   const categorySlug = resolvedSearchParams.category;
 
-  // FIXED: Get totalCount from backend
   const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
     currentPage,
     currentSort,
@@ -66,7 +67,6 @@ export default async function ArticlesPage({
     categorySlug
   );
 
-  // FIXED: Calculate totalPages correctly
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   return (
@@ -88,35 +88,34 @@ export default async function ArticlesPage({
       />
 
       <Section
+        title={dictionary.sections.articles.allArticles}
+        titleLevel="h1"
         ariaLabel={dictionary.sections.articles.allArticles}
-        className="py-8"
+        hasNextSectionTitle={true}
       >
-        <div className="container mx-auto px-4">
-          {/* FIXED: Show total count */}
-          <header className="mb-8">
-            <h1 className="text-3xl font-bold mb-4 text-on-sf">
-              {dictionary.sections.articles.allArticles}
-            </h1>
-            {totalCount > 0 && (
-              <p className="text-sm text-on-sf-var">
-                {processTemplate(dictionary.sections.templates.totalCount, {
-                  count: totalCount.toString(),
-                  countLabel: dictionary.common.count.articles
-                })}
-              </p>
-            )}
-          </header>
+        {totalCount > 0 && (
+          <CollectionCount
+            count={totalCount}
+            countLabel={dictionary.common.count.articles}
+            dictionary={dictionary}
+            className={SECTION_COUNT_STYLES}
+          />
+        )}
 
-          <Suspense fallback={<div>{dictionary.common.status.loading}</div>}>
-            {currentPageSlugs.length > 0 ? (
-              <>
-                <ArticleList 
-                  slugInfos={currentPageSlugs} 
-                  lang={lang as Lang}
-                  dictionary={dictionary}
-                  showCount={false}
-                />
-                
+        <Suspense fallback={
+          <div className="flex items-center justify-center py-12">
+            <div className="text-on-sf-var">{dictionary.common.status.loading}</div>
+          </div>
+        }>
+          {currentPageSlugs.length > 0 ? (
+            <>
+              <ArticleList 
+                slugInfos={currentPageSlugs} 
+                lang={lang as Lang}
+                dictionary={dictionary}
+              />
+              
+              {totalPages > 1 && (
                 <div className="mt-12">
                   <Pagination
                     currentPage={currentPage}
@@ -124,16 +123,16 @@ export default async function ArticlesPage({
                     dictionary={dictionary}
                   />
                 </div>
-              </>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-lg text-muted-foreground">
-                  {dictionary.sections.articles.noArticlesFound}
-                </p>
-              </div>
-            )}
-          </Suspense>
-        </div>
+              )}
+            </>
+          ) : (
+            <div className="text-center py-12" role="status">
+              <p className="text-on-sf-var">
+                {dictionary.sections.articles.noArticlesFound}
+              </p>
+            </div>
+          )}
+        </Suspense>
       </Section>
     </>
   );

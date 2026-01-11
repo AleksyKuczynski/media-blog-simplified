@@ -18,7 +18,7 @@ export default function CollectionCount({
   className,
 }: CollectionCountProps) {
   return (
-    <div className={cn('text-sm text-on-sf-var', className)}>
+    <div className={className}>
       {processTemplate(dictionary.sections.templates.totalCount, {
         count: count.toString(),
         countLabel,

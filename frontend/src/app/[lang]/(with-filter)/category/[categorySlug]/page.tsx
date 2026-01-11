@@ -12,6 +12,8 @@ import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics, ITEMS_PER_PAG
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
+import CollectionCount from '@/features/layout/CollectionCount';
+import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
 
 export const revalidate = 300;
 
@@ -91,92 +93,70 @@ export default async function CategoryPage({
           allAuthors: dictionary.navigation.labels.authors,
         }}
       />
-
-      <article itemScope itemType="https://schema.org/CollectionPage">
-        <Section 
-          title={category.name}
-          className="py-8"
-        >
-          <div className="container mx-auto px-4">
-            <header className="mb-8">
-              <h1 
-                className="text-3xl font-bold mb-4 text-on-sf"
-                itemProp="name"
-              >
-                {category.name}
-              </h1>
-              <p 
-                className="text-lg text-on-sf-var"
-                itemProp="description"
-              >
-                {processTemplate(dictionary.navigation.templates.sectionDescription, {
-                  action: dictionary.common.actions.explore,
-                  section: category.name,
-                  siteName: dictionary.seo.site.name
-                })}
+      
+      <Section
+        as="article"
+        itemScope
+        itemType="https://schema.org/CollectionPage" 
+        title={category.name}
+        titleLevel="h1"
+        className="py-8"
+        hasNextSectionTitle={true}
+      >
+        <Suspense fallback={
+          <div 
+            className="text-center py-8"
+            role="status" 
+            aria-label={dictionary.common.status.loading}
+          >
+            <div className="flex flex-col items-center gap-3">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-prcolor" aria-hidden="true" />
+              <p className="text-on-sf-var">
+                {dictionary.common.status.loading}
               </p>
-              
-              {/* FIXED: Show total count */}
-              {totalCount > 0 && (
-                <div className="mt-4 text-sm text-on-sf-var">
-                  {processTemplate(dictionary.sections.templates.totalCount, {
-                    count: totalCount.toString(),
-                    countLabel: dictionary.common.count.articles
-                  })}
-                </div>
-              )}
-            </header>
-
-            <main role="main" itemProp="mainEntity">
-              <Suspense fallback={
-                <div 
-                  className="text-center py-8"
-                  role="status" 
-                  aria-label={dictionary.common.status.loading}
-                >
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-prcolor" aria-hidden="true" />
-                    <p className="text-on-sf-var">
-                      {dictionary.common.status.loading}
-                    </p>
-                  </div>
-                </div>
-              }>
-                {currentPageSlugs.length > 0 ? (
-                  <>
-                    <ArticleList 
-                      slugInfos={currentPageSlugs}
-                      lang={lang}
-                      dictionary={dictionary}
-                      categorySlug={categorySlug}
-                      showCount={false}
-                      ariaLabel={`${dictionary.sections.templates.categoryDescription} ${category.name}`}
-                    />
-                    
-                    <div className="mt-12">
-                      <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        dictionary={dictionary}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <div 
-                    className="text-center py-12"
-                    role="status"
-                    aria-label={dictionary.common.status.empty}
-                  >
-                    <div className="text-gray-600 dark:text-gray-400">
-                      <p>{dictionary.sections.articles.noArticlesFound}</p>
-                    </div>
-                  </div>
-                )}
-              </Suspense>
-            </main>
+            </div>
           </div>
-        </Section>
-      </article>
+        }>
+          {currentPageSlugs.length > 0 ? (
+            <>
+              {totalCount > 0 && (
+                <CollectionCount
+                  count={totalCount}
+                  countLabel={dictionary.common.count.articles}
+                  dictionary={dictionary}
+                  className={SECTION_COUNT_STYLES}
+                />
+              )}
+
+              <ArticleList 
+                slugInfos={currentPageSlugs}
+                lang={lang}
+                dictionary={dictionary}
+                categorySlug={categorySlug}
+                ariaLabel={`${dictionary.sections.templates.categoryDescription} ${category.name}`}
+              />
+              
+              <div className="mt-12">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  dictionary={dictionary}
+                />
+              </div>
+            </>
+          ) : (
+            <div 
+              className="text-center py-12"
+              role="status"
+              aria-label={dictionary.common.status.empty}
+            >
+              <div className="text-gray-600 dark:text-gray-400">
+                <p>{dictionary.sections.articles.noArticlesFound}</p>
+              </div>
+            </div>
+          )}
+        </Suspense>
+      </Section>
     </>
   );
 }

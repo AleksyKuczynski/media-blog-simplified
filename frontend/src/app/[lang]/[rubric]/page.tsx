@@ -12,6 +12,7 @@ import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ITEMS_PER_PAG
 import { RubricPageSchema } from '@/shared/seo/schemas/RubricPageSchema';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
+import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
 
 export const revalidate = 300;
 
@@ -118,7 +119,7 @@ export default async function RubricPage({
               count={totalCount}
               countLabel={dictionary.common.count.articles}
               dictionary={dictionary}
-              className="mb-6"
+              className={SECTION_COUNT_STYLES}
             />
           )}
 
@@ -133,7 +134,6 @@ export default async function RubricPage({
                   slugInfos={currentPageSlugs}
                   lang={lang}
                   dictionary={dictionary}
-                  showCount={false}
                   ariaLabel={`${dictionary.sections.labels.articles} в рубрике ${rubricName}`}
                 />
                 

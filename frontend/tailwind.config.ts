@@ -12,13 +12,20 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    screens: {
+      'xs': '25rem',      // 400px - NEW
+      'sm': '40rem',      // 640px
+      'md': '48rem',      // 768px
+      'lg': '64rem',      // 1024px
+      'xl': '80rem',      // 1280px
+      '2xl': '96rem',     // 1536px
+    },
     extend: {
       // Rounded theme spacing constants
       spacing: {
         'caption-3line': 'var(--caption-three-line-height)',
       },
       
-      // Rounded theme border radius (only these values)
       borderRadius: {
         'none': '0',
         'sm': '0.25rem',

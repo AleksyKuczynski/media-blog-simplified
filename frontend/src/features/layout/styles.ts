@@ -55,6 +55,13 @@ export const SECTION_STYLES = {
   },
 } as const;
 
+export const SECTION_COUNT_STYLES = cn(
+  'mx-auto text-center font-semibold text-on-sf-var bg-sf-cont rounded-full shadow-sm',
+  'text-xs w-32 mt-1 p-2 mb-4',
+  'sm:text-sm sm:w-32 sm:mt-4 sm:mb-6',
+  'lg:text-base lg:w-36 lg:p-3',
+);
+
 export const FOOTER_STYLES = {
   container: 'bg-sf-cont text-on-sf-var py-12 md:py-16',
   innerContainer: 'container mx-auto px-4',

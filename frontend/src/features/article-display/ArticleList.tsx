@@ -15,8 +15,6 @@ interface ArticleListProps {
   readonly authorSlug?: string;
   readonly categorySlug?: string;
   readonly rubricSlug?: string;
-  readonly variant?: 'grid' | 'list';
-  readonly showCount?: boolean;
   readonly className?: string;
   readonly ariaLabel?: string;
   readonly errorMessage?: string;
@@ -28,17 +26,11 @@ export default function ArticleList({
   rubricSlug,
   authorSlug,
   dictionary,
-  variant = 'grid',
-  showCount = false,
   errorMessage,
   className = '',
   ariaLabel
 }: ArticleListProps) {
   
-  const gridClasses = variant === 'grid' 
-    ? ARTICLE_LIST_STYLES.container.grid
-    : ARTICLE_LIST_STYLES.container.list;
-
   // Empty state
   if (slugInfos.length === 0) {
     const contextualMessage = errorMessage || 
@@ -48,7 +40,7 @@ export default function ArticleList({
       });
 
     return (
-      <div className={ARTICLE_LIST_STYLES.container.base}>
+      <div className={ARTICLE_LIST_STYLES.container}>
         <div className={ARTICLE_LIST_STYLES.empty.wrapper}>
           <svg 
             className={ARTICLE_LIST_STYLES.empty.icon}
@@ -80,11 +72,11 @@ export default function ArticleList({
   // Loading fallback
   const LoadingFallback = () => (
     <div 
-      className={`${ARTICLE_LIST_STYLES.container.base} ${gridClasses}`}
+      className={ARTICLE_LIST_STYLES.container}
       role="status" 
       aria-label={dictionary.common.status.loading}
     >
-      {Array.from({ length: variant === 'grid' ? 6 : 4 }, (_, index) => (
+      {Array.from({ length: 6 }, (_, index) => (
         <ArticleCardSkeletonVariant 
           key={index}
           layout="regular"
@@ -95,26 +87,14 @@ export default function ArticleList({
     </div>
   );
 
-  // Count display
-  const ArticleCount = () => showCount ? (
-    <div className={ARTICLE_LIST_STYLES.count}>
-      {processTemplate(dictionary.sections.templates.totalCount, {
-        count: slugInfos.length.toString(),
-        countLabel: dictionary.common.count.articles
-      })}
-    </div>
-  ) : null;
-
   return (
     <section
       className={`${ARTICLE_LIST_STYLES.section} ${className}`}
       aria-label={ariaLabel || dictionary.sections.labels.articles}
       role="region"
     >
-      <ArticleCount />
-      
       <Suspense fallback={<LoadingFallback />}>
-        <div className={`${ARTICLE_LIST_STYLES.container.base} ${gridClasses}`}>
+        <div className={ARTICLE_LIST_STYLES.container}>
           {slugInfos.map((slugInfo, index) => (
             <ArticleCard 
               key={slugInfo.slug}

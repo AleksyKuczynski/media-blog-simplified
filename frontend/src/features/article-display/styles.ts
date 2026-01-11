@@ -36,12 +36,8 @@ export const ARTICLE_LIST_STYLES = {
   section: 'article-list',
   
   // Container
-  container: {
-    base: 'container mx-auto py-6 md:py-8 lg:py-12 sm:px-6 2xl:px-8',
-    grid: 'max-w-[960px] grid grid-cols-1 gap-2 lg:gap-4',
-    list: 'flex flex-col gap-4',
-  },
-  
+  container: 'container mx-auto py-6 md:py-8 lg:py-12 px-2 sm:px-4 md:px-8 lg:px-0 max-w-[896px] flex flex-col gap-3 lg:gap-4',
+
   // Count display
   count: 'mb-6 text-sm text-gray-600 dark:text-gray-400',
   
@@ -64,9 +60,6 @@ export const ARTICLE_LIST_SKELETON_STYLES = {
   
   // Reuse container styles
   container: ARTICLE_LIST_STYLES.container,
-  
-  // Count skeleton
-  countSkeleton: 'mb-6 h-4 w-32 bg-on-sf/10 rounded animate-pulse',
   
   // Screen reader text
   srOnly: 'sr-only',
@@ -116,7 +109,8 @@ export const STANDARD_CARD_STYLES = {
   
   layouts: {
     regular: cn(
-      'w-full h-full bg-sf-cont shadow-sm rounded-lg sm:rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
+      'w-full h-full bg-sf-cont rounded-lg', 
+      'shadow-sm sm:rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
       'grid', 
       'grid-cols-3',
     ),
@@ -177,8 +171,8 @@ export const STANDARD_CARD_STYLES = {
   title: {
     base: 'mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
     regular:  cn(
-      'line-clamp-3 sm:line-clamp-4 grow', 
-      'text-lg sm:text-xl lg:text-2xl sm:uppercase',
+      'line-clamp-3 sm:line-clamp-4 sm:grow', 
+      'max-sm:font-medium text-lg sm:text-xl lg:text-2xl sm:uppercase',
     ),
     promoted: 'font-bold text-2xl font-display lg:text-3xl xl:text-4xl',
     latest: cn(
@@ -198,7 +192,7 @@ export const STANDARD_CARD_STYLES = {
   // Description variants
   description: {
     base: 'text-sm md:text-base line-clamp-3 mb-4 text-on-sf-var',
-    regular: 'max-md:hidden xl:text-lg',
+    regular: 'max-sm:hidden xl:text-lg',
     promoted: 'max-md:hidden xl:grow lg:text-xl lg:pt-4 2xl:hidden',
     latest: 'max-md:hidden xl:text-lg',
   },
@@ -206,7 +200,7 @@ export const STANDARD_CARD_STYLES = {
   // Footer (Date + Read More)
   footer: {
     base: 'flex items-end justify-between gap-4 mt-auto max-lg:text-xs lg:max-xl:text-sm',
-    regular: 'max-sm:hidden pt-2',
+    regular: 'max-xs:hidden pt-2',
     promoted: 'pt-4',
     latest: 'pt-2',
   },

@@ -13,6 +13,8 @@ import generateAuthorMetadata from '@/shared/seo/metadata/AuthorMetadata';
 import AuthorSchema from '@/shared/seo/schemas/AuthorSchema';
 import { getDictionary, Lang } from '@/config/i18n';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
+import CollectionCount from '@/features/layout/CollectionCount';
+import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -181,13 +183,6 @@ export default async function AuthorPage({
                     {author.bio}
                   </p>
                 )}
-                
-                <p className="text-sm text-muted-foreground">
-                  {processTemplate(dictionary.sections.templates.totalCount, {
-                    count: totalCount.toString(),
-                    countLabel: dictionary.common.count.articles
-                  })}
-                </p>
               </div>
             </div>
           </div>
@@ -195,7 +190,6 @@ export default async function AuthorPage({
 
         {/* Articles Section */}
         <Section 
-          className="py-8 bg-muted/30"
           ariaLabel={processTemplate(dictionary.sections.templates.itemsInCollectionDescription, {
             items: dictionary.sections.labels.articles,
             collection: processTemplate(dictionary.sections.templates.itemByAuthor, {
@@ -205,8 +199,9 @@ export default async function AuthorPage({
             siteName: dictionary.seo.site.name
           })}
           title={processTemplate(dictionary.sections.authors.articlesWrittenBy, {
-                  author: author.name
-                })}
+            author: author.name
+          })}
+          hasNextSectionTitle={true}
         >
           <div className="container mx-auto px-4">
             <Suspense fallback={
@@ -217,12 +212,20 @@ export default async function AuthorPage({
             }>
               {currentPageSlugs.length > 0 ? (
                 <>
+                  {totalCount > 0 && (
+                    <CollectionCount
+                      count={totalCount}
+                      countLabel={dictionary.common.count.articles}
+                      dictionary={dictionary}
+                      className={SECTION_COUNT_STYLES}
+                    />
+                  )}
+                  
                   <ArticleList 
                     slugInfos={currentPageSlugs}
                     lang={lang}
                     dictionary={dictionary}
                     authorSlug={slug}
-                    showCount={false}
                   />
                   
                   <div className="mt-12">
