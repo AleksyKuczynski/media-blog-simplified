@@ -27,11 +27,6 @@ export function ArticleListSkeleton({
       role="status" 
       aria-label="Loading articles..."
     >
-      {/* Count skeleton */}
-      {showCount && (
-        <div className={ARTICLE_LIST_SKELETON_STYLES.countSkeleton} />
-      )}
-      
       {/* Grid skeleton */}
       <div className={cn(
         ARTICLE_LIST_SKELETON_STYLES.container.base,

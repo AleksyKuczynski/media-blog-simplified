@@ -1,17 +1,35 @@
-// src/main/components/Main/Pagination.tsx
-// FIXED: Proper 7-slot pagination algorithm
+// src/shared/ui/Pagination.tsx
 
 'use client'
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Dictionary } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
+import { cn } from '@/lib/utils';
 
 interface PaginationProps {
   readonly currentPage: number;
   readonly totalPages: number;
   readonly dictionary: Dictionary;
   readonly className?: string;
+}
+
+const PAGINATION_STYLES = {
+  nav: 'flex justify-center items-center xl:pb-6',
+  list: 'flex gap-3 max-xl:text-sm ',
+  base: cn(
+    'min-w-8 px-3 py-1.5 rounded-full transition-all duration-200 ',
+    'xl:min-w-[40px] xl:px-3 xl:py-2 xl:rounded-full xl:transition-all xl:duration-200'
+  ),
+  page: 'bg-sf hover:bg-sf-hi text-pr-cont cursor-pointer',
+  active: 'bg-prcolor text-on-sf-dim font-semibold cursor-default',
+  arrow: cn(
+    'px-4 py-2', 
+    'transition-all duration-200', 
+    'disabled:text-on-sf-dim disabled:cursor-not-allowed', 
+    'enabled:text-pr-cont enabled:cursor-pointer'
+  ),
+  ellipsis: 'px-3 py-2 text-on-sf-var',
 }
 
 export default function Pagination({ 
@@ -23,10 +41,11 @@ export default function Pagination({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const styles = PAGINATION_STYLES;
 
   if (totalPages <= 1) return null;
 
-  const navigateToPage = (page: number) => {
+  const navigateToPage = (page: number) => { 
     const params = new URLSearchParams(searchParams);
     if (page === 1) {
       params.delete('page');
@@ -38,21 +57,13 @@ export default function Pagination({
       ? `${pathname}?${params.toString()}` 
       : pathname;
     
-    router.push(newUrl);
+    router.push(newUrl, { scroll: false });
   };
 
-  /**
-   * Generate 7-slot pagination: 1, ..., i-1, i, i+1, ..., z
-   * - If totalPages <= 7: show all
-   * - If currentPage in first 4: [1,2,3,4,5, ..., last]
-   * - If currentPage in last 4: [1, ..., last-4, last-3, last-2, last-1, last]
-   * - Otherwise: [1, ..., current-1, current, current+1, ..., last]
-   */
   const getPageNumbers = (): (number | 'ellipsis')[] => {
     const pages: (number | 'ellipsis')[] = [];
     const MAX_VISIBLE = 7;
     
-    // Show all if <= 7 pages
     if (totalPages <= MAX_VISIBLE) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -60,7 +71,6 @@ export default function Pagination({
       return pages;
     }
     
-    // Current page in first 4: [1,2,3,4,5, ..., last]
     if (currentPage <= 4) {
       for (let i = 1; i <= 5; i++) {
         pages.push(i);
@@ -70,7 +80,6 @@ export default function Pagination({
       return pages;
     }
     
-    // Current page in last 4: [1, ..., last-4, last-3, last-2, last-1, last]
     if (currentPage >= totalPages - 3) {
       pages.push(1);
       pages.push('ellipsis');
@@ -80,7 +89,6 @@ export default function Pagination({
       return pages;
     }
     
-    // Current page in middle: [1, ..., current-1, current, current+1, ..., last]
     pages.push(1);
     pages.push('ellipsis');
     pages.push(currentPage - 1);
@@ -93,41 +101,32 @@ export default function Pagination({
   };
 
   const pageNumbers = getPageNumbers();
-  const hasPrevious = currentPage > 1;
-  const hasNext = currentPage < totalPages;
+  const isPreviousDisabled = currentPage <= 1;
+  const isNextDisabled = currentPage >= totalPages;
 
   return (
     <nav 
-      className={`flex justify-center items-center gap-2 ${className}`}
+      className={`${styles.nav} ${className}`}
       aria-label={dictionary.navigation.accessibility.paginationNavigation}
       role="navigation"
     >
-      {/* Previous button */}
       <button
-        onClick={() => navigateToPage(currentPage - 1)}
-        disabled={!hasPrevious}
-        className={`
-          px-4 py-2 rounded-lg transition-all duration-200
-          ${hasPrevious 
-            ? 'bg-sf hover:bg-sf-hi text-on-sf cursor-pointer' 
-            : 'bg-sf-var text-on-sf-var cursor-not-allowed opacity-50'
-          }
-        `}
-        aria-label={dictionary.common.pagination.previous}
-        aria-disabled={!hasPrevious}
+        type="button"
+        onClick={() => !isPreviousDisabled && navigateToPage(currentPage - 1)}
+        disabled={isPreviousDisabled}
+        className={styles.arrow}
       >
         <span className="sr-only">{dictionary.common.pagination.previous}</span>
-        <span aria-hidden="true">←</span>
+        <span aria-hidden="true">🡠</span>
       </button>
 
-      {/* Page numbers */}
-      <div className="flex gap-1" role="list">
+      <div className={styles.list} role="list">
         {pageNumbers.map((pageNum, index) => {
           if (pageNum === 'ellipsis') {
             return (
               <span 
                 key={`ellipsis-${index}`} 
-                className="px-3 py-2 text-on-sf-var"
+                className={styles.ellipsis}
                 aria-hidden="true"
               >
                 ...
@@ -140,15 +139,14 @@ export default function Pagination({
           return (
             <button
               key={pageNum}
+              type="button"
               onClick={() => navigateToPage(pageNum)}
               disabled={isCurrentPage}
-              className={`
-                min-w-[40px] px-3 py-2 rounded-lg transition-all duration-200
-                ${isCurrentPage
-                  ? 'bg-prcolor text-on-prcolor font-semibold cursor-default'
-                  : 'bg-sf hover:bg-sf-hi text-on-sf cursor-pointer'
-                }
-              `}
+              className={
+                isCurrentPage
+                  ? `${styles.base} ${styles.active}`
+                  : `${styles.base} ${styles.page}`
+              }
               aria-label={
                 isCurrentPage
                   ? processTemplate(dictionary.common.pagination.currentPage, { page: pageNum.toString() })
@@ -162,25 +160,17 @@ export default function Pagination({
         })}
       </div>
 
-      {/* Next button */}
       <button
-        onClick={() => navigateToPage(currentPage + 1)}
-        disabled={!hasNext}
-        className={`
-          px-4 py-2 rounded-lg transition-all duration-200
-          ${hasNext 
-            ? 'bg-sf hover:bg-sf-hi text-on-sf cursor-pointer' 
-            : 'bg-sf-var text-on-sf-var cursor-not-allowed opacity-50'
-          }
-        `}
+        type="button"
+        onClick={() => !isNextDisabled && navigateToPage(currentPage + 1)}
+        disabled={isNextDisabled}
+        className={styles.arrow}
         aria-label={dictionary.common.pagination.next}
-        aria-disabled={!hasNext}
       >
         <span className="sr-only">{dictionary.common.pagination.next}</span>
-        <span aria-hidden="true">→</span>
+        <span aria-hidden="true">🡢</span>
       </button>
 
-      {/* Screen reader page info */}
       <div className="sr-only" role="status" aria-live="polite">
         {processTemplate(dictionary.navigation.accessibility.pageNavigation, {
           current: currentPage.toString(),

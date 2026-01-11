@@ -132,13 +132,11 @@ export default async function CategoryPage({
                 ariaLabel={`${dictionary.sections.templates.categoryDescription} ${category.name}`}
               />
               
-              <div className="mt-12">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  dictionary={dictionary}
-                />
-              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                dictionary={dictionary}
+              />
             </>
           ) : (
             <div 

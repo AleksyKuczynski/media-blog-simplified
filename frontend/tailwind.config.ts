@@ -101,6 +101,7 @@ const config: Config = {
         on: {
           sf: 'var(--color-on-surface)',
           'sf-var': 'var(--color-on-surface-variant)',
+          'sf-dim': 'var(--color-on-surface-dim)',
           pr: 'var(--color-on-primary-container)',
           'pr-var': 'var(--color-on-primary-container-variant)',
           sec: 'var(--color-on-secondary-container)',

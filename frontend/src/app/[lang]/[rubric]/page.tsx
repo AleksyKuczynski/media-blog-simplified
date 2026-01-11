@@ -138,13 +138,11 @@ export default async function RubricPage({
                 />
                 
                 {totalPages > 1 && (
-                  <div className="mt-12">
-                    <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      dictionary={dictionary}
-                    />
-                  </div>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    dictionary={dictionary}
+                  />
                 )}
               </>
             ) : (
