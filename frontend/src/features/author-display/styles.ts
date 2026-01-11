@@ -4,9 +4,10 @@ import { cn } from "@/lib/utils";
 export const AUTHOR_CARD_STYLES = {
   // Container styling - manages its own responsive width
   container: cn(
-    'w-full h-full relative rounded-2xl overflow-hidden',
+    'w-full h-full relative overflow-hidden',
     'dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)] transition-shadow duration-200 group',
     'transition-shadow duration-200 group',
+    'bg-sf-cont rounded-2xl shadow-sm hover:shadow-lg',
     'flex'
   ),
   
@@ -14,7 +15,7 @@ export const AUTHOR_CARD_STYLES = {
   link: 'block w-full h-full',
   
   // Avatar container (larger than carousel)
-  avatarContainer: 'relative w-2/5 aspect-square rounded-3xl overflow-hidden flex-shrink-0',
+  avatarContainer: 'relative w-2/5 aspect-square rounded-r-2xl overflow-hidden flex-shrink-0',
   
   // Avatar image
   avatarImage: 'object-cover w-full h-full',
@@ -28,13 +29,12 @@ export const AUTHOR_CARD_STYLES = {
     'flex flex-col flex-1',
     'gap-2 p-3 w-3/5',
     'sm:gap-3 sm:p-6',
-    'bg-sf-cont rounded-3xl shadow-sm hover:shadow-lg',
   ),
   
   // Author name
   name: cn(
     'text-on-sf grow',
-    'text-xl sm:text-3xl md:text-4xl lg:max-xl:text-2xl xl:max-2xl:text-3xl'
+    'text-xl sm:text-xl md:text-2xl lg:max-xl:text-xl xl:max-2xl:text-2xl uppercase'
 
   ),
   
@@ -67,7 +67,7 @@ export const AUTHORS_GRID_STYLES = cn(
   'grid-cols-1',
   'lg:grid-cols-2',
   'auto-rows-fr',
-  'gap-8',
+  'gap-3',
   'p-2 sm:p-4 md:p-8 2xl:p-16',
   'max-lg:max-w-[688px] max-lg:mx-auto',
   '[&>*]:aspect-[5/2]'
