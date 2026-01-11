@@ -24,7 +24,6 @@ import ArticleContentRenderer from './_components/content/ArticleContentRenderer
 import { parseImageMetadata } from '@/lib/utils/bilingualParser';
 import Section from '@/features/layout/Section';
 import RelatedArticles from '@/features/article-display/RelatedArticles';
-import QuickNavigationSection from '@/features/navigation/QuickNavigationSection';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
