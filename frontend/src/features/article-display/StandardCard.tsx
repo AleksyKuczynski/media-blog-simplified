@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils/cn';
-import { ChevronRightIcon } from '../../shared/primitives/Icons';
 import { StandardCardProps, getImageDimensions } from './interfaces';
 import { STANDARD_CARD_STYLES } from './styles';
 import { ActionLink } from '@/shared/primitives/ActionLink';
@@ -83,11 +82,9 @@ export function StandardCard({
               {formattedDate}
             </time>
             
-            {layout !== 'regular' && (
-              <ActionLink variant="default">
-                {dictionary.common.actions.readMore}
-              </ActionLink>
-            )}
+            <ActionLink variant="default">
+              {dictionary.common.actions.readMore}
+            </ActionLink>
           </div>
         </div>
       </article>

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Dictionary } from '@/config/i18n';
 import { RUBRIC_CAROUSEL_CARD_STYLES } from './styles';
 import { processTemplate } from '@/config/i18n/helpers/templates';
+import CollectionCount from '@/features/layout/CollectionCount';
 
 interface RubricCarouselCardProps {
   slug: string;
@@ -64,12 +65,12 @@ export default function RubricCarouselCard({
               </p>
             )}
             {articleCount !== undefined && articleCount > 0 && (
-              <p className={RUBRIC_CAROUSEL_CARD_STYLES.articleCount}>
-                {processTemplate(dictionary.sections.templates.totalCount, {
-                  count: articleCount.toString(),
-                  countLabel: dictionary.common.count.articles
-                })} 
-              </p>
+              <CollectionCount
+                count={articleCount}
+                countLabel={dictionary.common.count.articles}
+                dictionary={dictionary}
+                className={RUBRIC_CAROUSEL_CARD_STYLES.articleCount}
+              />
             )}
           </div>
         </div>

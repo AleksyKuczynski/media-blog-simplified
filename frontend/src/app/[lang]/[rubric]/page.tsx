@@ -5,11 +5,12 @@ import { Suspense } from 'react';
 import ArticleList from '@/features/article-display/ArticleList';
 import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
+import CollectionDescription from '@/features/layout/CollectionDescription';
+import CollectionCount from '@/features/layout/CollectionCount';
 import { getDictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ITEMS_PER_PAGE } from '@/api/directus';
 import { RubricPageSchema } from '@/shared/seo/schemas/RubricPageSchema';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import { getLocalizedArticleCount } from '@/config/i18n/helpers/content';
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 
 export const revalidate = 300;
@@ -40,7 +41,6 @@ export default async function RubricPage({
     const rubricName = rubricTranslation?.name || rubric;
     const rubricDescription = rubricTranslation?.description;
 
-    // FIXED: Get totalCount
     const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
       currentPage,
       'desc',
@@ -52,7 +52,6 @@ export default async function RubricPage({
       rubric
     );
 
-    // FIXED: Calculate totalPages correctly
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
     const breadcrumbItems = [
@@ -70,13 +69,13 @@ export default async function RubricPage({
       },
     ];
 
-    const articlesForSchema = currentPageSlugs.slice(0, 10).map(slugInfo => ({
-      title: slugInfo.slug,
-      slug: slugInfo.slug,
-      url: `${dictionary.seo.site.url}/${lang}/${rubric}/${slugInfo.slug}`,
-    }));
-
-    const articleCountText = getLocalizedArticleCount(dictionary, totalCount);
+    const rubricAriaLabel = processTemplate(
+      dictionary.sections.templates.itemInCollection,
+      {
+        item: dictionary.sections.labels.articles,
+        collection: rubricName,
+      }
+    );
 
     return (
       <>
@@ -87,13 +86,12 @@ export default async function RubricPage({
             slug: rubric,
             description: rubricDescription,
             articleCount: totalCount,
-            articles: articlesForSchema,
           }}
           currentPath={`/${lang}/${rubric}`}
         />
         
         <Breadcrumbs 
-          items={breadcrumbItems} 
+          items={breadcrumbItems}
           rubrics={rubricBasics}
           lang={lang}
           translations={{
@@ -102,69 +100,61 @@ export default async function RubricPage({
             allAuthors: dictionary.navigation.labels.authors,
           }}
         />
-        
-        <Section 
-          className="py-8"
-          ariaLabel={processTemplate(dictionary.sections.templates.itemInCollection, {
-            item: dictionary.sections.labels.articles,
-            collection: rubricName
-          })}
-        >
-          <div className="container mx-auto px-4">
-            <header className="mb-8">
-              <h1 className="text-3xl font-bold mb-4 text-on-sf">
-                {rubricName}
-              </h1>
-              {rubricDescription && (
-                <p className="text-lg text-on-sf-var mb-4">
-                  {rubricDescription}
-                </p>
-              )}
-              {/* FIXED: Show total count */}
-              {totalCount > 0 && (
-                <div className="text-sm text-on-sf-var">
-                  {articleCountText}
-                </div>
-              )}
-            </header>
 
-            <main role="main">
-              <Suspense fallback={
-                <div className="text-center py-8" role="status">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-prcolor" />
-                    <p className="text-on-sf-var">{dictionary.common.status.loading}</p>
-                  </div>
-                </div>
-              }>
-                {currentPageSlugs.length > 0 ? (
-                  <>
-                    <ArticleList 
-                      slugInfos={currentPageSlugs}
-                      lang={lang}
+        <Section 
+          title={rubricName}
+          titleLevel="h1"
+          ariaLabel={rubricAriaLabel}
+          hasNextSectionTitle={true}
+        >
+          {rubricDescription && (
+            <CollectionDescription>
+              {rubricDescription}
+            </CollectionDescription>
+          )}
+
+          {totalCount > 0 && (
+            <CollectionCount
+              count={totalCount}
+              countLabel={dictionary.common.count.articles}
+              dictionary={dictionary}
+              className="mb-6"
+            />
+          )}
+
+          <Suspense fallback={
+            <div className="flex items-center justify-center py-12">
+              <div className="text-on-sf-var">{dictionary.common.status.loading}</div>
+            </div>
+          }>
+            {currentPageSlugs.length > 0 ? (
+              <>
+                <ArticleList 
+                  slugInfos={currentPageSlugs}
+                  lang={lang}
+                  dictionary={dictionary}
+                  showCount={false}
+                  ariaLabel={`${dictionary.sections.labels.articles} в рубрике ${rubricName}`}
+                />
+                
+                {totalPages > 1 && (
+                  <div className="mt-12">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
                       dictionary={dictionary}
-                      showCount={false}
-                      ariaLabel={`${dictionary.sections.labels.articles} в рубрике ${rubricName}`}
                     />
-                    
-                    <div className="mt-12">
-                      <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        dictionary={dictionary}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center py-12" role="status">
-                    <p className="text-on-sf-var">
-                      {dictionary.sections.articles.noArticlesFound}
-                    </p>
                   </div>
                 )}
-              </Suspense>
-            </main>
-          </div>
+              </>
+            ) : (
+              <div className="text-center py-12" role="status">
+                <p className="text-on-sf-var">
+                  {dictionary.sections.articles.noArticlesFound}
+                </p>
+              </div>
+            )}
+          </Suspense>
         </Section>
       </>
     );

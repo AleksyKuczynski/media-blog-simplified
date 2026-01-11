@@ -38,7 +38,7 @@ export const ARTICLE_LIST_STYLES = {
   // Container
   container: {
     base: 'container mx-auto py-6 md:py-8 lg:py-12 sm:px-6 2xl:px-8',
-    grid: 'grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-2 gap-6 lg:gap-8',
+    grid: 'max-w-[960px] grid grid-cols-1 gap-2 lg:gap-4',
     list: 'flex flex-col gap-4',
   },
   
@@ -115,53 +115,76 @@ export const STANDARD_CARD_STYLES = {
   linkPromoted: '2xl:h-full',
   
   layouts: {
-    regular: 'bg-sf-cont flex flex-col h-full shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
-    promoted: `flex flex-col items-center overflow-hidden
-            md:bg-sf md:grid md:rounded-2xl md:shadow-sm md:hover:shadow-xl md:transition-shadow md:duration-200
-            md:max-2xl:grid-cols-2 
-            2xl:grid-cols-1 2xl:h-full`,
-    latest: `w-full h-full bg-sf-cont shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden
-            grid 
-            max-sm:mx-4 max-sm:max-w-[400]
-            sm:max-lg:grid-cols-3
-            2xl:grid-cols-5`,
+    regular: cn(
+      'w-full h-full bg-sf-cont shadow-sm rounded-lg sm:rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
+      'grid', 
+      'grid-cols-3',
+    ),
+    promoted: cn(
+      'flex flex-col items-center overflow-hidden',
+      'md:bg-sf md:grid md:rounded-2xl md:shadow-sm md:hover:shadow-xl md:transition-shadow md:duration-200',
+      'md:max-2xl:grid-cols-2', 
+      '2xl:grid-cols-1 2xl:h-full',
+    ),
+    latest: cn(
+      'w-full h-full bg-sf-cont shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
+      'grid', 
+      'max-sm:mx-4 max-sm:max-w-[400]',
+      'sm:max-lg:grid-cols-3',
+      '2xl:grid-cols-5',
+    ),
   },
   
   image: {
     base: `relative overflow-hidden bg-sf-hi`,
-    regular: `w-full ${IMAGE_RATIO_STRING}`,
-    promoted: `order-2 md:max-2xl:order-1
-            max-md:-mt-8 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]
-            md:max-2xl:rounded-r-2xl
-            2xl:rounded-2xl`,
+    regular: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 sm:rounded-2xl`,
+    promoted: cn(
+      'order-2 md:max-2xl:order-1',
+      'max-md:-mt-8 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]',
+      'md:max-2xl:rounded-r-2xl',
+      '2xl:rounded-2xl',
+    ),
     latest: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md 2xl:col-span-2`,
   },
 
   imageElement: 'object-cover group-hover:scale-105 transition-transform duration-300',
   
   content: {
-    regular: `p-4 lg:p-6 flex flex-col flex-grow`,
-    promoted: `bg-sf z-10 
-            order-1 md:max-2xl:order-2
-            max-md:shadow-sm max-md:hover:shadow-xl max-md:transition-shadow max-md:duration-200
-            max-md:rounded-2xl max-md:overflow-hidden 
-            max-md:max-w-[400] max-md:mx-4
-            md:mx-0 md:w-full md:max-w-full md:h-full
-            md:max-2xl:rounded-none
-            p-6 lg:p-8 flex flex-col lg:max-xl:justify-center`,
-    latest: `flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center
-          p-4 lg:p-6 
-          sm:max-lg:col-span-2
-          2xl:col-span-3`,
+    regular: cn(
+      'flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center',
+      'p-4 lg:p-6', 
+      'col-span-2',
+    ),
+    promoted: cn(
+      'bg-sf z-10', 
+        'order-1 md:max-2xl:order-2',
+        'max-md:shadow-sm max-md:hover:shadow-xl max-md:transition-shadow max-md:duration-200',
+        'max-md:rounded-2xl max-md:overflow-hidden', 
+        'max-md:max-w-[400] max-md:mx-4',
+        'md:mx-0 md:w-full md:max-w-full md:h-full',
+        'md:max-2xl:rounded-none',
+        'p-6 lg:p-8 flex flex-col lg:max-xl:justify-center',
+      ),
+    latest: cn(
+      'flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center',
+      'p-4 lg:p-6', 
+      'sm:max-lg:col-span-2',
+      '2xl:col-span-3',
+    ),
   },
   
   // Title variants
   title: {
-    base: 'font-bold mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
-    regular: 'line-clamp-3',
-    promoted: 'text-2xl font-display lg:text-3xl xl:text-4xl',
-    latest: `line-clamp-4 font-display 
-            text-lg sm:text-xl 2xl:text-2xl`,
+    base: 'mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
+    regular:  cn(
+      'line-clamp-3 sm:line-clamp-4 grow', 
+      'text-lg sm:text-xl lg:text-2xl sm:uppercase',
+    ),
+    promoted: 'font-bold text-2xl font-display lg:text-3xl xl:text-4xl',
+    latest: cn(
+      'line-clamp-4 font-display', 
+      'font-bold text-lg sm:text-xl 2xl:text-2xl',
+    ),
   },
   
   // Date variants
@@ -175,7 +198,7 @@ export const STANDARD_CARD_STYLES = {
   // Description variants
   description: {
     base: 'text-sm md:text-base line-clamp-3 mb-4 text-on-sf-var',
-    regular: 'max-sm:hidden',
+    regular: 'max-md:hidden xl:text-lg',
     promoted: 'max-md:hidden xl:grow lg:text-xl lg:pt-4 2xl:hidden',
     latest: 'max-md:hidden xl:text-lg',
   },
@@ -183,9 +206,9 @@ export const STANDARD_CARD_STYLES = {
   // Footer (Date + Read More)
   footer: {
     base: 'flex items-end justify-between gap-4 mt-auto max-lg:text-xs lg:max-xl:text-sm',
-    regular: '',
-    promoted: ' pt-4',
-    latest: ' pt-2',
+    regular: 'max-sm:hidden pt-2',
+    promoted: 'pt-4',
+    latest: 'pt-2',
   },
 } as const;
 

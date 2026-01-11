@@ -6,6 +6,7 @@ import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
 import { AUTHOR_CARD_STYLES } from './styles';
 import { processTemplate } from '@/config/i18n/helpers/templates';
+import CollectionCount from '../layout/CollectionCount';
 
 interface AuthorCardProps {
   author: AuthorDetails;
@@ -51,12 +52,12 @@ export default function AuthorCard({ author, linkToProfile = true, lang, diction
         
         {/* Article Count */}
         {author.articleCount !== undefined && (
-          <p className={AUTHOR_CARD_STYLES.count}>
-            {processTemplate(dictionary.sections.templates.totalCount, {
-              count: author.articleCount.toString(),
-              countLabel: dictionary.common.count.articles
-            })} 
-          </p>
+          <CollectionCount
+            count={author.articleCount}
+            countLabel={dictionary.common.count.articles}
+            dictionary={dictionary}
+            className={AUTHOR_CARD_STYLES.count}
+          />
         )}
       </div>
     </div>

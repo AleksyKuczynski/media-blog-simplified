@@ -34,7 +34,7 @@ export function ActionLink({
         className="transform transition-transform duration-200 group-hover:translate-x-1"
         aria-hidden="true"
       >
-        →
+        🡪
       </span>
     </>
   );
