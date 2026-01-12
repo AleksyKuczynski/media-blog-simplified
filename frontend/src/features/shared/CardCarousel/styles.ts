@@ -112,7 +112,7 @@ export const RUBRIC_CAROUSEL_CARD_STYLES = {
   textContent: 'w-full flex flex-col gap-6 min-w-0 grow',
 
   // Text content
-  name: 'text-2xl text-on-sf text-center group-hover:text-pr-cont transition-colors grow',
+  name: 'text-lg text-on-sf text-center uppercase group-hover:text-pr-cont transition-colors grow',
   description: 'max-md:hidden text-on-sf-var line-clamp-2 mt-1',
   articleCount: 'text-sm font-semibold text-on-sf bg-sf-hi rounded-full mt-1 p-2 px-4',
 } as const;
@@ -126,13 +126,13 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   container: 'block w-full h-full group',
 
   // Card structure
-  card: 'h-full bg-sf rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  card: 'h-full bg-sf-hi rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
   
   // Content container
   content: 'flex flex-col gap-4',
   
   // Image container
-  avatarWrapper: 'relative aspect-square flex-shrink-0 overflow-hidden rounded-3xl',
+  avatarWrapper: 'relative aspect-square flex-shrink-0 overflow-hidden rounded-xl',
   
   // Image element
   avatarImage: 'object-cover',
@@ -143,6 +143,6 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   textContent: 'p-8 pt-0 flex-1 min-w-0',
 
   // Text content
-  name: 'text-2xl md:text-3xl lg:text-4xl text-on-sf group-hover:text-pr-cont transition-colors',
-  bio: 'max-md:hidden max-lg:text-sm text-on-sf-var line-clamp-4 mt-8',
+  name: 'md:text-lg xl:text-xl uppercase text-center text-on-sf group-hover:text-pr-cont transition-colors',
+  bio: 'hidden max-lg:text-sm text-on-sf-var line-clamp-4 mt-8',
 } as const;

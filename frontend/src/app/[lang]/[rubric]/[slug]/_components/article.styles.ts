@@ -321,7 +321,7 @@ export const NAVIGATION_STYLES = {
       categoryTag: 'px-2 lg:px-3 py-0.5 lg:px-1 max-lg:text-sm rounded-full text-pr-cont border border-dotted border-pr-cont hover:border-solid transition-colors',
       
       // Rubric link - similar to author section
-      rubricLink: 'max-md:hidden inline-flex items-center gap-3 p-1.5 pr-4 rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
+      rubricLink: 'max-md:hidden inline-flex items-center gap-3 p-3 pr-6 rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
       rubricIcon: 'relative w-8 h-8',
       rubricText: 'max-lg:text-sm font-medium whitespace-nowrap lowercase',
     },

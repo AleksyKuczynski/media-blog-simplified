@@ -9,11 +9,12 @@
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
+    overflow-x: hidden;
+
     
     /* Full width until md breakpoint (768px) */
-    @media (max-width: 767px) {
+    @media (max-width: 767.98px) {
       max-width: 100vw;
-      overflow-x: hidden;
     }
     
     /* Standard container behavior at md and above */
@@ -23,20 +24,14 @@
     
     @media (min-width: 1024px) {
       max-width: 1024px;
-      padding-left: 2rem;
-      padding-right: 2rem;
     }
     
     @media (min-width: 1280px) {
       max-width: 1280px;
-      padding-left: 3rem;
-      padding-right: 3rem;
     }
     
     @media (min-width: 1536px) {
       max-width: 1536px;
-      padding-left: 4rem;
-      padding-right: 4rem;
     }
   }
 }
