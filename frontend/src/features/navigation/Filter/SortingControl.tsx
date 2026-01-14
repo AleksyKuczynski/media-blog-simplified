@@ -6,7 +6,6 @@ import { Dictionary, Lang } from '@/config/i18n';
 import { ChevronDownIcon } from '@/shared/primitives/Icons';
 import type { DropdownItemType } from '@/shared/ui/Dropdown/types';
 import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '@/shared/ui/Dropdown';
-import { NavButton } from '@/shared/primitives/NavButton';
 import { FILTER_CONTROL_STYLES, FILTER_BUTTON_STYLES } from './styles';
 
 interface SortingControlProps {
@@ -54,16 +53,16 @@ export default function SortingControl({
         position="right"
       >
         <DropdownTrigger>
-          <NavButton
-            context="desktop"
-            className={FILTER_BUTTON_STYLES.dropdown.base}
+          <button
+            className="flex items-center justify-between w-full px-4 py-2 border-2 border-prcolor rounded-md transition-all duration-200 text-on-sf-var hover:text-on-sf hover:bg-sf-hi"
             aria-label={sorting.labels.sortBy}
+            type="button"
           >
             <span className={FILTER_BUTTON_STYLES.text.base}>
               {sortItems.find(item => item.value === currentSort)?.label}
             </span>
             <ChevronDownIcon className={FILTER_BUTTON_STYLES.icon} />
-          </NavButton>
+          </button>
         </DropdownTrigger>
         <DropdownContent>
           {items.map((item, index) => (

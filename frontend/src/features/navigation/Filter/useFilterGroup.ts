@@ -35,7 +35,6 @@ interface UseFilterGroupReturn {
   selectedCategoryName: string; // FIXED: always string, never undefined
   // Actions
   handleCategoryChange: (item: DropdownItemType) => void;
-  handleReset: () => void;
 }
 
 // ===================================================================
@@ -120,24 +119,6 @@ export function useFilterGroup({
     }
   }, [router, currentSort, dictionary.seo?.site?.url]);
 
-  // Handle reset using existing patterns - NO DUPLICATION
-  const handleReset = useCallback(() => {
-    try {
-      if (isArticlesPath && !currentCategory && currentSort === 'desc') {
-        // Already at default state, no action needed
-        return;
-      }
-      
-      // Reset to default articles page
-      router.push(`/${lang}/articles`);
-      
-    } catch (error) {
-      console.error('useFilterGroup: Error handling reset', error);
-      // Fallback reset
-      router.push(`/${lang}/articles`);
-    }
-  }, [router, isArticlesPath, currentCategory, currentSort]);
-
   return {
     // Current state
     currentCategory,
@@ -152,7 +133,6 @@ export function useFilterGroup({
     
     // Actions
     handleCategoryChange,
-    handleReset,
   };
 }
 
