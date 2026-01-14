@@ -56,6 +56,17 @@ export const NAV_LINK_STYLES = {
   base: 'px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200',
   active: 'pointer-events-none bg-pr-cont text-on-pr hover:bg-pr-cont hover:text-on-pr',
   listItem: 'list-none',
+  mobile: {
+    link: cn(
+      'flex flex-col items-center gap-3',
+      'text-on-sf font-medium uppercase text-base',
+      'px-6 py-6 rounded-2xl',
+      'hover:bg-sf-hi hover:shadow-lg transition-all duration-200',
+    ),
+    active: 'bg-pr-cont text-on-pr hover:bg-pr-cont pointer-events-none',
+    listItem: 'list-none',
+    icon: 'w-24 aspect-square relative',
+  },
 } as const;
 
 export const QUICK_NAV_STYLES = {

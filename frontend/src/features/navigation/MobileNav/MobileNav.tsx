@@ -11,6 +11,7 @@ import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/config/i18n'
 import HamburgerButton from './HamburgerButton'
 import { MOBILE_NAV_STYLES, PANEL_CONTENT_STYLES } from './styles'
+import { cn } from '@/lib/utils'
 
 interface MobileNavProps {
   dictionary: Dictionary
@@ -86,30 +87,35 @@ export default function MobileNavigation({
           
           {isSearchOpen && <div className={MOBILE_NAV_STYLES.spacer} />}
           
-          {/* Logo - Center */}
-          <Logo 
-            lang={lang}
-            variant="mobile"
-            role="img"
-            aria-label={dictionary.navigation.accessibility.logoAlt}
-          />
+          {/* Logo - Center (hidden when any panel is open) */}
+          <div className={cn(
+            'transition-opacity duration-300',
+            (isMenuOpen || isSearchOpen) ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          )}>
+            <Logo 
+              lang={lang}
+              variant="mobile"
+              role="img"
+              aria-label={dictionary.navigation.accessibility.logoAlt}
+            />
+          </div>
           
           {/* Right side: Language Switcher + Search Button */}
-          <div className={MOBILE_NAV_STYLES.sections.right}>
-            {!isMenuOpen && <LanguageSwitcher currentLang={lang} />}
+          <div className={cn(
+            MOBILE_NAV_STYLES.sections.right,
+            'transition-opacity duration-300',
+            isMenuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
+          )}>
+            <LanguageSwitcher currentLang={lang} />
             
-            {!isMenuOpen && (
-              <SearchButton
-                isOpen={isSearchOpen}
-                onClick={toggleSearch}
-                ariaControls="mobile-search-content"
-                openLabel={dictionary.search.accessibility.openSearch}
-                closeLabel={dictionary.search.accessibility.closeSearch}
-                buttonRef={searchToggleRef}
-              />
-            )}
-            
-            {isMenuOpen && <div className={MOBILE_NAV_STYLES.spacer} />}
+            <SearchButton
+              isOpen={isSearchOpen}
+              onClick={toggleSearch}
+              ariaControls="mobile-search-content"
+              openLabel={dictionary.search.accessibility.openSearch}
+              closeLabel={dictionary.search.accessibility.closeSearch}
+              buttonRef={searchToggleRef}
+            />
           </div>
         </div>
       </nav>
@@ -130,15 +136,22 @@ export default function MobileNavigation({
               className={PANEL_CONTENT_STYLES.menu.nav}
               role="menu"
               aria-label={dictionary.navigation.accessibility.mainMenuLabel}
-              onTransitionEnd={handleMenuComplete}
             >
-              <ul className={PANEL_CONTENT_STYLES.menu.list}>
-                <NavLinks 
-                  dictionary={dictionary}
+              <div className="flex flex-col items-center gap-8">
+                <Logo 
                   lang={lang}
-                  className="block w-full text-left"
+                  variant="mobile"
+                  role="img"
+                  aria-label={dictionary.navigation.accessibility.logoAlt}
                 />
-              </ul>
+                <ul className={PANEL_CONTENT_STYLES.menu.list}>
+                  <NavLinks 
+                    dictionary={dictionary}
+                    lang={lang}
+                    variant="mobile"
+                  />
+                </ul>
+              </div>
             </nav>
           </div>
         </div>

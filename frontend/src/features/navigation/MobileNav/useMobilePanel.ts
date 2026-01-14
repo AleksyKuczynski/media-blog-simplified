@@ -124,8 +124,14 @@ export function useMobilePanel({
     if (!historyStatePushed.current) {
       previousHistoryState.current = window.history.state
       
+      // Preserve existing Next.js state and add our panel state
+      const newState = {
+        ...(window.history.state || {}),
+        [historyStateKey]: true
+      }
+      
       window.history.pushState(
-        { [historyStateKey]: true },
+        newState,
         '',
         window.location.href
       )
@@ -211,7 +217,10 @@ export function useMobilePanel({
     if (isInteractiveElement) {
       return
     }
-  }, [])
+    
+    // Only close on clicking non-interactive areas
+    handleClose(false)
+  }, [handleClose])
 
   // Calculate transform classes based on side
   const getTransformClasses = () => {
