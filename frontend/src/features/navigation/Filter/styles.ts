@@ -10,25 +10,27 @@
  * - FILTER_BUTTON_STYLES: Dropdown buttons and reset button
  */
 
+import { cn } from "@/lib/utils";
+
 export const FILTER_STYLES = {
   container: {
-    base: 'mb-8 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 px-4',
-    minimal: 'mb-4 flex items-center justify-between px-4',
-    centered: 'mb-6 flex justify-center',
+    base: 'my-8 flex flex-row justify-center px-4 gap-0.5',
   },
 } as const;
 
 export const FILTER_CONTROL_STYLES = {
   wrapper: 'flex flex-col',
-  wrapperWithGap: 'flex flex-col gap-2',
+  label: 'text-xs lowercase font-medium text-pr-cont pl-4',
   
-  label: 'mb-2 text-sm font-medium text-prcolor',
-  
-  resetButtonWrapper: 'flex flex-col justify-end',
 } as const;
 
 export const FILTER_BUTTON_STYLES = {
   dropdown: {
+    button: cn('flex items-center justify-between w-full px-4 py-2 bg-sf-cont shadow-md border border-pr-cont rounded-full transition-all duration-200 text-on-sf-var hover:text-on-sf hover:bg-sf-hi'
+      
+    ),
+    left: 'rounded-r-none',
+    rigth: 'rounded-l-none',
     base: 'flex items-center justify-between w-full px-4 py-2 border-2 border-prcolor rounded-md',
     wide: 'flex items-center justify-between w-full sm:w-48 px-4 py-2 border-2 border-prcolor rounded-md',
     centered: 'flex items-center justify-between w-64 px-4 py-2 border-2 border-prcolor rounded-md',
@@ -37,6 +39,6 @@ export const FILTER_BUTTON_STYLES = {
   icon: 'h-5 w-5 ml-2 flex-shrink-0',
   
   text: {
-    base: 'truncate',
+    base: 'truncate lowercase',
   },
 } as const;

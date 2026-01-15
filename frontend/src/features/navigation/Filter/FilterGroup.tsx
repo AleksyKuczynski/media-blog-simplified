@@ -3,13 +3,12 @@
 
 import { Category } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
-import { ChevronDownIcon } from '../../../shared/primitives/Icons';
 import { getFilterAccessibilityData } from '@/config/i18n/helpers/filter';
 import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '@/shared/ui/Dropdown';
 import { useFilterGroup, useFilterValidation } from './useFilterGroup';
 import SortingControl from './SortingControl';
-import { CustomButton } from '@/shared/primitives/CustomButton';
 import { FILTER_STYLES, FILTER_CONTROL_STYLES, FILTER_BUTTON_STYLES } from './styles';
+import { cn } from '@/lib/utils';
 
 interface FilterGroupProps {
   readonly categories: Category[];
@@ -56,17 +55,13 @@ export default function FilterGroup({
             width="wide"
             position="left"
           >
-            <DropdownTrigger>
-              <button
-                className="flex items-center justify-between w-full sm:w-48 px-4 py-2 border-2 border-prcolor rounded-md transition-all duration-200 text-on-sf-var hover:text-on-sf hover:bg-sf-hi"
-                aria-label={accessibility.categorySelector}
-                type="button"
-              >
-                <span className={FILTER_BUTTON_STYLES.text.base}>
-                  {selectedCategoryName}
-                </span>
-                <ChevronDownIcon className={FILTER_BUTTON_STYLES.icon} />
-              </button>
+            <DropdownTrigger
+              className={cn(FILTER_BUTTON_STYLES.dropdown.button, FILTER_BUTTON_STYLES.dropdown.left)}
+              textClassName={FILTER_BUTTON_STYLES.text.base}
+              iconClassName={FILTER_BUTTON_STYLES.icon}
+              ariaLabel={accessibility.categorySelector}
+            >
+              {selectedCategoryName}
             </DropdownTrigger>
             <DropdownContent>
               {categoryItems.map((item, index) => (
@@ -84,9 +79,9 @@ export default function FilterGroup({
 
         {/* Sorting Control */}
         <SortingControl
+          className={cn(FILTER_BUTTON_STYLES.dropdown.button, FILTER_BUTTON_STYLES.dropdown.rigth)}
           dictionary={dictionary}
           currentSort={currentSort}
-          lang={lang}
         />
       </div>
     );
@@ -112,15 +107,6 @@ export default function FilterGroup({
           <div className={FILTER_BUTTON_STYLES.dropdown.base}>
             {filterLabels.newest}
           </div>
-        </div>
-        
-        <div className={FILTER_CONTROL_STYLES.resetButtonWrapper}>
-          <CustomButton
-            color="primary"
-            onClick={() => window.location.href = `/${lang}/articles`}
-          >
-            {filterLabels.reset}
-          </CustomButton>
         </div>
       </div>
     );

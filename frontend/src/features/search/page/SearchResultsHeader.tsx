@@ -5,6 +5,7 @@ import SortingControl from '@/features/navigation/Filter/SortingControl';
 import { Dictionary, Lang } from '@/config/i18n';
 import { getLocalizedCount } from '@/config/i18n/helpers/content';
 import { SEARCH_PAGE_STYLES } from '../search.styles';
+import { FILTER_BUTTON_STYLES } from '@/features/navigation/Filter/styles';
 
 interface SearchResultsHeaderProps {
   readonly dictionary: Dictionary;
@@ -51,9 +52,9 @@ export default function SearchResultsHeader({
 
       <aside aria-label={dictionary.filter.accessibility.sortingControl}>
         <SortingControl
+          className={FILTER_BUTTON_STYLES.dropdown.button}
           dictionary={dictionary}
           currentSort={currentSort}
-          lang={lang}
         />
       </aside>
     </header>

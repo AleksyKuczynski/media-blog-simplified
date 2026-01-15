@@ -11,13 +11,13 @@ import { FILTER_CONTROL_STYLES, FILTER_BUTTON_STYLES } from './styles';
 interface SortingControlProps {
   readonly dictionary: Dictionary;
   readonly currentSort: string;
-  readonly lang: Lang;
+  className: string;
 }
 
 export default function SortingControl({ 
   dictionary, 
-  currentSort, 
-  lang 
+  currentSort,
+  className 
 }: SortingControlProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -42,7 +42,7 @@ export default function SortingControl({
   };
 
   return (
-    <div className={FILTER_CONTROL_STYLES.wrapperWithGap}>
+    <div className={FILTER_CONTROL_STYLES.wrapper}>
       <span className={FILTER_CONTROL_STYLES.label}>
         {sorting.labels.sortBy}
       </span>
@@ -52,17 +52,13 @@ export default function SortingControl({
         width="wide"
         position="right"
       >
-        <DropdownTrigger>
-          <button
-            className="flex items-center justify-between w-full px-4 py-2 border-2 border-prcolor rounded-md transition-all duration-200 text-on-sf-var hover:text-on-sf hover:bg-sf-hi"
-            aria-label={sorting.labels.sortBy}
-            type="button"
-          >
-            <span className={FILTER_BUTTON_STYLES.text.base}>
-              {sortItems.find(item => item.value === currentSort)?.label}
-            </span>
-            <ChevronDownIcon className={FILTER_BUTTON_STYLES.icon} />
-          </button>
+        <DropdownTrigger
+          className={className}
+          textClassName={FILTER_BUTTON_STYLES.text.base}
+          iconClassName={FILTER_BUTTON_STYLES.icon}
+          ariaLabel={sorting.labels.sortBy}
+        >
+          {sortItems.find(item => item.value === currentSort)?.label}
         </DropdownTrigger>
         <DropdownContent>
           {items.map((item, index) => (

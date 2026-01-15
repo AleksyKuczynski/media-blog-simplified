@@ -1,12 +1,23 @@
-// src/main/components/Interface/Dropdown/DropdownTrigger.tsx
+// src/shared/ui/Dropdown/DropdownTrigger.tsx
 import React from 'react';
 import { useDropdownContext } from './DropdownContext';
+import { ChevronDownIcon } from '@/shared/primitives/Icons';
 
 interface DropdownTriggerProps {
-  children: React.ReactElement;
+  children: React.ReactNode;
+  className?: string;
+  textClassName?: string;
+  iconClassName?: string;
+  ariaLabel?: string;
 }
 
-export default function DropdownTrigger({ children }: DropdownTriggerProps) {
+export default function DropdownTrigger({ 
+  children, 
+  className = '',
+  textClassName = '',
+  iconClassName = '',
+  ariaLabel 
+}: DropdownTriggerProps) {
   const { 
     triggerRef, 
     isOpen, 
@@ -18,12 +29,22 @@ export default function DropdownTrigger({ children }: DropdownTriggerProps) {
     handleKeyDown(e as unknown as KeyboardEvent);
   };
 
-  return React.cloneElement(children as React.ReactElement<{ [key: string]: any }>, {
-    ref: triggerRef,
-    onClick: handleClick,
-    onKeyDown: handleTriggerKeyDown,
-    'aria-expanded': isOpen,
-    'aria-haspopup': true,
-    'aria-controls': isOpen ? 'dropdown-menu' : undefined
-  });
+  return (
+    <button
+      ref={triggerRef}
+      onClick={handleClick}
+      onKeyDown={handleTriggerKeyDown}
+      aria-expanded={isOpen}
+      aria-haspopup={true}
+      aria-controls={isOpen ? 'dropdown-menu' : undefined}
+      aria-label={ariaLabel}
+      className={className}
+      type="button"
+    >
+      <span className={textClassName}>
+        {children}
+      </span>
+      <ChevronDownIcon className={iconClassName} />
+    </button>
+  );
 }
