@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 export const FILTER_STYLES = {
   container: {
-    base: 'my-8 flex flex-row justify-center px-4 gap-0.5',
+    base: 'mt-8 mb-16 flex flex-row justify-center px-4 gap-0.5',
   },
 } as const;
 
@@ -26,7 +26,8 @@ export const FILTER_CONTROL_STYLES = {
 
 export const FILTER_BUTTON_STYLES = {
   dropdown: {
-    button: cn('flex items-center justify-between w-full px-4 py-2 bg-sf-cont shadow-md border border-pr-cont rounded-full transition-all duration-200 text-on-sf-var hover:text-on-sf hover:bg-sf-hi'
+    button: cn('flex items-center justify-between w-full bg-sf-cont border border-pr-fix rounded-full transition-all duration-200 text-on-sf-var hover:text-on-sf hover:bg-sf-hi',
+      'px-4 py-2 text-sm'
       
     ),
     left: 'rounded-r-none',
