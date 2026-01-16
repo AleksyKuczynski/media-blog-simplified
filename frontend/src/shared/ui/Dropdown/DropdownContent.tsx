@@ -1,44 +1,24 @@
-// src/main/components/Interface/Dropdown/DropdownContent.tsx - CLEANED UP
+// src/shared/ui/Dropdown/DropdownContent.tsx
 'use client';
 
-import { useDropdownContext } from './DropdownContext';
-import type { DropdownContentProps } from './types';
+import { DROPDOWN_STYLES } from './styles';
+import { useDropdownContext } from './useDropdown';
 
-export default function DropdownContent({
-  children,
-  width = 'auto',
-  position = 'left'
-}: DropdownContentProps) {
+interface DropdownContentProps {
+  children: React.ReactNode;
+}
+
+export default function DropdownContent({ children }: DropdownContentProps) {
   const { isOpen } = useDropdownContext();
 
-  // Width classes for different dropdown sizes
-  const widthClasses = {
-    icon: 'w-40',
-    narrow: 'w-48',
-    wide: 'w-64',
-    auto: 'w-auto'
-  };
-
-  // Position classes
-  const positionClasses = {
-    left: 'left-0',
-    center: 'left-1/2 -translate-x-1/2',
-    right: 'right-0'
-  };
+  const className = `
+    ${DROPDOWN_STYLES.content.base}
+    ${isOpen ? DROPDOWN_STYLES.content.open : DROPDOWN_STYLES.content.closed}
+  `.trim();
 
   return (
     <div 
-      className={`
-        absolute z-[70] shadow-lg bg-sf-hi 
-        transition-all duration-200 ease-in-out origin-top
-        rounded-lg
-        ${widthClasses[width]}
-        ${positionClasses[position]}
-        ${isOpen 
-          ? 'opacity-100 scale-y-100 transform' 
-          : 'opacity-0 scale-y-0 pointer-events-none'
-        }
-      `.trim()}
+      className={className}
       role="menu"
       aria-orientation="vertical"
       style={{ 
@@ -46,7 +26,7 @@ export default function DropdownContent({
         top: 'calc(100% + 0.5rem)'
       }}
     >
-      {children}
+      <ul role="menu">{children}</ul>
     </div>
   );
 }

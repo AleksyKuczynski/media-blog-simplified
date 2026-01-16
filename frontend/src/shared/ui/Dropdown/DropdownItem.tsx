@@ -1,10 +1,11 @@
-// src/main/components/Interface/Dropdown/DropdownItem.tsx
+// src/shared/ui/Dropdown/DropdownItem.tsx
 'use client';
 
 import React from 'react';
 import { DropdownItemProps } from './types';
-import { CheckIcon } from '../../primitives/Icons';
-import { useDropdownContext } from './DropdownContext';
+import { CheckIcon } from '@/shared/primitives/Icons';
+import { useDropdownContext } from './useDropdown';
+import { DROPDOWN_STYLES } from './styles';
 
 export default function DropdownItem({
   item,
@@ -21,19 +22,17 @@ export default function DropdownItem({
 
   const handleClick = () => {
     onSelect();
-    close(); // Close dropdown after selection
+    close();
   };
 
   const getItemClasses = () => {
-    const baseClasses = "flex items-center justify-between transition-colors duration-200 outline-none cursor-default px-4 py-2 mx-2 first:mt-2 last:mb-2";
-    
     if (isFocused) {
-      return `${baseClasses} bg-pr-cont text-on-pr rounded-lg`;
+      return `${DROPDOWN_STYLES.item.base} ${DROPDOWN_STYLES.item.focused}`;
     }
     if (isSelected) {
-      return `${baseClasses} text-pr-cont cursor-default`;
+      return `${DROPDOWN_STYLES.item.base} ${DROPDOWN_STYLES.item.selected}`;
     }
-    return `${baseClasses} text-on-sf hover:bg-sf-hst hover:text-pr-cont rounded-lg cursor-pointer`;
+    return `${DROPDOWN_STYLES.item.base} ${DROPDOWN_STYLES.item.default}`;
   };
 
   return (
@@ -55,7 +54,7 @@ export default function DropdownItem({
       </span>
       {isSelected && (
         <CheckIcon 
-          className="h-4 w-4 ml-2"
+          className={DROPDOWN_STYLES.icon.check}
           aria-hidden="true" 
         />
       )}

@@ -2,11 +2,14 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Dictionary, Lang } from '@/config/i18n';
-import { ChevronDownIcon } from '@/shared/primitives/Icons';
+import { Dictionary } from '@/config/i18n';
 import type { DropdownItemType } from '@/shared/ui/Dropdown/types';
-import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '@/shared/ui/Dropdown';
 import { FILTER_CONTROL_STYLES, FILTER_BUTTON_STYLES } from './styles';
+import Dropdown from '@/shared/ui/Dropdown/Dropdown';
+import DropdownTrigger from '@/shared/ui/Dropdown/DropdownTrigger';
+import DropdownContent from '@/shared/ui/Dropdown/DropdownContent';
+import DropdownItem from '@/shared/ui/Dropdown/DropdownItem';
+import { cn } from '@/lib/utils';
 
 interface SortingControlProps {
   readonly dictionary: Dictionary;
@@ -43,19 +46,18 @@ export default function SortingControl({
 
   return (
     <div className={FILTER_CONTROL_STYLES.wrapper}>
-      <span className={FILTER_CONTROL_STYLES.label}>
-        {sorting.labels.sortBy}
-      </span>
       <Dropdown
         items={items}
         onSelect={handleSortChange}
-        width="wide"
-        position="right"
       >
         <DropdownTrigger
-          className={className}
-          textClassName={FILTER_BUTTON_STYLES.text.base}
-          iconClassName={FILTER_BUTTON_STYLES.icon}
+          className={cn(FILTER_BUTTON_STYLES.dropdown.button)}
+          label={sorting.labels.sortBy}
+          classNames={{
+            label: FILTER_CONTROL_STYLES.label,
+            text: FILTER_BUTTON_STYLES.text.base,
+            icon: FILTER_BUTTON_STYLES.icon
+          }}
           ariaLabel={sorting.labels.sortBy}
         >
           {sortItems.find(item => item.value === currentSort)?.label}

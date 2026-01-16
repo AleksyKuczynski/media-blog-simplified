@@ -1,9 +1,20 @@
-// src/main/components/Interface/Dropdown/useDropdown.ts
+// src/shared/ui/Dropdown/useDropdown.ts
 'use client';
 
-import { useCallback, useState, useRef } from 'react';
-import type { DropdownItemType, DropdownContextType } from './types';
+import { useCallback, useState, useRef, createContext, useContext } from 'react';
+import type { DropdownContextType, DropdownItemType } from './types';
 
+export const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
+
+export function useDropdownContext() {
+  const context = useContext(DropdownContext);
+  if (!context) {
+    throw new Error('useDropdownContext must be used within a Dropdown');
+  }
+  return context;
+}
+
+// Hook implementation
 export function useDropdown({ 
   items, 
   onSelect 
@@ -15,7 +26,6 @@ export function useDropdown({
   const [selectedIndex, setSelectedIndex] = useState(-1);
   
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   const focusTrigger = useCallback(() => {
@@ -47,13 +57,9 @@ export function useDropdown({
 
     do {
       nextIndex = nextIndex + increment;
-      // Loop around at boundaries
       if (nextIndex >= items.length) nextIndex = 0;
       if (nextIndex < 0) nextIndex = items.length - 1;
-      
-      // Check if we've gone through all items
       if (nextIndex === currentIndex) return -1;
-      
     } while (items[nextIndex].selected);
 
     return nextIndex;
@@ -112,10 +118,8 @@ export function useDropdown({
     isOpen,
     selectedIndex,
     setSelectedIndex,
-    toggle,
     close,
     triggerRef,
-    dropdownRef,
     itemRefs,
     items,
     onSelect,

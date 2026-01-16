@@ -23,7 +23,11 @@ export const FILTER_STYLES = {
 } as const;
 
 export const FILTER_CONTROL_STYLES = {
-  wrapper: 'flex flex-col',
+  wrapper: cn(
+    'flex flex-col w-48',
+    'md:w-56',
+    'xl:w-64',
+  ),
   label: cn(
     'text-xs lowercase font-medium text-sec-dim pl-4',
     'md:text-sm md:pl-6',
@@ -34,13 +38,14 @@ export const FILTER_CONTROL_STYLES = {
 
 export const FILTER_BUTTON_STYLES = {
   dropdown: {
-    button: cn('flex items-center justify-between w-full bg-sec-cont rounded-full transition-all duration-200 text-on-sec-var hover:text-on-sec hover:bg-sec-dim',
+    button: cn('flex items-center justify-between w-full shadow-md focus:shadow-sm', 
+      'bg-sec-cont rounded-full transition-all duration-200 text-on-sec-var hover:text-on-sec hover:bg-sec-dim',
       'px-4 py-2 text-sm',
       'md:px-6 md:py-3 md:text-base',
       'xl:px-8 xl:py-4 xl:text-lg',
     ),
     left: 'rounded-r-none',
-    rigth: 'rounded-l-none',
+    right: 'rounded-l-none',
     base: 'flex items-center justify-between w-full px-4 py-2 border-2 border-prcolor rounded-md',
     wide: 'flex items-center justify-between w-full sm:w-48 px-4 py-2 border-2 border-prcolor rounded-md',
     centered: 'flex items-center justify-between w-64 px-4 py-2 border-2 border-prcolor rounded-md',

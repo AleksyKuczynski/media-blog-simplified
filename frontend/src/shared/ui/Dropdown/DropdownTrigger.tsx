@@ -1,22 +1,26 @@
 // src/shared/ui/Dropdown/DropdownTrigger.tsx
 import React from 'react';
-import { useDropdownContext } from './DropdownContext';
+import { useDropdownContext } from './useDropdown';
 import { ChevronDownIcon } from '@/shared/primitives/Icons';
 
 interface DropdownTriggerProps {
   children: React.ReactNode;
   className?: string;
-  textClassName?: string;
-  iconClassName?: string;
+  classNames?: {
+    text?: string;
+    icon?: string;
+    label?: string;
+  };
   ariaLabel?: string;
+  label?: string;
 }
 
 export default function DropdownTrigger({ 
   children, 
   className = '',
-  textClassName = '',
-  iconClassName = '',
-  ariaLabel 
+  classNames = {},
+  ariaLabel,
+  label
 }: DropdownTriggerProps) {
   const { 
     triggerRef, 
@@ -41,10 +45,13 @@ export default function DropdownTrigger({
       className={className}
       type="button"
     >
-      <span className={textClassName}>
-        {children}
-      </span>
-      <ChevronDownIcon className={iconClassName} />
+      <div className="flex flex-col items-start">
+        {label && <span className={classNames.label}>{label}</span>}
+        <span className={classNames.text}>
+          {children}
+        </span>
+      </div>
+      <ChevronDownIcon className={classNames.icon} />
     </button>
   );
 }

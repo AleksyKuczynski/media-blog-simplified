@@ -4,11 +4,14 @@
 import { Category } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
 import { getFilterAccessibilityData } from '@/config/i18n/helpers/filter';
-import { Dropdown, DropdownContent, DropdownItem, DropdownTrigger } from '@/shared/ui/Dropdown';
 import { useFilterGroup, useFilterValidation } from './useFilterGroup';
 import SortingControl from './SortingControl';
 import { FILTER_STYLES, FILTER_CONTROL_STYLES, FILTER_BUTTON_STYLES } from './styles';
 import { cn } from '@/lib/utils';
+import Dropdown from '@/shared/ui/Dropdown/Dropdown';
+import DropdownTrigger from '@/shared/ui/Dropdown/DropdownTrigger';
+import DropdownContent from '@/shared/ui/Dropdown/DropdownContent';
+import DropdownItem from '@/shared/ui/Dropdown/DropdownItem';
 
 interface FilterGroupProps {
   readonly categories: Category[];
@@ -46,19 +49,18 @@ export default function FilterGroup({
       <div className={FILTER_STYLES.container.base}>
         {/* Category Selector */}
         <div className={FILTER_CONTROL_STYLES.wrapper}>
-          <span className={FILTER_CONTROL_STYLES.label}>
-            {filterLabels.category}
-          </span>
           <Dropdown
             items={categoryItems}
             onSelect={handleCategoryChange}
-            width="wide"
-            position="left"
           >
             <DropdownTrigger
               className={cn(FILTER_BUTTON_STYLES.dropdown.button, FILTER_BUTTON_STYLES.dropdown.left)}
-              textClassName={FILTER_BUTTON_STYLES.text.base}
-              iconClassName={FILTER_BUTTON_STYLES.icon}
+              label={filterLabels.category}
+              classNames={{
+                label: FILTER_CONTROL_STYLES.label,
+                text: FILTER_BUTTON_STYLES.text.base,
+                icon: FILTER_BUTTON_STYLES.icon
+              }}
               ariaLabel={accessibility.categorySelector}
             >
               {selectedCategoryName}
@@ -79,7 +81,7 @@ export default function FilterGroup({
 
         {/* Sorting Control */}
         <SortingControl
-          className={cn(FILTER_BUTTON_STYLES.dropdown.button, FILTER_BUTTON_STYLES.dropdown.rigth)}
+          className={cn(FILTER_BUTTON_STYLES.dropdown.button, FILTER_BUTTON_STYLES.dropdown.right)}
           dictionary={dictionary}
           currentSort={currentSort}
         />
