@@ -12,8 +12,9 @@ import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMeta
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
-import { fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus';
+import { fetchAllCategories, fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus';
 import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
+import FilterGroup from '@/features/navigation/Filter/FilterGroup';
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -54,6 +55,7 @@ export default async function ArticlesPage({
 }) {
   const { lang } = await params;
   const dictionary = getDictionary(lang as Lang);
+  const categories = await fetchAllCategories(lang as Lang);
   
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
@@ -85,6 +87,12 @@ export default async function ArticlesPage({
         totalCount={totalCount}
         currentPath={`/${lang}/articles`}
         featured={false}
+      />
+
+      <FilterGroup
+          categories={categories}
+          dictionary={dictionary}
+          lang={lang as Lang}
       />
 
       <Section

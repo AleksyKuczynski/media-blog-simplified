@@ -12,6 +12,7 @@ import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema'
 import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import CollectionCount from '@/features/layout/CollectionCount';
 import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
+import FilterGroup from '@/features/navigation/Filter/FilterGroup';
 
 export const revalidate = 300;
 
@@ -88,6 +89,12 @@ export default async function CategoryPage({
           allRubrics: dictionary.navigation.labels.rubrics,
           allAuthors: dictionary.navigation.labels.authors,
         }}
+      />
+
+      <FilterGroup
+        categories={categories}
+        dictionary={dictionary}
+        lang={lang as Lang}
       />
 
       <Section

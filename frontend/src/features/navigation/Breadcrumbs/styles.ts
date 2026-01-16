@@ -16,7 +16,7 @@ export const BREADCRUMB_STYLES = {
   container: `max-lg:text-sm mx-2 my-4 max-w-7xl overflow-x-auto scrollbar-hide
           md:px-2 md:pb-4
           lg:my-6 lg:pb-6
-          xl:mx-auto xl:my-8 xl:px-4 xl:pb-8`,
+          xl:mx-auto xl:my-8 xl:px-4`,
   },
   list: {
   base: 'list-none flex flex-nowrap items-center',

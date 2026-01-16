@@ -14,21 +14,30 @@ import { cn } from "@/lib/utils";
 
 export const FILTER_STYLES = {
   container: {
-    base: 'mt-8 mb-16 flex flex-row justify-center px-4 gap-0.5',
+    base: cn(
+      'mt-8 mb-16 flex flex-row justify-center px-4 gap-0.5', 
+      'md:mb-24',
+      'xl:mb-32',
+    ),
   },
 } as const;
 
 export const FILTER_CONTROL_STYLES = {
   wrapper: 'flex flex-col',
-  label: 'text-xs lowercase font-medium text-pr-cont pl-4',
+  label: cn(
+    'text-xs lowercase font-medium text-sec-dim pl-4',
+    'md:text-sm md:pl-6',
+    'xl:text-base',
+  ),
   
 } as const;
 
 export const FILTER_BUTTON_STYLES = {
   dropdown: {
-    button: cn('flex items-center justify-between w-full bg-sf-cont border border-pr-fix rounded-full transition-all duration-200 text-on-sf-var hover:text-on-sf hover:bg-sf-hi',
-      'px-4 py-2 text-sm'
-      
+    button: cn('flex items-center justify-between w-full bg-sec-cont rounded-full transition-all duration-200 text-on-sec-var hover:text-on-sec hover:bg-sec-dim',
+      'px-4 py-2 text-sm',
+      'md:px-6 md:py-3 md:text-base',
+      'xl:px-8 xl:py-4 xl:text-lg',
     ),
     left: 'rounded-r-none',
     rigth: 'rounded-l-none',
