@@ -1,4 +1,4 @@
-// src/app/[lang]/authors/page.tsx
+// src/app/[lang]/(collections)/authors/page.tsx
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchAllAuthors, fetchRubricBasics } from '@/api/directus';

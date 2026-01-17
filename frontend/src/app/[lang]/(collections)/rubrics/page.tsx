@@ -1,4 +1,4 @@
-// src/app/[lang]/rubrics/page.tsx
+// src/app/[lang]/(collections)/rubrics/page.tsx
 
 import { Metadata } from 'next';
 import Section from '@/features/layout/Section';

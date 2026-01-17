@@ -1,5 +1,4 @@
-// src/app/[lang]/(with-filter)/category/[categorySlug]/page.tsx
-// FIXED: Uses totalCount, proper totalPages calculation
+// src/app/[lang]/(collections)/(with-filter)/category/[categorySlug]/page.tsx
 
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';

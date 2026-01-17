@@ -1,4 +1,4 @@
-// src/app/[lang]/(with-filter)/articles/page.tsx
+// src/app/[lang]/(collections)/(with-filter)/articles/page.tsx
 
 import { Suspense } from 'react';
 import { Metadata } from 'next';

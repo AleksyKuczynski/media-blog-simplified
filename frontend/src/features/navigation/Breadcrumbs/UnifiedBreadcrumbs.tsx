@@ -86,19 +86,14 @@ export default function UnifiedBreadcrumbs({
   else if (segments[0] === 'articles') {
     // /articles listing - no additional crumb needed
   }
-  else {
-    // Rubric page: /[rubric]
-    const rubricSlug = segments[0];
-    const rubric = rubrics.find(r => r.slug === rubricSlug);
-    
-    if (rubric) {
-      breadcrumbs.push({
-        label: dictionary.navigation.labels.rubrics,
-        href: `/${lang}/rubrics`
-      });
-      // Last item - will be handled below
-    }
-  }
+  else if (rubrics.some(r => r.slug === segments[0])) {
+  // Rubric page: /[rubric]
+  breadcrumbs.push({
+    label: dictionary.navigation.labels.rubrics,
+    href: `/${lang}/rubrics`
+  });
+  // Last item will be added below
+}
 
   // Add last segment as current page (if not already a listing page)
   if (segments.length > 0) {

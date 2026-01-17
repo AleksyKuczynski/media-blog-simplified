@@ -1,4 +1,4 @@
-// src/app/[lang]/authors/[slug]/page.tsx
+// src/app/[lang]/(collections)/authors/[slug]/page.tsx
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';

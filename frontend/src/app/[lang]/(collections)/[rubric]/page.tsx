@@ -1,4 +1,4 @@
-// src/app/[lang]/[rubric]/page.tsx
+// src/app/[lang]/(collections)/[rubric]/page.tsx
 
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';

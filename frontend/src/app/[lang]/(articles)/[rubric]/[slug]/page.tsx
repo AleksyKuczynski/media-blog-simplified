@@ -1,4 +1,4 @@
-// frontend/src/app/[lang]/[rubric]/[slug]/page.tsx
+// frontend/src/app/[lang]/(articles)/[rubric]/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
