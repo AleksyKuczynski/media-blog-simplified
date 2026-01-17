@@ -97,6 +97,7 @@ export default function FilterGroup({
             items={categoryItems}
             onSelect={handleCategoryChange}
             onOpenChange={handleCategoryOpenChange}
+            defaultItemId="all"
           >
             <DropdownTrigger
               className={FILTER_CONTROL_STYLES.dropdown.button}

@@ -1,7 +1,7 @@
 // src/shared/ui/Dropdown/useDropdown.ts
 'use client';
 
-import { useCallback, useState, useRef, createContext, useContext } from 'react';
+import { useCallback, useState, useRef, createContext, useContext, useEffect } from 'react';
 import type { DropdownContextType, DropdownItemType } from './types';
 
 export const DropdownContext = createContext<DropdownContextType | undefined>(undefined);
@@ -18,18 +18,30 @@ export function useDropdownContext() {
 export function useDropdown({ 
   items, 
   onSelect,
-  onOpenChange
+  onOpenChange,
+  defaultItemId
 }: {
   items: DropdownItemType[];
   onSelect: (item: DropdownItemType) => void;
   onOpenChange?: (isOpen: boolean) => void;
+  defaultItemId?: string | number;
 }): DropdownContextType {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [initialSelectedItem] = useState(() => items.find(item => item.selected));
+  const [initialSelectedId] = useState(() => {
+    console.log('useDropdown init - defaultItemId:', defaultItemId, 'selected item:', items.find(item => item.selected)?.id);
+    return defaultItemId ?? items.find(item => item.selected)?.id;
+  });
+  
+  console.log('useDropdown - initialSelectedId:', initialSelectedId, 'current items:', items.map(i => ({ id: i.id, selected: i.selected })));
   
   const triggerRef = useRef<HTMLButtonElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  // Notify parent of open state changes
+  useEffect(() => {
+    onOpenChange?.(isOpen);
+  }, [isOpen, onOpenChange]);
 
   const focusTrigger = useCallback(() => {
     triggerRef.current?.focus();
@@ -42,17 +54,12 @@ export function useDropdown({
   const close = useCallback(() => {
     setIsOpen(false);
     setSelectedIndex(-1);
-    onOpenChange?.(false);
-  }, [onOpenChange]);
+  }, []);
 
   const toggle = useCallback(() => {
-    setIsOpen(prev => {
-      const newState = !prev;
-      onOpenChange?.(newState);
-      return newState;
-    });
+    setIsOpen(prev => !prev);
     setSelectedIndex(-1);
-  }, [onOpenChange]);
+  }, []);
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -88,7 +95,6 @@ export function useDropdown({
         e.preventDefault();
         if (!isOpen) {
           setIsOpen(true);
-          onOpenChange?.(true);
           const firstSelectable = findNextSelectableIndex(-1, 'down');
           if (firstSelectable !== -1) {
             setSelectedIndex(firstSelectable);
@@ -125,14 +131,16 @@ export function useDropdown({
         }
         break;
     }
-  }, [items, selectedIndex, isOpen, onSelect, close, focusItem, focusTrigger, findNextSelectableIndex, onOpenChange]);
+  }, [items, selectedIndex, isOpen, onSelect, close, focusItem, focusTrigger, findNextSelectableIndex]);
 
   const handleReset = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    if (initialSelectedItem) {
-      onSelect(initialSelectedItem);
+    const initialItem = items.find(item => item.id === initialSelectedId);
+    if (initialItem) {
+      onSelect(initialItem);
+      triggerRef.current?.blur();
     }
-  }, [initialSelectedItem, onSelect]);
+  }, [initialSelectedId, items, onSelect]);
 
   const getCurrentItem = useCallback(() => {
     return items.find(item => item.selected);
@@ -140,8 +148,8 @@ export function useDropdown({
 
   const isDefaultSelected = useCallback(() => {
     const currentItem = getCurrentItem();
-    return initialSelectedItem?.id === currentItem?.id;
-  }, [initialSelectedItem, getCurrentItem]);
+    return initialSelectedId === currentItem?.id;
+  }, [initialSelectedId, getCurrentItem]);
 
   return {
     isOpen,

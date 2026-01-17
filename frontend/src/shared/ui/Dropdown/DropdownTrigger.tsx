@@ -52,13 +52,11 @@ export default function DropdownTrigger({
         <span className={classNames.text}>
           {children}
         </span>
-        {!isDefaultSelected ? (
+        {!isDefaultSelected && (
           <CloseIcon 
             className={classNames.icon} 
             onClick={handleReset}
           />
-        ) : (
-          <ChevronDownIcon className={classNames.icon} />
         )}
       </div>
     </button>

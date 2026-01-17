@@ -55,6 +55,7 @@ export default function SortingControl({
         items={items}
         onSelect={handleSortChange}
         onOpenChange={onOpenChange}
+        defaultItemId="desc"
       >
         <DropdownTrigger
           className={FILTER_CONTROL_STYLES.dropdown.button}
