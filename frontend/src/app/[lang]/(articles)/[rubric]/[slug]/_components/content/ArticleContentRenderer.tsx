@@ -1,12 +1,12 @@
 // src/app/[lang]/[rubric]/[slug]/_components/content/ArticleContentRenderer.tsx
 
-import { ContentChunk } from '@/app/[lang]/[rubric]/[slug]/_components/markdown/markdownTypes';
 import { MarkdownContent } from './MarkdownContent';
 import { CustomBlockquote } from './CustomBlockquote';
 import ImageFrame from '../ImageFrame';
 import Table from './Table';
 import InlineArticleCard from './InlineArticleCard';
 import { Lang } from '@/config/i18n';
+import { ContentChunk } from '../markdown/markdownTypes';
 
 interface ArticleContentRendererProps {
   chunks: ContentChunk[];

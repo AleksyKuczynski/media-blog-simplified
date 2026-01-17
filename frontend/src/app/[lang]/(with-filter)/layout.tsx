@@ -9,11 +9,11 @@ export default async function WithFilterLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ lang: Lang }>;
+  params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const dictionary = await getDictionary(lang);
-  const categories = await fetchAllCategories(lang);
+  const dictionary = await getDictionary(lang as Lang);
+  const categories = await fetchAllCategories(lang as Lang);
 
   return (
     <>
@@ -21,7 +21,7 @@ export default async function WithFilterLayout({
         <FilterGroup
           categories={categories}
           dictionary={dictionary}
-          lang={lang}
+          lang={lang as Lang}
         />
       </Suspense>
       {children}
@@ -32,19 +32,16 @@ export default async function WithFilterLayout({
 function FilterSkeleton() {
   return (
     <div className="mb-8 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 px-4">
-      {/* Category dropdown skeleton */}
       <div className="flex flex-col">
         <div className="mb-2 h-4 w-20 bg-gray-200 rounded animate-pulse" />
         <div className="h-10 w-full sm:w-48 bg-gray-200 rounded-md animate-pulse" />
       </div>
       
-      {/* Sort dropdown skeleton */}
       <div className="flex flex-col">
         <div className="mb-2 h-4 w-20 bg-gray-200 rounded animate-pulse" />
         <div className="h-10 w-full sm:w-48 bg-gray-200 rounded-md animate-pulse" />
       </div>
       
-      {/* Reset button skeleton */}
       <div className="flex flex-col justify-end">
         <div className="h-10 w-full sm:w-32 bg-gray-200 rounded-md animate-pulse" />
       </div>

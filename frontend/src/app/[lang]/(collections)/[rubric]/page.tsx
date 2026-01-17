@@ -11,7 +11,6 @@ import { getDictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ITEMS_PER_PAGE } from '@/api/directus';
 import { RubricPageSchema } from '@/shared/seo/schemas/RubricPageSchema';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
 
 export const revalidate = 300;
@@ -55,21 +54,6 @@ export default async function RubricPage({
 
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-    const breadcrumbItems = [
-      {
-        label: dictionary.navigation.labels.home,
-        href: `/${lang}`,
-      },
-      {
-        label: dictionary.navigation.labels.rubrics,
-        href: `/${lang}/rubrics`,
-      },
-      {
-        label: rubricName,
-        href: `/${lang}/${rubric}`,
-      },
-    ];
-
     const rubricAriaLabel = processTemplate(
       dictionary.sections.templates.itemInCollection,
       {
@@ -89,17 +73,6 @@ export default async function RubricPage({
             articleCount: totalCount,
           }}
           currentPath={`/${lang}/${rubric}`}
-        />
-        
-        <Breadcrumbs 
-          items={breadcrumbItems}
-          rubrics={rubricBasics}
-          lang={lang}
-          translations={{
-            home: dictionary.navigation.labels.home,
-            allRubrics: dictionary.navigation.labels.rubrics,
-            allAuthors: dictionary.navigation.labels.authors,
-          }}
         />
 
         <Section 

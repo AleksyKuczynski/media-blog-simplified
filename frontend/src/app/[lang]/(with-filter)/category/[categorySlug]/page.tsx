@@ -7,12 +7,10 @@ import ArticleList from '@/features/article-display/ArticleList';
 import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/config/i18n';
-import { fetchArticleSlugs, fetchAllCategories, fetchRubricBasics, ITEMS_PER_PAGE } from '@/api/directus';
+import { fetchArticleSlugs, fetchAllCategories, ITEMS_PER_PAGE } from '@/api/directus';
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
-import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import CollectionCount from '@/features/layout/CollectionCount';
 import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
-import FilterGroup from '@/features/navigation/Filter/FilterGroup';
 
 export const revalidate = 300;
 
@@ -26,7 +24,6 @@ export default async function CategoryPage({
   const { lang, categorySlug } = await params;
   const dictionary = getDictionary(lang as Lang);
   const categories = await fetchAllCategories(lang);
-  const rubricBasics = await fetchRubricBasics(lang);
   
   const category = categories.find(cat => cat.slug === categorySlug);
   
@@ -47,21 +44,6 @@ export default async function CategoryPage({
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-  const breadcrumbItems = [
-    {
-      label: dictionary.navigation.labels.home,
-      href: `/${lang}`,
-    },
-    {
-      label: dictionary.navigation.labels.articles,
-      href: `/${lang}/articles`,
-    },
-    {
-      label: category.name,
-      href: `/${lang}/category/${categorySlug}`,
-    },
-  ];
-
   const articleItems = currentPageSlugs.slice(0, 10).map(slug => ({
     name: slug.slug,
     slug: slug.slug,
@@ -78,23 +60,6 @@ export default async function CategoryPage({
         totalCount={totalCount}
         currentPath={`/${lang}/category/${categorySlug}`}
         featured={false}
-      />
-
-      <Breadcrumbs 
-        items={breadcrumbItems} 
-        rubrics={rubricBasics} 
-        lang={lang}
-        translations={{
-          home: dictionary.navigation.labels.home,
-          allRubrics: dictionary.navigation.labels.rubrics,
-          allAuthors: dictionary.navigation.labels.authors,
-        }}
-      />
-
-      <FilterGroup
-        categories={categories}
-        dictionary={dictionary}
-        lang={lang as Lang}
       />
 
       <Section

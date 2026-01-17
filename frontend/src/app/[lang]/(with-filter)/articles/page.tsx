@@ -6,15 +6,13 @@ import ArticleList from '@/features/article-display/ArticleList';
 import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
 import CollectionCount from '@/features/layout/CollectionCount';
-import CollectionDescription from '@/features/layout/CollectionDescription';
 import { getDictionary, Lang } from '@/config/i18n';
 import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
-import { fetchAllCategories, fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus';
+import { fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus';
 import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
-import FilterGroup from '@/features/navigation/Filter/FilterGroup';
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -55,7 +53,6 @@ export default async function ArticlesPage({
 }) {
   const { lang } = await params;
   const dictionary = getDictionary(lang as Lang);
-  const categories = await fetchAllCategories(lang as Lang);
   
   const resolvedSearchParams = await searchParams;
   const currentPage = Number(resolvedSearchParams.page) || 1;
@@ -87,12 +84,6 @@ export default async function ArticlesPage({
         totalCount={totalCount}
         currentPath={`/${lang}/articles`}
         featured={false}
-      />
-
-      <FilterGroup
-          categories={categories}
-          dictionary={dictionary}
-          lang={lang as Lang}
       />
 
       <Section

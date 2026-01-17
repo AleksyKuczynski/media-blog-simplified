@@ -2,7 +2,6 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchAllAuthors, fetchRubricBasics } from '@/api/directus';
-import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import Section from '@/features/layout/Section';
 import { AuthorCardSkeleton } from '@/features/author-display/AuthorCardSkeleton';
 import { AuthorsList } from '@/features/author-display/AuthorsList';
@@ -23,17 +22,12 @@ export default async function AllAuthorsPage({
 }) {
   const { lang } = await params;
   const dictionary = getDictionary(lang as Lang);
-  const rubricBasics = await fetchRubricBasics(lang);
   
   // Fetch both for schema generation
   const [authors, illustrators] = await Promise.all([
     fetchAllAuthors(lang, 'author'),
     fetchAllAuthors(lang, 'illustrator'),
   ]);
-
-  const breadcrumbItems = [
-    { label: dictionary.sections.authors.ourAuthors, href: `/${lang}/authors` },
-  ];
 
   // Prepare schema items for authors
   const authorSchemaItems = authors.map(author => ({
@@ -76,21 +70,6 @@ export default async function AllAuthorsPage({
           featured={false}
         />
       )}
-
-      <Suspense fallback={
-        <div className="h-8 bg-gray-100 rounded animate-pulse mb-4" />
-      }>
-        <Breadcrumbs 
-          items={breadcrumbItems} 
-          rubrics={rubricBasics}
-          lang={lang}
-          translations={{
-            home: dictionary.navigation.labels.home,
-            allRubrics: dictionary.sections.rubrics.allRubrics,
-            allAuthors: dictionary.sections.authors.ourAuthors,
-          }}
-        />
-      </Suspense>
       
       {/* Authors Section */}
       <Section

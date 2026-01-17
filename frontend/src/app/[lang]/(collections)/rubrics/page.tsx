@@ -1,12 +1,9 @@
 // src/app/[lang]/rubrics/page.tsx
 
 import { Metadata } from 'next';
-import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import Section from '@/features/layout/Section';
-import CardGrid from '@/features/layout/CardGrid';
 import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
-import { getLocalizedRubricCount } from '@/config/i18n/helpers/content';
 import { getDictionary, Lang } from '@/config/i18n';
 import { Rubric, fetchAllRubrics } from '@/api/directus';
 import { createErrorHandler } from '@/shared/errors/lib/errorUtils';
@@ -98,18 +95,6 @@ export default async function RubricsPage({
       articleCount: rubric.articleCount || 0,
     }));
 
-    // Breadcrumb generation using dictionary
-    const breadcrumbItems = [
-      {
-        label: dictionary.navigation.labels.home,
-        href: `/${lang}`,
-      },
-      {
-        label: dictionary.navigation.labels.rubrics,
-        href: `/${lang}/rubrics`,
-      },
-    ];
-
     return (
       <>
         <CollectionPageSchema
@@ -121,17 +106,6 @@ export default async function RubricsPage({
           featured={false}
         />
         
-        <Breadcrumbs 
-          items={breadcrumbItems} 
-          rubrics={[]}
-          lang={lang}
-          translations={{
-            home: dictionary.navigation.labels.home,
-            allRubrics: dictionary.navigation.labels.rubrics,
-            allAuthors: dictionary.navigation.labels.authors,
-          }}
-        />
-
         <Section 
           title={dictionary.sections.rubrics.allRubrics}
           titleLevel="h1"

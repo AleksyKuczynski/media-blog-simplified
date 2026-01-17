@@ -13,7 +13,7 @@ import {
   TelegramIcon, 
   VKIcon, 
   InstagramIcon 
-} from '@/app/[lang]/[rubric]/[slug]/_components/engagement/EngagementIcons';
+} from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/engagement/EngagementIcons';
 
 interface FooterProps {
   lang: Lang;

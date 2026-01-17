@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { fetchAuthorBySlug, fetchRubricBasics, DIRECTUS_URL, fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus/index';
 import ArticleList from '@/features/article-display/ArticleList';
-import Breadcrumbs from '@/features/navigation/Breadcrumbs/Breadcrumbs';
 import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
 import { processTemplate } from '@/config/i18n/helpers/templates';
@@ -64,9 +63,8 @@ export default async function AuthorPage({
     const currentPage = Number(resolvedSearchParams.page) || 1;
     const currentSort = resolvedSearchParams.sort || 'desc';
 
-    const [author, rubricBasics] = await Promise.all([
+    const [author] = await Promise.all([
       fetchAuthorBySlug(slug, lang),
-      fetchRubricBasics(lang),
     ]);
 
     if (!author) {
@@ -86,21 +84,6 @@ export default async function AuthorPage({
 
     // Calculate total pages
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
-
-    const breadcrumbItems = [
-      {
-        label: dictionary.navigation.labels.home,
-        href: `/${lang}`,
-      },
-      {
-        label: dictionary.navigation.labels.authors,
-        href: `/${lang}/authors`,
-      },
-      {
-        label: author.name,
-        href: `/${lang}/authors/${slug}`,
-      },
-    ];
 
     const articlesForSchema = currentPageSlugs.slice(0, 10).map(slugInfo => ({
       title: slugInfo.slug,
@@ -124,17 +107,6 @@ export default async function AuthorPage({
           currentPath={`/${lang}/authors/${slug}`}
         />
         
-        <Breadcrumbs 
-          items={breadcrumbItems} 
-          rubrics={rubricBasics}
-          lang={lang}
-          translations={{
-            home: dictionary.navigation.labels.home,
-            allRubrics: dictionary.navigation.labels.rubrics,
-            allAuthors: dictionary.navigation.labels.authors,
-          }}
-        />
-
         {/* Author Profile Section */}
         <section 
           className="pb-16"
