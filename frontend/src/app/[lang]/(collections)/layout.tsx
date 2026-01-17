@@ -2,14 +2,14 @@
 import { Suspense } from 'react';
 import { Lang, getDictionary } from '@/config/i18n';
 import { fetchRubricBasics, fetchAllCategories } from '@/api/directus';
-import UnifiedBreadcrumbs from '@/features/navigation/Breadcrumbs/UnifiedBreadcrumbs';
+import BreadcrumbsWrapper from '@/features/navigation/Breadcrumbs/BreadcrumbsWrapper';
 
 export default async function CollectionsLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ lang: string; rubric?: string }>;
+  params: Promise<{ lang: string }>;
 }) {
   const resolvedParams = await params;
   const lang = resolvedParams.lang as Lang;
@@ -20,20 +20,14 @@ export default async function CollectionsLayout({
     fetchAllCategories(lang),
   ]);
 
-  // Build pathname from params
-  const pathname = resolvedParams.rubric 
-    ? `/${lang}/${resolvedParams.rubric}`
-    : `/${lang}`;
-
   return (
     <>
       <Suspense fallback={null}>
-        <UnifiedBreadcrumbs
+        <BreadcrumbsWrapper
           lang={lang}
           dictionary={dictionary}
           rubrics={rubrics}
           categories={categories}
-          pathname={pathname}
         />
       </Suspense>
       {children}

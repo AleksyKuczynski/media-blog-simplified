@@ -45,7 +45,9 @@ export function proxy(request: NextRequest) {
 
   // If already has locale, continue
   if (pathnameHasLocale) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set('x-pathname', pathname);
+    return response;
   }
 
   // Detect user's preferred language
