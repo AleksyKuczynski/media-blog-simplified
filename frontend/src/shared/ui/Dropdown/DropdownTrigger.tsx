@@ -1,7 +1,7 @@
 // src/shared/ui/Dropdown/DropdownTrigger.tsx
 import React from 'react';
 import { useDropdownContext } from './useDropdown';
-import { ChevronDownIcon } from '@/shared/primitives/Icons';
+import { ChevronDownIcon, CloseIcon } from '@/shared/primitives/Icons';
 
 interface DropdownTriggerProps {
   children: React.ReactNode;
@@ -26,7 +26,9 @@ export default function DropdownTrigger({
     triggerRef, 
     isOpen, 
     handleClick,
-    handleKeyDown 
+    handleKeyDown,
+    handleReset,
+    isDefaultSelected
   } = useDropdownContext();
 
   const handleTriggerKeyDown = (e: React.KeyboardEvent) => {
@@ -50,7 +52,14 @@ export default function DropdownTrigger({
         <span className={classNames.text}>
           {children}
         </span>
-        <ChevronDownIcon className={classNames.icon} />
+        {!isDefaultSelected ? (
+          <CloseIcon 
+            className={classNames.icon} 
+            onClick={handleReset}
+          />
+        ) : (
+          <ChevronDownIcon className={classNames.icon} />
+        )}
       </div>
     </button>
   );

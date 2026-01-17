@@ -26,6 +26,7 @@ export function useDropdown({
 }): DropdownContextType {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [initialSelectedItem] = useState(() => items.find(item => item.selected));
   
   const triggerRef = useRef<HTMLButtonElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
@@ -126,6 +127,22 @@ export function useDropdown({
     }
   }, [items, selectedIndex, isOpen, onSelect, close, focusItem, focusTrigger, findNextSelectableIndex, onOpenChange]);
 
+  const handleReset = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (initialSelectedItem) {
+      onSelect(initialSelectedItem);
+    }
+  }, [initialSelectedItem, onSelect]);
+
+  const getCurrentItem = useCallback(() => {
+    return items.find(item => item.selected);
+  }, [items]);
+
+  const isDefaultSelected = useCallback(() => {
+    const currentItem = getCurrentItem();
+    return initialSelectedItem?.id === currentItem?.id;
+  }, [initialSelectedItem, getCurrentItem]);
+
   return {
     isOpen,
     selectedIndex,
@@ -138,6 +155,8 @@ export function useDropdown({
     handleKeyDown,
     handleClick,
     focusTrigger,
-    focusItem
+    focusItem,
+    handleReset,
+    isDefaultSelected: isDefaultSelected()
   };
 }

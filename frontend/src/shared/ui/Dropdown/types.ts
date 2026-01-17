@@ -42,4 +42,6 @@ export interface DropdownContextType {
   handleClick: (e: React.MouseEvent) => void;
   focusTrigger: () => void;
   focusItem: (index: number) => void;
+  handleReset: (e: React.MouseEvent) => void;
+  isDefaultSelected: boolean;
 }
