@@ -42,7 +42,7 @@ export default function DropdownTrigger({
       aria-haspopup={true}
       aria-controls={isOpen ? 'dropdown-menu' : undefined}
       aria-label={ariaLabel}
-      className={className}
+      className={`${className} ${isOpen ? 'is-dropdown-open' : ''}`}
       type="button"
     >
       {label && <span className={classNames.label}>{label}</span>}

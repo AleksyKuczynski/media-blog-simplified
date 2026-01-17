@@ -42,7 +42,9 @@ export const FILTER_CONTROL_STYLES = {
   ),
   dropdown: {
     button: cn('flex flex-col items-start w-full', 
-      'rounded-full hover:bg-sf-hi focus:bg-sf focus:shadow-md border border-transparent focus:border-ol transition-all duration-300',
+      'rounded-full hover:bg-sf-hi border border-transparent transition-all duration-300',
+      'focus:bg-sf focus:shadow-md focus:border-ol',
+      '[&.is-dropdown-open]:bg-sf [&.is-dropdown-open]:shadow-md [&.is-dropdown-open]:border-ol',
       'px-4 py-2 text-sm',
       'md:px-6 md:py-3 md:text-base',
       'xl:px-8 xl:py-4 xl:text-lg',
