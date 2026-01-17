@@ -52,7 +52,6 @@ export default function SearchResultsHeader({
 
       <aside aria-label={dictionary.filter.accessibility.sortingControl}>
         <SortingControl
-          className={FILTER_BUTTON_STYLES.dropdown.button}
           dictionary={dictionary}
           currentSort={currentSort}
         />
