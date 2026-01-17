@@ -17,10 +17,12 @@ export function useDropdownContext() {
 // Hook implementation
 export function useDropdown({ 
   items, 
-  onSelect 
+  onSelect,
+  onOpenChange
 }: {
   items: DropdownItemType[];
   onSelect: (item: DropdownItemType) => void;
+  onOpenChange?: (isOpen: boolean) => void;
 }): DropdownContextType {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -39,17 +41,26 @@ export function useDropdown({
   const close = useCallback(() => {
     setIsOpen(false);
     setSelectedIndex(-1);
-  }, []);
+    onOpenChange?.(false);
+  }, [onOpenChange]);
 
   const toggle = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpen(prev => {
+      const newState = !prev;
+      onOpenChange?.(newState);
+      return newState;
+    });
     setSelectedIndex(-1);
-  }, []);
+  }, [onOpenChange]);
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
+    if (isOpen) {
+      // If closing, blur the trigger
+      triggerRef.current?.blur();
+    }
     toggle();
-  }, [toggle]);
+  }, [toggle, isOpen]);
 
   const findNextSelectableIndex = useCallback((currentIndex: number, direction: 'up' | 'down') => {
     let nextIndex = currentIndex;
@@ -76,6 +87,7 @@ export function useDropdown({
         e.preventDefault();
         if (!isOpen) {
           setIsOpen(true);
+          onOpenChange?.(true);
           const firstSelectable = findNextSelectableIndex(-1, 'down');
           if (firstSelectable !== -1) {
             setSelectedIndex(firstSelectable);
@@ -112,7 +124,7 @@ export function useDropdown({
         }
         break;
     }
-  }, [items, selectedIndex, isOpen, onSelect, close, focusItem, focusTrigger, findNextSelectableIndex]);
+  }, [items, selectedIndex, isOpen, onSelect, close, focusItem, focusTrigger, findNextSelectableIndex, onOpenChange]);
 
   return {
     isOpen,

@@ -4,23 +4,24 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dictionary } from '@/config/i18n';
 import type { DropdownItemType } from '@/shared/ui/Dropdown/types';
-import { FILTER_CONTROL_STYLES, FILTER_BUTTON_STYLES } from './styles';
+import { FILTER_CONTROL_STYLES } from './styles';
 import Dropdown from '@/shared/ui/Dropdown/Dropdown';
 import DropdownTrigger from '@/shared/ui/Dropdown/DropdownTrigger';
 import DropdownContent from '@/shared/ui/Dropdown/DropdownContent';
 import DropdownItem from '@/shared/ui/Dropdown/DropdownItem';
-import { cn } from '@/lib/utils';
 
 interface SortingControlProps {
   readonly dictionary: Dictionary;
   readonly currentSort: string;
-  className: string;
+  onOpenChange?: (isOpen: boolean) => void;
+  onHoverChange?: (isHovering: boolean) => void;
 }
 
 export default function SortingControl({ 
   dictionary, 
   currentSort,
-  className 
+  onOpenChange,
+  onHoverChange
 }: SortingControlProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -45,18 +46,23 @@ export default function SortingControl({
   };
 
   return (
-    <div className={FILTER_CONTROL_STYLES.wrapper}>
+    <div 
+      className={FILTER_CONTROL_STYLES.wrapper}
+      onMouseEnter={() => onHoverChange?.(true)}
+      onMouseLeave={() => onHoverChange?.(false)}
+    >
       <Dropdown
         items={items}
         onSelect={handleSortChange}
+        onOpenChange={onOpenChange}
       >
         <DropdownTrigger
-          className={cn(FILTER_BUTTON_STYLES.dropdown.button)}
+          className={FILTER_CONTROL_STYLES.dropdown.button}
           label={sorting.labels.sortBy}
           classNames={{
             label: FILTER_CONTROL_STYLES.label,
-            text: FILTER_BUTTON_STYLES.text.base,
-            icon: FILTER_BUTTON_STYLES.icon
+            text: FILTER_CONTROL_STYLES.dropdown.text,
+            icon: FILTER_CONTROL_STYLES.dropdown.icon
           }}
           ariaLabel={sorting.labels.sortBy}
         >

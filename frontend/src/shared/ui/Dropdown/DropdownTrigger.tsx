@@ -45,13 +45,13 @@ export default function DropdownTrigger({
       className={className}
       type="button"
     >
-      <div className="flex flex-col items-start">
-        {label && <span className={classNames.label}>{label}</span>}
+      {label && <span className={classNames.label}>{label}</span>}
+      <div className="flex items-center justify-between w-full">
         <span className={classNames.text}>
           {children}
         </span>
+        <ChevronDownIcon className={classNames.icon} />
       </div>
-      <ChevronDownIcon className={classNames.icon} />
     </button>
   );
 }

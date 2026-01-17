@@ -11,11 +11,12 @@ interface DropdownProps {
   children: React.ReactNode;
   items: DropdownItemType[];
   onSelect: (item: DropdownItemType) => void;
+  onOpenChange?: (isOpen: boolean) => void;
 }
 
-export default function Dropdown({ children, items, onSelect }: DropdownProps) {
+export default function Dropdown({ children, items, onSelect, onOpenChange }: DropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const dropdownContext = useDropdown({ items, onSelect });
+  const dropdownContext = useDropdown({ items, onSelect, onOpenChange });
   const { triggerRef, isOpen, close } = dropdownContext;
   
   useOutsideClick(dropdownRef, triggerRef, isOpen, close);
