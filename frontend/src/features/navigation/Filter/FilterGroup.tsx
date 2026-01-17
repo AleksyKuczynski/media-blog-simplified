@@ -54,7 +54,7 @@ export default function FilterGroup({
             onSelect={handleCategoryChange}
           >
             <DropdownTrigger
-              className={cn(FILTER_BUTTON_STYLES.dropdown.button, FILTER_BUTTON_STYLES.dropdown.left)}
+              className={cn(FILTER_BUTTON_STYLES.dropdown.button)}
               label={filterLabels.category}
               classNames={{
                 label: FILTER_CONTROL_STYLES.label,
@@ -81,7 +81,7 @@ export default function FilterGroup({
 
         {/* Sorting Control */}
         <SortingControl
-          className={cn(FILTER_BUTTON_STYLES.dropdown.button, FILTER_BUTTON_STYLES.dropdown.right)}
+          className={cn(FILTER_BUTTON_STYLES.dropdown.button)}
           dictionary={dictionary}
           currentSort={currentSort}
         />
