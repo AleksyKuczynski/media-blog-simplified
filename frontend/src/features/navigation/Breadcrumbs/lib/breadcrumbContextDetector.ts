@@ -259,7 +259,7 @@ export function generateContextualBreadcrumbs(
       }
       break;
 
-    case 'author':
+case 'author':
       if (context.contextData?.authorSlug && articleData.authors && articleData.authors.length > 0) {
         const matchedAuthor = articleData.authors.find(
           author => author.slug === context.contextData?.authorSlug
@@ -275,7 +275,7 @@ export function generateContextualBreadcrumbs(
               ariaLabel: dictionary.navigation.descriptions.authors,
             },
             {
-              label: matchedAuthor.name,
+              label: matchedAuthor.name, // Use author name from article data
               href: `/${lang}/authors/${matchedAuthor.slug}`,
               context: 'author-profile',
               ariaLabel: processTemplate(dictionary.breadcrumb.templates.authorProfile, {
@@ -286,14 +286,18 @@ export function generateContextualBreadcrumbs(
               label: articleData.title,
               href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
               context: 'article-from-author',
-              ariaLabel: dictionary.navigation.descriptions.fromAuthor,
+              ariaLabel: processTemplate(dictionary.breadcrumb.templates.authorProfile, {
+                author: matchedAuthor.name
+              }),
             },
           ];
           seoAlternatives.push(userPath);
         } else {
+          // Author slug doesn't match any article author - fallback to canonical
           userPath = canonicalPath;
         }
       } else {
+        // No author data or no match - fallback to canonical
         userPath = canonicalPath;
       }
       break;

@@ -11,6 +11,7 @@ interface UnifiedBreadcrumbsProps {
   rubrics: RubricBasic[];
   categories?: Category[];
   pathname: string;
+  authorName?: string; // Optional: provided by AuthorPage
 }
 
 interface BreadcrumbItem {
@@ -27,7 +28,6 @@ const Chevron = () => (
 /**
  * Unified Breadcrumbs Component
  * Generates breadcrumbs from URL pathname for collection pages
- * (rubrics, categories, authors, articles list)
  */
 export default function UnifiedBreadcrumbs({
   lang,
@@ -35,14 +35,12 @@ export default function UnifiedBreadcrumbs({
   rubrics,
   categories = [],
   pathname,
+  authorName,
 }: UnifiedBreadcrumbsProps) {
   
   const pathSegments = pathname.split('/').filter(Boolean);
-  
-  // Remove lang from segments
   const segments = pathSegments[0] === lang ? pathSegments.slice(1) : pathSegments;
   
-  // Always start with home
   const breadcrumbs: BreadcrumbItem[] = [
     { 
       label: dictionary.navigation.labels.home, 
@@ -52,76 +50,70 @@ export default function UnifiedBreadcrumbs({
 
   // Handle different page types
   if (segments[0] === 'rubrics') {
-    // /rubrics or /rubrics/[slug] - but [slug] is now in (collections)/[rubric]
-    // This handles /rubrics only
-    // No additional breadcrumb needed for listing page
+    if (segments.length === 1) {
+      breadcrumbs.push({
+        label: dictionary.navigation.labels.rubrics,
+        href: `/${lang}/rubrics`
+      });
+    }
   } 
   else if (segments[0] === 'authors') {
-    // /authors or /authors/[slug]
     if (segments.length === 1) {
-      // Just /authors listing - no additional crumb needed
-    } else {
-      // /authors/[slug] - author profile
       breadcrumbs.push({
         label: dictionary.navigation.labels.authors,
         href: `/${lang}/authors`
       });
-      // Last segment is author name - will be handled below
+    } else {
+      breadcrumbs.push({
+        label: dictionary.navigation.labels.authors,
+        href: `/${lang}/authors`
+      });
+      
+      const authorSlug = segments[1];
+      breadcrumbs.push({
+        label: authorName || authorSlug,
+        href: pathname
+      });
     }
   }
   else if (segments[0] === 'category') {
-    // /category/[slug]
     breadcrumbs.push({
       label: dictionary.navigation.labels.articles,
       href: `/${lang}/articles`
     });
     
-    // Find category name
     const categorySlug = segments[1];
     const category = categories.find(c => c.slug === categorySlug);
     if (category) {
-      // Last item - will be handled below
+      breadcrumbs.push({
+        label: category.name,
+        href: pathname
+      });
     }
   }
   else if (segments[0] === 'articles') {
-    // /articles listing - no additional crumb needed
+    if (segments.length === 1) {
+      breadcrumbs.push({
+        label: dictionary.navigation.labels.articles,
+        href: `/${lang}/articles`
+      });
+    }
   }
   else if (rubrics.some(r => r.slug === segments[0])) {
-  // Rubric page: /[rubric]
-  breadcrumbs.push({
-    label: dictionary.navigation.labels.rubrics,
-    href: `/${lang}/rubrics`
-  });
-  // Last item will be added below
-}
-
-  // Add last segment as current page (if not already a listing page)
-  if (segments.length > 0) {
-    const lastSegment = segments[segments.length - 1];
+    breadcrumbs.push({
+      label: dictionary.navigation.labels.rubrics,
+      href: `/${lang}/rubrics`
+    });
     
-    // Don't add duplicate for listing pages
-    if (!['rubrics', 'authors', 'articles'].includes(lastSegment)) {
-      let label = lastSegment;
-      
-      // Try to get proper name for rubric/category/author
-      if (segments[0] === 'category' && segments[1]) {
-        const category = categories.find(c => c.slug === segments[1]);
-        label = category?.name || lastSegment;
-      } else if (rubrics.some(r => r.slug === lastSegment)) {
-        const rubric = rubrics.find(r => r.slug === lastSegment);
-        label = rubric?.name || lastSegment;
-      }
-      // For authors, we don't have the name here - would need to fetch
-      // Keep slug for now or pass authors data as prop if needed
-      
+    const rubric = rubrics.find(r => r.slug === segments[0]);
+    if (rubric) {
       breadcrumbs.push({
-        label,
+        label: rubric.name,
         href: pathname
       });
     }
   }
 
-  // If only home, don't render breadcrumbs
   if (breadcrumbs.length === 1) {
     return null;
   }

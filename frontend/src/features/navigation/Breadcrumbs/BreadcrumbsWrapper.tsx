@@ -11,6 +11,7 @@ interface BreadcrumbsWrapperProps {
   dictionary: Dictionary;
   rubrics: RubricBasic[];
   categories: Category[];
+  authorName?: string;
 }
 
 export default function BreadcrumbsWrapper({
@@ -18,6 +19,7 @@ export default function BreadcrumbsWrapper({
   dictionary,
   rubrics,
   categories,
+  authorName,
 }: BreadcrumbsWrapperProps) {
   const pathname = usePathname();
 
@@ -28,6 +30,7 @@ export default function BreadcrumbsWrapper({
       rubrics={rubrics}
       categories={categories}
       pathname={pathname}
+      authorName={authorName}
     />
   );
 }
