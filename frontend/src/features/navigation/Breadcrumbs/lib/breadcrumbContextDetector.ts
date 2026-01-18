@@ -64,15 +64,28 @@ export async function detectBreadcrumbContext(
 
     // Author context detection
     const authorMatch = referrerPath.match(patterns.author);
-    if (authorMatch) {
-      return {
-        type: 'author',
-        referrerPath,
-        contextData: {
-          authorSlug: authorMatch[1],
-        },
-      };
-    }
+if (authorMatch) {
+  const authorSlug = authorMatch[1];
+  
+  // Fetch author name for breadcrumbs
+  let authorName: string | undefined;
+  try {
+    const { fetchAuthorBySlug } = await import('@/api/directus');
+    const author = await fetchAuthorBySlug(authorSlug, lang);
+    authorName = author?.name;
+  } catch (error) {
+    console.error('Error fetching author name for breadcrumbs:', error);
+  }
+  
+  return {
+    type: 'author',
+    referrerPath,
+    contextData: {
+      authorSlug,
+      authorName,
+    },
+  };
+}
 
     // Category context detection  
     const categoryMatch = referrerPath.match(patterns.category);
@@ -260,47 +273,40 @@ export function generateContextualBreadcrumbs(
       break;
 
 case 'author':
-      if (context.contextData?.authorSlug && articleData.authors && articleData.authors.length > 0) {
-        const matchedAuthor = articleData.authors.find(
-          author => author.slug === context.contextData?.authorSlug
-        );
-        
-        if (matchedAuthor) {
-          userPath = [
-            baseHome,
-            {
-              label: dictionary.navigation.labels.authors,
-              href: `/${lang}/authors`,
-              context: 'author-collection',
-              ariaLabel: dictionary.navigation.descriptions.authors,
-            },
-            {
-              label: matchedAuthor.name, // Use author name from article data
-              href: `/${lang}/authors/${matchedAuthor.slug}`,
-              context: 'author-profile',
-              ariaLabel: processTemplate(dictionary.breadcrumb.templates.authorProfile, {
-                name: matchedAuthor.name
-              }),
-            },
-            {
-              label: articleData.title,
-              href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
-              context: 'article-from-author',
-              ariaLabel: processTemplate(dictionary.breadcrumb.templates.authorProfile, {
-                author: matchedAuthor.name
-              }),
-            },
-          ];
-          seoAlternatives.push(userPath);
-        } else {
-          // Author slug doesn't match any article author - fallback to canonical
-          userPath = canonicalPath;
-        }
-      } else {
-        // No author data or no match - fallback to canonical
-        userPath = canonicalPath;
-      }
-      break;
+  if (context.contextData?.authorSlug) {
+    // Use authorName from context if available, otherwise fall back to slug
+    const displayName = context.contextData.authorName || context.contextData.authorSlug;
+    
+    userPath = [
+      baseHome,
+      {
+        label: dictionary.navigation.labels.authors,
+        href: `/${lang}/authors`,
+        context: 'author-collection',
+        ariaLabel: dictionary.navigation.descriptions.authors,
+      },
+      {
+        label: displayName,
+        href: `/${lang}/authors/${context.contextData.authorSlug}`,
+        context: 'author-profile',
+        ariaLabel: processTemplate(dictionary.breadcrumb.templates.authorProfile, {
+          name: displayName
+        }),
+      },
+      {
+        label: articleData.title,
+        href: `/${lang}/${articleData.rubricSlug}/${articleData.slug}`,
+        context: 'article-from-author',
+        ariaLabel: processTemplate(dictionary.breadcrumb.templates.authorProfile, {
+          author: displayName
+        }),
+      },
+    ];
+    seoAlternatives.push(userPath);
+  } else {
+    userPath = canonicalPath;
+  }
+  break;
 
     case 'category':
       if (context.contextData?.categorySlug && articleData.categories && articleData.categories.length > 0) {
