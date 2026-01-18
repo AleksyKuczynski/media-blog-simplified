@@ -37,12 +37,6 @@ export default function UnifiedBreadcrumbs({
   const pathSegments = pathname.split('/').filter(Boolean);
   const segments = pathSegments[0] === lang ? pathSegments.slice(1) : pathSegments;
   
-  console.log('=== UnifiedBreadcrumbs Debug ===');
-  console.log('pathname:', pathname);
-  console.log('pathSegments:', pathSegments);
-  console.log('segments:', segments);
-  console.log('authorName prop received:', authorName);
-  
   const breadcrumbs: BreadcrumbItem[] = [
     { 
       label: dictionary.navigation.labels.home, 
@@ -60,9 +54,6 @@ export default function UnifiedBreadcrumbs({
     }
   } 
   else if (segments[0] === 'authors') {
-    console.log('Author page detected');
-    console.log('segments.length:', segments.length);
-    
     if (segments.length === 1) {
       breadcrumbs.push({
         label: dictionary.navigation.labels.authors,
@@ -75,10 +66,6 @@ export default function UnifiedBreadcrumbs({
       });
       
       const authorSlug = segments[1];
-      console.log('authorSlug from segments:', authorSlug);
-      console.log('Using authorName:', authorName);
-      console.log('Fallback to slug:', authorSlug);
-      console.log('Final label will be:', authorName || authorSlug);
       
       breadcrumbs.push({
         label: authorName || authorSlug,
@@ -123,9 +110,6 @@ export default function UnifiedBreadcrumbs({
       });
     }
   }
-
-  console.log('Final breadcrumbs:', breadcrumbs);
-  console.log('================================');
 
   if (breadcrumbs.length === 1) {
     return null;

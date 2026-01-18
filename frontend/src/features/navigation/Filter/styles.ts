@@ -16,9 +16,11 @@ export const FILTER_STYLES = {
   container: {
     base: cn(
       'flex flex-row justify-center border border-ol mx-auto group transition-all duration-300',
-      'mt-8 mb-16 max-xs:mx-2 max-sm:mx-6 rounded-xl', 
-      'md:mb-24 md:w-[498px] md:rounded-2xl',
-      'xl:mb-32 xl:w-[576px] xl:rounded-3xl',
+      '-mt-6 mb-16 rounded-xl',
+      'max-xs:mx-2 max-sm:mx-6 sm:w-[498px]', 
+      'md:mb-24 md:rounded-2xl',
+      'lg:-mt-12',
+      'xl:-mt-16 xl:mb-32 xl:w-[576px] xl:rounded-3xl',
     ),
     inactive: 'bg-sf shadow-md',
     active: 'bg-sf-hst shadow-none',
