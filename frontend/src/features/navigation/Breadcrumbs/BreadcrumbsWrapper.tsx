@@ -3,7 +3,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import UnifiedBreadcrumbs from './UnifiedBreadcrumbs';
+import Breadcrumbs from './Breadcrumbs';
 import { RubricBasic, Category } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
 import { fetchAuthorBySlug } from '@/api/directus';
@@ -26,39 +26,32 @@ export default function BreadcrumbsWrapper({
   const pathname = usePathname();
   const [authorName, setAuthorName] = useState<string | undefined>(serverAuthorName);
 
-  // Fetch author name on client-side navigation
   useEffect(() => {
-    // If we already have server-provided name and pathname hasn't changed, use it
-    if (serverAuthorName) {
-      setAuthorName(serverAuthorName);
-      return;
-    }
-
-    // Check if we're on an author page
-    if (pathname.includes('/authors/')) {
-      const match = pathname.match(/\/authors\/([^/?#]+)/);
-      if (match && match[1]) {
-        const authorSlug = decodeURIComponent(match[1]);
-        
-        // Fetch author name
-        fetchAuthorBySlug(authorSlug, lang)
-          .then(author => {
-            if (author) {
-              setAuthorName(author.name);
-            }
-          })
-          .catch(error => {
-            console.error('Error fetching author:', error);
-          });
-      }
+    // Extract author slug from pathname
+    const match = pathname.match(/\/authors\/([^/?#]+)/);
+    
+    if (match && match[1]) {
+      const authorSlug = decodeURIComponent(match[1]);
+      
+      // Fetch author name if we don't have it or if pathname changed
+      fetchAuthorBySlug(authorSlug, lang)
+        .then(author => {
+          if (author) {
+            setAuthorName(author.name);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching author:', error);
+          setAuthorName(undefined);
+        });
     } else {
       // Not on author page, clear author name
       setAuthorName(undefined);
     }
-  }, [pathname, lang, serverAuthorName]);
+  }, [pathname, lang]);
 
   return (
-    <UnifiedBreadcrumbs
+    <Breadcrumbs
       lang={lang}
       dictionary={dictionary}
       rubrics={rubrics}
