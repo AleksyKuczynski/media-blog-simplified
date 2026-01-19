@@ -7,6 +7,9 @@ import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
 import CollectionDescription from '@/features/layout/CollectionDescription';
 import CollectionCount from '@/features/layout/CollectionCount';
+import PageError from '@/shared/errors/PageError';
+import EmptyState from '@/shared/ui/EmptyState';
+import { RubricPageSkeleton } from '@/features/rubric-display/RubricPageSkeleton';
 import { getDictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ITEMS_PER_PAGE } from '@/api/directus';
 import { RubricPageSchema } from '@/shared/seo/schemas/RubricPageSchema';
@@ -81,26 +84,22 @@ export default async function RubricPage({
           ariaLabel={rubricAriaLabel}
           hasNextSectionTitle={true}
         >
-          {rubricDescription && (
-            <CollectionDescription>
-              {rubricDescription}
-            </CollectionDescription>
-          )}
+          <Suspense fallback={<RubricPageSkeleton ariaLabel={dictionary.common.status.loading} />}>
+            {rubricDescription && (
+              <CollectionDescription>
+                {rubricDescription}
+              </CollectionDescription>
+            )}
 
-          {totalCount > 0 && (
-            <CollectionCount
-              count={totalCount}
-              countLabel={dictionary.common.count.articles}
-              dictionary={dictionary}
-              className={SECTION_COUNT_STYLES}
-            />
-          )}
+            {totalCount > 0 && (
+              <CollectionCount
+                count={totalCount}
+                countLabel={dictionary.common.count.articles}
+                dictionary={dictionary}
+                className={SECTION_COUNT_STYLES}
+              />
+            )}
 
-          <Suspense fallback={
-            <div className="flex items-center justify-center py-12">
-              <div className="text-on-sf-var">{dictionary.common.status.loading}</div>
-            </div>
-          }>
             {currentPageSlugs.length > 0 ? (
               <>
                 <ArticleList 
@@ -119,11 +118,7 @@ export default async function RubricPage({
                 )}
               </>
             ) : (
-              <div className="text-center py-12" role="status">
-                <p className="text-on-sf-var">
-                  {dictionary.sections.articles.noArticlesFound}
-                </p>
-              </div>
+              <EmptyState message={dictionary.sections.articles.noArticlesFound} />
             )}
           </Suspense>
         </Section>
@@ -131,6 +126,18 @@ export default async function RubricPage({
     );
   } catch (error) {
     console.error('Error in RubricPage:', error);
-    notFound();
+    
+    const { lang } = await params;
+    const dictionary = getDictionary(lang as Lang);
+    
+    return (
+      <Section>
+        <PageError 
+          dictionary={dictionary}
+          contentType="rubric"
+          backHref={`/${lang}`}
+        />
+      </Section>
+    );
   }
 }

@@ -31,7 +31,7 @@ export const SECTION_STYLES = {
     withNextTitle: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px]',
   },
   container: {
-    base: 'container-fluid mx-auto',
+    base: 'mx-auto',
     withTitle: 'pt-8 md:pt-12',
   },
   header: {

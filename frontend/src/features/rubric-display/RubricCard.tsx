@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Dictionary, Lang } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import { DIRECTUS_URL, Asset } from '@/api/directus'; // ✅ Import Asset type
+import { DIRECTUS_URL, Asset } from '@/api/directus';
 import { RUBRIC_CARD_STYLES } from './styles';
 
 export interface RubricCardProps {
@@ -15,7 +15,7 @@ export interface RubricCardProps {
     description?: string;
     nav_icon?: string;
     articleCount?: number;
-    iconMetadata?: Asset | null; // ✅ CHANGED: Use the actual Asset type
+    iconMetadata?: Asset | null;
   };
   lang: Lang;
   dictionary: Dictionary;
