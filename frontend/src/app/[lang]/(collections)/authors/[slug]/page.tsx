@@ -1,12 +1,13 @@
 // src/app/[lang]/(collections)/authors/[slug]/page.tsx
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { fetchAuthorBySlug, DIRECTUS_URL, fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus/index';
 import ArticleList from '@/features/article-display/ArticleList';
+import { ArticleListSkeleton } from '@/features/article-display/ArticleListSkeleton';
 import Pagination from '@/shared/ui/Pagination';
 import Section from '@/features/layout/Section';
+import StandardError from '@/shared/errors/StandardError';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import generateAuthorMetadata from '@/shared/seo/metadata/AuthorMetadata';
 import AuthorSchema from '@/shared/seo/schemas/AuthorSchema';
@@ -32,7 +33,13 @@ export async function generateMetadata({
       throw new Error('Author not found');
     }
 
-    const { totalCount } = await fetchArticleSlugs(1, 'desc', lang, undefined, undefined, [], slug);
+    // Count both authored and illustrated articles
+    const [authoredResult, illustratedResult] = await Promise.all([
+      fetchArticleSlugs(1, 'desc', lang, undefined, undefined, [], slug, undefined, undefined),
+      fetchArticleSlugs(1, 'desc', lang, undefined, undefined, [], undefined, slug, undefined),
+    ]);
+
+    const totalCount = authoredResult.totalCount + illustratedResult.totalCount;
 
     return generateAuthorMetadata({
       dictionary,
@@ -54,181 +61,166 @@ export default async function AuthorPage({
   searchParams 
 }: { 
   params: Promise<{ lang: Lang, slug: string }>, 
-  searchParams: Promise<{ page?: string, sort?: string }>
+  searchParams: Promise<{ page?: string, sort?: string }> 
 }) {
-  try {
-    const { lang, slug } = await params;
-    const resolvedSearchParams = await searchParams;
-    const dictionary = getDictionary(lang as Lang);
-    const currentPage = Number(resolvedSearchParams.page) || 1;
-    const currentSort = resolvedSearchParams.sort || 'desc';
+  const resolvedParams = await params;
+  const { lang, slug } = resolvedParams;
+  const dictionary = await getDictionary(lang);
 
-    const [author] = await Promise.all([
-      fetchAuthorBySlug(slug, lang),
-    ]);
+  const author = await fetchAuthorBySlug(slug, lang);
+  
+  if (!author) {
+    return <StandardError dictionary={dictionary} contentType="author" />;
+  }
 
-    if (!author) {
-      notFound();
-    }
+  const resolvedSearchParams = await searchParams;
+  const page = parseInt(resolvedSearchParams.page || '1', 10);
+  const sort = resolvedSearchParams.sort || 'desc';
 
-    // Fetch only current page
-    const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
-      currentPage,
-      currentSort,
-      lang,
-      undefined,
-      undefined,
-      [],
-      slug
-    );
+  // Fetch both authored and illustrated articles
+  const [authoredResult, illustratedResult] = await Promise.all([
+    fetchArticleSlugs(page, sort, lang, undefined, undefined, [], slug, undefined, undefined),
+    fetchArticleSlugs(page, sort, lang, undefined, undefined, [], undefined, slug, undefined),
+  ]);
 
-    // Calculate total pages
-    const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const { slugs: authoredSlugs, totalCount: authoredCount } = authoredResult;
+  const { slugs: illustratedSlugs, totalCount: illustratedCount } = illustratedResult;
 
-    const articlesForSchema = currentPageSlugs.slice(0, 10).map(slugInfo => ({
-      title: slugInfo.slug,
-      slug: slugInfo.slug,
-      url: `${dictionary.seo.site.url}/${lang}/authors/${slug}/${slugInfo.slug}`,
-    }));
+  console.log('[AuthorPage] Author slug:', slug);
+  console.log('[AuthorPage] Authored articles count:', authoredCount);
+  console.log('[AuthorPage] Illustrated articles count:', illustratedCount);
+  console.log('[AuthorPage] Authored slugs:', authoredSlugs.map(s => s.slug));
+  console.log('[AuthorPage] Illustrated slugs:', illustratedSlugs.map(s => s.slug));
 
-    return (
-      <>
-        {/* Schema and Breadcrumbs */}
-        <AuthorSchema
-          dictionary={dictionary}
-          authorData={{
-            name: author.name,
-            slug: slug,
-            bio: author.bio,
-            avatar: author.avatar,
-            articleCount: totalCount,
-            articles: articlesForSchema,
-          }}
-          currentPath={`/${lang}/authors/${slug}`}
-        />
-        
-        {/* Author Profile Section */}
-        <section 
-          className="pb-16"
-          aria-label={processTemplate(dictionary.breadcrumb.templates.authorProfile, {
-            name: author.name
-          })}
-        >
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
-              {/* Avatar */}
-              {author.avatar ? (
-                <div className="relative w-48 h-48 rounded-full overflow-hidden flex-shrink-0">
-                  <Image
-                    src={`${DIRECTUS_URL}/assets/${author.avatar}`}
-                    alt={processTemplate(dictionary.sections.authors.authorPhoto, {
-                      name: author.name
-                    })}
-                    fill
-                    className="object-cover"
-                    sizes="192px"
-                    priority
-                  />
-                </div>
-              ) : (
-                <div className="w-48 h-48 rounded-full bg-gradient-to-br from-pr-cont to-pr-fix flex items-center justify-center flex-shrink-0">
-                  <span className="text-on-pr-cont text-6xl font-bold">
-                    {author.name.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
-              
-              {/* Author Info */}
-              <div className="flex-1">
-                <h1 
-                  className="text-4xl font-bold mb-4 text-on-sf"
-                  itemProp="name"
-                >
-                  {author.name}
-                </h1>
-                
-                {author.bio && (
-                  <p 
-                    className="text-lg text-on-sf-var mb-4 max-w-3xl"
-                    itemProp="description"
-                  >
-                    {author.bio}
-                  </p>
-                )}
+  const totalPages = Math.ceil(authoredCount / ITEMS_PER_PAGE);
+  const illustratedTotalPages = Math.ceil(illustratedCount / ITEMS_PER_PAGE);
+  const currentPath = `/${lang}/authors/${slug}`;
+
+  return (
+    <>
+      <AuthorSchema
+        dictionary={dictionary}
+        authorData={{
+          name: author.name,
+          slug: slug,
+          bio: author.bio,
+          avatar: author.avatar,
+          articleCount: authoredCount + illustratedCount,
+        }}
+        currentPath={currentPath}
+      />
+
+      {/* Author Header */}
+      <section className="bg-sf-cont py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+            {author.avatar ? (
+              <div className="relative w-48 h-48 rounded-full overflow-hidden flex-shrink-0">
+                <Image
+                  src={`${DIRECTUS_URL}/assets/${author.avatar}`}
+                  alt={processTemplate(dictionary.sections.authors.authorPhoto, {
+                    name: author.name
+                  })}
+                  fill
+                  className="object-cover"
+                  sizes="192px"
+                  priority
+                />
               </div>
+            ) : (
+              <div className="w-48 h-48 rounded-full bg-gradient-to-br from-pr-cont to-pr-fix flex items-center justify-center flex-shrink-0">
+                <span className="text-on-pr-cont text-6xl font-bold">
+                  {author.name.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
+            
+            <div className="flex-1">
+              <h1 
+                className="text-4xl font-bold mb-4 text-on-sf"
+                itemProp="name"
+              >
+                {author.name}
+              </h1>
+              
+              {author.bio && (
+                <p 
+                  className="text-lg text-on-sf-var mb-4 max-w-3xl"
+                  itemProp="description"
+                >
+                  {author.bio}
+                </p>
+              )}
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Articles Section */}
+      {/* Articles by Author Section */}
+      {authoredCount > 0 && (
         <Section 
-          ariaLabel={processTemplate(dictionary.sections.templates.itemsInCollectionDescription, {
-            items: dictionary.sections.labels.articles,
-            collection: processTemplate(dictionary.sections.templates.itemByAuthor, {
-              item: dictionary.sections.labels.articles,
-              author: author.name
-            }),
-            siteName: dictionary.seo.site.name
-          })}
           title={processTemplate(dictionary.sections.authors.articlesWrittenBy, {
             author: author.name
           })}
-          hasNextSectionTitle={true}
+          hasNextSectionTitle={illustratedCount > 0}
         >
+          <CollectionCount 
+            count={authoredCount}
+            countLabel={dictionary.common.count.articles}
+            dictionary={dictionary}
+            className={SECTION_COUNT_STYLES}
+          />
+          
           <div className="container mx-auto px-4">
-            <Suspense fallback={
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-prcolor mx-auto mb-4"></div>
-                <p className="text-on-sf-var">{dictionary.common.status.loading}</p>
-              </div>
-            }>
-              {currentPageSlugs.length > 0 ? (
-                <>
-                  {totalCount > 0 && (
-                    <CollectionCount
-                      count={totalCount}
-                      countLabel={dictionary.common.count.articles}
-                      dictionary={dictionary}
-                      className={SECTION_COUNT_STYLES}
-                    />
-                  )}
-                  
-                  <ArticleList 
-                    slugInfos={currentPageSlugs}
-                    lang={lang}
-                    dictionary={dictionary}
-                    authorSlug={slug}
-                  />
-                  
-                  <div className="mt-12">
-                    <Pagination
-                      currentPage={currentPage}
-                      totalPages={totalPages}
-                      dictionary={dictionary}
-                    />
-                  </div>
-                </>
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-lg text-muted-foreground mb-4">
-                    {processTemplate(dictionary.sections.templates.emptyCollection, {
-                      items: dictionary.sections.labels.articles,
-                      collection: processTemplate(dictionary.sections.templates.itemByAuthor, {
-                        item: '',
-                        author: author.name
-                      })
-                    })}
-                  </p>
-                </div>
+            <Suspense fallback={<ArticleListSkeleton count={6} ariaLabel={dictionary.common.status.loading} />}>
+              <ArticleList 
+                slugInfos={authoredSlugs} 
+                lang={lang}
+                dictionary={dictionary}
+              />
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  dictionary={dictionary}
+                />
               )}
             </Suspense>
           </div>
         </Section>
-      </>
-    );
-    
-  } catch (error) {
-    console.error('Error rendering author page:', error);
-    throw error;
-  }
+      )}
+
+      {/* Articles Illustrated by Author Section */}
+      {illustratedCount > 0 && (
+        <Section 
+          title={`${dictionary.sections.labels.illustratedBy} ${author.name}`}
+          hasNextSectionTitle={false}
+        >
+          <CollectionCount 
+            count={illustratedCount}
+            countLabel={dictionary.common.count.articles}
+            dictionary={dictionary}
+            className={SECTION_COUNT_STYLES}
+          />
+          
+          <div className="container mx-auto px-4">
+            <Suspense fallback={<ArticleListSkeleton count={6} ariaLabel={dictionary.common.status.loading} />}>
+              <ArticleList 
+                slugInfos={illustratedSlugs} 
+                lang={lang}
+                dictionary={dictionary}
+              />
+              {illustratedTotalPages > 1 && (
+                <Pagination
+                  currentPage={page}
+                  totalPages={illustratedTotalPages}
+                  dictionary={dictionary}
+                />
+              )}
+            </Suspense>
+          </div>
+        </Section>
+      )}
+    </>
+  );
 }

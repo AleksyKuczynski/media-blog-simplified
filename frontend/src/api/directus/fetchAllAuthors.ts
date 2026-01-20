@@ -43,18 +43,35 @@ export async function fetchAllAuthors(
       ),
       Promise.all(
         slugs.map(async (slug: string) => {
-          const countUrl = `${DIRECTUS_URL}/items/articles_authors?filter[authors_slug][_eq]=${slug}&aggregate[count]=*`;
-          const countResponse = await fetch(countUrl, { 
-            next: { 
-              revalidate: 3600,
-              tags: ['authors', 'article-counts']
-            }
-          });
-          const countData = await countResponse.json();
-          return {
-            slug,
-            count: countData.data?.[0]?.count || 0
-          };
+          // For illustrators, count by illustrator_slug instead of junction table
+          if (roleFilter === 'illustrator') {
+            const countUrl = `${DIRECTUS_URL}/items/articles?filter[illustrator_slug][_eq]=${slug}&filter[status][_eq]=published&aggregate[count]=*`;
+            const countResponse = await fetch(countUrl, { 
+              next: { 
+                revalidate: 3600,
+                tags: ['authors', 'article-counts']
+              }
+            });
+            const countData = await countResponse.json();
+            return {
+              slug,
+              count: countData.data?.[0]?.count || 0
+            };
+          } else {
+            // For authors, use the junction table
+            const countUrl = `${DIRECTUS_URL}/items/articles_authors?filter[authors_slug][_eq]=${slug}&aggregate[count]=*`;
+            const countResponse = await fetch(countUrl, { 
+              next: { 
+                revalidate: 3600,
+                tags: ['authors', 'article-counts']
+              }
+            });
+            const countData = await countResponse.json();
+            return {
+              slug,
+              count: countData.data?.[0]?.count || 0
+            };
+          }
         })
       )
     ]);

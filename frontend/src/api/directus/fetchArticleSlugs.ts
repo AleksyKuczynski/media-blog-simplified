@@ -53,20 +53,25 @@ export async function fetchArticleSlugs(
           "_eq": authorSlug
         }
       };
+      console.log('[fetchArticleSlugs] Filtering by author:', authorSlug);
     }
 
     if (illustratorSlug) {
     filter["illustrator_slug"] = {
       "_eq": illustratorSlug
     };
+    console.log('[fetchArticleSlugs] Filtering by illustrator:', illustratorSlug);
   }
 
     if (rubricSlug) {
       filter["rubric_slug"] = {
         "_eq": rubricSlug
       };
+      console.log('[fetchArticleSlugs] Filtering by rubric:', rubricSlug);
     }
 
+    console.log('[fetchArticleSlugs] Final filter:', JSON.stringify(filter, null, 2));
+    console.log('[fetchArticleSlugs] Parameters - page:', page, 'sort:', sort, 'lang:', lang);
     const encodedFilter = encodeURIComponent(JSON.stringify(filter));
     
     // For engagement-based sorting, we'll fetch all and sort in code
