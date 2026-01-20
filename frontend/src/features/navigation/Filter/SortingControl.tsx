@@ -31,7 +31,9 @@ export default function SortingControl({
 
   const sortItems: DropdownItemType[] = [
     { id: 'desc', label: sorting.labels.newest, value: 'desc' },
-    { id: 'asc', label: sorting.labels.oldest, value: 'asc' }
+    { id: 'asc', label: sorting.labels.oldest, value: 'asc' },
+    { id: 'likes', label: sorting.labels.mostLiked, value: 'likes' },
+    { id: 'views', label: sorting.labels.mostViewed, value: 'views' }
   ];
 
   const items = sortItems.map(item => ({

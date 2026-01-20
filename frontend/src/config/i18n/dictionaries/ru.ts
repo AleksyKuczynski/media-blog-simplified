@@ -441,11 +441,13 @@ const dictionaryRU: Dictionary = {
   // ===================================================================
   filter: {
     labels: {
-      sortBy: 'Сортировать по',
+      sortBy: 'Порядок сортировки',
       category: 'Категория',
       allCategories: 'Все категории',
       newest: 'Сначала новые',
       oldest: 'Сначала старые',
+      mostLiked: 'Самые популярные',
+      mostViewed: 'Самые читаемые',
       reset: 'Сбросить',
       apply: 'Применить',
     },

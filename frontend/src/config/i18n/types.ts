@@ -498,6 +498,8 @@ export interface FilterLabels {
   readonly allCategories: string;
   readonly newest: string;
   readonly oldest: string;
+  readonly mostLiked: string;
+  readonly mostViewed: string;
   readonly reset: string;
   readonly apply: string;
 }
@@ -706,7 +708,7 @@ export type ContentType = 'article' | 'rubric' | 'author' | 'page' | 'content';
 /**
  * Sort directions
  */
-export type SortDirection = 'asc' | 'desc';
+export type SortDirection = 'asc' | 'desc' | 'likes' | 'views';
 
 /**
  * Breadcrumb context types

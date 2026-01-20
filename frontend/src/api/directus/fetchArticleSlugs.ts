@@ -3,6 +3,8 @@
 import { DIRECTUS_URL, ITEMS_PER_PAGE } from "./directusConstants";
 import { ArticleSlugInfo } from "./directusInterfaces";
 
+const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
+
 export async function fetchArticleSlugs(
   page: number = 1, 
   sort: string = 'desc',
@@ -59,10 +61,17 @@ export async function fetchArticleSlugs(
     }
 
     const encodedFilter = encodeURIComponent(JSON.stringify(filter));
-    const sortQuery = sort === 'asc' ? 'published_at' : '-published_at';
     
-    // Build URL with translation fields
-    let slugUrl = `${DIRECTUS_URL}/items/articles?fields=slug,layout,translations.languages_code,translations.title,translations.local_slug&sort=${sortQuery}&limit=-1`;
+    // For engagement-based sorting, we'll fetch all and sort in code
+    // For date-based sorting, use database sort
+    const needsEngagementSort = sort === 'likes' || sort === 'views';
+    const sortQuery = needsEngagementSort ? '-published_at' : (sort === 'asc' ? 'published_at' : '-published_at');
+    
+    // Build fields query
+    const fields = 'slug,layout,published_at,translations.languages_code,translations.title,translations.local_slug';
+    
+    // Build URL
+    let slugUrl = `${DIRECTUS_URL}/items/articles?fields=${fields}&sort=${sortQuery}&limit=-1`;
     
     if (Object.keys(filter).length > 0) {
       slugUrl += `&filter=${encodedFilter}`;
@@ -94,33 +103,87 @@ export async function fetchArticleSlugs(
 
     const slugsData = await slugsResponse.json();
 
-    // Filter and map articles
-    let allFilteredSlugs: ArticleSlugInfo[] = slugsData.data
-      .filter((item: any) => {
-        if (!lang) {
-          return true;
-        }
-        
-        if (!item.translations || item.translations.length === 0) {
-          return false;
-        }
-        
-        const translation = item.translations[0];
-        
-        if (translation.languages_code !== lang) {
-          return false;
-        }
-        
-        if (!translation.title) {
-          return false;
-        }
-        
+    // Filter articles
+    let articles = slugsData.data.filter((item: any) => {
+      if (!lang) {
         return true;
-      })
-      .map((item: any) => ({
-        slug: item.slug,  // Always main slug
-        layout: item.layout
-      }));
+      }
+      
+      if (!item.translations || item.translations.length === 0) {
+        return false;
+      }
+      
+      const translation = item.translations[0];
+      
+      if (translation.languages_code !== lang) {
+        return false;
+      }
+      
+      if (!translation.title) {
+        return false;
+      }
+      
+      return true;
+    });
+
+    // If engagement-based sorting, fetch engagement data
+    if (needsEngagementSort && articles.length > 0) {
+      const articleSlugs = articles.map((a: any) => a.slug);
+      
+      // Fetch engagement data for all articles
+      const engagementFilter = encodeURIComponent(
+        JSON.stringify({
+          article_slug: { _in: articleSlugs }
+        })
+      );
+      
+      const engagementUrl = `${DIRECTUS_URL}/items/articles_engagement?filter=${engagementFilter}&fields=article_slug,like_count,view_count&limit=-1`;
+      
+      const engagementResponse = await fetch(engagementUrl, {
+        headers: DIRECTUS_API_TOKEN ? { 
+          'Authorization': `Bearer ${DIRECTUS_API_TOKEN}` 
+        } : undefined,
+        cache: 'no-store'
+      });
+
+      if (engagementResponse.ok) {
+        const engagementData = await engagementResponse.json();
+        
+        // Create a map of slug -> engagement stats
+        const engagementMap = new Map<string, { likes: number; views: number }>();
+        engagementData.data.forEach((item: any) => {
+          engagementMap.set(item.article_slug, {
+            likes: item.like_count || 0,
+            views: item.view_count || 0
+          });
+        });
+
+        // Add engagement data to articles (default to 0 if not found)
+        articles = articles.map((article: any) => ({
+          ...article,
+          engagement: engagementMap.get(article.slug) || { likes: 0, views: 0 }
+        }));
+
+        // Sort by engagement
+        articles.sort((a: any, b: any) => {
+          const sortField = sort === 'likes' ? 'likes' : 'views';
+          const diff = b.engagement[sortField] - a.engagement[sortField];
+          
+          // If engagement is equal, sort by date (newest first)
+          if (diff === 0) {
+            return new Date(b.published_at).getTime() - new Date(a.published_at).getTime();
+          }
+          
+          return diff;
+        });
+      }
+    }
+
+    // Map to ArticleSlugInfo
+    const allFilteredSlugs: ArticleSlugInfo[] = articles.map((item: any) => ({
+      slug: item.slug,
+      layout: item.layout
+    }));
 
     // Paginate
     const totalCount = allFilteredSlugs.length;

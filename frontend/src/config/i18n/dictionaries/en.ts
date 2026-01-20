@@ -444,6 +444,8 @@ export const dictionaryEN: Dictionary = {
       allCategories: 'All Categories',
       newest: 'Newest First',
       oldest: 'Oldest First',
+      mostLiked: 'Most Liked',
+      mostViewed: 'Most Viewed',
       reset: 'Reset',
       apply: 'Apply',
     },

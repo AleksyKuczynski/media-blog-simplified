@@ -19,6 +19,8 @@ export const getFilterLabels = (dictionary: Dictionary) => {
     category: dictionary.filter.labels.category,
     newest: dictionary.filter.labels.newest,
     oldest: dictionary.filter.labels.oldest,
+    mostLiked: dictionary.filter.labels.mostLiked,
+    mostViewed: dictionary.filter.labels.mostViewed,
   };
 };
 
@@ -29,6 +31,8 @@ export const getSortingOptions = (dictionary: Dictionary) => {
   return {
     newest: dictionary.filter.labels.newest,
     oldest: dictionary.filter.labels.oldest,
+    mostLiked: dictionary.filter.labels.mostLiked,
+    mostViewed: dictionary.filter.labels.mostViewed,
     label: dictionary.filter.labels.sortBy,
   };
 };
