@@ -10,21 +10,30 @@
 import { cn } from "@/lib/utils";
 
 export const COLLECTION_DESCRIPTION_STYLES = cn(
-      'text-on-sf-var max-w-3xl shadow-sm',
-      'bg-sf-hi rounded-2xl',
-      'mx-4 p-6 pb-8',
-      'xs:mx-6 xs:text-lg',
-      'sm:mx-8 sm:p-8 sm:pb-12',
-      'md:mx-16',
-      'lg:mx-auto lg:p-12 lg:pb-16 lg:text-xl',
-      'xl:text-2xl xl:p-16 xl:pb-20'
-    )
+  'text-on-sf-var max-w-3xl shadow-sm',
+  'bg-sf-hi rounded-xl',
+  'mx-4 p-6 pb-8 mb-8',
+  'xs:mx-6 xs:text-lg',
+  'sm:mx-8 sm:p-8 sm:pb-12',
+  'md:mx-16 md:mb-12 md:rounded-2xl',
+  'lg:mx-auto lg:p-12 lg:pb-16 lg:text-xl',
+  'xl:text-2xl xl:p-16 xl:pb-20 xl:rounded-3xl'
+)
 
 export const SECTION_COUNT_STYLES = cn(
   'mx-auto text-center font-semibold text-on-sf-var bg-sf-cont rounded-full shadow-sm',
-  'text-xs w-32 -mt-4 p-2 mb-4',
-  'sm:text-sm sm:w-32 sm:mb-6 sm:-mt-[18px]',
-  'lg:text-base lg:w-36 lg:p-3 lg:-mt-6',
+  'text-xs w-32 p-2 mb-4',
+  'sm:text-sm sm:w-32 sm:mb-6',
+  'lg:text-base lg:w-36 lg:p-3',
+);
+
+// When positioned with description
+export const SECTION_COUNT_OVERLAP_STYLES = cn(
+  SECTION_COUNT_STYLES,
+  '-mt-12',
+  'sm:-mt-[50px]',
+  'md:-mt-[66px]',
+  'lg:-mt-[72px]',
 );
 
 export const CARD_GRID_STYLES = cn(
