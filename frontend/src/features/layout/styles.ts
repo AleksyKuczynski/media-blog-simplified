@@ -10,9 +10,22 @@
 import { cn } from "@/lib/utils";
 
 export const COLLECTION_DESCRIPTION_STYLES = cn(
-      'text-xl text-on-sf-var mb-8 mx-auto max-w-3xl',
-      'bg-sf-hi p-8 rounded-lg',
+      'text-on-sf-var max-w-3xl shadow-sm',
+      'bg-sf-hi rounded-2xl',
+      'mx-4 p-6 pb-8',
+      'xs:mx-6 xs:text-lg',
+      'sm:mx-8 sm:p-8 sm:pb-12',
+      'md:mx-16',
+      'lg:mx-auto lg:p-12 lg:pb-16 lg:text-xl',
+      'xl:text-2xl xl:p-16 xl:pb-20'
     )
+
+export const SECTION_COUNT_STYLES = cn(
+  'mx-auto text-center font-semibold text-on-sf-var bg-sf-cont rounded-full shadow-sm',
+  'text-xs w-32 -mt-4 p-2 mb-4',
+  'sm:text-sm sm:w-32 sm:mb-6 sm:-mt-[18px]',
+  'lg:text-base lg:w-36 lg:p-3 lg:-mt-6',
+);
 
 export const CARD_GRID_STYLES = cn(
   'w-full', 
@@ -41,12 +54,15 @@ export const SECTION_STYLES = {
             'lg:-top-[50px] lg:-left-[4px]',
             'xl:-top-[60px] xl:-left-[5px]'),
     title: {
-      base: cn('font-semibold max-md:font-bold uppercase leading-tight',
-              'text-3xl', 
-              'sm:text-4xl', 
-              'md:text-5xl', 
-              'lg:text-6xl', 
-              'xl:text-7xl'),
+      base: cn(
+        'pl-3 font-display font-semibold max-md:font-bold uppercase leading-tight',
+
+        'text-xl', 
+        'sm:text-2xl', 
+        'md:text-4xl', 
+        'lg:text-5xl', 
+        'xl:text-6xl'
+      ),
       primary: 'text-pr-fix',
       secondary: 'text-sec-fix',
       tertiary: 'text-tr-fix',
@@ -54,13 +70,6 @@ export const SECTION_STYLES = {
     },
   },
 } as const;
-
-export const SECTION_COUNT_STYLES = cn(
-  'mx-auto text-center font-semibold text-on-sf-var bg-sf-cont rounded-full shadow-sm',
-  'text-xs w-32 mt-1 p-2 mb-4',
-  'sm:text-sm sm:w-32 sm:mt-4 sm:mb-6',
-  'lg:text-base lg:w-36 lg:p-3',
-);
 
 export const FOOTER_STYLES = {
   container: 'bg-sf-cont text-on-sf-var py-12 md:py-16',
