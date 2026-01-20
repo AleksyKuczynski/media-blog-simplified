@@ -13,6 +13,7 @@ export async function fetchArticleSlugs(
   search?: string,
   excludeSlugs: string[] = [],
   authorSlug?: string,
+  illustratorSlug?: string,
   rubricSlug?: string,
   includesDrafts: boolean = false
 ): Promise<{ slugs: ArticleSlugInfo[], hasMore: boolean, totalCount: number }> {
@@ -53,6 +54,12 @@ export async function fetchArticleSlugs(
         }
       };
     }
+
+    if (illustratorSlug) {
+    filter["illustrator_slug"] = {
+      "_eq": illustratorSlug
+    };
+  }
 
     if (rubricSlug) {
       filter["rubric_slug"] = {
