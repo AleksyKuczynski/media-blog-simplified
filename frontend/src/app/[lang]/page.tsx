@@ -6,7 +6,6 @@ import HeroArticles from '@/features/article-display/HeroArticles';
 import { HeroArticlesSkeleton } from '@/features/article-display/HeroArticlesSkeleton';
 import Section from '@/features/layout/Section';
 import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
-import QuickNavigationSection from '@/features/navigation/QuickNav/QuickNavigationSection';
 import HomePageSchema from '@/shared/seo/schemas/HomePageSchema';
 import { getDictionary, Lang } from '@/config/i18n';
 import { fetchHeroSlugs } from '@/api/directus';
