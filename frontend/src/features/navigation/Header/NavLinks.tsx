@@ -8,6 +8,11 @@ import { getHeaderNavigationItems } from '@/config/i18n/helpers/navigation';
 import { NAV_LINK_STYLES } from '../styles';
 import { cn } from '@/lib/utils';
 import { NavigationLink } from './NavigationLink';
+import { 
+  getNavImageSrc, 
+  isLinkActive, 
+  cleanupMobileMenuHistory 
+} from './utils/navLinks.utils';
 
 interface NavLinksProps {
   dictionary: Dictionary;
@@ -15,35 +20,8 @@ interface NavLinksProps {
   variant?: 'desktop' | 'mobile';
 }
 
-const NAV_IMAGE_MAP: Record<string, string> = {
-  articles: '/articles.png',
-  rubrics: '/rubrics.png',
-  authors: '/authors.png',
-};
-
 export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavLinksProps) {
   const pathname = usePathname();
-
-  // Handler to clean up mobile menu history state before navigation
-  const handleMobileLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    // Only process if it's a different page
-    if (pathname !== href && pathname !== `${href}/`) {
-      // Clean up the mobile menu history state before navigation
-      const currentState = window.history.state || {};
-      
-      // Remove the mobile menu flag if it exists
-      if (currentState.mobileMenuOpen) {
-        const cleanState = { ...currentState };
-        delete cleanState.mobileMenuOpen;
-        
-        window.history.replaceState(
-          cleanState,
-          '',
-          window.location.href
-        );
-      }
-    }
-  };
   
   try {
     const navigationLinks = getHeaderNavigationItems(dictionary, lang);
@@ -52,8 +30,8 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
       return (
         <>
           {navigationLinks.map((link) => {
-            const isActive = pathname === link.href || pathname === `${link.href}/`;
-            const imageSrc = NAV_IMAGE_MAP[link.key] || '/articles.png';
+            const active = isLinkActive(pathname, link.href);
+            const imageSrc = getNavImageSrc(link.key);
             
             return (
               <li 
@@ -63,13 +41,13 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
               >
                 <NavigationLink 
                   href={link.href}
-                  onClick={(e) => handleMobileLinkClick(e, link.href)}
+                  onClick={() => cleanupMobileMenuHistory(pathname, link.href)}
                   className={cn(
                     NAV_LINK_STYLES.mobile.link,
-                    isActive && NAV_LINK_STYLES.mobile.active
+                    active && NAV_LINK_STYLES.mobile.active
                   )}
                   aria-label={`${link.label} - ${link.description}`}
-                  aria-current={isActive ? 'page' : undefined}
+                  aria-current={active ? 'page' : undefined}
                 >
                   <div className={NAV_LINK_STYLES.mobile.icon}>
                     <Image
@@ -91,11 +69,11 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
       );
     }
 
+    // Desktop variant
     return (
       <>
         {navigationLinks.map((link) => {
-          const isActive = pathname === link.href || pathname === `${link.href}/`;
-          const isCurrentPage = isActive;
+          const active = isLinkActive(pathname, link.href);
           
           return (
             <li 
@@ -107,12 +85,12 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
                 href={link.href}
                 className={cn(
                   NAV_LINK_STYLES.base,
-                  isCurrentPage && NAV_LINK_STYLES.active
+                  active && NAV_LINK_STYLES.active
                 )}
                 aria-label={`${link.label} - ${link.description}`}
-                aria-current={isCurrentPage ? 'page' : undefined}
+                aria-current={active ? 'page' : undefined}
                 title={link.description}
-                tabIndex={isCurrentPage ? -1 : undefined}
+                tabIndex={active ? -1 : undefined}
                 itemProp="url"
                 itemScope
                 itemType="https://schema.org/SiteNavigationElement"

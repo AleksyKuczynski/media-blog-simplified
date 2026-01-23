@@ -8,6 +8,11 @@ import SkipLinks from '../SkipLinks'
 import { Dictionary, Lang } from '@/config/i18n'
 import { CompleteNavigationSchema } from '@/shared/seo'
 import { HEADER_STYLES } from '../styles'
+import { 
+  getCurrentPageTitle, 
+  isSearchPage, 
+  normalizeCurrentPath 
+} from './utils/header.utils'
 
 interface NavigationProps {
   dictionary: Dictionary
@@ -22,18 +27,9 @@ export default function Navigation({
   currentPath,
 }: NavigationProps) {
   const pathname = usePathname()
-  const isSearchPage = pathname === '/ru/search'
-  
-  const getCurrentPageTitle = (): string => {
-    if (pathname === '/ru') return dictionary.navigation.labels.home
-    if (pathname.startsWith('/ru/articles')) return dictionary.navigation.labels.articles
-    if (pathname.startsWith('/ru/rubrics')) return dictionary.navigation.labels.rubrics
-    if (pathname.startsWith('/ru/authors')) return dictionary.navigation.labels.authors
-    if (pathname.startsWith('/ru/search')) return dictionary.search.labels.results
-    return ''
-  }
-
-  const currentPageTitle = getCurrentPageTitle()
+  const searchPage = isSearchPage(pathname)
+  const currentPageTitle = getCurrentPageTitle(pathname, dictionary)
+  const normalizedPath = normalizeCurrentPath(currentPath, pathname)
 
   return (
     <>
@@ -41,7 +37,7 @@ export default function Navigation({
       
       <CompleteNavigationSchema 
         dictionary={dictionary}
-        currentPath={currentPath || pathname.replace('/ru', '') || '/'}
+        currentPath={normalizedPath}
       />
       
       <header 
@@ -58,14 +54,14 @@ export default function Navigation({
         <DesktopNavigation
           dictionary={dictionary}
           lang={lang}
-          isSearchPage={isSearchPage}
+          isSearchPage={searchPage}
           currentPageTitle={currentPageTitle}
           currentPath={currentPath}
         />
         <MobileNavigation
           dictionary={dictionary}
           lang={lang}
-          isSearchPage={isSearchPage}
+          isSearchPage={searchPage}
           currentPageTitle={currentPageTitle}
           currentPath={currentPath}
         />

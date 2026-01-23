@@ -1,11 +1,17 @@
-// src/main/features/navigation/Header/LanguageSwitcher.tsx
+// features/navigation/Header/LanguageSwitcher.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Lang } from '@/config/i18n'
-import { resolveAlternateLanguageUrl } from '@/lib/actions/resolveAlternateLanguageUrl'
+import { 
+  getAlternateLang, 
+  getLanguageLabel, 
+  getFallbackUrl,
+  setLanguagePreferenceCookie,
+  getLanguageSwitchAriaLabel
+} from './utils/languageSwitcher.utils'
+import { useAlternateLanguageUrl } from './utils/useAlternateLanguageUrl'
 
 interface LanguageSwitcherProps {
   currentLang: Lang
@@ -13,31 +19,19 @@ interface LanguageSwitcherProps {
 
 export default function LanguageSwitcher({ currentLang }: LanguageSwitcherProps) {
   const pathname = usePathname()
-  const [alternateUrl, setAlternateUrl] = useState<string>(`/${currentLang === 'en' ? 'ru' : 'en'}`)
+  const alternateLang = getAlternateLang(currentLang)
+  const label = getLanguageLabel(currentLang)
+  const fallbackUrl = getFallbackUrl(currentLang)
   
-  const alternateLang: Lang = currentLang === 'en' ? 'ru' : 'en'
-  const label = currentLang === 'en' ? 'РУС' : 'EN'
-  
-  useEffect(() => {
-    let mounted = true
-    
-    async function resolveUrl() {
-      const url = await resolveAlternateLanguageUrl(pathname, currentLang, alternateLang)
-      
-      if (mounted) {
-        setAlternateUrl(url)
-      }
-    }
-    
-    resolveUrl()
-    
-    return () => {
-      mounted = false
-    }
-  }, [pathname, currentLang, alternateLang])
+  const alternateUrl = useAlternateLanguageUrl(
+    pathname, 
+    currentLang, 
+    alternateLang, 
+    fallbackUrl
+  )
   
   const handleClick = () => {
-    document.cookie = `preferred-language=${alternateLang}; path=/; max-age=31536000; SameSite=Lax`
+    setLanguagePreferenceCookie(alternateLang)
   }
 
   return (
@@ -45,7 +39,7 @@ export default function LanguageSwitcher({ currentLang }: LanguageSwitcherProps)
       href={alternateUrl}
       onClick={handleClick}
       className="px-3 py-1.5 text-sm font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi rounded-full transition-all duration-200"
-      aria-label={`Switch to ${alternateLang === 'en' ? 'English' : 'Russian'}`}
+      aria-label={getLanguageSwitchAriaLabel(alternateLang)}
       lang={alternateLang}
     >
       {label}
