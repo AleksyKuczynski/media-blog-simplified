@@ -17,6 +17,7 @@ interface SectionProps {
   itemScope?: boolean;
   itemType?: string;
   hasNextSectionTitle?: boolean;
+  flexGrow?: boolean;
 }
 
 export default function Section({ 
@@ -32,18 +33,21 @@ export default function Section({
   itemScope,
   itemType,
   hasNextSectionTitle = false,
+  flexGrow = false,
   ...props 
 }: SectionProps) {
   const sectionClasses = cn(
     SECTION_STYLES.wrapper.base,
     SECTION_STYLES.wrapper[variant],
     hasNextSectionTitle && SECTION_STYLES.wrapper.withNextTitle,
+    flexGrow && SECTION_STYLES.wrapper.flexGrow,
     className
   );
 
   const containerClasses = cn(
     SECTION_STYLES.container.base,
-    title && SECTION_STYLES.container.withTitle
+    title && SECTION_STYLES.container.withTitle,
+    flexGrow && SECTION_STYLES.container.flexGrow
   );
 
   const titleClasses = cn(

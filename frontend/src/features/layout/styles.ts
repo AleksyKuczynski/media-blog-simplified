@@ -51,10 +51,12 @@ export const SECTION_STYLES = {
     tertiary: 'bg-gradient-to-b from-tr-fix to-tr-sf',
     default: ' bg-gradient-to-b from-sf-hst to-sf-hi',
     withNextTitle: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px]',
+    flexGrow: 'flex-grow',
   },
   container: {
     base: 'mx-auto',
     withTitle: 'pt-8 md:pt-12',
+    flexGrow: 'flex flex-col flex-grow',
   },
   header: {
     wrapper: cn('absolute -top-7 -left-[2px] right-0', 

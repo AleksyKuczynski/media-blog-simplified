@@ -79,7 +79,7 @@ export default async function LanguageLayout({
   <div className="flex-grow min-h-screen flex flex-col">
     <main 
       id="main-content" 
-      className="flex-grow pt-16 xl:pt-24" 
+      className="flex-grow pt-16 xl:pt-24 flex flex-col" 
       role="main"
       tabIndex={-1}
       aria-label={dictionary.navigation.accessibility.skipToContent}

@@ -83,6 +83,7 @@ export default async function RubricPage({
           titleLevel="h1"
           ariaLabel={rubricAriaLabel}
           hasNextSectionTitle={true}
+          flexGrow={true}
         >
           <Suspense fallback={<RubricPageSkeleton ariaLabel={dictionary.common.status.loading} />}>
             {rubricDescription && (
