@@ -51,7 +51,7 @@ export function useMobilePanel({
       window.removeEventListener('popstate', popstateHandlerRef.current)
     }
     
-    // UPDATED: Use enhanced body scroll unlock
+    // Use enhanced body scroll unlock
     unlockBodyScroll()
     
     // Handle history cleanup
@@ -89,11 +89,24 @@ export function useMobilePanel({
   const handlePopState = useCallback((e: PopStateEvent) => {
     const state = e.state as Record<string, boolean> | null
     
-    // Check if this panel was open in history
-    if (state && state[historyStateKey]) {
+    console.log('[useMobilePanel] handlePopState triggered', {
+      historyStateKey,
+      currentState: state,
+      hasPanelFlag: state?.[historyStateKey],
+      isPanelCurrentlyOpen: isPanelOpen,
+      pathname: window.location.pathname
+    })
+    
+    // CRITICAL FIX: Only reopen if the state explicitly has our flag AND we're not already open
+    // This prevents spurious reopenings on back navigation
+    if (state && state[historyStateKey] === true && !isPanelOpen) {
+      console.log('[useMobilePanel] Reopening panel from history state')
       // Moving forward to when panel was open
       setIsPanelOpen(true)
       dispatch({ type: 'OPEN_MENU' })
+      
+      // Mark that we're restoring from history, not creating new state
+      historyStatePushed.current = true
       
       // UPDATED: Use enhanced body scroll lock
       lockBodyScroll()
@@ -102,8 +115,11 @@ export function useMobilePanel({
         dispatch({ type: 'SHOW_CONTROLS' })
       }, MENU_ANIMATION_DURATION)
     } else if (isPanelOpen) {
+      console.log('[useMobilePanel] Closing panel due to back navigation')
       // Panel was open, back button pressed -> close it
       handleClose(true)
+    } else {
+      console.log('[useMobilePanel] No action taken - panel should stay closed')
     }
   }, [isPanelOpen, historyStateKey, handleClose])
 
@@ -146,7 +162,7 @@ export function useMobilePanel({
       window.addEventListener('popstate', popstateHandlerRef.current)
     }
     
-    // UPDATED: Use enhanced body scroll lock
+    // Use enhanced body scroll lock
     lockBodyScroll()
     
     setTimeout(() => {
@@ -171,12 +187,40 @@ export function useMobilePanel({
     if (pathname !== lastPathRef.current) {
       lastPathRef.current = pathname
       if (isPanelOpen) {
-        setTimeout(() => {
-          handleClose(false)
-        }, 0)
+        // Close immediately without animation to avoid visual glitch during navigation
+        // Clean up history state properly
+        if (historyStatePushed.current) {
+          historyStatePushed.current = false
+          
+          // Replace the current state to remove the panel flag
+          // This prevents the back button from trying to reopen the panel
+          const cleanState = { ...(window.history.state || {}) }
+          delete cleanState[historyStateKey]
+          
+          window.history.replaceState(
+            cleanState,
+            '',
+            window.location.href
+          )
+        }
+        
+        // Clean up event listeners
+        if (keydownHandlerRef.current) {
+          document.removeEventListener('keydown', keydownHandlerRef.current)
+        }
+        if (popstateHandlerRef.current) {
+          window.removeEventListener('popstate', popstateHandlerRef.current)
+        }
+        
+        // Unlock scroll
+        unlockBodyScroll()
+        
+        // Update state
+        setIsPanelOpen(false)
+        dispatch({ type: 'RESET' })
       }
     }
-  }, [pathname, isPanelOpen, handleClose])
+  }, [pathname, isPanelOpen, historyStateKey])
 
   const togglePanel = useCallback(() => {
     if (!isPanelOpen) {

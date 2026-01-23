@@ -1,5 +1,4 @@
 // src/main/components/Navigation/useFilterGroup.ts
-// FIXED: Type-safe, follows React hooks rules, uses dictionary entries
 
 import { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
@@ -67,7 +66,7 @@ export function useFilterGroup({
     } catch (error) {
       console.error('useFilterGroup: Error generating filter state', error);
       
-      // FIXED: Fallback with proper types
+      // Fallback
       const filterLabels = getFilterLabels(dictionary);
       return {
         currentCategory: '',
@@ -81,7 +80,7 @@ export function useFilterGroup({
           value: '',
           selected: true,
         }],
-        selectedCategoryName: filterLabels.allCategories, // FIXED: always string
+        selectedCategoryName: filterLabels.allCategories,
       };
     }
   }, [dictionary, categories, pathname, searchParams, isDictionaryValid]);

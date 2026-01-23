@@ -12,7 +12,6 @@ import { cn } from '@/lib/utils';
 interface NavLinksProps {
   dictionary: Dictionary;
   lang: Lang;
-  className?: string;
   variant?: 'desktop' | 'mobile';
 }
 
@@ -22,8 +21,29 @@ const NAV_IMAGE_MAP: Record<string, string> = {
   authors: '/authors.png',
 };
 
-export default function NavLinks({ dictionary, lang, className, variant = 'desktop' }: NavLinksProps) {
+export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavLinksProps) {
   const pathname = usePathname();
+
+  // Handler to clean up mobile menu history state before navigation
+  const handleMobileLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    // Only process if it's a different page
+    if (pathname !== href && pathname !== `${href}/`) {
+      // Clean up the mobile menu history state before navigation
+      const currentState = window.history.state || {};
+      
+      // Remove the mobile menu flag if it exists
+      if (currentState.mobileMenuOpen) {
+        const cleanState = { ...currentState };
+        delete cleanState.mobileMenuOpen;
+        
+        window.history.replaceState(
+          cleanState,
+          '',
+          window.location.href
+        );
+      }
+    }
+  };
   
   try {
     const navigationLinks = getHeaderNavigationItems(dictionary, lang);
@@ -43,6 +63,7 @@ export default function NavLinks({ dictionary, lang, className, variant = 'deskt
               >
                 <Link 
                   href={link.href}
+                  onClick={(e) => handleMobileLinkClick(e, link.href)}
                   className={cn(
                     NAV_LINK_STYLES.mobile.link,
                     isActive && NAV_LINK_STYLES.mobile.active
