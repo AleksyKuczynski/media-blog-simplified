@@ -1,6 +1,7 @@
 // src/main/components/Logo.tsx - SEO-Enhanced Logo (Non-Destructive)
 import Link from 'next/link';
 import { dictionary, Lang } from '../../config/i18n';
+import { NavigationLink } from '@/features/navigation/Header/NavigationLink';
 
 interface LogoProps {
   lang: Lang;
@@ -37,7 +38,7 @@ export default function Logo({
   `;
 
   return (
-    <Link 
+    <NavigationLink 
       href={`/${lang}`} 
       aria-label={ariaLabel || "EventForMe - Home"}
       title="EventForMe - Главная страница"
@@ -94,6 +95,6 @@ export default function Logo({
       <span className="sr-only">
         EventForMe — медиа-проект о культурных событиях. Перейти на главную страницу.
       </span>
-    </Link>
+    </NavigationLink>
   );
 }

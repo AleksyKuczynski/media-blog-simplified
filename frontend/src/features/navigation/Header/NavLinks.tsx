@@ -1,13 +1,13 @@
-// features/navigation/NavLinks.tsx
+// features/navigation/Header/NavLinks.tsx
 'use client'
 
-import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Dictionary, Lang } from '@/config/i18n';
 import { getHeaderNavigationItems } from '@/config/i18n/helpers/navigation';
-import { NAV_LINK_STYLES } from './styles';
+import { NAV_LINK_STYLES } from '../styles';
 import { cn } from '@/lib/utils';
+import { NavigationLink } from './NavigationLink';
 
 interface NavLinksProps {
   dictionary: Dictionary;
@@ -61,7 +61,7 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
                 className={NAV_LINK_STYLES.mobile.listItem}
                 role="menuitem"
               >
-                <Link 
+                <NavigationLink 
                   href={link.href}
                   onClick={(e) => handleMobileLinkClick(e, link.href)}
                   className={cn(
@@ -83,7 +83,7 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
                   <span className="font-medium uppercase">
                     {link.label}
                   </span>
-                </Link>
+                </NavigationLink>
               </li>
             );
           })}
@@ -103,7 +103,7 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
               className={NAV_LINK_STYLES.listItem}
               role="menuitem"
             >
-              <Link 
+              <NavigationLink 
                 href={link.href}
                 className={cn(
                   NAV_LINK_STYLES.base,
@@ -123,7 +123,7 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
                 <span className="sr-only" itemProp="description">
                   {link.description}
                 </span>
-              </Link>
+              </NavigationLink>
             </li>
           );
         })}

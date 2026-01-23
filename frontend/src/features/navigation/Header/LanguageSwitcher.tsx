@@ -1,4 +1,4 @@
-// src/main/components/Navigation/LanguageSwitcher.tsx
+// src/main/features/navigation/Header/LanguageSwitcher.tsx
 'use client'
 
 import { useEffect, useState } from 'react'

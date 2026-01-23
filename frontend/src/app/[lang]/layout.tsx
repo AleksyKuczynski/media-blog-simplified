@@ -2,12 +2,12 @@
 import React, { Suspense } from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Navigation from '@/features/navigation/Navigation';
 import Footer from '@/features/layout/Footer';
 import Section from '@/features/layout/Section';
-import QuickNavigationSection from '@/features/navigation/QuickNavigationSection';
+import QuickNavigationSection from '@/features/navigation/QuickNav/QuickNavigationSection';
 import { getDictionary, type Lang } from '@/config/i18n';
 import { SUPPORTED_LANGUAGES } from '@/config/constants/constants';
+import Navigation from '@/features/navigation/Header/Header';
 
 interface LayoutProps {
   children: React.ReactNode;

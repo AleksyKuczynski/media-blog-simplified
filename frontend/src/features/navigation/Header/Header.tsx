@@ -1,13 +1,13 @@
-// features/navigation/Navigation.tsx
+// features/navigation/Header/Header.tsx
 'use client'
 
 import { usePathname } from 'next/navigation'
 import DesktopNavigation from './DesktopNav'
-import MobileNavigation from './MobileNav/MobileNav'
-import SkipLinks from './SkipLinks'
+import MobileNavigation from '../MobileNav/MobileNav'
+import SkipLinks from '../SkipLinks'
 import { Dictionary, Lang } from '@/config/i18n'
 import { CompleteNavigationSchema } from '@/shared/seo'
-import { HEADER_STYLES } from './styles'
+import { HEADER_STYLES } from '../styles'
 
 interface NavigationProps {
   dictionary: Dictionary

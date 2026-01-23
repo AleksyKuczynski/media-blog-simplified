@@ -2,11 +2,11 @@
 'use client'
 
 import Logo from '../../../shared/primitives/Logo'
-import NavLinks from '../NavLinks'
+import NavLinks from '../Header/NavLinks'
 import SearchButton from './SearchButton'
 import OffcanvasPanel from './OffcanvasPanel'
 import MobileSearchContent from '../../search/ui/MobileSearchContent'
-import LanguageSwitcher from '../LanguageSwitcher'
+import LanguageSwitcher from '../Header/LanguageSwitcher'
 import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/config/i18n'
 import HamburgerButton from './HamburgerButton'
