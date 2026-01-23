@@ -36,9 +36,6 @@ export default function MobileNavigation({
     handleContentComplete: handleMenuComplete,
   } = useMobilePanel({
     side: 'left',
-    panelId: 'mobile-menu-content',
-    historyStateKey: 'mobileMenuOpen',
-    onOtherPanelOpen: undefined,
     focusSelector: 'a, button:not([aria-hidden="true"])'
   })
 
@@ -52,13 +49,6 @@ export default function MobileNavigation({
     handleContentComplete: handleSearchComplete,
   } = useMobilePanel({
     side: 'right',
-    panelId: 'mobile-search-content',
-    historyStateKey: 'mobileSearchOpen',
-    onOtherPanelOpen: () => {
-      if (isMenuOpen) {
-        closeMenu(false)
-      }
-    },
     focusSelector: 'input[type="text"], input[type="search"]'
   })
   

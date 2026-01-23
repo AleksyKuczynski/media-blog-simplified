@@ -8,11 +8,7 @@ import { getHeaderNavigationItems } from '@/config/i18n/helpers/navigation';
 import { NAV_LINK_STYLES } from '../styles';
 import { cn } from '@/lib/utils';
 import { NavigationLink } from './NavigationLink';
-import { 
-  getNavImageSrc, 
-  isLinkActive, 
-  cleanupMobileMenuHistory 
-} from './utils/navLinks.utils';
+import { getNavImageSrc, isLinkActive } from './utils/navLinks.utils';
 
 interface NavLinksProps {
   dictionary: Dictionary;
@@ -41,7 +37,6 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
               >
                 <NavigationLink 
                   href={link.href}
-                  onClick={() => cleanupMobileMenuHistory(pathname, link.href)}
                   className={cn(
                     NAV_LINK_STYLES.mobile.link,
                     active && NAV_LINK_STYLES.mobile.active

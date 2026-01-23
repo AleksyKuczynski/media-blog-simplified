@@ -22,31 +22,3 @@ export function getNavImageSrc(key: string): string {
 export function isLinkActive(pathname: string, href: string): boolean {
   return pathname === href || pathname === `${href}/`;
 }
-
-/**
- * Clean up mobile menu history state before navigation
- * Prevents back button from reopening mobile menu
- */
-export function cleanupMobileMenuHistory(
-  pathname: string, 
-  href: string
-): void {
-  // Only clean up if navigating to a different page
-  if (pathname === href || pathname === `${href}/`) {
-    return;
-  }
-
-  const currentState = window.history.state || {};
-  
-  // Remove mobile menu flag if it exists
-  if (currentState.mobileMenuOpen) {
-    const cleanState = { ...currentState };
-    delete cleanState.mobileMenuOpen;
-    
-    window.history.replaceState(
-      cleanState,
-      '',
-      window.location.href
-    );
-  }
-}
