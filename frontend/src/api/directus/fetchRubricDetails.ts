@@ -57,14 +57,15 @@ export async function fetchRubricDetails(slug: string, lang: Lang): Promise<Rubr
 
     // FIXED: Use fetchArticleSlugs to get proper language-filtered count
     const { totalCount } = await fetchArticleSlugs(
-      1,
-      'desc',
-      lang,
-      undefined,
-      undefined,
-      [],
-      undefined,
-      slug
+      1,           // page
+      'desc',      // sort
+      lang,        // lang
+      undefined,   // category
+      undefined,   // search
+      [],          // excludeSlugs
+      undefined,   // authorSlug
+      undefined,   // illustratorSlug
+      slug         // rubricSlug
     );
 
     const rubricDetails: Rubric = {

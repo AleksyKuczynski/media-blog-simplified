@@ -44,15 +44,18 @@ export default async function RubricPage({
     const rubricName = rubricTranslation?.name || rubric;
     const rubricDescription = rubricTranslation?.description;
 
+    
+
     const { slugs: currentPageSlugs, totalCount } = await fetchArticleSlugs(
       currentPage,
-      'desc',
+      undefined,
       lang,
-      undefined,
-      undefined,
-      [],
-      undefined,
-      rubric
+      undefined,      // category
+      undefined,      // search
+      [],             // excludeSlugs
+      undefined,      // authorSlug
+      undefined,      // illustratorSlug
+      rubric          // rubricSlug
     );
 
     const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);

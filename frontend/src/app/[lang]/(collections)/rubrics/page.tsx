@@ -10,14 +10,12 @@ import { createErrorHandler } from '@/shared/errors/lib/errorUtils';
 import RubricCard from '@/features/rubric-display/RubricCard';
 import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
 import CollectionDescription from '@/features/layout/CollectionDescription';
+import PageError from '@/shared/errors/PageError';
+import EmptyState from '@/shared/ui/EmptyState';
 import { RUBRICS_GRID_STYLES } from '@/features/rubric-display/styles';
 
-// ISR CONFIGURATION: 1 hour (rubrics list is structural)
 export const revalidate = 3600;
 
-/**
- * Generate metadata using clean new dictionary system
- */
 export async function generateMetadata({
   params,
 }: {
@@ -27,23 +25,19 @@ export async function generateMetadata({
   const dictionary = getDictionary(lang);
 
   try {
-    const [rubrics] = await Promise.all([
-      fetchAllRubrics(lang),
-    ]);
+    const rubrics = await fetchAllRubrics(lang);
     
-    // Transform rubrics data for metadata generation
     const rubricsData = rubrics.map((rubric: Rubric) => {
-    const translation = rubric.translations?.find(t => t.languages_code === lang);
-    return {
-      ...rubric,
-      name: translation?.name || rubric.slug,
-      description: translation?.description || '',
-      icon: rubric.nav_icon,
-      url: `/${lang}/${rubric.slug}`,
-    };
-  });
+      const translation = rubric.translations?.find(t => t.languages_code === lang);
+      return {
+        ...rubric,
+        name: translation?.name || rubric.slug,
+        description: translation?.description || '',
+        icon: rubric.nav_icon,
+        url: `/${lang}/${rubric.slug}`,
+      };
+    });
 
-    // Clean metadata generation
     return await generateCollectionMetadata({
       dictionary,
       collectionType: 'rubrics',
@@ -55,8 +49,6 @@ export async function generateMetadata({
     
   } catch (error) {
     console.error('Error generating rubrics metadata:', error);
-    
-    // Use errorHandler instead of hardcoded fallback
     const errorHandler = createErrorHandler(dictionary);
     return errorHandler.generateErrorMetadata('page');
   }
@@ -71,11 +63,8 @@ export default async function RubricsPage({
   const dictionary = getDictionary(lang);
 
   try {
-    const [rubrics] = await Promise.all([
-      fetchAllRubrics(lang),
-    ]);
+    const rubrics = await fetchAllRubrics(lang);
 
-    // Transform rubrics for rendering
     const transformedRubrics = rubrics.map((rubric: Rubric) => {
       const translation = rubric.translations?.find(t => t.languages_code === lang);
       return {
@@ -86,7 +75,6 @@ export default async function RubricsPage({
       };
     });
 
-    // Transform rubrics for schema
     const schemaItems = transformedRubrics.map(rubric => ({
       name: rubric.name,
       slug: rubric.slug,
@@ -128,14 +116,7 @@ export default async function RubricsPage({
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-lg text-muted-foreground mb-4">
-                {dictionary.sections.rubrics.noRubricsAvailable}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {dictionary.sections.rubrics.checkBackLater}
-              </p>
-            </div>
+            <EmptyState message={dictionary.sections.rubrics.noRubricsAvailable} />
           )}
         </Section>
 
@@ -157,6 +138,14 @@ export default async function RubricsPage({
   } catch (error) {
     console.error('Error rendering rubrics page:', error);
     
-    throw error;
+    return (
+      <Section>
+        <PageError 
+          dictionary={dictionary}
+          contentType="rubric"
+          backHref={`/${lang}`}
+        />
+      </Section>
+    );
   }
 }
