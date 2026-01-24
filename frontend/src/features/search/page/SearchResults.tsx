@@ -4,7 +4,6 @@ import Pagination from '@/shared/ui/Pagination';
 import SearchResultsHeader from './SearchResultsHeader';
 import { Dictionary, Lang } from '@/config/i18n';
 import { ArticleSlugInfo } from '@/api/directus';
-import Section from '@/features/layout/Section';
 import ArticleList from '@/features/article-display/ArticleList';
 import { SEARCH_PAGE_STYLES } from '../search.styles';
 
@@ -63,11 +62,7 @@ export default function SearchResults({
   }
 
   return (
-    <Section
-      ariaLabel={dictionary.search.accessibility.searchResultsLabel}
-      className={SEARCH_PAGE_STYLES.results.section}
-      hasNextSectionTitle={true}
-    >
+    <>
       <SearchResultsHeader
         dictionary={dictionary}
         searchQuery={searchQuery}
@@ -94,6 +89,6 @@ export default function SearchResults({
           />
         </div>
       )}
-    </Section>
+    </>
   );
 }

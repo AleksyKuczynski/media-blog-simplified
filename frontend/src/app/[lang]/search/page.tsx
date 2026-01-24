@@ -9,11 +9,9 @@ import { fetchArticleSlugs, fetchAllRubrics, fetchArticleCard, DIRECTUS_URL, Art
 import { SearchSchema } from '@/shared/seo/schemas/SearchSchema';
 import { generateSearchMetadataSimple } from '@/shared/seo/metadata/SearchMetadata';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
-import Link from 'next/link';
 import { ArticleCardData } from '@/features/shared/CardCarousel/types';
 import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
 import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
-import CollectionDescription from '@/features/layout/CollectionDescription';
 import { ActionLink } from '@/shared/primitives/ActionLink';
 
 export const revalidate = 0;
@@ -154,47 +152,45 @@ export default async function SearchPage({
       />
 
       <Section 
-        title={dictionary.search.hub.exploreHeading}
-        titleLevel="h2"
+        title={dictionary.search.templates.pageTitle}
+        titleLevel="h1"
         hasNextSectionTitle={true}
       >
+        <SearchTips dictionary={dictionary} />
 
-
-      <div className="mb-8">
-        <SearchBarForm
-          dictionary={dictionary}
-          lang={lang}
-          currentQuery={searchQuery}
-        />
-      </div>
-
-      {isEmptyState && dictionary.search.hub && (
-        <div 
-          className="text-center py-8 mb-8"
-          role="status"
-        >
-          <p className="text-lg text-on-sf-var">
-            {dictionary.search.hub.emptyStateMessage}
-          </p>
+        <div className="mb-8">
+          <SearchBarForm
+            dictionary={dictionary}
+            lang={lang}
+            currentQuery={searchQuery}
+          />
         </div>
-      )}
 
-      <SearchTips dictionary={dictionary} />
+        {isEmptyState && dictionary.search.hub && (
+          <div 
+            className="text-center py-8 mb-8"
+            role="status"
+          >
+            <p className="text-lg text-on-sf-var">
+              {dictionary.search.hub.emptyStateMessage}
+            </p>
+          </div>
+        )}
+
+        {resultsMode && (
+          <SearchResults
+            dictionary={dictionary}
+            lang={lang}
+            searchQuery={searchQuery}
+            slugs={currentPageSlugs}
+            totalCount={totalCount}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            currentSort={currentSort}
+            mode={resultsMode}
+          />
+        )}
       </Section>
-
-      {resultsMode && (
-        <SearchResults
-          dictionary={dictionary}
-          lang={lang}
-          searchQuery={searchQuery}
-          slugs={currentPageSlugs}
-          totalCount={totalCount}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          currentSort={currentSort}
-          mode={resultsMode}
-        />
-      )}
 
       <Section 
         title={dictionary.search.hub.exploreHeading}
