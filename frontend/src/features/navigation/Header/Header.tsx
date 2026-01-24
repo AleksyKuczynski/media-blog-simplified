@@ -2,8 +2,9 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
+import { useRef } from 'react'
 import DesktopNavigation from './DesktopNav'
-import MobileNavigation from '../MobileNav/MobileNav'
+import MobileNavigation, { MobileNavRef } from '../MobileNav/MobileNav'
 import SkipLinks from '../SkipLinks'
 import { Dictionary, Lang } from '@/config/i18n'
 import { CompleteNavigationSchema } from '@/shared/seo'
@@ -30,6 +31,21 @@ export default function Navigation({
   const searchPage = isSearchPage(pathname)
   const currentPageTitle = getCurrentPageTitle(pathname, dictionary)
   const normalizedPath = normalizeCurrentPath(currentPath, pathname)
+  const mobileNavRef = useRef<MobileNavRef>(null)
+
+  const handleSearchClick = () => {
+    if (searchPage) {
+      // On search page, focus the search input
+      const searchInput = document.querySelector<HTMLInputElement>('#search-bar-input')
+      if (searchInput) {
+        searchInput.focus()
+        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    } else {
+      // On other pages, open mobile search panel
+      mobileNavRef.current?.openSearch()
+    }
+  }
 
   return (
     <>
@@ -57,8 +73,10 @@ export default function Navigation({
           isSearchPage={searchPage}
           currentPageTitle={currentPageTitle}
           currentPath={currentPath}
+          onSearchClick={handleSearchClick}
         />
         <MobileNavigation
+          ref={mobileNavRef}
           dictionary={dictionary}
           lang={lang}
           isSearchPage={searchPage}

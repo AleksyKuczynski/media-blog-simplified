@@ -56,7 +56,7 @@ export default function SearchInput({
       )}
       
       <input
-        id={inputId}
+        id="search-bar-input"
         ref={inputRef as React.RefObject<HTMLInputElement>}
         type="text"
         className={SEARCH_INPUT_STYLES.input}

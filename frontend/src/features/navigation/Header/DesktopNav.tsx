@@ -1,11 +1,12 @@
 // features/navigation/Header/DesktopNav.tsx
 'use client'
 
+import { useRef } from 'react'
 import Logo from '../../../shared/primitives/Logo'
 import NavLinks from './NavLinks'
 import LanguageSwitcher from './LanguageSwitcher'
+import SearchButton from '../MobileNav/SearchButton'
 import { Dictionary, Lang } from '@/config/i18n'
-import { ExpandableSearch } from '../../search'
 import { DESKTOP_NAV_STYLES } from '../navigation.styles'
 
 interface DesktopNavProps {
@@ -14,12 +15,15 @@ interface DesktopNavProps {
   isSearchPage: boolean
   currentPageTitle?: string
   currentPath?: string
+  onSearchClick: () => void
 }
 
 export default function DesktopNavigation({
   dictionary,
   lang,
+  onSearchClick
 }: DesktopNavProps) {
+  const searchButtonRef = useRef<HTMLButtonElement>(null)
   return (
     <nav 
       id="main-navigation"
@@ -77,9 +81,13 @@ export default function DesktopNavigation({
             role="search"
             aria-label={dictionary.navigation.accessibility.siteSearchLabel}
           >
-            <ExpandableSearch 
-              dictionary={dictionary}
-              lang={lang}
+            <SearchButton
+              isOpen={false}
+              onClick={onSearchClick}
+              ariaControls="mobile-search-content"
+              openLabel={dictionary.search.accessibility.openSearch}
+              closeLabel={dictionary.search.accessibility.closeSearch}
+              buttonRef={searchButtonRef}
             />
           </div>
           

@@ -12,6 +12,7 @@ import { Dictionary, Lang } from '@/config/i18n'
 import HamburgerButton from './HamburgerButton'
 import { MOBILE_NAV_STYLES, PANEL_CONTENT_STYLES } from './mobileNav.styles'
 import { cn } from '@/lib/utils'
+import { forwardRef, useImperativeHandle } from 'react'
 
 interface MobileNavProps {
   dictionary: Dictionary
@@ -21,10 +22,14 @@ interface MobileNavProps {
   currentPath?: string
 }
 
-export default function MobileNavigation({
+export interface MobileNavRef {
+  openSearch: () => void
+}
+
+const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
   dictionary,
   lang,
-}: MobileNavProps) {
+}, ref) => {
   
   // Menu panel state management
   const {
@@ -51,6 +56,11 @@ export default function MobileNavigation({
     side: 'right',
     focusSelector: 'input[type="text"], input[type="search"]'
   })
+
+  // Expose search control to parent
+  useImperativeHandle(ref, () => ({
+    openSearch: toggleSearch
+  }))
   
   return (
     <>
@@ -80,7 +90,8 @@ export default function MobileNavigation({
           {/* Logo - Center (hidden when any panel is open) */}
           <div className={cn(
             'transition-opacity duration-300',
-            (isMenuOpen || isSearchOpen) ? 'opacity-0 pointer-events-none' : 'opacity-100'
+            (isMenuOpen || isSearchOpen) ?
+            'opacity-0 pointer-events-none' : 'opacity-100'
           )}>
             <Logo 
               lang={lang}
@@ -167,4 +178,8 @@ export default function MobileNavigation({
       </OffcanvasPanel>
     </>
   )
-}
+})
+
+MobileNavigation.displayName = 'MobileNavigation'
+
+export default MobileNavigation
