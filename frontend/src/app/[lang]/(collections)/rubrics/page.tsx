@@ -120,18 +120,12 @@ export default async function RubricsPage({
           )}
         </Section>
 
-        <Section
+        <RandomArticlesSection
+          lang={lang}
+          dictionary={dictionary}
           title={dictionary.sections.rubrics.readMoreAbout}
-          titleLevel="h2"
           variant="tertiary"
-          hasNextSectionTitle={true}
-        >
-          <RandomArticlesSection
-            lang={lang}
-            dictionary={dictionary}
-            limit={6}
-          />
-        </Section>
+        />
       </>
     );
     

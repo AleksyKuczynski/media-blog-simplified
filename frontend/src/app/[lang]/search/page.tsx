@@ -14,6 +14,7 @@ import RandomArticlesSection from '@/features/article-display/RandomArticlesSect
 import { ActionLink } from '@/shared/primitives/ActionLink';
 import RubricsCarouselSection from '@/features/rubric-display/RubricsCarouselSection';
 import { transformRubricsToCarousel } from '@/api/directus/transformToCarouselCards';
+import AuthorsCarouselSection from '@/features/author-display/AuthorsCarouselSection';
 
 export const revalidate = 0;
 
@@ -72,14 +73,6 @@ export default async function SearchPage({
     } catch (error) {
       console.error('Search error:', error);
     }
-  }
-
-  // Fetch rubrics for hub
-  let rubricCards: RubricCardData[] = [];
-  try {
-    rubricCards = await transformRubricsToCarousel(lang, 6);
-  } catch (error) {
-    console.error('Error fetching rubrics:', error);
   }
 
   const hasResults = currentPageSlugs.length > 0;
@@ -144,29 +137,25 @@ export default async function SearchPage({
         )}
       </Section>
 
-      <Section 
-        title={dictionary.search.hub.exploreHeading}
-        titleLevel="h2"
-        hasNextSectionTitle={true}
-        variant="primary"
-      >
-        <RandomArticlesSection
-          lang={lang}
-          dictionary={dictionary}
-          limit={6}
-        />
-
-        <ActionLink 
-          href={`/${lang}/articles`}
-        >
-          {dictionary.sections.home.viewAllArticles}
-        </ActionLink>
-      </Section>
+      <RandomArticlesSection
+        lang={lang}
+        dictionary={dictionary}
+        title={dictionary.sections.rubrics.readMoreAbout}
+        variant="secondary"
+        limit={6}
+      />
 
       <RubricsCarouselSection
         lang={lang}
         dictionary={dictionary}
         title={dictionary.search.hub.browseCategories}
+        variant="primary"
+      />
+
+      <AuthorsCarouselSection
+        lang={lang}
+        dictionary={dictionary}
+        title={dictionary.sections.authors.ourAuthors}
         variant="tertiary"
       />
     </>
