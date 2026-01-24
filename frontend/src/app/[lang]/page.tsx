@@ -12,6 +12,7 @@ import { fetchHeroSlugs } from '@/api/directus';
 import { transformRubricsToCarousel } from '@/api/directus/transformToCarouselCards';
 import { transformAuthorsToCarousel } from '@/api/directus/transformToCarouselCards';
 import { ActionLink } from '@/shared/primitives/ActionLink';
+import RubricsCarouselSection from '@/features/rubric-display/RubricsCarouselSection';
 
 export const revalidate = 3600;
 
@@ -72,31 +73,13 @@ export default async function HomePage({
       )}
 
       {rubricCards.length > 0 && (
-        <Section 
+        <RubricsCarouselSection
+          cards={rubricCards}
+          lang={lang}
+          dictionary={dictionary}
           title={dictionary.sections.home.featuredRubrics}
-          titleLevel="h2"
           variant="primary"
-          hasNextSectionTitle={true}
-        >
-          {dictionary.sections.home.rubricsDescription && (
-            <p className="text-lg text-on-sf-var max-w-2xl mx-auto mb-8 text-center">
-              {dictionary.sections.home.rubricsDescription}
-            </p>
-          )}
-
-          <CardCarousel
-            cards={rubricCards}
-            lang={lang}
-            dictionary={dictionary}
-          />
-
-          <ActionLink 
-            href={`/${lang}/rubrics`}
-            variant="primary"
-          >
-            {dictionary.sections.home.viewAllRubrics}
-          </ActionLink>
-        </Section>
+        />
       )}
 
       {authorCards.length > 0 && (

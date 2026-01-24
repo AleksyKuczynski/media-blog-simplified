@@ -5,14 +5,15 @@ import SearchBarForm from '@/features/search/page/SearchBarForm';
 import SearchResults from '@/features/search/page/SearchResults';
 import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/config/i18n';
-import { fetchArticleSlugs, fetchAllRubrics, fetchArticleCard, DIRECTUS_URL, ArticleSlugInfo, Rubric, ITEMS_PER_PAGE } from '@/api/directus';
+import { fetchArticleSlugs, ArticleSlugInfo, ITEMS_PER_PAGE } from '@/api/directus';
 import { SearchSchema } from '@/shared/seo/schemas/SearchSchema';
 import { generateSearchMetadataSimple } from '@/shared/seo/metadata/SearchMetadata';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
-import { ArticleCardData } from '@/features/shared/CardCarousel/types';
-import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
+import { RubricCardData } from '@/features/shared/CardCarousel/types';
 import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
 import { ActionLink } from '@/shared/primitives/ActionLink';
+import RubricsCarouselSection from '@/features/rubric-display/RubricsCarouselSection';
+import { transformRubricsToCarousel } from '@/api/directus/transformToCarouselCards';
 
 export const revalidate = 0;
 
@@ -53,8 +54,6 @@ export default async function SearchPage({
   let currentPageSlugs: ArticleSlugInfo[] = [];
   let totalCount = 0;
   let totalPages = 1;
-  let carouselCards: ArticleCardData[] = [];
-  let rubrics: Rubric[] = [];
 
   // Fetch search results if valid query
   if (hasValidQuery) {
@@ -75,60 +74,13 @@ export default async function SearchPage({
     }
   }
 
-  // Always fetch search hub content
+  // Fetch rubrics for hub
+  let rubricCards: RubricCardData[] = [];
   try {
-    const [recentResult, allRubrics] = await Promise.all([
-      fetchArticleSlugs(1, 'desc', lang).then(r => ({ slugs: r.slugs.slice(0, 8) })),
-      fetchAllRubrics(lang)
-    ]);
-    
-    const recentSlugs = recentResult.slugs;
-    rubrics = allRubrics;
-
-    // Transform recent slugs to ArticleCardData format for CardCarousel
-    if (recentSlugs.length > 0) {
-      const articleCardsPromises = recentSlugs.map(s => fetchArticleCard(s.slug, lang));
-      const articleCards = await Promise.all(articleCardsPromises);
-
-      carouselCards = articleCards
-        .filter(article => article !== null)
-        .map(article => {
-          const formattedDate = new Date(article!.published_at).toLocaleDateString(lang, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
-
-          const imageSrc = article!.article_heading_img 
-            ? `${DIRECTUS_URL}/assets/${article!.article_heading_img}`
-            : undefined;
-
-          return {
-            type: 'article' as const,
-            slug: article!.slug,
-            title: article!.translations[0]?.title || '',
-            publishedAt: article!.published_at,
-            rubricSlug: article!.rubric_slug || 'articles',
-            imageSrc,
-            formattedDate,
-          };
-        });
-    }
+    rubricCards = await transformRubricsToCarousel(lang, 6);
   } catch (error) {
-    console.error('Error fetching search hub content:', error);
+    console.error('Error fetching rubrics:', error);
   }
-
-  // Transform rubrics
-  const transformedRubrics = rubrics.map((rubric: Rubric) => {
-    const translation = rubric.translations?.find(t => t.languages_code === lang);
-    return {
-      ...rubric,
-      name: translation?.name || rubric.slug,
-      description: translation?.description || '',
-      icon: rubric.nav_icon,
-      url: `/${lang}/${rubric.slug}`,
-    };
-  }).slice(0, 6);
 
   const hasResults = currentPageSlugs.length > 0;
   const isEmptyState = !searchQuery;
@@ -211,42 +163,13 @@ export default async function SearchPage({
         </ActionLink>
       </Section>
 
-      {transformedRubrics.length > 0 && dictionary.search.hub && (
-        <Section 
-          title={dictionary.search.hub.browseCategories}
-          titleLevel="h2"
-          variant="tertiary"
-          hasNextSectionTitle={true}
-        >
-
-          {/* Carousel */}
-          <CardCarousel
-            cards={transformedRubrics.map(rubric => {
-              const iconField = rubric.nav_icon || rubric.icon;
-              const iconSrc = iconField ? `${DIRECTUS_URL}/assets/${iconField}` : undefined;
-
-              return {
-                type: 'rubric' as const,
-                slug: rubric.slug,
-                name: rubric.name,
-                description: rubric.description,
-                iconSrc,
-                url: rubric.url,
-                articleCount: rubric.articleCount,
-              };
-            })}
-            lang={lang}
-            dictionary={dictionary}
-          />
-
-          <ActionLink 
-            href={`/${lang}/rubrics`}
-            variant="primary"
-          >
-            {dictionary.sections.home.viewAllRubrics}
-          </ActionLink>
-        </Section>
-      )}
+      <RubricsCarouselSection
+        cards={rubricCards}
+        lang={lang}
+        dictionary={dictionary}
+        title={dictionary.search.hub.browseCategories}
+        variant="tertiary"
+      />
     </>
   );
 }

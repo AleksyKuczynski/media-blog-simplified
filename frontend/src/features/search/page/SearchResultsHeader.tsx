@@ -54,6 +54,7 @@ export default function SearchResultsHeader({
         <SortingControl
           dictionary={dictionary}
           currentSort={currentSort}
+          variant="search"
         />
       </aside>
     </header>

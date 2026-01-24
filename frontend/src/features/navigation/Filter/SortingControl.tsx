@@ -4,7 +4,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dictionary } from '@/config/i18n';
 import type { DropdownItemType } from '@/shared/ui/Dropdown/types';
-import { FILTER_CONTROL_STYLES } from './styles';
+import { FILTER_CONTROL_STYLES, SEARCH_SORTING_STYLES } from './styles';
 import Dropdown from '@/shared/ui/Dropdown/Dropdown';
 import DropdownTrigger from '@/shared/ui/Dropdown/DropdownTrigger';
 import DropdownContent from '@/shared/ui/Dropdown/DropdownContent';
@@ -13,6 +13,7 @@ import DropdownItem from '@/shared/ui/Dropdown/DropdownItem';
 interface SortingControlProps {
   readonly dictionary: Dictionary;
   readonly currentSort: string;
+  readonly variant?: 'filter' | 'search';
   onOpenChange?: (isOpen: boolean) => void;
   onHoverChange?: (isHovering: boolean) => void;
 }
@@ -20,6 +21,7 @@ interface SortingControlProps {
 export default function SortingControl({ 
   dictionary, 
   currentSort,
+  variant = 'filter',
   onOpenChange,
   onHoverChange
 }: SortingControlProps) {
@@ -28,6 +30,7 @@ export default function SortingControl({
   const pathname = usePathname();
 
   const sorting = dictionary.filter;
+  const styles = variant === 'search' ? SEARCH_SORTING_STYLES : FILTER_CONTROL_STYLES;
 
   const sortItems: DropdownItemType[] = [
     { id: 'desc', label: sorting.labels.newest, value: 'desc' },
@@ -49,7 +52,7 @@ export default function SortingControl({
 
   return (
     <div 
-      className={FILTER_CONTROL_STYLES.wrapper}
+      className={styles.wrapper}
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
     >
@@ -60,12 +63,12 @@ export default function SortingControl({
         defaultItemId="desc"
       >
         <DropdownTrigger
-          className={FILTER_CONTROL_STYLES.dropdown.button}
+          className={styles.dropdown.button}
           label={sorting.labels.sortBy}
           classNames={{
-            label: FILTER_CONTROL_STYLES.label,
-            text: FILTER_CONTROL_STYLES.dropdown.text,
-            icon: FILTER_CONTROL_STYLES.dropdown.icon
+            label: styles.label,
+            text: styles.dropdown.text,
+            icon: styles.dropdown.icon
           }}
           ariaLabel={sorting.labels.sortBy}
         >

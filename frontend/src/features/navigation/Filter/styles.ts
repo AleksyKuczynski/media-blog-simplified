@@ -63,3 +63,25 @@ export const FILTER_BUTTON_STYLES = {
     centered: 'flex items-center justify-between w-64 px-4 py-2 border-2 border-prcolor rounded-md',
   },
 } as const;
+
+export const SEARCH_SORTING_STYLES = {
+  wrapper: cn(
+    'flex flex-col',
+  ),
+  label: cn(
+    'text-xs lowercase font-medium text-sec-dim mb-1',
+    'md:text-sm',
+  ),
+  dropdown: {
+    button: cn(
+      'flex flex-col items-start w-full sm:w-48',
+      'bg-sf hover:bg-sf-hi border border-ol transition-all duration-300',
+      'focus:shadow-md',
+      '[&.is-dropdown-open]:bg-sf [&.is-dropdown-open]:shadow-md',
+      'rounded-lg px-4 py-2 text-sm',
+      'md:rounded-xl md:px-6 md:py-3 md:text-base',
+    ),
+    icon: 'h-4 w-4 ml-2 flex-shrink-0 md:h-5 md:w-5',
+    text: 'truncate lowercase',
+  },
+} as const;
