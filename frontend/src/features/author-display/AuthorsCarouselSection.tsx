@@ -1,12 +1,12 @@
-// src/features/rubric-display/RubricsCarouselSection.tsx
+// src/features/author-display/AuthorsCarouselSection.tsx
 
 import Section from '@/features/layout/Section';
 import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
 import { ActionLink } from '@/shared/primitives/ActionLink';
 import { Dictionary, Lang } from '@/config/i18n';
-import { transformRubricsToCarousel } from '@/api/directus/transformToCarouselCards';
+import { transformAuthorsToCarousel } from '@/api/directus/transformToCarouselCards';
 
-interface RubricsCarouselSectionProps {
+interface AuthorsCarouselSectionProps {
   lang: Lang;
   dictionary: Dictionary;
   title: string;
@@ -14,18 +14,18 @@ interface RubricsCarouselSectionProps {
   limit?: number;
 }
 
-export default async function RubricsCarouselSection({
+export default async function AuthorsCarouselSection({
   lang,
   dictionary,
   title,
   variant = 'tertiary',
-  limit = 6
-}: RubricsCarouselSectionProps) {
+  limit = 4
+}: AuthorsCarouselSectionProps) {
   let cards;
   try {
-    cards = await transformRubricsToCarousel(lang, limit);
+    cards = await transformAuthorsToCarousel(lang, limit);
   } catch (error) {
-    console.error('Error fetching rubrics:', error);
+    console.error('Error fetching authors:', error);
     return null;
   }
 
@@ -47,10 +47,10 @@ export default async function RubricsCarouselSection({
       />
       
       <ActionLink 
-        href={`/${lang}/rubrics`}
-        variant="primary"
+        href={`/${lang}/authors`}
+        variant={variant}
       >
-        {dictionary.sections.home.viewAllRubrics}
+        {dictionary.sections.authors.allAuthors}
       </ActionLink>
     </Section>
   );

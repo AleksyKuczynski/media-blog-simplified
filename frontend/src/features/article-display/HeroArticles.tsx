@@ -1,21 +1,30 @@
-// src/main/components/Main/HeroArticles.tsx
+// src/features/article-display/HeroArticles.tsx
 
 import { Suspense } from 'react';
 import { Dictionary, Lang } from '@/config/i18n';
+import Section from '@/features/layout/Section';
+import { ActionLink } from '@/shared/primitives/ActionLink';
 import ArticleCard from './ArticleCard';
 import { HeroArticlesSkeleton } from './HeroArticlesSkeleton';
 import { HERO_ARTICLES_STYLES } from './styles';
+import { fetchHeroSlugs } from '@/api/directus';
 
 interface HeroArticlesProps {
-  slugs: string[];
   lang: Lang;
   dictionary: Dictionary;
   rubricSlug?: string;
 }
 
+async function HeroArticlesContent({ lang, dictionary, rubricSlug }: HeroArticlesProps) {
+  let slugs: string[] = [];
+  
+  try {
+    slugs = await fetchHeroSlugs(lang);
+  } catch (error) {
+    console.error('Error fetching hero articles:', error);
+    return null;
+  }
 
-
-export default function HeroArticles({ slugs, lang, dictionary, rubricSlug }: HeroArticlesProps) {
   if (slugs.length === 0) {
     return (
       <div className={HERO_ARTICLES_STYLES.empty}>
@@ -27,9 +36,7 @@ export default function HeroArticles({ slugs, lang, dictionary, rubricSlug }: He
   const [promotedSlug, ...latestSlugs] = slugs;
 
   return (
-    <Suspense fallback={
-      <HeroArticlesSkeleton latestCount={latestSlugs.length} />
-    }>
+    <>
       <div className={HERO_ARTICLES_STYLES.container}>
         {/* Promoted Article */}
         <div className={HERO_ARTICLES_STYLES.promoted.wrapper}>
@@ -56,6 +63,31 @@ export default function HeroArticles({ slugs, lang, dictionary, rubricSlug }: He
           ))}
         </div>
       </div>
-    </Suspense>
+
+      <ActionLink 
+        href={`/${lang}/articles`}
+      >
+        {dictionary.sections.home.viewAllArticles}
+      </ActionLink>
+    </>
+  );
+}
+
+export default function HeroArticles({ lang, dictionary, rubricSlug }: HeroArticlesProps) {
+  return (
+    <Section 
+      title={dictionary.sections.home.featuredContent}
+      titleLevel="h2"
+      variant="default"
+      hasNextSectionTitle={true}
+    >
+      <Suspense fallback={<HeroArticlesSkeleton latestCount={3} />}>
+        <HeroArticlesContent 
+          lang={lang}
+          dictionary={dictionary}
+          rubricSlug={rubricSlug}
+        />
+      </Suspense>
+    </Section>
   );
 }

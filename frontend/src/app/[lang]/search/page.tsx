@@ -164,7 +164,6 @@ export default async function SearchPage({
       </Section>
 
       <RubricsCarouselSection
-        cards={rubricCards}
         lang={lang}
         dictionary={dictionary}
         title={dictionary.search.hub.browseCategories}
