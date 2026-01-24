@@ -27,7 +27,6 @@ export default function MobileSearchContent({
     handlers,
     refs,
   } = useSearchLogic({
-    mode: 'standard',
     lang,
     onSearchComplete
   });

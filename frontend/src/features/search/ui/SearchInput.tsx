@@ -1,8 +1,6 @@
 // src/features/search/ui/SearchInput.tsx
 import React from 'react';
 import { SearchUIState } from '../types';
-import { ANIMATION_DURATION } from '@/shared/ui/constants';
-import { cn } from '@/lib/utils';
 import { SEARCH_INPUT_STYLES } from '../search.styles';
 
 interface SearchInputProps {
@@ -30,25 +28,8 @@ export default function SearchInput({
   const descriptionId = `${inputId}-description`;
   const resultsId = `${inputId}-results`;
 
-  const getContainerClasses = () => {
-    const baseClasses = `w-0 overflow-hidden transition-all duration-[${ANIMATION_DURATION}ms] transform origin-right`;
-    
-    switch (state.input.visibility) {
-      case 'hidden':
-        return cn(baseClasses, 'w-0 opacity-0');
-      case 'animating-in':
-        return cn(baseClasses, 'w-64 opacity-100');
-      case 'visible':
-        return cn(baseClasses, 'w-64 opacity-100');
-      case 'animating-out':
-        return cn(baseClasses, 'w-0 opacity-0');
-      default:
-        return baseClasses;
-    }
-  };
-
   return (
-    <div className={getContainerClasses()}>
+    <>
       {ariaDescription && (
         <div id={descriptionId} className="sr-only">
           {ariaDescription}
@@ -57,7 +38,7 @@ export default function SearchInput({
       
       <input
         id="search-bar-input"
-        ref={inputRef as React.RefObject<HTMLInputElement>}
+        ref={inputRef}
         type="text"
         className={SEARCH_INPUT_STYLES.input}
         placeholder={placeholder}
@@ -77,6 +58,6 @@ export default function SearchInput({
             : undefined
         }
       />
-    </div>
+    </>
   );
 }

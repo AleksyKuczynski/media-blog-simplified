@@ -25,7 +25,6 @@ export default function SearchBarForm({
     handlers,
     refs,
   } = useSearchLogic({
-    mode: 'standard',
     lang
   });
 

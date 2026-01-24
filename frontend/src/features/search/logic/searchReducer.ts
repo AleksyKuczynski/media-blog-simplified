@@ -1,13 +1,8 @@
-// src/main/components/Search/searchReducer.ts
+// src/features/search/logic/searchReducer.ts
 
-import { SearchUIState, SearchStepAction, SearchScenario, ComponentMode } from '../types';
+import { SearchUIState, SearchStepAction, SearchScenario } from '../types';
 
-export const getInitialState = (mode: ComponentMode = 'expandable'): SearchUIState => ({
-  mode,
-  input: {
-    visibility: mode === 'standard' ? 'visible' : 'hidden',
-    isFocused: false
-  },
+export const getInitialState = (): SearchUIState => ({
   dropdown: {
     visibility: 'hidden',
     content: 'message'
@@ -26,58 +21,24 @@ export function searchReducer(
   state: SearchUIState,
   action: SearchStepAction | SearchScenario
 ): SearchUIState {
-  if (state.mode === 'standard') {
-    switch (action.type) {
-      case 'START_INPUT_COLLAPSE':
-      case 'COMPLETE_INPUT_COLLAPSE':
-        return state;
-    }
-  }
   
   switch (action.type) {
-    // Expand Search Steps
-    case 'START_SEARCH_EXPANSION':
-      return {
-        ...state,
-        input: {
-          visibility: 'hidden',
-          isFocused: false
-        }
-      };
-
-    case 'ANIMATE_SEARCH_EXPANSION':
-      return {
-        ...state,
-        input: {
-          visibility: 'animating-in',
-          isFocused: false
-        }
-      };
-
-    case 'COMPLETE_SEARCH_EXPANSION':
-      return {
-        ...state,
-        input: {
-          visibility: 'visible',
-          isFocused: false
-        }
-      };
-
-    case 'SET_FOCUS':
-      return {
-        ...state,
-        input: {
-          ...state.input,
-          isFocused: true
-        }
-      };
-
-    case 'START_DROPDOWN_EXPANSION':
+    // Dropdown steps
+    case 'SHOW_DROPDOWN':
       return {
         ...state,
         dropdown: {
-          visibility: 'animating-in',
-          content: state.dropdown.content
+          ...state.dropdown,
+          visibility: 'visible'
+        }
+      };
+
+    case 'HIDE_DROPDOWN':
+      return {
+        ...state,
+        dropdown: {
+          visibility: 'hidden',
+          content: 'empty'
         }
       };
 
@@ -95,84 +56,14 @@ export function searchReducer(
         }
       };
 
-    case 'COMPLETE_DROPDOWN_EXPANSION':
-      return {
-        ...state,
-        dropdown: {
-          ...state.dropdown,
-          visibility: 'visible'
-        }
-      };
-
-    // Collapse Search Steps
-    case 'START_DROPDOWN_COLLAPSE':
-      return {
-        ...state,
-        dropdown: {
-          ...state.dropdown,
-          visibility: 'animating-out'
-        }
-      };
-
-    case 'COMPLETE_DROPDOWN_COLLAPSE':
-      return {
-        ...state,
-        dropdown: {
-          visibility: 'hidden',
-          content: 'empty'
-        }
-      };
-
-    case 'START_INPUT_COLLAPSE':
-      return {
-        ...state,
-        input: {
-          ...state.input,
-          visibility: 'animating-out',
-          isFocused: false
-        }
-      };
-
-    case 'COMPLETE_INPUT_COLLAPSE':
-      return {
-        ...state,
-        input: {
-          visibility: 'hidden',
-          isFocused: false
-        }
-      };
-
-    case 'CLEAR_QUERY':
-      return {
-        ...state,
-        query: '',
-        searchStatus: { 
-          type: 'minChars',
-          current: 0,
-          required: 3 
-        }
-      };
-
-    // Search Execution Steps
+    // Search execution
     case 'START_SEARCH':
-      return {
-        ...state,
-        searchStatus: { type: 'idle' }
-      };
+      return state;
 
     case 'SET_QUERY':
       return {
         ...state,
-        query: action.payload,
-        searchStatus: {
-          type: 'minChars',
-          current: action.payload.length,
-          required: 3
-        },
-        dropdown: {
-          ...state.dropdown,
-          content: 'message'
-        }
+        query: action.payload
       };
 
     case 'SET_SEARCHING_STATE':
@@ -185,44 +76,43 @@ export function searchReducer(
       return {
         ...state,
         suggestions: action.payload,
-        searchStatus: {
-          type: action.payload.length > 0 ? 'success' : 'noResults',
-          count: action.payload.length
-        },
         dropdown: {
-          ...state.dropdown,
+          visibility: 'visible',
           content: action.payload.length > 0 ? 'suggestions' : 'message'
-        }
+        },
+        searchStatus: action.payload.length > 0
+          ? { type: 'success', count: action.payload.length }
+          : { type: 'noResults' }
       };
 
     case 'SET_SEARCH_ERROR':
       return {
         ...state,
-        searchStatus: { type: 'noResults' },
-        suggestions: [],
         dropdown: {
-          ...state.dropdown,
+          visibility: 'visible',
           content: 'message'
-        }
+        },
+        searchStatus: { type: 'noResults' }
       };
 
-    // Navigation Steps
+    // Navigation
     case 'NAVIGATE_UP':
       return {
         ...state,
-        selectedIndex: Math.max(state.selectedIndex - 1, -1)
+        selectedIndex: state.selectedIndex > 0 
+          ? state.selectedIndex - 1 
+          : state.suggestions.length - 1
       };
 
     case 'NAVIGATE_DOWN':
       return {
         ...state,
-        selectedIndex: Math.min(
-          state.selectedIndex + 1,
-          state.suggestions.length - 1
-        )
+        selectedIndex: state.selectedIndex < state.suggestions.length - 1 
+          ? state.selectedIndex + 1 
+          : 0
       };
 
-    // Selection Steps
+    // Selection
     case 'SELECT_ITEM':
       return {
         ...state,
@@ -231,18 +121,7 @@ export function searchReducer(
 
     // Reset
     case 'RESET_STATE':
-      return {
-        ...getInitialState(state.mode)
-      };
-
-    // Handle scenarios by delegating to orchestrator
-    case 'SCENARIO_EXPAND_SEARCH':
-    case 'SCENARIO_COLLAPSE_SEARCH':
-    case 'SCENARIO_EXECUTE_SEARCH':
-    case 'SCENARIO_NAVIGATE_RESULTS':
-    case 'SCENARIO_SELECT_RESULT':
-      // These are handled by searchScenarios.ts
-      return state;
+      return getInitialState();
 
     default:
       return state;

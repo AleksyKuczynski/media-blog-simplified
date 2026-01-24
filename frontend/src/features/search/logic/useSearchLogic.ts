@@ -1,4 +1,4 @@
-// src/main/components/Search/useSearchLogic.ts
+// src/features/search/logic/useSearchLogic.ts
 import { useReducer, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useOutsideClick } from '@/lib/hooks';
@@ -10,7 +10,6 @@ import { Lang } from '@/config/i18n';
 import { createSearchUrl } from '../utils/createSearchUrl';
 
 interface UseSearchLogicProps {
-  mode: 'standard' | 'expandable';
   lang: Lang;
   onSearchComplete?: () => void;
 }
@@ -25,8 +24,8 @@ interface UseSearchLogicReturn {
     handleSearchButton: () => void;
   };
   refs: {
-    containerRef: React.RefObject<HTMLDivElement | null>; // ✅ FIXED: Add | null
-    inputRef: React.RefObject<HTMLInputElement | null>;   // ✅ FIXED: Add | null
+    containerRef: React.RefObject<HTMLDivElement | null>;
+    inputRef: React.RefObject<HTMLInputElement | null>;
   };
   utils: {
     hasNavigableContent: boolean;
@@ -35,11 +34,10 @@ interface UseSearchLogicReturn {
 }
 
 export function useSearchLogic({
-  mode,
   lang,
   onSearchComplete
 }: UseSearchLogicProps): UseSearchLogicReturn {
-  const [state, dispatch] = useReducer(searchReducer, mode, getInitialState);
+  const [state, dispatch] = useReducer(searchReducer, undefined, getInitialState);
   const { handleSearch } = useSearch();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -51,19 +49,15 @@ export function useSearchLogic({
                             state.suggestions.length > 0;
 
   const cleanupAndClose = useCallback(() => {
-    // Czyszczenie query
     dispatch({ type: 'RESET_STATE' });
     
-    // Zamykanie komponentu
     handleSearchScenario({
       type: 'SCENARIO_COLLAPSE_SEARCH',
-      dispatch,
-      mode
+      dispatch
     });
 
-    // Wywołanie callback'a zamknięcia (dla MobileNav)
     onSearchComplete?.();
-  }, [dispatch, mode, onSearchComplete]);
+  }, [dispatch, onSearchComplete]);
 
   const handleInputChange = useCallback(async (value: string) => {
     handleSearchScenario({
@@ -86,17 +80,6 @@ export function useSearchLogic({
   }, [handleSearch]);
 
   const handleSearchButton = useCallback(() => {
-    if (mode === 'expandable' && state.input.visibility === 'hidden' && inputRef) {
-      handleSearchScenario({
-        type: 'SCENARIO_EXPAND_SEARCH',
-        dispatch,
-        mode,
-        inputRef: inputRef as React.RefObject<HTMLInputElement>
-      });
-      return;
-    }
-  
-    // Najpierw sprawdzamy czy można nawigować
     if (hasNavigableContent) {
       const searchUrl = createSearchUrl(state.query, searchParams);
       router.push(`/${lang}${searchUrl}`);
@@ -104,26 +87,22 @@ export function useSearchLogic({
       return;
     }
   
-    // Jeśli nie ma wystarczającej liczby znaków, zamykamy dropdown
     handleSearchScenario({
       type: 'SCENARIO_COLLAPSE_SEARCH',
-      dispatch,
-      mode
+      dispatch
     });
-  }, [mode, state.input.visibility, state.query, lang, searchParams, router, inputRef, hasNavigableContent, onSearchComplete]);
+  }, [state.query, lang, searchParams, router, hasNavigableContent, onSearchComplete]);
 
   const getIconType = useCallback(() => {
-    // Przypadki dla CloseIcon
     if (
-      (state.searchStatus.type === 'minChars' && state.query.length > 0) || // invalid query
-      state.searchStatus.type === 'noResults' // brak wyników
+      (state.searchStatus.type === 'minChars' && state.query.length > 0) ||
+      state.searchStatus.type === 'noResults'
     ) {
       return 'close';
     }
   
     return 'search';
   }, [state.searchStatus.type, state.query.length]);
-  
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     switch (e.key) {
@@ -183,33 +162,20 @@ export function useSearchLogic({
   }, [state.suggestions, lang, router, cleanupAndClose]);
 
   const handleFocus = useCallback(() => {
-    if (mode === 'standard') {
-      // Zachowaj referencję do aktualnie sfokusowanego elementu
-      const activeElement = document.activeElement;
-      
-      handleSearchScenario({
-        type: 'SCENARIO_EXPAND_SEARCH',
-        dispatch,
-        mode,
-        inputRef
-      });
-  
-      // Przywróć focus po wykonaniu scenariusza
-      if (activeElement instanceof HTMLElement) {
-        activeElement.focus();
-      }
-    }
-  }, [mode]);
+    handleSearchScenario({
+      type: 'SCENARIO_EXPAND_SEARCH',
+      dispatch
+    });
+  }, []);
 
   useOutsideClick(
     containerRef,
     null,
-    mode === 'standard' || state.input.visibility !== 'hidden',
+    state.dropdown.visibility === 'visible',
     () => {
       handleSearchScenario({
         type: 'SCENARIO_COLLAPSE_SEARCH',
-        dispatch,
-        mode
+        dispatch
       });
     }
   );
