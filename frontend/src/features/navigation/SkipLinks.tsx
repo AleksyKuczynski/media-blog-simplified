@@ -3,7 +3,7 @@
 
 import { Dictionary } from '@/config/i18n';
 import { getSkipLinksAccessibility, getSkipLinksData } from '@/config/i18n/helpers/navigation';
-import { SKIP_LINKS_STYLES } from './styles';
+import { SKIP_LINKS_STYLES } from './navigation.styles';
 
 interface SkipLinksProps {
   dictionary: Dictionary;

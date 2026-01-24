@@ -14,7 +14,7 @@ import { getDictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ITEMS_PER_PAGE } from '@/api/directus';
 import { RubricPageSchema } from '@/shared/seo/schemas/RubricPageSchema';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import { SECTION_COUNT_OVERLAP_STYLES } from '@/features/layout/styles';
+import { SECTION_COUNT_OVERLAP_STYLES } from '@/features/layout/layout.styles';
 
 export const revalidate = 300;
 

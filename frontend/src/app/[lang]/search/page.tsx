@@ -111,17 +111,6 @@ export default async function SearchPage({
           />
         </div>
 
-        {isEmptyState && dictionary.search.hub && (
-          <div 
-            className="text-center py-8 mb-8"
-            role="status"
-          >
-            <p className="text-lg text-on-sf-var">
-              {dictionary.search.hub.emptyStateMessage}
-            </p>
-          </div>
-        )}
-
         {resultsMode && (
           <SearchResults
             dictionary={dictionary}

@@ -1,7 +1,7 @@
 // src/main/components/ArticleCards/AdvertisingCardSkeleton.tsx
 
 import { cn } from '@/lib/utils/cn';
-import { ADVERTISING_CARD_SKELETON_STYLES } from './styles';
+import { ADVERTISING_CARD_SKELETON_STYLES } from './articles.styles';
 
 export function AdvertisingCardSkeleton() {
   return (

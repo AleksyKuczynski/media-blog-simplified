@@ -1,6 +1,6 @@
 // src/features/layout/CardGrid.tsx
 import React from 'react';
-import { CARD_GRID_STYLES } from './styles';
+import { CARD_GRID_STYLES } from './layout.styles';
 
 interface CardGridProps {
   children: React.ReactNode;

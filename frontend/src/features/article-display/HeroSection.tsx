@@ -1,6 +1,6 @@
 // src/features/article-display/HeroSection.tsx
 
-import { HERO_SECTION_STYLES } from './styles';
+import { HERO_SECTION_STYLES } from './articles.styles';
 import { Dictionary } from '@/config/i18n';
 
 interface HeroSectionProps {

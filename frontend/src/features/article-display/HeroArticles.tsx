@@ -6,7 +6,7 @@ import Section from '@/features/layout/Section';
 import { ActionLink } from '@/shared/primitives/ActionLink';
 import ArticleCard from './ArticleCard';
 import { HeroArticlesSkeleton } from './HeroArticlesSkeleton';
-import { HERO_ARTICLES_STYLES } from './styles';
+import { HERO_ARTICLES_STYLES } from './articles.styles';
 import { fetchHeroSlugs } from '@/api/directus';
 
 interface HeroArticlesProps {

@@ -7,7 +7,7 @@ import { Dictionary, Lang } from '@/config/i18n';
 import { getFilterAccessibilityData } from '@/config/i18n/helpers/filter';
 import { useFilterGroup, useFilterValidation } from './useFilterGroup';
 import SortingControl from './SortingControl';
-import { FILTER_STYLES, FILTER_CONTROL_STYLES } from './styles';
+import { FILTER_STYLES, FILTER_CONTROL_STYLES } from './filter.styles';
 import { cn } from '@/lib/utils';
 import Dropdown from '@/shared/ui/Dropdown/Dropdown';
 import DropdownTrigger from '@/shared/ui/Dropdown/DropdownTrigger';

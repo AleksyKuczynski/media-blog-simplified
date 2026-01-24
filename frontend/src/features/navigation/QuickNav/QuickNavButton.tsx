@@ -1,7 +1,7 @@
 // frontend/src/features/navigation/QuickNavButton.tsx
 import Link from 'next/link';
 import Image from 'next/image';
-import { QUICK_NAV_STYLES } from '../styles';
+import { QUICK_NAV_STYLES } from '../navigation.styles';
 
 type NavType = 'articles' | 'rubrics' | 'authors';
 

@@ -6,7 +6,7 @@ import NavLinks from './NavLinks'
 import LanguageSwitcher from './LanguageSwitcher'
 import { Dictionary, Lang } from '@/config/i18n'
 import { ExpandableSearch } from '../../search'
-import { DESKTOP_NAV_STYLES } from '../styles'
+import { DESKTOP_NAV_STYLES } from '../navigation.styles'
 
 interface DesktopNavProps {
   dictionary: Dictionary

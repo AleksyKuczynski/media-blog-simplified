@@ -1,7 +1,7 @@
 // src/features/layout/CollectionDescription.tsx
 
 import { cn } from '@/lib/utils';
-import { COLLECTION_DESCRIPTION_STYLES } from './styles';
+import { COLLECTION_DESCRIPTION_STYLES } from './layout.styles';
 
 interface CollectionDescriptionProps {
   children: React.ReactNode;

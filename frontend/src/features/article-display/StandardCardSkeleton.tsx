@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils/cn';
 // ✅ Import from StandardCard where styling logic lives
-import { STANDARD_CARD_SKELETON_STYLES } from './styles';
+import { STANDARD_CARD_SKELETON_STYLES } from './articles.styles';
 
 interface StandardCardSkeletonProps {
   layout?: 'regular' | 'promoted' | 'latest';

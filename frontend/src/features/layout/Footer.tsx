@@ -6,7 +6,7 @@ import { Dictionary, Lang } from '@/config/i18n';
 import Link from 'next/link';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { ContactModal } from './ContactModal';
-import { FOOTER_STYLES } from './styles';
+import { FOOTER_STYLES } from './layout.styles';
 import { getFooterNavigationItems } from '@/config/i18n/helpers/navigation';
 import { OrganizationSchema } from '@/shared/seo/schemas/OrganizationSchema';
 import { 

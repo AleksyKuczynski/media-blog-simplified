@@ -4,7 +4,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Dictionary } from '@/config/i18n';
 import type { DropdownItemType } from '@/shared/ui/Dropdown/types';
-import { FILTER_CONTROL_STYLES, SEARCH_SORTING_STYLES } from './styles';
+import { FILTER_CONTROL_STYLES, SEARCH_SORTING_STYLES } from './filter.styles';
 import Dropdown from '@/shared/ui/Dropdown/Dropdown';
 import DropdownTrigger from '@/shared/ui/Dropdown/DropdownTrigger';
 import DropdownContent from '@/shared/ui/Dropdown/DropdownContent';

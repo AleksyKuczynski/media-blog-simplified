@@ -5,7 +5,7 @@ import { fetchAllAuthors, fetchRubricBasics } from '@/api/directus';
 import Section from '@/features/layout/Section';
 import { AuthorCardSkeleton } from '@/features/author-display/AuthorCardSkeleton';
 import { AuthorsList } from '@/features/author-display/AuthorsList';
-import { AUTHORS_GRID_STYLES } from '@/features/author-display/styles';
+import { AUTHORS_GRID_STYLES } from '@/features/author-display/author.styles';
 import { getDictionary, Lang } from '@/config/i18n';
 import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMetadata';
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';

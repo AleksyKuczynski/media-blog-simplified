@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ChevronRightIcon } from '@/shared/primitives/Icons';
 import { Dictionary, Lang } from '@/config/i18n';
 import { detectBreadcrumbContext, generateContextualBreadcrumbs } from './lib/breadcrumbContextDetector';
-import { BREADCRUMB_STYLES, SMART_BREADCRUMB_STYLES } from './styles';
+import { BREADCRUMB_STYLES, SMART_BREADCRUMB_STYLES } from './breadcrumbs.styles';
 import { generateSmartBreadcrumbSchemas, BreadcrumbSchemas } from '@/shared/seo/schemas/BreadcrumbSchema';
 
 interface SmartBreadcrumbsProps {

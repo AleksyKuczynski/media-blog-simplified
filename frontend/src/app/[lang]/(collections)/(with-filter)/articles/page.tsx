@@ -12,7 +12,7 @@ import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema'
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import { fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus';
-import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
+import { SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
 
 export const revalidate = 300;
 export const dynamicParams = true;

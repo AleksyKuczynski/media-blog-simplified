@@ -1,8 +1,8 @@
 // src/features/rubric-display/RubricsPageSkeleton.tsx
 
 import { cn } from '@/lib/utils/cn';
-import { COLLECTION_DESCRIPTION_STYLES } from '@/features/layout/styles';
-import { RUBRICS_GRID_STYLES } from './styles';
+import { COLLECTION_DESCRIPTION_STYLES } from '@/features/layout/layout.styles';
+import { RUBRICS_GRID_STYLES } from './rubric.styles';
 
 interface RubricsPageSkeletonProps {
   ariaLabel?: string;

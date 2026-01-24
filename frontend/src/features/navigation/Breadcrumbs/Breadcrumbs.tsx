@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ChevronRightIcon } from '@/shared/primitives/Icons';
 import { RubricBasic, Category } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
-import { BREADCRUMB_STYLES, SIMPLE_BREADCRUMB_STYLES } from './styles';
+import { BREADCRUMB_STYLES, SIMPLE_BREADCRUMB_STYLES } from './breadcrumbs.styles';
 
 interface BreadcrumbsProps {
   lang: Lang;

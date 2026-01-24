@@ -7,7 +7,7 @@ import MobileNavigation from '../MobileNav/MobileNav'
 import SkipLinks from '../SkipLinks'
 import { Dictionary, Lang } from '@/config/i18n'
 import { CompleteNavigationSchema } from '@/shared/seo'
-import { HEADER_STYLES } from '../styles'
+import { HEADER_STYLES } from '../navigation.styles'
 import { 
   getCurrentPageTitle, 
   isSearchPage, 

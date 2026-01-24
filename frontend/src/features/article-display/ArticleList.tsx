@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { Dictionary, Lang } from '@/config/i18n';
 import ArticleCard from './ArticleCard';
 import { ArticleCardSkeletonVariant } from './ArticleCardVariant';
-import { ARTICLE_LIST_STYLES } from './styles';
+import { ARTICLE_LIST_STYLES } from './articles.styles';
 import { ArticleSlugInfo } from '@/api/directus';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 

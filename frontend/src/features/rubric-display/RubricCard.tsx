@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Dictionary, Lang } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { DIRECTUS_URL, Asset } from '@/api/directus';
-import { RUBRIC_CARD_STYLES } from './styles';
+import { RUBRIC_CARD_STYLES } from './rubric.styles';
 
 export interface RubricCardProps {
   rubric: {

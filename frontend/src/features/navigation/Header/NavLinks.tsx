@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Dictionary, Lang } from '@/config/i18n';
 import { getHeaderNavigationItems } from '@/config/i18n/helpers/navigation';
-import { NAV_LINK_STYLES } from '../styles';
+import { NAV_LINK_STYLES } from '../navigation.styles';
 import { cn } from '@/lib/utils';
 import { NavigationLink } from './NavigationLink';
 import { getNavImageSrc, isLinkActive } from './utils/navLinks.utils';

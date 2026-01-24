@@ -1,6 +1,6 @@
 // src/main/components/Main/HeroArticlesSkeleton.tsx
 
-import { HERO_ARTICLES_SKELETON_STYLES } from './styles';
+import { HERO_ARTICLES_SKELETON_STYLES } from './articles.styles';
 import { ArticleCardSkeletonVariant } from './ArticleCardVariant';
 
 interface HeroArticlesSkeletonProps {

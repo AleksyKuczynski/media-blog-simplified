@@ -2,8 +2,8 @@
 
 import { cn } from '@/lib/utils/cn';
 import { ArticleCardSkeletonVariant } from '@/features/article-display/ArticleCardVariant';
-import { ARTICLE_LIST_STYLES } from '@/features/article-display/styles';
-import { COLLECTION_DESCRIPTION_STYLES, SECTION_COUNT_STYLES } from '@/features/layout/styles';
+import { ARTICLE_LIST_STYLES } from '@/features/article-display/articles.styles';
+import { COLLECTION_DESCRIPTION_STYLES, SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
 
 interface RubricPageSkeletonProps {
   ariaLabel?: string;

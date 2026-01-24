@@ -3,7 +3,7 @@
 
 import React from 'react';
 import { MobilePanelOverlay } from './MobilePanelOverlay';
-import { OFFCANVAS_PANEL_STYLES } from './styles';
+import { OFFCANVAS_PANEL_STYLES } from './mobileNav.styles';
 import { cn } from '@/lib/utils';
 import { CloseIcon } from '@/shared/primitives/Icons';
 

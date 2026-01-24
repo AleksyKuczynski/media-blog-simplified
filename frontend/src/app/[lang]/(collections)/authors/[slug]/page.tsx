@@ -14,7 +14,7 @@ import AuthorSchema from '@/shared/seo/schemas/AuthorSchema';
 import { getDictionary, Lang } from '@/config/i18n';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import CollectionCount from '@/features/layout/CollectionCount';
-import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
+import { SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
 
 export const revalidate = 3600;
 export const dynamicParams = true;

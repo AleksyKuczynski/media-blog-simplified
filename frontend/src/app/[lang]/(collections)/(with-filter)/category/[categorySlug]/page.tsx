@@ -9,7 +9,7 @@ import { getDictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchAllCategories, ITEMS_PER_PAGE } from '@/api/directus';
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
 import CollectionCount from '@/features/layout/CollectionCount';
-import { SECTION_COUNT_STYLES } from '@/features/layout/styles';
+import { SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
 
 export const revalidate = 300;
 

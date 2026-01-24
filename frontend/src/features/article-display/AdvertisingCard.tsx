@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { AdvertisingCardProps } from './interfaces';
-import { ADVERTISING_CARD_STYLES } from './styles';
+import { ADVERTISING_CARD_STYLES } from './articles.styles';
 
 export function AdvertisingCard({ 
   article, 

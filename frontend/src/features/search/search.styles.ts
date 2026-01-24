@@ -3,6 +3,8 @@
  * Search Components - Centralized Style Constants
  */
 
+import { cn } from "@/lib/utils";
+
 export const EXPANDABLE_SEARCH_STYLES = {
   container: 'relative',
   wrapper: {
@@ -79,11 +81,23 @@ export const SEARCH_INPUT_STYLES = {
 } as const;
 
 export const SEARCH_BAR_FORM_STYLES = {
-  container: 'w-full',
+  container: cn(
+    'mx-4 pt-12 pb-36',
+    'xs:mx-6',
+    'sm:mx-auto sm:max-w-md',
+    'md: pb-72',
+    'lg:max-w-lg',
+    'xl:max-w-lg',
+
+  ),
   wrapper: 'relative',
-  inputWrapper: 'flex items-center gap-3 bg-sf-hi rounded-lg shadow-md hover:shadow-lg focus-within:ring-2 focus-within:ring-pr-fix focus-within:ring-offset-2 transition-all duration-200 px-4 py-3',
+  inputWrapper: 'flex items-center gap-3 bg-sf rounded-2xl shadow-md hover:shadow-lg focus-within:shadow-none focus-within:ring-1 focus-within:ring-pr-fix focus-within:ring-offset-2 transition-all duration-200 px-4 py-3',
   icon: 'text-on-sf-var pointer-events-none flex-shrink-0',
-  iconSize: 'w-6 h-6',
+  iconSize: cn(
+    'w-6 h-6',
+    'md:w-7 md:h-7',
+    'xl:w-8 xl:h-8',
+  ),
   dropdown: 'rounded-lg shadow-lg',
 } as const;
 

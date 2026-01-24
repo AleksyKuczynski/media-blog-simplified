@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { NewsCardProps } from './interfaces';
-import { NEWS_CARD_STYLES } from './styles';
+import { NEWS_CARD_STYLES } from './articles.styles';
 
 export function NewsCard({ 
   article, 

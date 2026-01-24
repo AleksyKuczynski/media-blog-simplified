@@ -2,7 +2,7 @@
 import { fetchAllAuthors } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
 import AuthorCard from './AuthorCard';
-import { AUTHORS_GRID_STYLES } from './styles';
+import { AUTHORS_GRID_STYLES } from './author.styles';
 
 interface AuthorsListProps {
   lang: Lang;

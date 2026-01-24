@@ -1,6 +1,6 @@
 // src/features/layout/Section.tsx
 import { cn } from '@/lib/utils';
-import { SECTION_STYLES } from './styles';
+import { SECTION_STYLES } from './layout.styles';
 
 type SectionVariant = 'primary' | 'secondary' | 'tertiary' | 'default';
 

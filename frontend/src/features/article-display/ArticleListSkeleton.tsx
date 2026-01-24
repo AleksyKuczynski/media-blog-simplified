@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils/cn';
 import { ArticleCardSkeletonVariant } from './ArticleCardVariant';
-import { ARTICLE_LIST_STYLES } from './styles';
+import { ARTICLE_LIST_STYLES } from './articles.styles';
 
 interface ArticleListSkeletonProps {
   count?: number;

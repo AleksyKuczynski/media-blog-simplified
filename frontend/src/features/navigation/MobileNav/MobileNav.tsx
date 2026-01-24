@@ -10,7 +10,7 @@ import LanguageSwitcher from '../Header/LanguageSwitcher'
 import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/config/i18n'
 import HamburgerButton from './HamburgerButton'
-import { MOBILE_NAV_STYLES, PANEL_CONTENT_STYLES } from './styles'
+import { MOBILE_NAV_STYLES, PANEL_CONTENT_STYLES } from './mobileNav.styles'
 import { cn } from '@/lib/utils'
 
 interface MobileNavProps {

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
-import { AUTHOR_CARD_STYLES } from './styles';
+import { AUTHOR_CARD_STYLES } from './author.styles';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import CollectionCount from '../layout/CollectionCount';
 

@@ -12,7 +12,7 @@ import RandomArticlesSection from '@/features/article-display/RandomArticlesSect
 import CollectionDescription from '@/features/layout/CollectionDescription';
 import PageError from '@/shared/errors/PageError';
 import EmptyState from '@/shared/ui/EmptyState';
-import { RUBRICS_GRID_STYLES } from '@/features/rubric-display/styles';
+import { RUBRICS_GRID_STYLES } from '@/features/rubric-display/rubric.styles';
 
 export const revalidate = 3600;
 

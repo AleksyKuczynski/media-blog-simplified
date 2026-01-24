@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils/cn';
 // ✅ Import style constants from parent component
-import { NEWS_CARD_SKELETON_STYLES } from './styles';
+import { NEWS_CARD_SKELETON_STYLES } from './articles.styles';
 
 export function NewsCardSkeleton() {
   return (

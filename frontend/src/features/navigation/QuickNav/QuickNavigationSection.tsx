@@ -1,6 +1,6 @@
 // frontend/src/features/navigation/QuickNavigationSection.tsx
 import { Dictionary, Lang } from '@/config/i18n';
-import { QUICK_NAV_STYLES } from '../styles';
+import { QUICK_NAV_STYLES } from '../navigation.styles';
 import QuickNavButton from './QuickNavButton';
 
 export default function QuickNavigationSection({

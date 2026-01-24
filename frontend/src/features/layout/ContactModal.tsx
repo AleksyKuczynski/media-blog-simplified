@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import type { Dictionary } from '@/config/i18n';
 import { Modal } from '@/shared/ui/Modal/Modal';
-import { CONTACT_MODAL_STYLES, getInputClasses, getStatusClasses } from './styles';
+import { CONTACT_MODAL_STYLES, getInputClasses, getStatusClasses } from './layout.styles';
 
 interface ContactModalProps {
   isOpen: boolean;
