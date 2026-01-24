@@ -66,6 +66,7 @@ export default function SearchResults({
     <Section
       ariaLabel={dictionary.search.accessibility.searchResultsLabel}
       className={SEARCH_PAGE_STYLES.results.section}
+      hasNextSectionTitle={true}
     >
       <SearchResultsHeader
         dictionary={dictionary}

@@ -12,6 +12,9 @@ import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import Link from 'next/link';
 import { ArticleCardData } from '@/features/shared/CardCarousel/types';
 import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
+import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
+import CollectionDescription from '@/features/layout/CollectionDescription';
+import { ActionLink } from '@/shared/primitives/ActionLink';
 
 export const revalidate = 0;
 
@@ -150,7 +153,12 @@ export default async function SearchPage({
         resultCount={totalCount}
       />
 
-      <SearchTips dictionary={dictionary} />
+      <Section 
+        title={dictionary.search.hub.exploreHeading}
+        titleLevel="h2"
+        hasNextSectionTitle={true}
+      >
+
 
       <div className="mb-8">
         <SearchBarForm
@@ -171,6 +179,9 @@ export default async function SearchPage({
         </div>
       )}
 
+      <SearchTips dictionary={dictionary} />
+      </Section>
+
       {resultsMode && (
         <SearchResults
           dictionary={dictionary}
@@ -185,33 +196,32 @@ export default async function SearchPage({
         />
       )}
 
-      {carouselCards.length > 0 && dictionary.search.hub && (
-        <Section 
-          title={dictionary.search.hub.exploreHeading}
-          titleLevel="h2"
-          hasNextSectionTitle={true}
-          variant='primary'
+      <Section 
+        title={dictionary.search.hub.exploreHeading}
+        titleLevel="h2"
+        hasNextSectionTitle={true}
+        variant="primary"
+      >
+        <RandomArticlesSection
+          lang={lang}
+          dictionary={dictionary}
+          limit={6}
+        />
+
+        <ActionLink 
+          href={`/${lang}/articles`}
         >
-          <CardCarousel
-            cards={carouselCards}
-            lang={lang}
-            dictionary={dictionary}
-          />
-        </Section>
-      )}
+          {dictionary.sections.home.viewAllArticles}
+        </ActionLink>
+      </Section>
 
       {transformedRubrics.length > 0 && dictionary.search.hub && (
         <Section 
           title={dictionary.search.hub.browseCategories}
           titleLevel="h2"
-          variant='secondary'
+          variant="tertiary"
+          hasNextSectionTitle={true}
         >
-          {/* Optional description */}
-          {dictionary.sections.home?.rubricsDescription && (
-            <p className="text-lg text-on-sf-var max-w-2xl mx-auto mb-8 text-center">
-              {dictionary.sections.home.rubricsDescription}
-            </p>
-          )}
 
           {/* Carousel */}
           <CardCarousel
@@ -233,21 +243,12 @@ export default async function SearchPage({
             dictionary={dictionary}
           />
 
-          {/* View All Link */}
-          <div className="text-center mt-8">
-            <Link 
-              href={`/${lang}/rubrics`}
-              className="inline-flex items-center gap-2 text-pr-cont hover:text-pr-fix font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-cont focus:ring-offset-2 rounded group"
-            >
-              {dictionary.sections.home?.viewAllRubrics || 'Смотреть все рубрики'}
-              <span 
-                className="transform transition-transform duration-200 group-hover:translate-x-1"
-                aria-hidden="true"
-              >
-                →
-              </span>
-            </Link>
-          </div>
+          <ActionLink 
+            href={`/${lang}/rubrics`}
+            variant="primary"
+          >
+            {dictionary.sections.home.viewAllRubrics}
+          </ActionLink>
         </Section>
       )}
     </>
