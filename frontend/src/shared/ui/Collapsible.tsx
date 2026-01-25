@@ -76,7 +76,7 @@ export default function Collapsible({
               }}
               aria-hidden="true"
             >
-              <ChevronDownIcon className="w-8 h-8 text-pr-cont" />
+              <ChevronDownIcon className="w-4 h-4 text-pr-cont" />
             </span>
           </button>
         </div>
@@ -108,13 +108,13 @@ export default function Collapsible({
       </div>
 
       {/* Desktop: Static heading with always-visible content */}
-      <div className="hidden xl:block bg-sf-cont/50 border border-ol-var/20">
-        <h2 className="flex items-center gap-3 px-4 py-3 font-medium text-on-sf">
+      <div className="hidden xl:block p-8 bg-sf-cont mx-auto max-w-xl border border-ol-var shadow-sm rounded-xl">
+        <h2 className="mb-6 flex items-center gap-3 text-xl text-on-sf">
           {icon && <span className="text-on-sf-var">{icon}</span>}
           <span>{title}</span>
         </h2>
 
-        <div className="px-4 py-3 text-on-sf-var">
+        <div className="text-on-sf-var">
           {children}
         </div>
       </div>

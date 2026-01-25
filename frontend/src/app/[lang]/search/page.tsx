@@ -70,7 +70,6 @@ export default async function SearchPage({
   }
 
   const hasResults = searchResults.totalResults > 0;
-  const isEmptyState = !searchQuery;
 
   // Determine search results mode
   let resultsMode: 'results' | 'no-results' | 'invalid-query' | null = null;

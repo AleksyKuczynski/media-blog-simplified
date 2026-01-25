@@ -24,7 +24,7 @@ export default function SearchInput({
   ariaLabel,
   ariaDescription
 }: SearchInputProps) {
-  const inputId = React.useId();
+  const inputId = 'search-bar-input';
   const descriptionId = `${inputId}-description`;
   const resultsId = `${inputId}-results`;
 

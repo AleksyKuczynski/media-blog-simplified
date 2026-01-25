@@ -1,13 +1,16 @@
-// src/app/[lang]/layout.tsx - SIMPLIFIED
+// src/app/[lang]/layout.tsx
 import React, { Suspense } from 'react';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Footer from '@/features/layout/Footer';
+import { FooterSkeleton } from '@/features/layout/FooterSkeleton';
 import Section from '@/features/layout/Section';
 import QuickNavigationSection from '@/features/navigation/QuickNav/QuickNavigationSection';
+import { QuickNavigationSkeleton } from '@/features/navigation/QuickNav/QuickNavigationSkeleton';
 import { getDictionary, type Lang } from '@/config/i18n';
 import { SUPPORTED_LANGUAGES } from '@/config/constants/constants';
 import Navigation from '@/features/navigation/Header/Header';
+import { NavigationSkeleton } from '@/features/navigation/Header/NavigationSkeleton';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -61,13 +64,7 @@ export default async function LanguageLayout({
 
   return (
     <div lang={lang} className="container-fluid flex flex-col pt-16 xl:pt-24 min-h-screen">
-      <Suspense fallback={
-        <div className="h-16 xl:h-24 bg-white border-b border-gray-200 flex items-center">
-          <div className="container mx-auto px-4">
-            <div className="h-8 bg-gray-100 rounded animate-pulse w-32" />
-          </div>
-        </div>
-      }>
+      <Suspense fallback={<NavigationSkeleton />}>
         <Navigation 
           dictionary={dictionary}
           lang={lang as Lang}
@@ -88,7 +85,7 @@ export default async function LanguageLayout({
         </main>
         
         <Suspense fallback={
-          <div className="h-32 bg-gray-50 border-t border-gray-200" />
+          <QuickNavigationSkeleton ariaLabel={dictionary.common.status.loading} />
         }>
           <Section 
             title={dictionary.sections.home.quickNavigation}
@@ -100,7 +97,7 @@ export default async function LanguageLayout({
       </div>
 
       <Suspense fallback={
-        <div className="h-32 bg-gray-50 border-t border-gray-200" />
+        <FooterSkeleton ariaLabel={dictionary.common.status.loading} />
       }>
         <Footer
           lang={lang as Lang}

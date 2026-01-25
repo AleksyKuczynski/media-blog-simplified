@@ -405,8 +405,7 @@ export const dictionaryEN: Dictionary = {
       tips: [
         'Enter at least 3 chars',
         'Use keywords for better results',
-        'Try something different',
-        'Searching in articles, authors and rubrics',
+        'Searching in titles and descriptions of articles, authors and categories',
       ],
       exploreHeading: 'Start exploring',
       exploreDescription: 'Popular articles for start',

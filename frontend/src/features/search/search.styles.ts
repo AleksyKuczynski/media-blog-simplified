@@ -71,10 +71,10 @@ export const SEARCH_INPUT_STYLES = {
 
 export const SEARCH_BAR_FORM_STYLES = {
   container: cn(
-    'mx-4 pt-12 pb-36',
+    'mx-4 pt-4 pb-36',
     'xs:mx-6',
     'sm:mx-auto sm:max-w-md',
-    'md: pb-72',
+    'md: pb-64',
     'lg:max-w-lg',
     'xl:max-w-lg',
 
@@ -114,9 +114,8 @@ export const SEARCH_PAGE_STYLES = {
     stateText: 'text-on-sf-var',
   },
   tips: {
-    icon: 'w-5 h-5',
-    span: 'text-pr-cont font-bold mt-1',
-    list: 'space-y-2 text-sm',
+    span: 'font-bold mt-0.5',
+    list: 'space-y-1 max-xl:text-sm',
     item: 'flex items-start gap-2',
   },
 } as const;

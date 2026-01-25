@@ -1,7 +1,6 @@
 // src/features/search/page/SearchTips.tsx
 'use client'
 
-import { SearchIcon } from '@/shared/primitives/Icons';
 import Collapsible from '@/shared/ui/Collapsible';
 import { Dictionary } from '@/config/i18n';
 import { SEARCH_PAGE_STYLES } from '../search.styles';
@@ -18,7 +17,6 @@ export default function SearchTips({ dictionary }: SearchTipsProps) {
   return (
     <Collapsible
       title={tipsTitle}
-      icon={<SearchIcon className={SEARCH_PAGE_STYLES.tips.icon} />}
       ariaLabel={tipsTitle}
     >
       <ul className={SEARCH_PAGE_STYLES.tips.list}>
