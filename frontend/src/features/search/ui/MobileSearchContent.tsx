@@ -214,6 +214,7 @@ export default function MobileSearchContent({
             inputRef={refs.inputRef as React.RefObject<HTMLInputElement>}
             ariaLabel={dictionary.search.accessibility.searchInputLabel}
             ariaDescription={dictionary.search.accessibility.searchDescription}
+            isMobile={true}
           />
         </div>
       </div>

@@ -14,6 +14,7 @@ import {
   isSearchPage, 
   normalizeCurrentPath 
 } from './utils/header.utils'
+import { focusVisibleSearchInput } from '@/features/search/utils/searchFocus'
 
 interface NavigationProps {
   dictionary: Dictionary
@@ -35,14 +36,8 @@ export default function Navigation({
 
   const handleSearchClick = () => {
     if (searchPage) {
-      // On search page, focus the search input
-      const searchInput = document.querySelector<HTMLInputElement>('#search-bar-input')
-      if (searchInput) {
-        searchInput.focus()
-        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      }
+      focusVisibleSearchInput()
     } else {
-      // On other pages, open mobile search panel
       mobileNavRef.current?.openSearch()
     }
   }

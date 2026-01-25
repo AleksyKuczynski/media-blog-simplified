@@ -22,9 +22,10 @@ export default function SearchInput({
   onFocus,
   inputRef,
   ariaLabel,
-  ariaDescription
-}: SearchInputProps) {
-  const inputId = 'search-bar-input';
+  ariaDescription,
+  isMobile = false
+}: SearchInputProps & { isMobile?: boolean }) {
+  const inputId = isMobile ? 'mobile-search-input' : 'search-bar-input';
   const descriptionId = `${inputId}-description`;
   const resultsId = `${inputId}-results`;
 
