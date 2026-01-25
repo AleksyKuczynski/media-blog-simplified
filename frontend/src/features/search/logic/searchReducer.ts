@@ -85,6 +85,21 @@ export function searchReducer(
           : { type: 'noResults' }
       };
 
+    case 'CLEAR_SUGGESTIONS':
+      return {
+        ...state,
+        suggestions: [],
+        dropdown: {
+          visibility: 'visible',
+          content: 'message'
+        },
+        searchStatus: {
+          type: 'minChars',
+          current: state.query.length,
+          required: 3
+        }
+      };
+
     case 'SET_SEARCH_ERROR':
       return {
         ...state,

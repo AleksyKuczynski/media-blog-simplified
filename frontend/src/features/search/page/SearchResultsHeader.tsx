@@ -3,25 +3,42 @@
 
 import SortingControl from '@/features/navigation/Filter/SortingControl';
 import { Dictionary, Lang } from '@/config/i18n';
-import { getLocalizedCount } from '@/config/i18n/helpers/content';
 import { SEARCH_PAGE_STYLES } from '../search.styles';
 
 interface SearchResultsHeaderProps {
   readonly dictionary: Dictionary;
   readonly searchQuery: string;
   readonly resultsCount: number;
+  readonly articlesCount?: number;
+  readonly authorsCount?: number;
+  readonly categoriesCount?: number;
   readonly currentSort: string;
-  readonly lang: Lang;
 }
 
 export default function SearchResultsHeader({
   dictionary,
   searchQuery,
   resultsCount,
+  articlesCount = 0,
+  authorsCount = 0,
+  categoriesCount = 0,
   currentSort,
-  lang
 }: SearchResultsHeaderProps) {
-  const resultsCountText = getLocalizedCount(dictionary, resultsCount, 'results');
+  // Build results text
+  const parts: string[] = [];
+  if (articlesCount > 0) {
+    parts.push(`${articlesCount} ${dictionary.common.count.articles}`);
+  }
+  if (authorsCount > 0) {
+    parts.push(`${authorsCount} ${dictionary.sections.labels.authors.toLowerCase()}`);
+  }
+  if (categoriesCount > 0) {
+    parts.push(`${categoriesCount} ${dictionary.sections.labels.categories.toLowerCase()}`);
+  }
+
+  const resultsText = parts.length > 0 
+    ? `${dictionary.search.labels.results}: ${parts.join(', ')}`
+    : `${resultsCount} ${dictionary.common.count.results}`;
 
   return (
     <header 
@@ -45,7 +62,7 @@ export default function SearchResultsHeader({
           aria-live="polite"
           itemProp="description"
         >
-          {resultsCountText}
+          {resultsText}
         </p>
       </div>
 

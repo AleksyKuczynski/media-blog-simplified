@@ -76,6 +76,9 @@ export function useSearchLogic({
       } catch (error) {
         dispatch({ type: 'SET_SEARCH_ERROR' });
       }
+    } else if (value.length > 0) {
+      // Clear suggestions and show min chars message
+      dispatch({ type: 'CLEAR_SUGGESTIONS' });
     }
   }, [handleSearch]);
 

@@ -35,6 +35,7 @@ export type SearchStepAction =
   | { type: 'SET_QUERY', payload: string }
   | { type: 'SET_SEARCHING_STATE' }
   | { type: 'SET_SUGGESTIONS', payload: SearchResult[] }
+  | { type: 'CLEAR_SUGGESTIONS' }
   | { type: 'SET_SEARCH_ERROR' }
   // Navigation steps
   | { type: 'NAVIGATE_UP' }

@@ -3,16 +3,23 @@ import { Suspense } from 'react';
 import Pagination from '@/shared/ui/Pagination';
 import SearchResultsHeader from './SearchResultsHeader';
 import { Dictionary, Lang } from '@/config/i18n';
-import { ArticleSlugInfo } from '@/api/directus';
+import { ArticleSearchResult, AuthorSearchResult, CategorySearchResult } from '@/api/directus';
 import ArticleList from '@/features/article-display/ArticleList';
+import AuthorResultCard from './AuthorResultCard';
+import CategoryResultCard from './CategoryResultCard';
 import { SEARCH_PAGE_STYLES } from '../search.styles';
 
 interface SearchResultsProps {
   readonly dictionary: Dictionary;
   readonly lang: Lang;
   readonly searchQuery: string;
-  readonly slugs: ArticleSlugInfo[];
-  readonly totalCount: number;
+  readonly articles: ArticleSearchResult[];
+  readonly authors: AuthorSearchResult[];
+  readonly categories: CategorySearchResult[];
+  readonly totalArticles: number;
+  readonly totalAuthors: number;
+  readonly totalCategories: number;
+  readonly totalResults: number;
   readonly totalPages: number;
   readonly currentPage: number;
   readonly currentSort: string;
@@ -23,8 +30,13 @@ export default function SearchResults({
   dictionary,
   lang,
   searchQuery,
-  slugs,
-  totalCount,
+  articles,
+  authors,
+  categories,
+  totalArticles,
+  totalAuthors,
+  totalCategories,
+  totalResults,
   totalPages,
   currentPage,
   currentSort,
@@ -61,33 +73,94 @@ export default function SearchResults({
     );
   }
 
+  // Convert ArticleSearchResult to ArticleSlugInfo for ArticleList
+  const articleSlugs = articles.map(article => ({
+    slug: article.slug,
+    rubric_slug: article.rubric_slug,
+    layout: 'regular' as const,
+    published_at: new Date().toISOString(), // Will be fetched in ArticleCard
+    translations: [{
+      languages_code: article.languages_code,
+      title: article.title,
+      local_slug: article.slug
+    }]
+  }));
+
   return (
     <>
       <SearchResultsHeader
         dictionary={dictionary}
         searchQuery={searchQuery}
-        resultsCount={totalCount}
+        resultsCount={totalResults}
+        articlesCount={totalArticles}
+        authorsCount={totalAuthors}
+        categoriesCount={totalCategories}
         currentSort={currentSort}
-        lang={lang}
       />
 
-      <Suspense fallback={<div>{dictionary.common.status.loading}</div>}>
-        <ArticleList
-          dictionary={dictionary}
-          slugInfos={slugs}
-          lang={lang}
-          className={SEARCH_PAGE_STYLES.results.list}
-        />
-      </Suspense>
+      {/* Authors Section */}
+      {authors.length > 0 && (
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 text-on-sf">
+            {dictionary.sections.labels.authors} ({totalAuthors})
+          </h2>
+          <div className="space-y-4">
+            {authors.map((author) => (
+              <AuthorResultCard
+                key={author.slug}
+                author={author}
+                lang={lang}
+                dictionary={dictionary}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
-      {totalPages > 1 && (
-        <div className={SEARCH_PAGE_STYLES.results.pagination}>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            dictionary={dictionary}
-          />
-        </div>
+      {/* Categories Section */}
+      {categories.length > 0 && (
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 text-on-sf">
+            {dictionary.sections.labels.categories} ({totalCategories})
+          </h2>
+          <div className="space-y-4">
+            {categories.map((category) => (
+              <CategoryResultCard
+                key={category.slug}
+                category={category}
+                lang={lang}
+                dictionary={dictionary}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Articles Section */}
+      {articles.length > 0 && (
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 text-on-sf">
+            {dictionary.sections.labels.articles} ({totalArticles})
+          </h2>
+          <Suspense fallback={<div>{dictionary.common.status.loading}</div>}>
+            <ArticleList
+              dictionary={dictionary}
+              slugInfos={articleSlugs}
+              lang={lang}
+              className={SEARCH_PAGE_STYLES.results.list}
+            />
+          </Suspense>
+
+          {totalPages > 1 && (
+            <div className={SEARCH_PAGE_STYLES.results.pagination}>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                dictionary={dictionary}
+              />
+            </div>
+          )}
+        </section>
       )}
     </>
   );
