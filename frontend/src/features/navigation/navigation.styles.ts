@@ -17,8 +17,8 @@ export const HEADER_STYLES = {
 } as const;
 
 export const DESKTOP_NAV_STYLES = {
-  container: 'hidden xl:block mx-auto mt-1 py-2 max-w-6xl rounded-2xl bg-sf-hst/80 backdrop-blur-lg border border-ol-var transition-all duration-300',
-  grid: 'grid grid-cols-3 items-center mx-auto px-6',
+  container: 'hidden xl:block mx-auto mt-1 py-2 max-w-6xl rounded-2xl bg-sf-hst/80 backdrop-blur-lg border border-b-2 border-sf-hst border-b-sf-hi stransition-all duration-300',
+  grid: 'grid grid-cols-3 items-center mx-auto px-8',
   
   leftSection: 'flex items-center justify-start',
   centerSection: 'flex items-center justify-center',

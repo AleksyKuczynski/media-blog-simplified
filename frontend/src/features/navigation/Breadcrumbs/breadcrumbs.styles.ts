@@ -14,14 +14,14 @@ import { cn } from "@/lib/utils";
 export const BREADCRUMB_STYLES = {
   nav: {
     container: cn(
-      'max-lg:text-sm mx-2 mb-12 max-w-7xl overflow-x-auto scrollbar-hide',
+      'max-lg:text-sm mx-2 mb-12 max-w-6xl overflow-x-auto scrollbar-hide',
       'md:px-2',
       'lg:mt-6 lg:mb-16',
-      'xl:mx-auto xl:mb-20 xl:px-4',
+      'xl:mb-20',
     ),
   },
   list: {
-  base: 'list-none flex flex-nowrap items-center',
+  base: 'list-none flex flex-nowrap',
   },
   separator: {
   container: 'mx-2 flex-shrink-0',

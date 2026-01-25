@@ -63,7 +63,7 @@ export default async function LanguageLayout({
   const dictionary = getDictionary(lang as Lang);
 
   return (
-    <div lang={lang} className="container-fluid flex flex-col pt-16 xl:pt-24 min-h-screen">
+    <div lang={lang} className="container-fluid flex flex-col pt-16 xl:pt-32 min-h-screen">
       <Suspense fallback={<NavigationSkeleton />}>
         <Navigation 
           dictionary={dictionary}
