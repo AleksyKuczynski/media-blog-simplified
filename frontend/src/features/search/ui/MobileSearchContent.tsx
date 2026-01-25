@@ -84,9 +84,14 @@ export default function MobileSearchContent({
       return (
         <div className={MOBILE_SEARCH_STYLES.emptyState}>
           <SearchIcon className={MOBILE_SEARCH_STYLES.emptyIcon} />
-          <p className={MOBILE_SEARCH_STYLES.emptyText}>
-            {dictionary.search.hub.tips}
-          </p>
+          <ul className={MOBILE_SEARCH_STYLES.tips.list}>
+                  {dictionary.search.hub.tips.map((tip, index) => (
+                    <li key={index} className={MOBILE_SEARCH_STYLES.tips.item}>
+                      <span className={MOBILE_SEARCH_STYLES.tips.span}>•</span>
+                      <span>{tip}</span>
+                    </li>
+                  ))}
+                </ul>
         </div>
       );
     }

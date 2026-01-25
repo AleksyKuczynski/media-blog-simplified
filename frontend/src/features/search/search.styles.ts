@@ -49,7 +49,7 @@ export const MOBILE_SEARCH_STYLES = {
   suggestionsContainer: 'flex-1 overflow-y-auto px-6 pb-6',
   emptyState: 'text-center py-12 text-on-sf-var',
   emptyIcon: 'w-16 h-16 mx-auto mb-4 text-on-sf-var/30',
-  emptyText: 'text-lg font-medium mb-2',
+  emptyText: 'text-lg mb-2',
   emptyHint: 'text-sm opacity-70',
   suggestionsList: 'space-y-3',
   suggestion: {
@@ -62,6 +62,12 @@ export const MOBILE_SEARCH_STYLES = {
     description: 'text-sm opacity-80 mt-1 line-clamp-2',
     meta: 'text-sm opacity-80 mt-1',
   },
+  tips: {
+    span: 'font-bold mt-0.5',
+    list: 'space-y-1 text-left',
+    item: 'flex items-start gap-2',
+  },
+
 } as const;
 
 export const SEARCH_INPUT_STYLES = {
