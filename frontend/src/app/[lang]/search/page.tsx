@@ -101,13 +101,11 @@ export default async function SearchPage({
       >
         <SearchTips dictionary={dictionary} />
 
-        <div className="mb-8">
-          <SearchBarForm
-            dictionary={dictionary}
-            lang={lang}
-            currentQuery={searchQuery}
-          />
-        </div>
+        <SearchBarForm
+          dictionary={dictionary}
+          lang={lang}
+          currentQuery={searchQuery}
+        />
 
         {resultsMode && (
           <SearchResults

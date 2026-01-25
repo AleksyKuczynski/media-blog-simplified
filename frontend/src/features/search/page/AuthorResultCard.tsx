@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { AuthorSearchResult } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
+import { SEARCH_RESULT_CARD_STYLES } from '../search.styles';
 
 interface AuthorResultCardProps {
   author: AuthorSearchResult;
@@ -9,31 +10,33 @@ interface AuthorResultCardProps {
   dictionary: Dictionary;
 }
 
+const styles = SEARCH_RESULT_CARD_STYLES.author;
+
 export default function AuthorResultCard({ author, lang, dictionary }: AuthorResultCardProps) {
   return (
     <Link
       href={`/${lang}/authors/${author.slug}`}
-      className="block p-6 bg-sf rounded-xl hover:bg-sf-hi transition-colors duration-200"
+      className={styles.link}
     >
-      <div className="flex items-start gap-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-xs font-medium uppercase tracking-wide text-on-sf-var opacity-70">
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.badge.container}>
+            <span className={styles.badge.text}>
               {dictionary.sections.labels.author}
             </span>
           </div>
           
-          <h3 className="text-xl font-bold text-on-sf mb-2">
+          <h3 className={styles.name}>
             {author.name}
           </h3>
           
           {author.bio && (
-            <p className="text-on-sf-var line-clamp-2 mb-3">
+            <p className={styles.bio}>
               {author.bio}
             </p>
           )}
           
-          <p className="text-sm text-on-sf-var">
+          <p className={styles.count}>
             {author.articleCount} {dictionary.common.count.articles}
           </p>
         </div>

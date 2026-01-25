@@ -5,17 +5,6 @@
 
 import { cn } from "@/lib/utils";
 
-export const EXPANDABLE_SEARCH_STYLES = {
-  container: 'relative',
-  wrapper: {
-    base: 'relative flex items-center gap-2 transition-all duration-200 ease-in-out',
-    expanded: 'bg-sf-hi border border-ol rounded-lg shadow-lg hover:shadow-xl focus-within:outline-none focus-within:ring-1 focus-within:ring-pr-fix focus-within:ring-offset-0',
-    collapsed: '',
-  },
-  button: 'p-2 rounded-full hover:bg-bgcolor-accent/10 transition-colors duration-200',
-  dropdown: 'rounded-lg shadow-lg',
-} as const;
-
 export const SEARCH_DROPDOWN_STYLES = {
   container: {
     base: 'absolute z-50 shadow-lg bg-sf-hi w-full top-full mt-2 max-h-[80vh] origin-top transition-none rounded-xl',
@@ -130,4 +119,42 @@ export const SEARCH_PAGE_STYLES = {
     list: 'space-y-2 text-sm',
     item: 'flex items-start gap-2',
   },
+} as const;
+
+export const SEARCH_RESULT_CARD_STYLES = {
+  author: {
+    link: 'block p-6 bg-sf rounded-xl hover:bg-sf-hi transition-colors duration-200',
+    container: 'flex items-start gap-4',
+    content: 'flex-1',
+    badge: {
+      container: 'flex items-center gap-2 mb-2',
+      text: 'text-xs font-medium uppercase tracking-wide text-on-sf-var opacity-70',
+    },
+    name: 'text-xl font-bold text-on-sf mb-2',
+    bio: 'text-on-sf-var line-clamp-2 mb-3',
+    count: 'text-sm text-on-sf-var',
+  },
+  category: {
+    link: 'block p-6 bg-sf rounded-xl hover:bg-sf-hi transition-colors duration-200',
+    container: 'flex items-start gap-4',
+    content: 'flex-1',
+    badge: {
+      container: 'flex items-center gap-2 mb-2',
+      text: 'text-xs font-medium uppercase tracking-wide text-on-sf-var opacity-70',
+    },
+    name: 'text-xl font-bold text-on-sf mb-3',
+    count: 'text-sm text-on-sf-var',
+  },
+} as const;
+
+export const SEARCH_RESULTS_HEADER_STYLES = {
+  container: 'flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 -mt-24 md:-mt-48 mb-6',
+  textContainer: '',
+  sortContainer: '',
+} as const;
+
+export const SEARCH_RESULTS_SECTION_STYLES = {
+  container: 'mb-12',
+  heading: 'text-2xl font-bold mb-6 text-on-sf',
+  list: 'space-y-4',
 } as const;

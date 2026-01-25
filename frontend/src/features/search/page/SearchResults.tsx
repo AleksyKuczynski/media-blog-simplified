@@ -7,7 +7,7 @@ import { ArticleSearchResult, AuthorSearchResult, CategorySearchResult } from '@
 import ArticleList from '@/features/article-display/ArticleList';
 import AuthorResultCard from './AuthorResultCard';
 import CategoryResultCard from './CategoryResultCard';
-import { SEARCH_PAGE_STYLES } from '../search.styles';
+import { SEARCH_PAGE_STYLES, SEARCH_RESULTS_SECTION_STYLES } from '../search.styles';
 
 interface SearchResultsProps {
   readonly dictionary: Dictionary;
@@ -25,6 +25,8 @@ interface SearchResultsProps {
   readonly currentSort: string;
   readonly mode: 'results' | 'no-results' | 'invalid-query';
 }
+
+const sectionStyles = SEARCH_RESULTS_SECTION_STYLES;
 
 export default function SearchResults({
   dictionary,
@@ -100,11 +102,11 @@ export default function SearchResults({
 
       {/* Authors Section */}
       {authors.length > 0 && (
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-on-sf">
+        <section className={sectionStyles.container}>
+          <h2 className={sectionStyles.heading}>
             {dictionary.sections.labels.authors} ({totalAuthors})
           </h2>
-          <div className="space-y-4">
+          <div className={sectionStyles.list}>
             {authors.map((author) => (
               <AuthorResultCard
                 key={author.slug}
@@ -119,11 +121,11 @@ export default function SearchResults({
 
       {/* Categories Section */}
       {categories.length > 0 && (
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-on-sf">
+        <section className={sectionStyles.container}>
+          <h2 className={sectionStyles.heading}>
             {dictionary.sections.labels.categories} ({totalCategories})
           </h2>
-          <div className="space-y-4">
+          <div className={sectionStyles.list}>
             {categories.map((category) => (
               <CategoryResultCard
                 key={category.slug}
@@ -138,11 +140,11 @@ export default function SearchResults({
 
       {/* Articles Section */}
       {articles.length > 0 && (
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-on-sf">
-            {dictionary.sections.labels.articles} ({totalArticles})
+        <section className={sectionStyles.container}>
+          <h2 className={sectionStyles.heading}>
+            {dictionary.common.count.articles} ({totalArticles})
           </h2>
-          <Suspense fallback={<div>{dictionary.common.status.loading}</div>}>
+          <Suspense fallback={<div>Loading articles...</div>}>
             <ArticleList
               dictionary={dictionary}
               slugInfos={articleSlugs}

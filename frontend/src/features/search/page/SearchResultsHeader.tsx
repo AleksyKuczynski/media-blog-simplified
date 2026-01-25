@@ -3,7 +3,7 @@
 
 import SortingControl from '@/features/navigation/Filter/SortingControl';
 import { Dictionary, Lang } from '@/config/i18n';
-import { SEARCH_PAGE_STYLES } from '../search.styles';
+import { SEARCH_PAGE_STYLES, SEARCH_RESULTS_HEADER_STYLES } from '../search.styles';
 
 interface SearchResultsHeaderProps {
   readonly dictionary: Dictionary;
@@ -42,7 +42,7 @@ export default function SearchResultsHeader({
 
   return (
     <header 
-      className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6"
+      className={SEARCH_RESULTS_HEADER_STYLES.container}
       itemScope
       itemType="https://schema.org/SearchResultsPage"
     >
