@@ -15,7 +15,7 @@ const styles = SEARCH_RESULT_CARD_STYLES.category;
 export default function CategoryResultCard({ category, lang, dictionary }: CategoryResultCardProps) {
   return (
     <Link
-      href={`/${lang}/articles?category=${category.slug}`}
+      href={`/${lang}/categories/category=${category.slug}`}
       className={styles.link}
     >
       <div className={styles.container}>

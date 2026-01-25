@@ -12,7 +12,7 @@ export default async function WithFilterLayout({
   params: Promise<{ lang: string }>;
 }) {
   const { lang } = await params;
-  const dictionary = await getDictionary(lang as Lang);
+  const dictionary = getDictionary(lang as Lang);
   const categories = await fetchAllCategories(lang as Lang);
 
   return (

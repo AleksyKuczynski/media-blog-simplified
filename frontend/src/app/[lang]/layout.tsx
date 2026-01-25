@@ -60,54 +60,54 @@ export default async function LanguageLayout({
   const dictionary = getDictionary(lang as Lang);
 
   return (
-    <div lang={lang} className="container-fluid flex flex-col">
-  <Suspense fallback={
-    <div className="h-16 xl:h-24 bg-white border-b border-gray-200 flex items-center">
-      <div className="container mx-auto px-4">
-        <div className="h-8 bg-gray-100 rounded animate-pulse w-32" />
+    <div lang={lang} className="container-fluid flex flex-col pt-16 xl:pt-24 min-h-screen">
+      <Suspense fallback={
+        <div className="h-16 xl:h-24 bg-white border-b border-gray-200 flex items-center">
+          <div className="container mx-auto px-4">
+            <div className="h-8 bg-gray-100 rounded animate-pulse w-32" />
+          </div>
+        </div>
+      }>
+        <Navigation 
+          dictionary={dictionary}
+          lang={lang as Lang}
+          currentPath=""
+          breadcrumbs={[]}
+        />
+      </Suspense>
+      
+      <div className="flex-grow min-h-screen flex flex-col">
+        <main 
+          id="main-content" 
+          className="flex-grow flex flex-col" 
+          role="main"
+          tabIndex={-1}
+          aria-label={dictionary.navigation.accessibility.skipToContent}
+        >
+          {children}
+        </main>
+        
+        <Suspense fallback={
+          <div className="h-32 bg-gray-50 border-t border-gray-200" />
+        }>
+          <Section 
+            title={dictionary.sections.home.quickNavigation}
+            titleLevel="h2"
+          >
+            <QuickNavigationSection lang={lang as Lang} dictionary={dictionary} />
+          </Section>
+        </Suspense>
       </div>
-    </div>
-  }>
-    <Navigation 
-      dictionary={dictionary}
-      lang={lang as Lang}
-      currentPath=""
-      breadcrumbs={[]}
-    />
-  </Suspense>
-  
-  <div className="flex-grow min-h-screen flex flex-col">
-    <main 
-      id="main-content" 
-      className="flex-grow pt-16 xl:pt-24 flex flex-col" 
-      role="main"
-      tabIndex={-1}
-      aria-label={dictionary.navigation.accessibility.skipToContent}
-    >
-      {children}
-    </main>
-    
-    <Suspense fallback={
-      <div className="h-32 bg-gray-50 border-t border-gray-200" />
-    }>
-      <Section 
-        title={dictionary.sections.home.quickNavigation}
-        titleLevel="h2"
-      >
-        <QuickNavigationSection lang={lang as Lang} dictionary={dictionary} />
-      </Section>
-    </Suspense>
-  </div>
 
-  <Suspense fallback={
-    <div className="h-32 bg-gray-50 border-t border-gray-200" />
-  }>
-    <Footer
-      lang={lang as Lang}
-      dictionary={dictionary}
-    />
-  </Suspense>
-</div>
+      <Suspense fallback={
+        <div className="h-32 bg-gray-50 border-t border-gray-200" />
+      }>
+        <Footer
+          lang={lang as Lang}
+          dictionary={dictionary}
+        />
+      </Suspense>
+    </div>
   );
 }
 

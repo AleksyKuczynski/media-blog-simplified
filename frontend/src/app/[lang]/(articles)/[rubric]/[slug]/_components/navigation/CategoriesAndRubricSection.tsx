@@ -98,10 +98,10 @@ export default function CategoriesAndRubricSection({
         {categories.length > 0 && (
           <nav 
             className={styles.categoriesNav}
-            aria-label={dictionary.sections.labels.categories || 'Категории'}
+            aria-label={dictionary.sections.labels.categories}
           >
             {categories.map((category) => {
-              const categoryUrl = `/${lang}/category/${category.slug}`;
+              const categoryUrl = `/${lang}/categories/${category.slug}`;
               const ariaLabel = processTemplate(
                 dictionary.sections.templates.itemInCollection,
                 {

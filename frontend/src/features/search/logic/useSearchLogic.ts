@@ -128,7 +128,7 @@ export function useSearchLogic({
           if (selectedSuggestion.type === 'author') {
             targetUrl = `/${lang}/authors/${selectedSuggestion.slug}`;
           } else if (selectedSuggestion.type === 'category') {
-            targetUrl = `/${lang}/articles?category=${selectedSuggestion.slug}`;
+            targetUrl = `/${lang}/categories/${selectedSuggestion.slug}`;
           } else {
             targetUrl = `/${lang}/${selectedSuggestion.rubric_slug}/${selectedSuggestion.slug}`;
           }

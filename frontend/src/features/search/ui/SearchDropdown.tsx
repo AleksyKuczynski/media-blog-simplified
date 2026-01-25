@@ -20,20 +20,7 @@ export default function SearchDropdown({
   ariaLabel
 }: SearchDropdownProps) {
 
-  const getVisibilityClasses = () => {
-    switch (state.dropdown.visibility) {
-      case 'hidden':
-        return SEARCH_DROPDOWN_STYLES.visibility.hidden;
-      case 'animating-in':
-        return SEARCH_DROPDOWN_STYLES.visibility.animatingIn;
-      case 'visible':
-        return SEARCH_DROPDOWN_STYLES.visibility.visible;
-      case 'animating-out':
-        return SEARCH_DROPDOWN_STYLES.visibility.animatingOut;
-      default:
-        return SEARCH_DROPDOWN_STYLES.visibility.hidden;
-    }
-  };
+  const isVisible = state.dropdown.visibility === 'visible';
 
   function renderContent() {
     if (state.dropdown.content === 'message') {
@@ -76,7 +63,7 @@ export default function SearchDropdown({
     }
   }
 
-  if (state.dropdown.visibility === 'hidden') {
+  if (!isVisible) {
     return null;
   }
 
@@ -84,11 +71,11 @@ export default function SearchDropdown({
     <div 
       className={`
         ${SEARCH_DROPDOWN_STYLES.container.base}
-        ${getVisibilityClasses()}
+        ${isVisible ? SEARCH_DROPDOWN_STYLES.visibility.visible : SEARCH_DROPDOWN_STYLES.visibility.hidden}
         ${className}
       `.trim()}
       role="listbox"
-      aria-hidden={state.dropdown.visibility === 'animating-out'}
+      aria-hidden={!isVisible}
       aria-label={ariaLabel}
     >
       <div className={SEARCH_DROPDOWN_STYLES.content.wrapper}>

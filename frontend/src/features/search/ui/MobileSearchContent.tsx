@@ -47,7 +47,7 @@ export default function MobileSearchContent({
     if (suggestion.type === 'author') {
       router.push(`/${lang}/authors/${suggestion.slug}`);
     } else if (suggestion.type === 'category') {
-      router.push(`/${lang}/articles?category=${suggestion.slug}`);
+      router.push(`/${lang}/categories/category=${suggestion.slug}`);
     } else {
       router.push(`/${lang}/${suggestion.rubric_slug}/${suggestion.slug}`);
     }
