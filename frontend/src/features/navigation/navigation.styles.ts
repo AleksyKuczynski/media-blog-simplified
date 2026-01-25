@@ -17,14 +17,14 @@ export const HEADER_STYLES = {
 } as const;
 
 export const DESKTOP_NAV_STYLES = {
-  container: 'hidden xl:block bg-sf-cont/80 backdrop-blur-lg border-b border-ol-var/20 transition-all duration-300',
-  grid: 'grid grid-cols-3 items-center h-24 max-w-7xl mx-auto px-6',
+  container: 'hidden xl:block mx-auto mt-1 py-2 max-w-6xl rounded-2xl bg-sf-hst/80 backdrop-blur-lg border border-ol-var transition-all duration-300',
+  grid: 'grid grid-cols-3 items-center mx-auto px-6',
   
   leftSection: 'flex items-center justify-start',
   centerSection: 'flex items-center justify-center',
   rightSection: 'flex items-center justify-end space-x-4',
   
-  navList: 'flex items-center justify-start space-x-2',
+  navList: 'flex items-center justify-start space-x-2 uppercase bg-sf rounded-full py-2',
 } as const;
 
 export const MOBILE_NAV_STYLES = {
