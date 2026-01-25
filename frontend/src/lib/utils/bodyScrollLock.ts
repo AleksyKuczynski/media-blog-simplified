@@ -11,6 +11,7 @@ let lockCount = 0;
 let scrollPosition = 0;
 let originalOverflow = '';
 let originalPaddingRight = '';
+let headerOriginalPadding = '';
 
 /**
  * Lock body scroll - prevents scrolling without position jump
@@ -43,6 +44,13 @@ export function lockBodyScroll(): void {
   // Compensate for scrollbar disappearing (prevent layout shift)
   if (scrollbarWidth > 0) {
     document.body.style.paddingRight = `${scrollbarWidth}px`;
+    
+    // Apply same padding to fixed header to prevent navbar shift
+    const header = document.querySelector('header[role="banner"]');
+    if (header instanceof HTMLElement) {
+      headerOriginalPadding = header.style.paddingRight;
+      header.style.paddingRight = `${scrollbarWidth}px`;
+    }
   }
 
   // Prevent scrolling on touch devices
@@ -70,6 +78,12 @@ export function unlockBodyScroll(): void {
   document.body.style.overflow = originalOverflow;
   document.body.style.paddingRight = originalPaddingRight;
   document.documentElement.style.overflow = '';
+  
+  // Restore fixed header padding
+  const header = document.querySelector('header[role="banner"]');
+  if (header instanceof HTMLElement) {
+    header.style.paddingRight = headerOriginalPadding;
+  }
 
   // Note: Scroll position is NOT restored here
   // The page stays at the same visual position

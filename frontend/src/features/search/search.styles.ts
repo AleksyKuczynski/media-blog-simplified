@@ -43,8 +43,8 @@ export const SEARCH_DROPDOWN_ITEM_STYLES = {
 
 export const MOBILE_SEARCH_STYLES = {
   container: 'flex flex-col h-full',
-  inputContainer: 'flex-shrink-0 px-6 py-4 bg-sf-cont/95 backdrop-blur-lg',
-  inputWrapper: 'relative flex gap-3 items-center bg-sf-hi rounded-lg shadow-md focus-within:ring-2 focus-within:ring-pr-fix focus-within:ring-offset-2 transition-shadow duration-200',
+  inputContainer: 'flex-shrink-0 px-3 py-3',
+  inputWrapper: 'relative flex gap-3 items-center bg-sf rounded-xl shadow-md focus-within:ring-2 focus-within:ring-pr-fix focus-within:ring-offset-2 transition-shadow duration-200',
   iconWrapper: 'pl-4 text-on-sf-var pointer-events-none',
   suggestionsContainer: 'flex-1 overflow-y-auto px-6 pb-6',
   emptyState: 'text-center py-12 text-on-sf-var',
@@ -66,7 +66,7 @@ export const MOBILE_SEARCH_STYLES = {
 
 export const SEARCH_INPUT_STYLES = {
   wrapper: 'relative flex-1',
-  input: 'w-full py-2 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
+  input: 'w-full py-3 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
 } as const;
 
 export const SEARCH_BAR_FORM_STYLES = {

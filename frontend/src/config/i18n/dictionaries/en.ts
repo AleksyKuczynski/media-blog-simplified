@@ -392,7 +392,7 @@ export const dictionaryEN: Dictionary = {
   search: {
     labels: {
       title: 'Search',
-      placeholder: 'Search articles, authors, rubrics...',
+      placeholder: 'Search articles, authors, categories...',
       results: 'Results',
       noResults: 'Nothing found',
       searching: 'Searching...',
@@ -400,7 +400,7 @@ export const dictionaryEN: Dictionary = {
       minCharacters: 'Enter at least 3 characters',
       searchButton: 'Search',
     },
-    hub: {  // NEW SECTION
+    hub: { 
       tipsTitle: 'Search tips',
       tips: [
         'Enter at least 3 chars',

@@ -394,7 +394,7 @@ const dictionaryRU: Dictionary = {
   search: {
     labels: {
       title: 'Поиск',
-      placeholder: 'Поиск статей, авторов, рубрик...',
+      placeholder: 'Поиск статей, авторов, категорий...',
       results: 'Результаты',
       noResults: 'Ничего не найдено',
       searching: 'Поиск...',

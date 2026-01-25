@@ -29,27 +29,28 @@ export function useMobilePanel({
   const popstateHandlerRef = useRef<((e: PopStateEvent) => void) | null>(null)
 
   // Core close function
-  const handleClose = useCallback(() => {
-    dispatch({ type: 'HIDE_CONTROLS' })
-    
-    // Clean up event listeners and restore scroll
-    if (keydownHandlerRef.current) {
-      document.removeEventListener('keydown', keydownHandlerRef.current)
-    }
-    if (popstateHandlerRef.current) {
-      window.removeEventListener('popstate', popstateHandlerRef.current)
-    }
-    
-    unlockBodyScroll()
-    
+const handleClose = useCallback(() => {
+  dispatch({ type: 'HIDE_CONTROLS' })
+  
+  // Clean up event listeners
+  if (keydownHandlerRef.current) {
+    document.removeEventListener('keydown', keydownHandlerRef.current)
+  }
+  if (popstateHandlerRef.current) {
+    window.removeEventListener('popstate', popstateHandlerRef.current)
+  }
+  
+  setTimeout(() => {
+    dispatch({ type: 'CLOSE_MENU' })
     setTimeout(() => {
-      dispatch({ type: 'CLOSE_MENU' })
-      setTimeout(() => {
-        setIsPanelOpen(false)
-        dispatch({ type: 'RESET' })
-      }, CONTROLS_ANIMATION_DURATION)
+      setIsPanelOpen(false)
+      dispatch({ type: 'RESET' })
+      
+      // Unlock scroll AFTER animation completes
+      unlockBodyScroll()
     }, CONTROLS_ANIMATION_DURATION)
-  }, [])
+  }, CONTROLS_ANIMATION_DURATION)
+}, [])
 
   // Escape key handler
   const handleKeyDown = useCallback((e: KeyboardEvent) => {

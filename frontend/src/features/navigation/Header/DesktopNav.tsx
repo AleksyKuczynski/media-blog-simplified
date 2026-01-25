@@ -75,7 +75,9 @@ export default function DesktopNavigation({
           className={DESKTOP_NAV_STYLES.rightSection}
           role="group"
           aria-label={dictionary.navigation.accessibility.searchAndSettingsLabel}
-        >
+        >         
+          <LanguageSwitcher currentLang={lang} />          
+
           <div 
             id="site-search"
             role="search"
@@ -90,8 +92,6 @@ export default function DesktopNavigation({
               buttonRef={searchButtonRef}
             />
           </div>
-          
-          <LanguageSwitcher currentLang={lang} />          
         </div>
       </div>
     </nav>

@@ -40,32 +40,32 @@ export const SEARCH_BUTTON_STYLES = {
 
 export const OFFCANVAS_PANEL_STYLES = {
   panel: {
-    base: 'fixed top-0 h-full w-4/5 max-w-sm bg-sf-cont shadow-2xl z-[60] transition-transform duration-300 ease-in-out pointer-events-auto',
+    base: 'fixed top-0 h-full w-full sm:w-4/5 max-w-lg bg-sf shadow-2xl z-[60] transition-transform duration-300 ease-in-out pointer-events-auto',
     left: 'left-0',
     right: 'right-0',
   },
   
   header: {
-    container: 'flex items-center justify-between px-6 py-4 border-b border-ol-var/20 bg-sf-hi',
-    title: 'text-lg font-semibold text-on-sf',
-    closeButton: 'p-2 rounded-full hover:bg-sf-hst text-on-sf transition-colors active:scale-95',
-    closeIcon: 'w-5 h-5',
+    container: 'flex items-center justify-between px-6 py-4 text-on-sf-var',
+    title: 'text-md font-medium uppercase',
+    closeButton: 'p-2 rounded-full hover:bg-sf-hst transition-colors active:scale-95',
+    closeIcon: 'w-6 h-6',
   },
 } as const;
 
 export const PANEL_OVERLAY_STYLES = {
-  overlay: 'fixed inset-0 bg-black/10 z-[45] pointer-events-auto',
+  overlay: 'fixed inset-0 bg-black/20 z-[45] pointer-events-auto',
 } as const;
 
 export const PANEL_CONTENT_STYLES = {
   menu: {
-    container: 'flex flex-col h-full bg-sf-cont',
+    container: 'flex flex-col h-full',
     scrollArea: 'flex-1 overflow-y-auto py-6',
     nav: 'space-y-1 px-4',
     list: 'space-y-1',
   },
   
   search: {
-    container: 'h-full bg-sf-cont',
+    container: 'mx-2 h-full bg-sf-cont rounded-t-2xl overflow-hidden',
   },
 } as const;

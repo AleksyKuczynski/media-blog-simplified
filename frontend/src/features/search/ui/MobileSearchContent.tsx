@@ -79,20 +79,55 @@ export default function MobileSearchContent({
   };
 
   const renderSuggestions = () => {
-    if (!state.suggestions || state.suggestions.length === 0) {
+    // Show search tips when no query entered
+    if (state.query.length === 0) {
+      return (
+        <div className={MOBILE_SEARCH_STYLES.emptyState}>
+          <SearchIcon className={MOBILE_SEARCH_STYLES.emptyIcon} />
+          <p className={MOBILE_SEARCH_STYLES.emptyText}>
+            {dictionary.search.hub.tips}
+          </p>
+        </div>
+      );
+    }
+
+    // Show minimum characters message
+    if (state.searchStatus.type === 'minChars') {
+      return (
+        <div className={MOBILE_SEARCH_STYLES.emptyState}>
+          <SearchIcon className={MOBILE_SEARCH_STYLES.emptyIcon} />
+          <p className={MOBILE_SEARCH_STYLES.emptyText}>
+            {dictionary.search.labels.minCharacters}
+          </p>
+        </div>
+      );
+    }
+
+    // Show no results message
+    if (state.searchStatus.type === 'noResults') {
       return (
         <div className={MOBILE_SEARCH_STYLES.emptyState}>
           <SearchIcon className={MOBILE_SEARCH_STYLES.emptyIcon} />
           <p className={MOBILE_SEARCH_STYLES.emptyText}>
             {dictionary.search.labels.noResults}
           </p>
-          <p className={MOBILE_SEARCH_STYLES.emptyHint}>
-            {dictionary.search.labels.noResults}
+        </div>
+      );
+    }
+
+    // Show searching state
+    if (state.searchStatus.type === 'searching') {
+      return (
+        <div className={MOBILE_SEARCH_STYLES.emptyState}>
+          <SearchIcon className={MOBILE_SEARCH_STYLES.emptyIcon} />
+          <p className={MOBILE_SEARCH_STYLES.emptyText}>
+            {dictionary.search.labels.searching}
           </p>
         </div>
       );
     }
 
+    // Show suggestions
     return (
       <div className={MOBILE_SEARCH_STYLES.suggestionsList}>
         {state.suggestions.map((suggestion, index) => {
