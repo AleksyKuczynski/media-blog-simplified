@@ -5,25 +5,26 @@ import { Suspense } from 'react';
 import { fetchAssetMetadata, fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
 import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
+import CategoriesAndRubricSection from './_components/navigation/CategoriesAndRubricSection';
+import ArticleEngagement from './_components/engagement/ArticleEngagement';
 import generateArticleMetadata from '@/shared/seo/metadata/ArticleMetadata';
+import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import ArticleSchema from '@/shared/seo/schemas/ArticleSchema';
 import QuickNavigationSchema from '@/shared/seo/schemas/QuickNavigationSchema';
 import AuthorsSectionSchema from '@/shared/seo/schemas/AuthorsSectionSchema';
-import Collapsible from '@/shared/ui/Collapsible';
-import { Header } from './_components/Header';
-import ArticleEngagement from './_components/engagement/ArticleEngagement';
-import { TableOfContents } from './_components/navigation/TableOfContents';
 import AuthorsSection from './_components/navigation/AuthorsSection';
+import { Header } from './_components/Header';
+import Collapsible from '@/shared/ui/Collapsible';
+import { TableOfContents } from './_components/navigation/TableOfContents';
 import { ScrollToTopButton } from './_components/ScrollToTopButton';
 import PreviewBanner from './_components/PreviewBanner';
 import StandardError from '@/shared/errors/StandardError';
-import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
-import CategoriesAndRubricSection from './_components/navigation/CategoriesAndRubricSection';
 import { processContent } from './_components/markdown/processContent';
 import ArticleContentRenderer from './_components/content/ArticleContentRenderer';
 import { parseImageMetadata } from '@/lib/utils/bilingualParser';
 import Section from '@/features/layout/Section';
 import RelatedArticles from '@/features/article-display/RelatedArticles';
+import { LAYOUT_STYLES } from './_components/article.styles';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -257,7 +258,7 @@ export default async function ArticlePage({
         />
         
         <article 
-          className="container overflow-x-hidden max-w-7xl mx-auto px-2 md:px-4 lg:pb-16"
+          className={LAYOUT_STYLES.articleContainer}
           itemScope
           itemType="https://schema.org/Article"
         >
@@ -303,19 +304,19 @@ export default async function ArticlePage({
               lang={lang}
             />
 
-            <CategoriesAndRubricSection
-              categories={categoriesData}
-              rubric={rubricData}
-              lang={lang}
-              dictionary={dictionary}
-            />
-
             {article.authorsWithDetails.length > 0 && (
               <AuthorsSection 
                 authors={article.authorsWithDetails}
                 dictionary={dictionary}
               />
             )}
+
+            <CategoriesAndRubricSection
+              categories={categoriesData}
+              rubric={rubricData}
+              lang={lang}
+              dictionary={dictionary}
+            />
 
             <ScrollToTopButton />
           </Suspense>

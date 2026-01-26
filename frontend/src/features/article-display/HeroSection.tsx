@@ -19,8 +19,13 @@ export default function HeroSection({
     <div className={HERO_SECTION_STYLES.section}>
       <div className={HERO_SECTION_STYLES.container}>
         <header className={HERO_SECTION_STYLES.header}>
-          <h1 className={HERO_SECTION_STYLES.title}>
-            {dictionary.sections.home.welcomeTitle}
+          <h1 className={HERO_SECTION_STYLES.title.base}>
+            <span className={HERO_SECTION_STYLES.title.main}>
+              {dictionary.sections.home.welcomeTitle.main}
+            </span>
+            <span className={HERO_SECTION_STYLES.title.sub}>
+              {dictionary.sections.home.welcomeTitle.sub}
+            </span>
           </h1>
           <p className={HERO_SECTION_STYLES.description}>
             {dictionary.sections.home.welcomeDescription}

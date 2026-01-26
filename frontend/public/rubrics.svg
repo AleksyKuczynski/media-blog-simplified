@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 118.71 113.54">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #609e9e;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7 {
+        stroke-width: 0px;
+      }
+
+      .cls-2 {
+        fill: #b78489;
+      }
+
+      .cls-3 {
+        fill: #da999f;
+      }
+
+      .cls-4 {
+        fill: #f2d7dc;
+      }
+
+      .cls-5 {
+        fill: #e2b5c4;
+      }
+
+      .cls-6 {
+        fill: #c69197;
+      }
+
+      .cls-7 {
+        fill: #cdbcc2;
+      }
+    </style>
+  </defs>
+  <g id="Layer_5" data-name="Layer 5">
+    <g>
+      <path class="cls-1" d="M50.38,47.1v26.85c0,4.01,3.25,7.25,7.25,7.25h41.12v24.98c0,4.06-3.29,7.36-7.35,7.36h-58.53c-4.06,0-7.35-3.3-7.35-7.36v-47.41h14.55c3.86,0,7-3.14,7-7v-4.91c0-3.87-3.14-7-7-7h-14.55V7.35c0-4.06,3.29-7.35,7.35-7.35h58.53c4.06,0,7.35,3.29,7.35,7.35v32.51h-41.12c-4,0-7.25,3.24-7.25,7.24Z"/>
+      <rect class="cls-5" x="0" y="9.18" width="18.91" height="18.91" rx="9.46" ry="9.46" transform="translate(-9.18 28.09) rotate(-90)"/>
+      <rect class="cls-6" x="0" y="77.8" width="18.91" height="18.91" rx="9.46" ry="9.46" transform="translate(-77.8 96.71) rotate(-90)"/>
+      <path class="cls-4" d="M25.52,39.86v18.91h-8.51c-3.87,0-7-3.14-7-7v-4.91c0-3.87,3.13-7,7-7h8.51Z"/>
+      <path class="cls-7" d="M47.07,46.86v4.91c0,3.86-3.14,7-7,7h-14.55v-18.91h14.55c3.86,0,7,3.13,7,7Z"/>
+      <path class="cls-2" d="M98.75,39.86v41.34h-41.12c-4,0-7.25-3.24-7.25-7.25v-26.85c0-4,3.25-7.24,7.25-7.24h41.12Z"/>
+      <path class="cls-3" d="M118.71,47.1v26.85c0,4.01-3.25,7.25-7.25,7.25h-12.71v-41.34h12.71c4,0,7.25,3.24,7.25,7.24Z"/>
+    </g>
+  </g>
+</svg>

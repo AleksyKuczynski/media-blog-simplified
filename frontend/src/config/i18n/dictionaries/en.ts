@@ -399,8 +399,11 @@ export const dictionaryEN: Dictionary = {
       noCategoryArticles: 'No articles in {categoryName} category yet',
     },
     home: {
-      welcomeTitle: 'EventForMe blog: wedding encyclopedia and inspiration for your celebration',
-       welcomeDescription: 'Expert articles on wedding planning, decor and fashion trends, real stories from couples, and advice from event industry professionals. From choosing a venue to organizing your honeymoon, we make wedding planning an easy and enjoyable process.',
+      welcomeTitle: {
+        main: 'EventForMe blog:',
+        sub: 'wedding encyclopedia and inspiration for your celebration',
+      },
+      welcomeDescription: 'Expert articles on wedding planning, decor and fashion trends, real stories from couples, and advice from event industry professionals. From choosing a venue to organizing your honeymoon, we make wedding planning an easy and enjoyable process.',
       featuredContent: 'Featured',
       latestUpdates: 'Latest Updates',
       exploreRubrics: 'Explore Rubrics',

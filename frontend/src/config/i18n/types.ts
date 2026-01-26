@@ -6,92 +6,15 @@
  */
 
 // ===================================================================
-// CONSENT TYPES
+// ACCESSIBILITY TYPES
 // ===================================================================
 
-export interface ConsentDictionary {
-  readonly title: string;
-  readonly description: string;
-  readonly acceptAll: string;
-  readonly rejectAll: string;
-  readonly customize: string;
-  readonly save: string;
-  readonly back: string;
-  readonly necessary: string;
-  readonly analytics: string;
-  readonly marketing: string;
-  readonly preferences: string;
-  readonly necessaryDescription: string;
-  readonly analyticsDescription: string;
-  readonly marketingDescription: string;
-  readonly preferencesDescription: string;
-  readonly privacyPolicy: string;
-  readonly alwaysActive: string;
-}
-
-// ===================================================================
-// NAVIGATION TYPES
-// ===================================================================
-
-export interface NavigationLabels {
-  readonly home: string;
-  readonly articles: string;
-  readonly rubrics: string;
-  readonly authors: string;
-  readonly categories: string;
-  readonly search: string;
-  readonly authorArticles: string;
-  readonly categoryArticles: string;
-  readonly featuredArticles: string;
-  readonly searchResults: string;
-}
-
-export interface NavigationTemplates {
-  readonly pageTitle: string;
-  readonly sectionDescription: string;
-  readonly breadcrumbSeparator: string;
-  readonly contextualPath: string;
-  readonly authorContext: string;
-  readonly categoryContext: string;
-  readonly searchContext: string;
-}
-
-export interface NavigationDescriptions {
-  readonly home: string;
-  readonly articles: string;
-  readonly rubrics: string;
-  readonly authors: string;
-  readonly search: string;
-  readonly fromAuthor: string;
-  readonly fromCategory: string;
-  readonly fromFeatured: string;
-  readonly fromSearch: string;
-}
-
-export interface NavigationAccessibility {
-  readonly mainNavigation: string;
-  readonly menuTitle: string;
-  readonly menuDescription: string;
-  readonly openMenu: string;
-  readonly closeMenu: string;
-  readonly logoAlt: string;
-  readonly logoMainPageLabel: string;
-  readonly primarySectionsLabel: string;
-  readonly mainMenuLabel: string;
-  readonly searchAndSettingsLabel: string;
-  readonly siteSearchLabel: string;
-  readonly skipToContent: string;
-  readonly skipToNavigation: string;
-  readonly breadcrumbNavigation: string;
-  readonly paginationNavigation: string;
-  readonly pageNavigation: string;
-}
-
-export interface NavigationDictionary {
-  readonly labels: NavigationLabels;
-  readonly templates: NavigationTemplates;
-  readonly descriptions: NavigationDescriptions;
-  readonly accessibility: NavigationAccessibility;
+export interface AccessibilityDictionary {
+  readonly iconDescription: string;
+  readonly decorativeIcon: string;
+  readonly rubricVisualIndicator: string;
+  readonly rubricDescription: string;
+  readonly expandDescription: string;
 }
 
 // ===================================================================
@@ -185,24 +108,52 @@ export interface CommonDictionary {
 }
 
 // ===================================================================
-// METADATA TYPES
+// CONSENT TYPES
 // ===================================================================
 
-export interface NotFoundItem {
+export interface ConsentDictionary {
   readonly title: string;
   readonly description: string;
+  readonly acceptAll: string;
+  readonly rejectAll: string;
+  readonly customize: string;
+  readonly save: string;
+  readonly back: string;
+  readonly necessary: string;
+  readonly analytics: string;
+  readonly marketing: string;
+  readonly preferences: string;
+  readonly necessaryDescription: string;
+  readonly analyticsDescription: string;
+  readonly marketingDescription: string;
+  readonly preferencesDescription: string;
+  readonly privacyPolicy: string;
+  readonly alwaysActive: string;
 }
 
-export interface MetadataNotFound {
-  readonly article: NotFoundItem;
-  readonly rubric: NotFoundItem;
-  readonly author: NotFoundItem;
-  readonly page: NotFoundItem;
-  readonly content: NotFoundItem;
+// ===================================================================
+// CONTENT TYPES
+// ===================================================================
+
+export interface ContentLabels {
+  readonly tableOfContents: string;
+  readonly editorial: string;
+  readonly readingTime: string;
+  readonly wordsCount: string;
+  readonly articleImage: string;
+  readonly portalAdvice:string;
 }
 
-export interface MetadataDictionary {
-  readonly notFound: MetadataNotFound;
+export interface ContentTemplates {
+  readonly emptyRubric: string;
+  readonly moreAbout: string;
+  readonly writtenBy: string;
+  readonly publishedIn: string;
+}
+
+export interface ContentDictionary {
+  readonly labels: ContentLabels;
+  readonly templates: ContentTemplates;
 }
 
 // ===================================================================
@@ -237,59 +188,237 @@ export interface ErrorsDictionary {
 }
 
 // ===================================================================
-// CONTENT TYPES
+// FILTER TYPES
 // ===================================================================
 
-export interface ContentLabels {
-  readonly tableOfContents: string;
-  readonly editorial: string;
-  readonly readingTime: string;
-  readonly wordsCount: string;
-  readonly articleImage: string;
-  readonly portalAdvice:string;
+export interface FilterLabels {
+  readonly sortBy: string;
+  readonly category: string;
+  readonly allCategories: string;
+  readonly newest: string;
+  readonly oldest: string;
+  readonly mostLiked: string;
+  readonly mostViewed: string;
+  readonly reset: string;
+  readonly apply: string;
 }
 
-export interface ContentTemplates {
-  readonly emptyRubric: string;
-  readonly moreAbout: string;
-  readonly writtenBy: string;
-  readonly publishedIn: string;
+export interface FilterAccessibility {
+  readonly categorySelector: string;
+  readonly sortingControl: string;
+  readonly resetButton: string;
+  readonly filterGroup: string;
+  readonly dropdownLabel: string;
 }
 
-export interface ContentDictionary {
-  readonly labels: ContentLabels;
-  readonly templates: ContentTemplates;
+export interface FilterDictionary {
+  readonly labels: FilterLabels;
+  readonly accessibility: FilterAccessibility;
 }
 
 // ===================================================================
-// SHARE TYPES
+// FOOTER TYPES
 // ===================================================================
 
-export interface SharePlatforms {
-  readonly telegram: string;
-  readonly whatsapp: string;
-  readonly vk: string;
-  readonly twitter: string;
-  readonly facebook: string;
-  readonly instagram: string;
-  readonly copy: string;
-}
-
-export interface ShareMessages {
-  readonly linkCopied: string;
-  readonly instagramCopied: string;
-}
-
-export interface ShareAccessibility {
-  readonly shareOn: string;
-  readonly closeDialog: string;
-}
-
-export interface ShareDictionary {
+export interface FooterAbout {
   readonly title: string;
-  readonly platforms: SharePlatforms;
-  readonly messages: ShareMessages;
-  readonly accessibility: ShareAccessibility;
+  readonly description: string;
+}
+
+export interface FooterQuickLinks {
+  readonly title: string;
+  readonly ariaLabel: string;
+}
+
+export interface FooterSocialLinks {
+  readonly title: string;
+}
+
+export interface FooterLegal {
+  readonly title: string;
+  readonly copyright: string;
+  readonly rights: string;
+  readonly privacyPolicy: string;
+  readonly terms: string;
+  readonly sitemap: string;
+}
+
+export interface FooterContactModal {
+  readonly title: string;
+  readonly emailLabel: string;
+  readonly emailPlaceholder: string;
+  readonly subjectLabel: string;
+  readonly subjectPlaceholder: string;
+  readonly messageLabel: string;
+  readonly messagePlaceholder: string;
+  readonly submitButton: string;
+  readonly cancelButton: string;
+  readonly submitting: string;
+  readonly requiredField: string;
+  readonly successMessage: string;
+  readonly errorMessage: string;
+  readonly emailRequired: string;
+  readonly emailInvalid: string;
+  readonly subjectRequired: string;
+  readonly messageRequired: string;
+}
+
+export interface FooterContact {
+  readonly title: string;
+  readonly buttonLabel: string;
+  readonly emailSubject: string;
+  readonly modal: FooterContactModal;
+}
+
+export interface FooterAccessibility {
+  readonly skipToFooter: string;
+  readonly footerNavigation: string;
+}
+
+export interface FooterDictionary {
+  readonly about: FooterAbout;
+  readonly quickLinks: FooterQuickLinks;
+  readonly socialLinks: FooterSocialLinks;
+  readonly legal: FooterLegal;
+  readonly contact: FooterContact;
+  readonly accessibility: FooterAccessibility;
+}
+
+// ===================================================================
+// METADATA TYPES
+// ===================================================================
+
+export interface NotFoundItem {
+  readonly title: string;
+  readonly description: string;
+}
+
+export interface MetadataNotFound {
+  readonly article: NotFoundItem;
+  readonly rubric: NotFoundItem;
+  readonly author: NotFoundItem;
+  readonly page: NotFoundItem;
+  readonly content: NotFoundItem;
+}
+
+export interface MetadataDictionary {
+  readonly notFound: MetadataNotFound;
+}
+
+// ===================================================================
+// NAVIGATION TYPES
+// ===================================================================
+
+export interface NavigationLabels {
+  readonly home: string;
+  readonly articles: string;
+  readonly rubrics: string;
+  readonly authors: string;
+  readonly categories: string;
+  readonly search: string;
+  readonly authorArticles: string;
+  readonly categoryArticles: string;
+  readonly featuredArticles: string;
+  readonly searchResults: string;
+}
+
+export interface NavigationTemplates {
+  readonly pageTitle: string;
+  readonly sectionDescription: string;
+  readonly breadcrumbSeparator: string;
+  readonly contextualPath: string;
+  readonly authorContext: string;
+  readonly categoryContext: string;
+  readonly searchContext: string;
+}
+
+export interface NavigationDescriptions {
+  readonly home: string;
+  readonly articles: string;
+  readonly rubrics: string;
+  readonly authors: string;
+  readonly search: string;
+  readonly fromAuthor: string;
+  readonly fromCategory: string;
+  readonly fromFeatured: string;
+  readonly fromSearch: string;
+}
+
+export interface NavigationAccessibility {
+  readonly mainNavigation: string;
+  readonly menuTitle: string;
+  readonly menuDescription: string;
+  readonly openMenu: string;
+  readonly closeMenu: string;
+  readonly logoAlt: string;
+  readonly logoMainPageLabel: string;
+  readonly primarySectionsLabel: string;
+  readonly mainMenuLabel: string;
+  readonly searchAndSettingsLabel: string;
+  readonly siteSearchLabel: string;
+  readonly skipToContent: string;
+  readonly skipToNavigation: string;
+  readonly breadcrumbNavigation: string;
+  readonly paginationNavigation: string;
+  readonly pageNavigation: string;
+}
+
+export interface NavigationDictionary {
+  readonly labels: NavigationLabels;
+  readonly templates: NavigationTemplates;
+  readonly descriptions: NavigationDescriptions;
+  readonly accessibility: NavigationAccessibility;
+}
+
+// ===================================================================
+// SEARCH TYPES
+// ===================================================================
+
+export interface SearchLabels {
+  readonly title: string;
+  readonly placeholder: string;
+  readonly results: string;
+  readonly noResults: string;
+  readonly searching: string;
+  readonly submit: string;
+  readonly minCharacters: string;
+  readonly searchButton: string;
+}
+
+export interface SearchHub {
+  readonly tipsTitle: string;
+  readonly tips: readonly string[];
+  readonly exploreHeading: string;
+  readonly exploreDescription: string;
+  readonly browseCategories: string;
+  readonly browseCategoriesDescription: string;
+  readonly noResultsSuggestion: string;
+  readonly emptyStateMessage: string;
+}
+
+export interface SearchTemplates {
+  readonly resultsFor: string;
+  readonly pageTitle: string;
+  readonly pageDescription: string;
+  readonly relatedTo: string;
+}
+
+export interface SearchAccessibility {
+  readonly searchLabel: string;
+  readonly searchButtonLabel: string;
+  readonly searchInputLabel: string;
+  readonly searchDescription: string;
+  readonly searchResultsLabel: string;
+  readonly clearSearchLabel: string;
+  readonly openSearch: string;
+  readonly closeSearch: string;
+}
+
+export interface SearchDictionary {
+  readonly labels: SearchLabels;
+  readonly hub: SearchHub;
+  readonly templates: SearchTemplates;
+  readonly accessibility: SearchAccessibility;
 }
 
 // ===================================================================
@@ -322,7 +451,10 @@ export interface SectionTemplates {
 }
 
 export interface SectionHome {
-  readonly welcomeTitle: string;
+  readonly welcomeTitle: {
+    readonly main: string;
+    readonly sub: string;
+  };
   readonly welcomeDescription: string;
   readonly featuredContent: string;
   readonly latestUpdates: string;
@@ -438,163 +570,34 @@ export interface SEODictionary {
 }
 
 // ===================================================================
-// SEARCH TYPES
+// SHARE TYPES
 // ===================================================================
 
-export interface SearchLabels {
+export interface SharePlatforms {
+  readonly telegram: string;
+  readonly whatsapp: string;
+  readonly vk: string;
+  readonly twitter: string;
+  readonly facebook: string;
+  readonly instagram: string;
+  readonly copy: string;
+}
+
+export interface ShareMessages {
+  readonly linkCopied: string;
+  readonly instagramCopied: string;
+}
+
+export interface ShareAccessibility {
+  readonly shareOn: string;
+  readonly closeDialog: string;
+}
+
+export interface ShareDictionary {
   readonly title: string;
-  readonly placeholder: string;
-  readonly results: string;
-  readonly noResults: string;
-  readonly searching: string;
-  readonly submit: string;
-  readonly minCharacters: string;
-  readonly searchButton: string;
-}
-
-export interface SearchHub {
-  readonly tipsTitle: string;
-  readonly tips: readonly string[];
-  readonly exploreHeading: string;
-  readonly exploreDescription: string;
-  readonly browseCategories: string;
-  readonly browseCategoriesDescription: string;
-  readonly noResultsSuggestion: string;
-  readonly emptyStateMessage: string;
-}
-
-export interface SearchTemplates {
-  readonly resultsFor: string;
-  readonly pageTitle: string;
-  readonly pageDescription: string;
-  readonly relatedTo: string;
-}
-
-export interface SearchAccessibility {
-  readonly searchLabel: string;
-  readonly searchButtonLabel: string;
-  readonly searchInputLabel: string;
-  readonly searchDescription: string;
-  readonly searchResultsLabel: string;
-  readonly clearSearchLabel: string;
-  readonly openSearch: string;
-  readonly closeSearch: string;
-}
-
-export interface SearchDictionary {
-  readonly labels: SearchLabels;
-  readonly hub: SearchHub;
-  readonly templates: SearchTemplates;
-  readonly accessibility: SearchAccessibility;
-}
-
-// ===================================================================
-// FILTER TYPES
-// ===================================================================
-
-export interface FilterLabels {
-  readonly sortBy: string;
-  readonly category: string;
-  readonly allCategories: string;
-  readonly newest: string;
-  readonly oldest: string;
-  readonly mostLiked: string;
-  readonly mostViewed: string;
-  readonly reset: string;
-  readonly apply: string;
-}
-
-export interface FilterAccessibility {
-  readonly categorySelector: string;
-  readonly sortingControl: string;
-  readonly resetButton: string;
-  readonly filterGroup: string;
-  readonly dropdownLabel: string;
-}
-
-export interface FilterDictionary {
-  readonly labels: FilterLabels;
-  readonly accessibility: FilterAccessibility;
-}
-
-// ===================================================================
-// ACCESSIBILITY TYPES
-// ===================================================================
-
-export interface AccessibilityDictionary {
-  readonly iconDescription: string;
-  readonly decorativeIcon: string;
-  readonly rubricVisualIndicator: string;
-  readonly rubricDescription: string;
-  readonly expandDescription: string;
-}
-
-// ===================================================================
-// FOOTER TYPES
-// ===================================================================
-
-export interface FooterAbout {
-  readonly title: string;
-  readonly description: string;
-}
-
-export interface FooterQuickLinks {
-  readonly title: string;
-  readonly ariaLabel: string;
-}
-
-export interface FooterSocialLinks {
-  readonly title: string;
-}
-
-export interface FooterLegal {
-  readonly title: string;
-  readonly copyright: string;
-  readonly rights: string;
-  readonly privacyPolicy: string;
-  readonly terms: string;
-  readonly sitemap: string;
-}
-
-export interface FooterContactModal {
-  readonly title: string;
-  readonly emailLabel: string;
-  readonly emailPlaceholder: string;
-  readonly subjectLabel: string;
-  readonly subjectPlaceholder: string;
-  readonly messageLabel: string;
-  readonly messagePlaceholder: string;
-  readonly submitButton: string;
-  readonly cancelButton: string;
-  readonly submitting: string;
-  readonly requiredField: string;
-  readonly successMessage: string;
-  readonly errorMessage: string;
-  readonly emailRequired: string;
-  readonly emailInvalid: string;
-  readonly subjectRequired: string;
-  readonly messageRequired: string;
-}
-
-export interface FooterContact {
-  readonly title: string;
-  readonly buttonLabel: string;
-  readonly emailSubject: string;
-  readonly modal: FooterContactModal;
-}
-
-export interface FooterAccessibility {
-  readonly skipToFooter: string;
-  readonly footerNavigation: string;
-}
-
-export interface FooterDictionary {
-  readonly about: FooterAbout;
-  readonly quickLinks: FooterQuickLinks;
-  readonly socialLinks: FooterSocialLinks;
-  readonly legal: FooterLegal;
-  readonly contact: FooterContact;
-  readonly accessibility: FooterAccessibility;
+  readonly platforms: SharePlatforms;
+  readonly messages: ShareMessages;
+  readonly accessibility: ShareAccessibility;
 }
 
 // ===================================================================

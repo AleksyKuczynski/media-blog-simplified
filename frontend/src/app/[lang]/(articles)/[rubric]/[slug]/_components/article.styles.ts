@@ -81,6 +81,9 @@ export const LAYOUT_STYLES = {
     ),
   },
 
+  // Article container
+  articleContainer: 'container overflow-x-hidden max-w-7xl mx-auto px-2 md:px-4 pb-12 md:pb-20 lg:pb-32 xl:pb-40',
+
   // Content wrapper
   content: {
     container: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px] not-prose',
@@ -329,11 +332,11 @@ export const NAVIGATION_STYLES = {
     // AuthorSection (single author - standalone)
     author: {
       container: 'w-full max-w-2xl mx-auto',
-      link: 'inline-flex items-center gap-3 pr-4 rounded-xl bg-sf-cont hover:bg-sf-hi transition-colors',
-      avatar: 'relative w-10 h-10 rounded-full overflow-hidden',
-      info: 'flex flex-col',
-      name: 'max-lg:text-sm font-medium text-pr-cont',
-      label: 'text-xs text-on-sf-var',
+      link: 'inline-flex items-stretch gap-3 pr-4 transition-colors',
+      avatar: 'relative w-12 lg:w-16 h-12 lg:h-16 rounded-lg overflow-hidden',
+      info: 'flex flex-col justify-between',
+      name: 'block font-medium text-pr-cont text-lg -mt-1 lg:text-2xl',
+      label: 'block text-xs lg:text-sm font-medium text-on-sf-var uppercase',
     },
     
     // AuthorsSection (multiple authors)

@@ -22,13 +22,14 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { dictionary } from '@/config/i18n';
+import { Dictionary } from '@/config/i18n';
 import { DEFAULT_LANG } from '@/config/constants/constants';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { DIRECTUS_URL } from '@/api/directus';
 import { NAVIGATION_STYLES } from '../article.styles';
 
 interface AuthorSectionProps {
+  dictionary: Dictionary
   author: {
     name: string;
     slug: string;
@@ -43,6 +44,7 @@ interface AuthorSectionProps {
  * Links to author profile for entity building
  */
 export default function AuthorSection({
+  dictionary,
   author,
 }: AuthorSectionProps) {
   const styles = NAVIGATION_STYLES.relatedLinks.author;
@@ -91,6 +93,7 @@ export default function AuthorSection({
         
         <div className={styles.info}>
           <span className={styles.name}>{author.name}</span>
+          <span className={styles.label}>{dictionary.sections.labels.author}</span>
         </div>
       </Link>
     </section>

@@ -68,7 +68,8 @@ export default function AuthorsSection({
       
       <div className={styles.grid}>
         {realAuthors.map((author) => (
-          <AuthorSection 
+          <AuthorSection
+            dictionary={dictionary} 
             key={author.slug} 
             author={author}
           />

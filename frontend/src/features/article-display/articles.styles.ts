@@ -16,7 +16,11 @@ export const HERO_SECTION_STYLES = {
   
   // Header
   header: 'mb-12',
-  title: 'text-4xl md:text-5xl font-bold font-display mb-6 max-w-3xl text-on-sf',
+  title: {
+    base: 'leading-tight font-bold font-display text-on-sf w-fullflex flex-col',
+    main:'text-4xl md:text-5xl mb-6 max-w-3xl',
+    sub: 'text-2xl md:text-3xl max-w-3xl',
+  },
   description: 'text-xl text-on-sf-var max-w-3xl mr-0 leading-relaxed',
   
   // Loading state
