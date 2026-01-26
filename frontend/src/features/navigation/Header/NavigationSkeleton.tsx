@@ -31,20 +31,20 @@ export function NavigationSkeleton() {
       </div>
 
       {/* Mobile Navigation Skeleton */}
-      <div className={MOBILE_NAV_STYLES.container}>
-        <div className={MOBILE_NAV_STYLES.topBar}>
+      <div className={MOBILE_NAV_STYLES.nav.container}>
+        <div className={MOBILE_NAV_STYLES.nav.topBar}>
           {/* Left section - Hamburger button skeleton */}
-          <div className={MOBILE_NAV_STYLES.leftSection}>
+          <div className={MOBILE_NAV_STYLES.sections.left}>
             <div className="h-12 w-12 bg-sf-hst rounded-full animate-pulse" />
           </div>
 
           {/* Center section - Logo skeleton */}
-          <div className={MOBILE_NAV_STYLES.centerSection}>
+          <div className={MOBILE_NAV_STYLES.sections.center}>
             <div className="h-10 w-24 bg-sf-hst rounded-lg animate-pulse" />
           </div>
 
           {/* Right section - Search and language switcher skeleton */}
-          <div className={MOBILE_NAV_STYLES.rightSection}>
+          <div className={MOBILE_NAV_STYLES.sections.right}>
             <div className="h-10 w-10 bg-sf-hst rounded-full animate-pulse" />
             <div className="h-10 w-12 bg-sf-hst rounded-full animate-pulse" />
           </div>
