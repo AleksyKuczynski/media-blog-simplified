@@ -13,84 +13,16 @@ const dictionaryRU: Dictionary = {
   locale: 'ru-RU',
 
   // ===================================================================
-  // CONSENT - Consent banner content
+  // ACCESSIBILITY - Universal accessibility labels
   // ===================================================================
-  consent: {
-    title: 'Мы используем файлы cookie',
-    description: 'Мы используем файлы cookie для улучшения вашего опыта, анализа трафика и персонализации контента. Вы можете принять все или настроить свои предпочтения.',
-    acceptAll: 'Принять все',
-    rejectAll: 'Отклонить все',
-    customize: 'Настроить',
-    save: 'Сохранить настройки',
-    back: 'Назад',
-    necessary: 'Необходимые',
-    analytics: 'Аналитика',
-    marketing: 'Маркетинг',
-    preferences: 'Предпочтения',
-    necessaryDescription: 'Эти файлы cookie обеспечивают базовую функциональность и безопасность.',
-    analyticsDescription: 'Помогают нам понять, как посетители взаимодействуют с сайтом, собирая анонимную информацию.',
-    marketingDescription: 'Используются для показа релевантной рекламы и измерения эффективности рекламных кампаний.',
-    preferencesDescription: 'Позволяют сайту запоминать ваши предпочтения, такие как язык или регион.',
-    privacyPolicy: 'Политика конфиденциальности',
-    alwaysActive: 'Всегда активно',
+  accessibility: {
+    iconDescription: 'Иконка',
+    decorativeIcon: 'Декоративная иконка',
+    rubricVisualIndicator: 'Визуальный индикатор рубрики',
+    rubricDescription: 'Описание рубрики',
+    expandDescription: 'Развернуть описание',
   },
 
-  // ===================================================================
-  // NAVIGATION - Complete structured navigation
-  // ===================================================================
-  navigation: {
-    labels: {
-      home: 'Главная',
-      articles: 'Статьи',
-      rubrics: 'Рубрики',
-      authors: 'Авторы',
-      categories: 'Категории',
-      search: 'Поиск',
-      authorArticles: 'Статьи автора',
-      categoryArticles: 'Статьи в категории',
-      featuredArticles: 'Избранные статьи',
-      searchResults: 'Результаты поиска',
-    },
-    templates: {
-      pageTitle: '{page} — {siteName}',
-      sectionDescription: '{action} {section} на {siteName}',
-      breadcrumbSeparator: '→',
-      contextualPath: '{context} → {item}',
-      authorContext: 'Автор {authorName}',
-      categoryContext: 'Категория {categoryName}',
-      searchContext: 'Поиск: {query}',
-    },
-    descriptions: {
-      home: 'Главная страница сайта',
-      articles: 'Все статьи о культуре и искусстве',
-      rubrics: 'Тематические разделы и категории',
-      authors: 'Наши авторы и эксперты',
-      search: 'Поиск по всем материалам сайта',
-      fromAuthor: 'Статья из профиля автора',
-      fromCategory: 'Статья из категории',
-      fromFeatured: 'Статья из избранного на главной',
-      fromSearch: 'Статья из результатов поиска',
-    },
-    accessibility: {
-      mainNavigation: 'Основная навигация',
-      menuTitle: 'Меню сайта',
-      menuDescription: 'Навигация по основным разделам',
-      openMenu: 'Открыть меню',
-      closeMenu: 'Закрыть меню',
-      logoAlt: 'Логотип EventForMe',
-      logoMainPageLabel: 'Перейти на главную страницу',
-      primarySectionsLabel: 'Основные разделы',
-      mainMenuLabel: 'Главное меню',
-      searchAndSettingsLabel: 'Поиск и настройки',
-      siteSearchLabel: 'Поиск по сайту',
-      skipToContent: 'Перейти к содержимому',
-      skipToNavigation: 'Перейти к навигации',
-      breadcrumbNavigation: 'Навигационная цепочка',
-      paginationNavigation: 'Навигация по страницам',
-      pageNavigation: 'Страница {current} из {total}',
-    },
-  },
-  
   // ===================================================================
   // BREADCRUMB - reusable labels for breadcrumbs
   // ===================================================================
@@ -166,30 +98,45 @@ const dictionaryRU: Dictionary = {
   },
 
   // ===================================================================
-  // METADATA - NEW: Structured metadata fallbacks
+  // CONSENT - Consent banner content
   // ===================================================================
-  metadata: {
-    notFound: {
-      article: {
-        title: 'Статья не найдена',
-        description: 'Запрашиваемая статья не найдена',
-      },
-      rubric: {
-        title: 'Рубрика не найдена',
-        description: 'Запрашиваемая рубрика не найдена',
-      },
-      author: {
-        title: 'Автор не найден',
-        description: 'Запрашиваемый автор не найден',
-      },
-      page: {
-        title: 'Страница не найдена',
-        description: 'Запрашиваемая страница не найдена',
-      },
-      content: {
-      title: 'Контент не найден',
-      description: 'Запрашиваемый контент не найден',
-      },
+  consent: {
+    title: 'Мы используем файлы cookie',
+    description: 'Мы используем файлы cookie для улучшения вашего опыта, анализа трафика и персонализации контента. Вы можете принять все или настроить свои предпочтения.',
+    acceptAll: 'Принять все',
+    rejectAll: 'Отклонить все',
+    customize: 'Настроить',
+    save: 'Сохранить настройки',
+    back: 'Назад',
+    necessary: 'Необходимые',
+    analytics: 'Аналитика',
+    marketing: 'Маркетинг',
+    preferences: 'Предпочтения',
+    necessaryDescription: 'Эти файлы cookie обеспечивают базовую функциональность и безопасность.',
+    analyticsDescription: 'Помогают нам понять, как посетители взаимодействуют с сайтом, собирая анонимную информацию.',
+    marketingDescription: 'Используются для показа релевантной рекламы и измерения эффективности рекламных кампаний.',
+    preferencesDescription: 'Позволяют сайту запоминать ваши предпочтения, такие как язык или регион.',
+    privacyPolicy: 'Политика конфиденциальности',
+    alwaysActive: 'Всегда активно',
+  },
+
+  // ===================================================================
+  // CONTENT - NEW: Content-specific labels and templates
+  // ===================================================================
+  content: {
+    labels: {
+      tableOfContents: 'Содержание',
+      editorial: 'Редакция {siteName}',
+      readingTime: 'Время чтения: {minutes} мин',
+      wordsCount: 'Слов: {count}',
+      articleImage: 'Изображение к статье',
+      portalAdvice: 'Совет портала EventForMe',
+    },
+    templates: {
+      emptyRubric: 'В рубрике {name} пока нет статей',
+      moreAbout: 'Больше о {contentType} {name}',
+      writtenBy: 'Автор: {author}',
+      publishedIn: 'Опубликовано в {rubric}',
     },
   },
 
@@ -218,49 +165,212 @@ const dictionaryRU: Dictionary = {
   },
 
   // ===================================================================
-  // CONTENT - NEW: Content-specific labels and templates
+  // FILTER - Filter and sorting interface
   // ===================================================================
-  content: {
+  filter: {
     labels: {
-      tableOfContents: 'Содержание',
-      editorial: 'Редакция {siteName}',
-      readingTime: 'Время чтения: {minutes} мин',
-      wordsCount: 'Слов: {count}',
-      articleImage: 'Изображение к статье',
-      portalAdvice: 'Совет портала EventForMe',
+      sortBy: 'Порядок сортировки',
+      category: 'Категория',
+      allCategories: 'Все категории',
+      newest: 'Сначала новые',
+      oldest: 'Сначала старые',
+      mostLiked: 'Самые популярные',
+      mostViewed: 'Самые читаемые',
+      reset: 'Сбросить',
+      apply: 'Применить',
     },
-    templates: {
-      emptyRubric: 'В рубрике {name} пока нет статей',
-      moreAbout: 'Больше о {contentType} {name}',
-      writtenBy: 'Автор: {author}',
-      publishedIn: 'Опубликовано в {rubric}',
+    accessibility: {
+      categorySelector: 'Выбор категории',
+      sortingControl: 'Управление сортировкой',
+      resetButton: 'Сбросить фильтры',
+      filterGroup: 'Группа фильтров',
+      dropdownLabel: 'Выпадающий список',
     },
   },
 
-
   // ===================================================================
-  // SHARE - Share popup content
+  // FOOTER - Complete footer structure
   // ===================================================================
-  share: {
-    title: 'Поделиться статьей',
-    platforms: {
-      telegram: 'Telegram',
-      whatsapp: 'WhatsApp',
-      vk: 'VK',
-      twitter: 'Twitter',
-      facebook: 'Facebook',
-      instagram: 'Instagram',
-      copy: 'Copy Link',
+  footer: {
+    about: {
+      title: 'О проекте',
+      description: 'Блог о планировании и организации свадьбы от экспертов EventForMe. Практические руководства по выбору площадок, работе с декораторами, созданию образов невесты и жениха. Советы по бюджетированию, идеи декора, тренды свадебной моды. Превращаем организацию свадьбы в простой и понятный процесс.',
     },
-    messages: {
-      linkCopied: 'Ссылка скопирована!',
-      instagramCopied: 'Ссылка скопирована! Вставьте в приложение Instagram',
+    quickLinks: {
+      title: 'Быстрые ссылки',
+      ariaLabel: 'Навигация по основным разделам сайта',
+    },
+    socialLinks: {
+      title: 'Социальные сети',
+    },
+    legal: {
+      title: 'Правовая информация',
+      copyright: '© {year} {siteName}. Все права защищены.',
+      rights: 'Все права защищены',
+      privacyPolicy: 'Политика конфиденциальности',
+      terms: 'Условия использования',
+      sitemap: 'Карта сайта',
+    },
+    contact: {
+      title: 'Связаться с нами',
+      buttonLabel: 'Написать нам',
+      emailSubject: 'Обращение с EventForMe',
+      modal: {
+        title: 'Свяжитесь с нами',
+        emailLabel: 'Ваш email',
+        emailPlaceholder: 'example@mail.com',
+        subjectLabel: 'Тема сообщения',
+        subjectPlaceholder: 'Напишите тему вашего обращения',
+        messageLabel: 'Сообщение',
+        messagePlaceholder: 'Расскажите, чем мы можем помочь...',
+        submitButton: 'Отправить',
+        cancelButton: 'Отмена',
+        submitting: 'Отправка...',
+        requiredField: 'обязательное поле',
+        successMessage: 'Спасибо! Ваше сообщение отправлено. Мы ответим в ближайшее время.',
+        errorMessage: 'Произошла ошибка. Пожалуйста, попробуйте позже или напишите на',
+        emailRequired: 'Email обязателен',
+        emailInvalid: 'Введите корректный email',
+        subjectRequired: 'Тема обязательна',
+        messageRequired: 'Сообщение обязательно',
+      },
     },
     accessibility: {
-      shareOn: 'Поделиться через {platform}',
-      closeDialog: 'Закрыть окно поделиться',
+      skipToFooter: 'Перейти к подвалу сайта',
+      footerNavigation: 'Навигация в подвале сайта',
     },
-  },  
+  },
+  
+  // ===================================================================
+  // METADATA - NEW: Structured metadata fallbacks
+  // ===================================================================
+  metadata: {
+    notFound: {
+      article: {
+        title: 'Статья не найдена',
+        description: 'Запрашиваемая статья не найдена',
+      },
+      rubric: {
+        title: 'Рубрика не найдена',
+        description: 'Запрашиваемая рубрика не найдена',
+      },
+      author: {
+        title: 'Автор не найден',
+        description: 'Запрашиваемый автор не найден',
+      },
+      page: {
+        title: 'Страница не найдена',
+        description: 'Запрашиваемая страница не найдена',
+      },
+      content: {
+      title: 'Контент не найден',
+      description: 'Запрашиваемый контент не найден',
+      },
+    },
+  },
+
+  // ===================================================================
+  // NAVIGATION - Complete structured navigation
+  // ===================================================================
+  navigation: {
+    labels: {
+      home: 'Главная',
+      articles: 'Статьи',
+      rubrics: 'Рубрики',
+      authors: 'Авторы',
+      categories: 'Категории',
+      search: 'Поиск',
+      authorArticles: 'Статьи автора',
+      categoryArticles: 'Статьи в категории',
+      featuredArticles: 'Избранные статьи',
+      searchResults: 'Результаты поиска',
+    },
+    templates: {
+      pageTitle: '{page} — {siteName}',
+      sectionDescription: '{action} {section} на {siteName}',
+      breadcrumbSeparator: '→',
+      contextualPath: '{context} → {item}',
+      authorContext: 'Автор {authorName}',
+      categoryContext: 'Категория {categoryName}',
+      searchContext: 'Поиск: {query}',
+    },
+    descriptions: {
+      home: 'Главная страница сайта',
+      articles: 'Все статьи о культуре и искусстве',
+      rubrics: 'Тематические разделы и категории',
+      authors: 'Наши авторы и эксперты',
+      search: 'Поиск по всем материалам сайта',
+      fromAuthor: 'Статья из профиля автора',
+      fromCategory: 'Статья из категории',
+      fromFeatured: 'Статья из избранного на главной',
+      fromSearch: 'Статья из результатов поиска',
+    },
+    accessibility: {
+      mainNavigation: 'Основная навигация',
+      menuTitle: 'Меню сайта',
+      menuDescription: 'Навигация по основным разделам',
+      openMenu: 'Открыть меню',
+      closeMenu: 'Закрыть меню',
+      logoAlt: 'Логотип EventForMe',
+      logoMainPageLabel: 'Перейти на главную страницу',
+      primarySectionsLabel: 'Основные разделы',
+      mainMenuLabel: 'Главное меню',
+      searchAndSettingsLabel: 'Поиск и настройки',
+      siteSearchLabel: 'Поиск по сайту',
+      skipToContent: 'Перейти к содержимому',
+      skipToNavigation: 'Перейти к навигации',
+      breadcrumbNavigation: 'Навигационная цепочка',
+      paginationNavigation: 'Навигация по страницам',
+      pageNavigation: 'Страница {current} из {total}',
+    },
+  },
+  
+  // ===================================================================
+  // SEARCH - Complete search interface
+  // ===================================================================
+  search: {
+    labels: {
+      title: 'Поиск',
+      placeholder: 'Поиск статей, авторов, категорий...',
+      results: 'Результаты',
+      noResults: 'Ничего не найдено',
+      searching: 'Поиск...',
+      submit: 'Найти',
+      minCharacters: 'Введите минимум 3 символа',
+      searchButton: 'Найти',
+    },
+    hub: {
+    tipsTitle: 'Советы по поиску',
+    tips: [
+      'Используйте минимум 3 символа для поиска',
+      'Вводите ключевые слова для лучших результатов',
+      'Поиск работает по названиям и описаниям статей, авторам и категориям',
+    ],
+    exploreHeading: 'Начните изучение',
+    exploreDescription: 'Популярные статьи для начала',
+    browseCategories: 'Обзор категорий',
+    browseCategoriesDescription: 'Найдите интересующую вас тему',
+    noResultsSuggestion: 'Попробуйте изменить запрос или изучите популярные статьи ниже',
+    emptyStateMessage: 'Введите запрос для начала поиска',
+  },
+    templates: {
+      resultsFor: 'Результаты поиска для "{query}"',
+      pageTitle: 'Поиск',
+      pageDescription: 'Поиск статей, авторов и рубрик',
+      relatedTo: 'Связанные с "{query}"',
+    },
+    accessibility: {
+      searchLabel: 'Поиск по сайту',
+      searchButtonLabel: 'Выполнить поиск',
+      searchInputLabel: 'Введите поисковый запрос',
+      searchDescription: 'Поиск по всем материалам сайта',
+      searchResultsLabel: 'Результаты поиска',
+      clearSearchLabel: 'Очистить поиск',
+      openSearch: 'Открыть поиск',
+      closeSearch: 'Закрыть поиск',
+
+    },
+  },
 
   // ===================================================================
   // SECTIONS - Template-driven, reusable across content types
@@ -291,8 +401,8 @@ const dictionaryRU: Dictionary = {
       noCategoryArticles: 'В категории {categoryName} пока нет статей',
     },
     home: {
-      welcomeTitle: 'Добро пожаловать в EventForMe',
-      welcomeDescription: 'Медиа о культурных событиях, искусстве и творческих инициативах',
+      welcomeTitle: 'Блог EventForMe: энциклопедия свадьбы и вдохновение для вашего торжества',
+      welcomeDescription: 'Экспертные статьи о планировании свадьбы, тренды декора и моды, реальные истории пар и советы профессионалов event-индустрии. От выбора площадки до организации медового месяца — превращаем подготовку к свадьбе в понятный и приятный процесс.',
       featuredContent: 'Избранное',
       latestUpdates: 'Последние обновления',
       exploreRubrics: 'Изучить рубрики',
@@ -389,139 +499,28 @@ const dictionaryRU: Dictionary = {
   },
 
   // ===================================================================
-  // SEARCH - Complete search interface
+  // SHARE - Share popup content
   // ===================================================================
-  search: {
-    labels: {
-      title: 'Поиск',
-      placeholder: 'Поиск статей, авторов, категорий...',
-      results: 'Результаты',
-      noResults: 'Ничего не найдено',
-      searching: 'Поиск...',
-      submit: 'Найти',
-      minCharacters: 'Введите минимум 3 символа',
-      searchButton: 'Найти',
+  share: {
+    title: 'Поделиться статьей',
+    platforms: {
+      telegram: 'Telegram',
+      whatsapp: 'WhatsApp',
+      vk: 'VK',
+      twitter: 'Twitter',
+      facebook: 'Facebook',
+      instagram: 'Instagram',
+      copy: 'Copy Link',
     },
-    hub: {  // NEW SECTION
-    tipsTitle: 'Советы по поиску',
-    tips: [
-      'Используйте минимум 3 символа для поиска',
-      'Вводите ключевые слова для лучших результатов',
-      'Поиск работает по названиям и описаниям статей, авторам и категориям',
-    ],
-    exploreHeading: 'Начните изучение',
-    exploreDescription: 'Популярные статьи для начала',
-    browseCategories: 'Обзор категорий',
-    browseCategoriesDescription: 'Найдите интересующую вас тему',
-    noResultsSuggestion: 'Попробуйте изменить запрос или изучите популярные статьи ниже',
-    emptyStateMessage: 'Введите запрос для начала поиска',
-  },
-    templates: {
-      resultsFor: 'Результаты поиска для "{query}"',
-      pageTitle: 'Поиск',
-      pageDescription: 'Поиск статей, авторов и рубрик',
-      relatedTo: 'Связанные с "{query}"',
+    messages: {
+      linkCopied: 'Ссылка скопирована!',
+      instagramCopied: 'Ссылка скопирована! Вставьте в приложение Instagram',
     },
     accessibility: {
-      searchLabel: 'Поиск по сайту',
-      searchButtonLabel: 'Выполнить поиск',
-      searchInputLabel: 'Введите поисковый запрос',
-      searchDescription: 'Поиск по всем материалам сайта',
-      searchResultsLabel: 'Результаты поиска',
-      clearSearchLabel: 'Очистить поиск',
-      openSearch: 'Открыть поиск',
-      closeSearch: 'Закрыть поиск',
-
+      shareOn: 'Поделиться через {platform}',
+      closeDialog: 'Закрыть окно поделиться',
     },
-  },
-
-  // ===================================================================
-  // FILTER - Filter and sorting interface
-  // ===================================================================
-  filter: {
-    labels: {
-      sortBy: 'Порядок сортировки',
-      category: 'Категория',
-      allCategories: 'Все категории',
-      newest: 'Сначала новые',
-      oldest: 'Сначала старые',
-      mostLiked: 'Самые популярные',
-      mostViewed: 'Самые читаемые',
-      reset: 'Сбросить',
-      apply: 'Применить',
-    },
-    accessibility: {
-      categorySelector: 'Выбор категории',
-      sortingControl: 'Управление сортировкой',
-      resetButton: 'Сбросить фильтры',
-      filterGroup: 'Группа фильтров',
-      dropdownLabel: 'Выпадающий список',
-    },
-  },
-
-  // ===================================================================
-  // ACCESSIBILITY - Universal accessibility labels
-  // ===================================================================
-  accessibility: {
-    iconDescription: 'Иконка',
-    decorativeIcon: 'Декоративная иконка',
-    rubricVisualIndicator: 'Визуальный индикатор рубрики',
-    rubricDescription: 'Описание рубрики',
-    expandDescription: 'Развернуть описание',
-  },
-
-  // ===================================================================
-  // FOOTER - Complete footer structure
-  // ===================================================================
-  footer: {
-    about: {
-      title: 'О проекте',
-      description: 'EventForMe — медиа о культурных событиях и современном искусстве',
-    },
-    quickLinks: {
-      title: 'Быстрые ссылки',
-      ariaLabel: 'Навигация по основным разделам сайта',
-    },
-    socialLinks: {
-      title: 'Социальные сети',
-    },
-    legal: {
-      title: 'Правовая информация',
-      copyright: '© {year} {siteName}. Все права защищены.',
-      rights: 'Все права защищены',
-      privacyPolicy: 'Политика конфиденциальности',
-      terms: 'Условия использования',
-      sitemap: 'Карта сайта',
-    },
-    contact: {
-      title: 'Связаться с нами',
-      buttonLabel: 'Написать нам',
-      emailSubject: 'Обращение с EventForMe',
-      modal: {
-        title: 'Свяжитесь с нами',
-        emailLabel: 'Ваш email',
-        emailPlaceholder: 'example@mail.com',
-        subjectLabel: 'Тема сообщения',
-        subjectPlaceholder: 'Напишите тему вашего обращения',
-        messageLabel: 'Сообщение',
-        messagePlaceholder: 'Расскажите, чем мы можем помочь...',
-        submitButton: 'Отправить',
-        cancelButton: 'Отмена',
-        submitting: 'Отправка...',
-        requiredField: 'обязательное поле',
-        successMessage: 'Спасибо! Ваше сообщение отправлено. Мы ответим в ближайшее время.',
-        errorMessage: 'Произошла ошибка. Пожалуйста, попробуйте позже или напишите на',
-        emailRequired: 'Email обязателен',
-        emailInvalid: 'Введите корректный email',
-        subjectRequired: 'Тема обязательна',
-        messageRequired: 'Сообщение обязательно',
-      },
-    },
-    accessibility: {
-      skipToFooter: 'Перейти к подвалу сайта',
-      footerNavigation: 'Навигация в подвале сайта',
-    },
-  },
+  },  
 };
 
 export default dictionaryRU;
