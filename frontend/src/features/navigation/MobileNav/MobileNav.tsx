@@ -10,7 +10,7 @@ import LanguageSwitcher from '../Header/LanguageSwitcher'
 import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/config/i18n'
 import HamburgerButton from './HamburgerButton'
-import { MOBILE_NAV_STYLES, PANEL_CONTENT_STYLES } from './mobileNav.styles'
+import { MOBILE_NAV_STYLES, PANEL_CONTENT_STYLES } from '../navigation.styles'
 import { cn } from '@/lib/utils'
 import { forwardRef, useImperativeHandle } from 'react'
 
@@ -138,7 +138,7 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
               role="menu"
               aria-label={dictionary.navigation.accessibility.mainMenuLabel}
             >
-              <div className="flex flex-col items-center gap-8">
+              <div className={PANEL_CONTENT_STYLES.menu.wrapper}>
                 <Logo 
                   lang={lang}
                   variant="mobile"

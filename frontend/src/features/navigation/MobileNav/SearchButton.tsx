@@ -2,7 +2,7 @@
 'use client'
 
 import React from 'react';
-import { SEARCH_BUTTON_STYLES } from './mobileNav.styles';
+import { SEARCH_BUTTON_STYLES } from '../navigation.styles';
 import { CloseIcon, SearchIcon } from '@/shared/primitives/Icons';
 
 interface SearchButtonProps {

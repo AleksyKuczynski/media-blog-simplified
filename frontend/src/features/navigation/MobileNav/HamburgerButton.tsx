@@ -2,7 +2,7 @@
 'use client'
 
 import React from 'react';
-import { HAMBURGER_BUTTON_STYLES } from './mobileNav.styles';
+import { HAMBURGER_BUTTON_STYLES } from '../navigation.styles';
 import { CloseIcon, MenuIcon } from '@/shared/primitives/Icons';
 
 interface HamburgerButtonProps {

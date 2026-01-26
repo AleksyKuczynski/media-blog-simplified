@@ -2,7 +2,7 @@
 'use client'
 
 import { useCallback } from 'react'
-import { PANEL_OVERLAY_STYLES } from './mobileNav.styles'
+import { PANEL_OVERLAY_STYLES } from '../navigation.styles'
 
 interface MobilePanelOverlayProps {
   onClose: () => void

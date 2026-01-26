@@ -13,7 +13,7 @@ interface LogoProps {
 
 const variantStyles = {
   desktop: 'h-20',
-  mobile: 'w-24 landscape:h-14 portrait:h-20',
+  mobile: 'w-24 md:w-36 landscape:h-14 portrait:h-20 md:portrait:h-24',
   footer: 'w-60 h-28'
 }
 

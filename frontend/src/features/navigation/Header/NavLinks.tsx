@@ -53,7 +53,7 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
                       sizes="96px"
                     />
                   </div>
-                  <span className="font-medium uppercase">
+                  <span>
                     {link.label}
                   </span>
                 </NavigationLink>
