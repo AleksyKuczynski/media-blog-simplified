@@ -91,7 +91,7 @@ export default function Breadcrumbs({
       });
     }
   }
-  else if (segments[0] === 'category') {
+  else if (segments[0] === 'categories') {
     breadcrumbs.push({
       label: dictionary.navigation.labels.articles,
       href: `/${lang}/articles`

@@ -75,7 +75,7 @@ export const generateFilterUrls = (
   params.set('sort', sortValue);
   
   if (categoryValue) {
-    return `${generateCanonicalUrl(`/category/${categoryValue}`, baseUrl)}?${params.toString()}`;
+    return `${generateCanonicalUrl(`/categories/${categoryValue}`, baseUrl)}?${params.toString()}`;
   } else {
     return `${generateCanonicalUrl('/articles', baseUrl)}?${params.toString()}`;
   }
