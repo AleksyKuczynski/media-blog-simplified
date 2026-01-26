@@ -4,9 +4,10 @@
  * Navigation image mapping
  */
 export const NAV_IMAGE_MAP: Record<string, string> = {
-  articles: '/articles.png',
-  rubrics: '/rubrics.png',
-  authors: '/authors.png',
+  home: '/home.svg',
+  articles: '/articles.svg',
+  rubrics: '/rubrics.svg',
+  authors: '/authors.svg',
 };
 
 /**

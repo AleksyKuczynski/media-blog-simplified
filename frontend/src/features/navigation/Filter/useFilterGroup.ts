@@ -31,7 +31,7 @@ interface UseFilterGroupReturn {
   categoryItems: DropdownItemType[];
   filterLabels: ReturnType<typeof getFilterLabels>;
   sortingOptions: ReturnType<typeof getSortingOptions>;
-  selectedCategoryName: string; // FIXED: always string, never undefined
+  selectedCategoryName: string;
   // Actions
   handleCategoryChange: (item: DropdownItemType) => void;
 }
@@ -111,7 +111,7 @@ export function useFilterGroup({
       
       // Fallback navigation
       if (item.value) {
-        router.push(`/${lang}/category/${item.value}?sort=${currentSort}`);
+        router.push(`/${lang}/categories/${item.value}?sort=${currentSort}`);
       } else {
         router.push(`/${lang}/articles?sort=${currentSort}`);
       }

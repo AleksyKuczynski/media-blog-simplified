@@ -1,9 +1,10 @@
-// frontend/src/features/navigation/QuickNavButton.tsx
+// frontend/src/features/navigation/QuickNav/QuickNavButton.tsx
 import Link from 'next/link';
 import Image from 'next/image';
 import { QUICK_NAV_STYLES } from '../navigation.styles';
+import { getNavImageSrc } from '../Header/utils/navLinks.utils';
 
-type NavType = 'articles' | 'rubrics' | 'authors';
+type NavType = 'home' | 'articles' | 'rubrics' | 'authors';
 
 interface QuickNavButtonProps {
   type: NavType;
@@ -12,19 +13,13 @@ interface QuickNavButtonProps {
   ariaLabel: string;
 }
 
-const IMAGE_MAP: Record<NavType, string> = {
-  articles: '/articles.png',
-  rubrics: '/rubrics.png',
-  authors: '/authors.png',
-};
-
 export default function QuickNavButton({
   type,
   href,
   label,
   ariaLabel,
 }: QuickNavButtonProps) {
-  const imageSrc = IMAGE_MAP[type];
+  const imageSrc = getNavImageSrc(type);
 
   return (
     <Link 
