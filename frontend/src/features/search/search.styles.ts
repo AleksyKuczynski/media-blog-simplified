@@ -99,9 +99,6 @@ export const SEARCH_BAR_FORM_STYLES = {
 export const SEARCH_PAGE_STYLES = {
   header: {
     container: 'mb-8',
-    title: 'text-3xl font-bold mb-4 text-on-sf',
-    span: 'font-normal',
-    description: 'text-lg text-on-sf-var',
   },
   form: {
     container: 'mb-12',
@@ -153,9 +150,18 @@ export const SEARCH_RESULT_CARD_STYLES = {
 } as const;
 
 export const SEARCH_RESULTS_HEADER_STYLES = {
-  container: 'flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 -mt-24 md:-mt-48 mb-6',
+  container: cn(
+    'flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4',
+    'max-w-5xl mx-auto',
+    '-mt-24 md:-mt-40 mb-6 xl:mb-16',
+    'border-b border-ol pb-6',
+  ),
+  title: 'text-3xl mb-4 text-on-sf',
+  span: 'font-normal',
+  count: 'text-on-sf-var mb-4 lowercase',
+  description: 'text-lg text-on-sf-var',
   textContainer: '',
-  sortContainer: '',
+  sortContainer: 'w-1/4',
 } as const;
 
 export const SEARCH_RESULTS_SECTION_STYLES = {

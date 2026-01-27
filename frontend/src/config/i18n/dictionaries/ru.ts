@@ -63,6 +63,7 @@ const dictionaryRU: Dictionary = {
     count: {
       articles: 'статей',
       rubrics: 'рубрик',
+      categories: 'категорий',
       authors: 'авторов',
       results: 'результатов',
       items: 'элементов',

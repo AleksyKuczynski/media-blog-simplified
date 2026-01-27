@@ -82,6 +82,6 @@ export const SEARCH_SORTING_STYLES = {
       'md:rounded-xl md:px-6 md:py-3 md:text-base',
     ),
     icon: 'h-4 w-4 ml-2 flex-shrink-0 md:h-5 md:w-5',
-    text: 'truncate lowercase',
+    text: 'truncate lowercase text-on-sf',
   },
 } as const;

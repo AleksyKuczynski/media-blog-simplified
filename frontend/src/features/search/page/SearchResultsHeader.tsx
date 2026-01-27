@@ -2,8 +2,9 @@
 'use client'
 
 import SortingControl from '@/features/navigation/Filter/SortingControl';
-import { Dictionary, Lang } from '@/config/i18n';
-import { SEARCH_PAGE_STYLES, SEARCH_RESULTS_HEADER_STYLES } from '../search.styles';
+import { Dictionary } from '@/config/i18n';
+import { SEARCH_RESULTS_HEADER_STYLES } from '../search.styles';
+import { processTemplate } from '@/config/i18n/helpers/templates';
 
 interface SearchResultsHeaderProps {
   readonly dictionary: Dictionary;
@@ -27,21 +28,33 @@ export default function SearchResultsHeader({
   // Build results text
   const parts: string[] = [];
   if (articlesCount > 0) {
-    parts.push(`${articlesCount} ${dictionary.common.count.articles}`);
+    parts.push(processTemplate(dictionary.sections.templates.totalCount, {
+      count: articlesCount.toString(),
+      countLabel: dictionary.common.count.articles,
+    }));
   }
   if (authorsCount > 0) {
-    parts.push(`${authorsCount} ${dictionary.sections.labels.authors.toLowerCase()}`);
+    parts.push(processTemplate(dictionary.sections.templates.totalCount, {
+      count: authorsCount.toString(),
+      countLabel: dictionary.common.count.authors,
+    }));
   }
   if (categoriesCount > 0) {
-    parts.push(`${categoriesCount} ${dictionary.sections.labels.categories.toLowerCase()}`);
+    parts.push(processTemplate(dictionary.sections.templates.totalCount, {
+      count: categoriesCount.toString(),
+      countLabel: dictionary.common.count.categories,
+    }));
   }
 
   const resultsText = parts.length > 0 
-    ? `${dictionary.search.labels.results}: ${parts.join(', ')}`
-    : `${resultsCount} ${dictionary.common.count.results}`;
+    ? parts.join(', ')
+    : processTemplate(dictionary.sections.templates.totalCount, {
+        count: resultsCount.toString(),
+        countLabel: dictionary.common.count.results,
+      });
 
   return (
-    <header 
+    <section 
       className={SEARCH_RESULTS_HEADER_STYLES.container}
       itemScope
       itemType="https://schema.org/SearchResultsPage"
@@ -49,16 +62,16 @@ export default function SearchResultsHeader({
       <meta itemProp="query" content={searchQuery} />
       <meta itemProp="numberOfItems" content={resultsCount.toString()} />
       
-      <div>
-        <h1 
+      <div className={SEARCH_RESULTS_HEADER_STYLES.textContainer}>
+        <h2 
           id="search-results-heading"
-          className={SEARCH_PAGE_STYLES.header.title}
+          className={SEARCH_RESULTS_HEADER_STYLES.title}
           itemProp="headline"
         >
-          {dictionary.search.templates.pageTitle}: <span className={SEARCH_PAGE_STYLES.header.span}>{searchQuery}</span>
-        </h1>
+          {processTemplate(dictionary.search.templates.resultsFor, { query: searchQuery })}
+        </h2>
         <p 
-          className={SEARCH_PAGE_STYLES.results.count}
+          className={SEARCH_RESULTS_HEADER_STYLES.count}
           aria-live="polite"
           itemProp="description"
         >
@@ -66,13 +79,16 @@ export default function SearchResultsHeader({
         </p>
       </div>
 
-      <aside aria-label={dictionary.filter.accessibility.sortingControl}>
+      <aside 
+        aria-label={dictionary.filter.accessibility.sortingControl}
+        className={SEARCH_RESULTS_HEADER_STYLES.sortContainer}
+      >
         <SortingControl
           dictionary={dictionary}
           currentSort={currentSort}
           variant="search"
         />
       </aside>
-    </header>
+    </section>
   );
 }

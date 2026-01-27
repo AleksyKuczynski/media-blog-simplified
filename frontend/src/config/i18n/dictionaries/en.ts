@@ -61,6 +61,7 @@ export const dictionaryEN: Dictionary = {
     count: {
       articles: 'articles',
       rubrics: 'rubrics',
+      categories: 'categories',
       authors: 'authors',
       results: 'results',
       items: 'items',

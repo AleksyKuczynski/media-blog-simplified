@@ -64,6 +64,7 @@ export interface BreadcrumbDictionary {
 export interface CommonCount {
   readonly articles: string;
   readonly rubrics: string;
+  readonly categories: string;
   readonly authors: string;
   readonly results: string;
   readonly items: string;
