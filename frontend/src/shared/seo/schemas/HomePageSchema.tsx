@@ -71,7 +71,7 @@ export const HomePageSchema: React.FC<HomePageSchemaProps> = ({
     composer.addCustomSchema({
       '@type': 'WebPage',
       '@id': `${canonicalUrl}#webpage`,
-      name: dictionary.sections.home.welcomeTitle,
+      name: `${dictionary.sections.home.welcomeTitle.main} ${dictionary.sections.home.welcomeTitle.sub}`,
       description: dictionary.sections.home.welcomeDescription,
       url: canonicalUrl,
       
