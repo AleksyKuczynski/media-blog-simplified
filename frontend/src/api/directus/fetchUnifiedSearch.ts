@@ -57,16 +57,30 @@ export async function fetchUnifiedSearch(
         
         if (authorsResponse.ok) {
           const authorsData = await authorsResponse.json();
-          const authorsMap = new Map(
-            authorsData.data.map((a: any) => [
+          
+          // Type the API response properly
+          interface AuthorApiData {
+            slug: string;
+            is_author?: boolean;
+            is_illustrator?: boolean;
+          }
+          
+          const authorsMap = new Map<string, { is_author: boolean; is_illustrator: boolean }>(
+            authorsData.data.map((a: AuthorApiData) => [
               a.slug, 
-              { is_author: a.is_author ?? true, is_illustrator: a.is_illustrator ?? false }
+              { 
+                is_author: a.is_author ?? true, 
+                is_illustrator: a.is_illustrator ?? false 
+              }
             ])
           );
           
           for (const translation of authorTranslationsData.data) {
             const authorSlug = translation.authors_slug;
-            const authorRoles = authorsMap.get(authorSlug) || { is_author: true, is_illustrator: false };
+            const authorRoles = authorsMap.get(authorSlug);
+            
+            // Skip if no role data found
+            if (!authorRoles) continue;
             
             // Count articles by this author
             const countUrl = `${DIRECTUS_URL}/items/articles_authors?filter[authors_slug][_eq]=${authorSlug}&aggregate[count]=*`;
@@ -120,7 +134,7 @@ export async function fetchUnifiedSearch(
     // 3. Search for articles in translations
     const articleTranslationsUrl = `${DIRECTUS_URL}/items/articles_translations?filter[languages_code][_eq]=${lang}&filter[_or][0][title][_icontains]=${encodeURIComponent(search)}&filter[_or][1][description][_icontains]=${encodeURIComponent(search)}&fields=articles_slug,title,description&limit=-1`;
     const articleTranslationsResponse = await fetch(articleTranslationsUrl, { cache: 'no-store' });
-    
+
     if (articleTranslationsResponse.ok) {
       const articleTranslationsData = await articleTranslationsResponse.json();
       const articleSlugs = articleTranslationsData.data.map((t: any) => t.articles_slug);
@@ -131,16 +145,19 @@ export async function fetchUnifiedSearch(
         
         if (articlesResponse.ok) {
           const articlesData = await articlesResponse.json();
-          const articlesMap = new Map(
+          const articlesMap = new Map<string, string>(
             articlesData.data.map((a: any) => [a.slug, a.rubric_slug?.slug || ''])
           );
 
           for (const translation of articleTranslationsData.data) {
-            const rubricSlug = articlesMap.get(translation.articles_slug);
-            if (rubricSlug) {
+            const articleSlug = translation.articles_slug;
+            const rubricSlug = articlesMap.get(articleSlug);
+            
+            // Only add articles that have a rubric slug
+            if (rubricSlug !== undefined) {
               results.articles.push({
                 type: 'article',
-                slug: translation.articles_slug,
+                slug: articleSlug,
                 title: translation.title,
                 description: translation.description,
                 rubric_slug: rubricSlug,
