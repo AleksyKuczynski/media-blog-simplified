@@ -125,27 +125,22 @@ export const SEARCH_PAGE_STYLES = {
 
 export const SEARCH_RESULT_CARD_STYLES = {
   author: {
-    link: 'block border-b border-ol transition-colors duration-200',
+    link: 'block bg-sf-cont p-8 rounded-2xl transition-colors duration-200',
     container: 'flex items-start gap-6',
     content: 'flex-1',
     badge: {
       container: 'flex items-center gap-2 mb-2',
-      text: 'text-xs font-medium uppercase tracking-wide text-on-sf-var opacity-70',
+      text: 'text-sm font-medium uppercase tracking-wide text-on-sf-var opacity-70',
     },
     name: 'text-2xl uppercase text-on-sf mb-2',
     bio: 'text-on-sf-var line-clamp-2 mb-3',
-    count: 'text-sm text-on-sf-var',
+    count: 'text-sm font-medium text-on-sf-var',
   },
   category: {
-    link: 'block p-6 bg-sf rounded-xl hover:bg-sf-hi transition-colors duration-200',
-    container: 'flex items-start gap-4',
-    content: 'flex-1',
-    badge: {
-      container: 'flex items-center gap-2 mb-2',
-      text: 'text-xs font-medium uppercase tracking-wide text-on-sf-var opacity-70',
-    },
-    name: 'text-xl font-bold text-on-sf mb-3',
-    count: 'text-sm text-on-sf-var',
+    link: 'block p-6 px-8 bg-sf-cont rounded-xl hover:bg-sf-hi transition-colors duration-200',
+    container: 'flex items-center justify-between gap-4',
+    name: 'text-xl font-bold text-pr-cont p-4 border-2 border-pr-fix rounded-full',
+    count: 'text-sm font-medium text-on-sf-var',
   },
 } as const;
 
@@ -166,6 +161,6 @@ export const SEARCH_RESULTS_HEADER_STYLES = {
 
 export const SEARCH_RESULTS_SECTION_STYLES = {
   container: 'mb-12 max-w-3xl mx-auto',
-  heading: 'text-lg uppercase mb-6 xl:mb-8 text-on-sf',
-  list: 'space-y-8 xl:space-y-10',
+  heading: 'text-xl capitalize mb-4 xl:mb-6 text-on-sf-var',
+  list: 'space-y-4',
 } as const;

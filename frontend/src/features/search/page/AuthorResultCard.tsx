@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { AuthorSearchResult } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
 import { SEARCH_RESULT_CARD_STYLES } from '../search.styles';
+import { processTemplate } from '@/config/i18n/helpers/templates';
 
 interface AuthorResultCardProps {
   author: AuthorSearchResult;
@@ -52,7 +53,10 @@ export default function AuthorResultCard({ author, lang, dictionary }: AuthorRes
           )}
           
           <p className={styles.count}>
-            {author.articleCount} {dictionary.common.count.articles}
+            {processTemplate(dictionary.sections.templates.totalCount, {
+              count: author.articleCount.toString(),
+              countLabel: dictionary.common.count.articles,
+            })}
           </p>
         </div>
       </div>

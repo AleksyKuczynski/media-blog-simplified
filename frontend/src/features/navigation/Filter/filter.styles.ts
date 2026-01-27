@@ -74,12 +74,12 @@ export const SEARCH_SORTING_STYLES = {
   ),
   dropdown: {
     button: cn(
-      'flex flex-col items-start w-full sm:w-48',
+      'flex flex-col items-start w-full',
       'bg-sf hover:bg-sf-hi border border-ol transition-all duration-300',
       'focus:shadow-md',
       '[&.is-dropdown-open]:bg-sf [&.is-dropdown-open]:shadow-md',
-      'rounded-lg px-4 py-2 text-sm',
-      'md:rounded-xl md:px-6 md:py-3 md:text-base',
+      'rounded-lg px-4 py-3 text-sm',
+      'md:rounded-3xl md:px-12 md:py-6 md:text-base',
     ),
     icon: 'h-4 w-4 ml-2 flex-shrink-0 md:h-5 md:w-5',
     text: 'truncate lowercase text-on-sf',

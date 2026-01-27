@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CategorySearchResult } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
 import { SEARCH_RESULT_CARD_STYLES } from '../search.styles';
+import { processTemplate } from '@/config/i18n/helpers/templates';
 
 interface CategoryResultCardProps {
   category: CategorySearchResult;
@@ -19,21 +20,16 @@ export default function CategoryResultCard({ category, lang, dictionary }: Categ
       className={styles.link}
     >
       <div className={styles.container}>
-        <div className={styles.content}>
-          <div className={styles.badge.container}>
-            <span className={styles.badge.text}>
-              {dictionary.sections.labels.categories}
-            </span>
-          </div>
-          
-          <h3 className={styles.name}>
-            {category.name}
-          </h3>
-          
-          <p className={styles.count}>
-            {category.articleCount} {dictionary.common.count.articles}
-          </p>
-        </div>
+        <h3 className={styles.name}>
+          {category.name}
+        </h3>
+        
+        <p className={styles.count}>
+          {processTemplate(dictionary.sections.templates.totalCount, {
+            count: category.articleCount.toString(),
+            countLabel: dictionary.common.count.articles,
+          })}
+        </p>
       </div>
     </Link>
   );
