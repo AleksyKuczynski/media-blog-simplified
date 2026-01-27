@@ -40,7 +40,7 @@ export const ARTICLE_LIST_STYLES = {
   section: 'article-list',
   
   // Container
-  container: 'container mx-auto py-6 md:py-8 lg:py-12 px-2 sm:px-4 md:px-8 lg:px-0 max-w-[896px] flex flex-col gap-3 lg:gap-4',
+  container: 'container mx-auto pb-6 md:pb-8 lg:pb-12 px-2 sm:px-4 md:px-8 lg:px-0 max-w-[896px] flex flex-col gap-3 lg:gap-4',
 
   // Count display
   count: 'mb-6 text-sm text-gray-600 dark:text-gray-400',

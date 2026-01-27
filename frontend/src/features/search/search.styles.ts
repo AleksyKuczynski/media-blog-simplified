@@ -111,7 +111,7 @@ export const SEARCH_PAGE_STYLES = {
     section: 'mb-12',
     container: 'space-y-6',
     count: 'text-sm text-on-sf-var mb-4',
-    list: 'space-y-6 mt-6',
+    list: 'space-y-6',
     pagination: 'mt-8',
     invalidState: 'text-center py-8 mb-8 bg-sf-hi rounded-lg',
     emptyState: 'text-center py-8 mb-8 bg-sf-hi rounded-lg',
@@ -128,14 +128,14 @@ export const SEARCH_PAGE_STYLES = {
 
 export const SEARCH_RESULT_CARD_STYLES = {
   author: {
-    link: 'block p-6 bg-sf rounded-xl hover:bg-sf-hi transition-colors duration-200',
-    container: 'flex items-start gap-4',
+    link: 'block border-b border-ol transition-colors duration-200',
+    container: 'flex items-start gap-6',
     content: 'flex-1',
     badge: {
       container: 'flex items-center gap-2 mb-2',
       text: 'text-xs font-medium uppercase tracking-wide text-on-sf-var opacity-70',
     },
-    name: 'text-xl font-bold text-on-sf mb-2',
+    name: 'text-2xl uppercase text-on-sf mb-2',
     bio: 'text-on-sf-var line-clamp-2 mb-3',
     count: 'text-sm text-on-sf-var',
   },
@@ -159,7 +159,7 @@ export const SEARCH_RESULTS_HEADER_STYLES = {
 } as const;
 
 export const SEARCH_RESULTS_SECTION_STYLES = {
-  container: 'mb-12',
-  heading: 'text-2xl font-bold mb-6 text-on-sf',
-  list: 'space-y-4',
+  container: 'mb-12 max-w-3xl mx-auto',
+  heading: 'text-lg uppercase mb-6 xl:mb-8 text-on-sf',
+  list: 'space-y-8 xl:space-y-10',
 } as const;

@@ -104,7 +104,7 @@ export default function SearchResults({
       {authors.length > 0 && (
         <section className={sectionStyles.container}>
           <h2 className={sectionStyles.heading}>
-            {dictionary.sections.labels.authors} ({totalAuthors})
+            {dictionary.sections.labels.authors}: {totalAuthors}
           </h2>
           <div className={sectionStyles.list}>
             {authors.map((author) => (
@@ -123,7 +123,7 @@ export default function SearchResults({
       {categories.length > 0 && (
         <section className={sectionStyles.container}>
           <h2 className={sectionStyles.heading}>
-            {dictionary.sections.labels.categories} ({totalCategories})
+            {dictionary.sections.labels.categories}: {totalCategories}
           </h2>
           <div className={sectionStyles.list}>
             {categories.map((category) => (
@@ -142,7 +142,7 @@ export default function SearchResults({
       {articles.length > 0 && (
         <section className={sectionStyles.container}>
           <h2 className={sectionStyles.heading}>
-            {dictionary.common.count.articles} ({totalArticles})
+            {dictionary.common.count.articles}: {totalArticles}
           </h2>
           <Suspense fallback={<div>Loading articles...</div>}>
             <ArticleList
