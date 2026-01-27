@@ -193,6 +193,8 @@ export interface AuthorSearchResult extends BaseSearchResult {
   name: string;
   bio?: string;
   articleCount: number;
+  is_author?: boolean;
+  is_illustrator?: boolean;
 }
 
 export interface CategorySearchResult extends BaseSearchResult {

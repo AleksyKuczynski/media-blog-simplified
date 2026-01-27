@@ -12,7 +12,22 @@ interface AuthorResultCardProps {
 
 const styles = SEARCH_RESULT_CARD_STYLES.author;
 
+function getRoleLabel(author: AuthorSearchResult, dictionary: Dictionary): string {
+  const isAuthor = author.is_author ?? true; // Default to true if not specified
+  const isIllustrator = author.is_illustrator ?? false;
+  
+  if (isAuthor && isIllustrator) {
+    return `${dictionary.sections.labels.author}, ${dictionary.sections.labels.illustrator}`;
+  } else if (isIllustrator) {
+    return dictionary.sections.labels.illustrator;
+  } else {
+    return dictionary.sections.labels.author;
+  }
+}
+
 export default function AuthorResultCard({ author, lang, dictionary }: AuthorResultCardProps) {
+  const roleLabel = getRoleLabel(author, dictionary);
+  
   return (
     <Link
       href={`/${lang}/authors/${author.slug}`}
@@ -22,7 +37,7 @@ export default function AuthorResultCard({ author, lang, dictionary }: AuthorRes
         <div className={styles.content}>
           <div className={styles.badge.container}>
             <span className={styles.badge.text}>
-              {dictionary.sections.labels.author}
+              {roleLabel}
             </span>
           </div>
           
