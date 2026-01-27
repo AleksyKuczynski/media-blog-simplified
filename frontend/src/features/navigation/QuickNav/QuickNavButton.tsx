@@ -32,7 +32,7 @@ export default function QuickNavButton({
           src={imageSrc}
           alt=""
           fill
-          className="object-cover"
+          className="object-contain"
           sizes="(max-width: 768px) 64px, (max-width: 1280px) 80px, 96px"
         />
       </div>

@@ -54,7 +54,7 @@ export const LAYOUT_STYLES = {
     rightColumn: 'order-2 mb-6 md:mb-0 md:flex md:flex-col md:justify-between',
     
     title: cn(
-      'mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl leading-[1.2]',
+      'mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl leading-[1.2] flex-grow',
       'sm:text-4xl sm:leading-[1.2]',
       'md:text-3xl md:leading-[1.2] md:mb-0',
       'lg:text-4xl lg:leading-[1.2]',
@@ -65,9 +65,9 @@ export const LAYOUT_STYLES = {
     metadataBox: 'hidden md:block mt-8',
     
     // Authors wrapper
-    authorsWrapper: 'mb-2 lg:mb-4 xl:mb-6',
+    authorsWrapper: '',
     
-    dateText: 'font-medium max-lg:text-sm text-on-sf-var',
+    dateText: 'font-medium max-lg:text-sm text-on-sf-var max-md:hidden',
     
     // Lead paragraph - order-4, full width
     lead: cn(
@@ -311,7 +311,7 @@ export const NAVIGATION_STYLES = {
   },
 
   // RelatedLinks
-    relatedLinks: {
+  relatedLinks: {
     
     // CategoriesAndRubricSection - Combined layout
     categoriesAndRubric: {
@@ -332,16 +332,17 @@ export const NAVIGATION_STYLES = {
     // AuthorSection (single author - standalone)
     author: {
       container: 'w-full max-w-2xl mx-auto',
-      link: 'inline-flex items-stretch gap-3 pr-4 transition-colors',
-      avatar: 'relative w-12 lg:w-16 h-12 lg:h-16 rounded-lg overflow-hidden',
+      link: 'inline-flex items-stretch gap-3 pr-4 transition-colors group',
+      avatar: 'relative w-12 lg:w-16 aspect-square rounded-lg lg:rounded-xl overflow-hidden',
       info: 'flex flex-col justify-between',
-      name: 'block font-medium text-pr-cont text-lg -mt-1 lg:text-2xl',
+      name: 'block font-medium text-pr-cont group-hover:text-pr-fix text-lg lg:text-xl',
       label: 'block text-xs lg:text-sm font-medium text-on-sf-var uppercase',
     },
     
     // AuthorsSection (multiple authors)
     authors: {
-      container: 'w-full max-w-2xl my-4',
+      container: 'w-full max-w-2xl',
+      containerBottomMargin: 'w-full max-w-2xl mt-12 mb-8 md:mb-12 md:mt-20 lg:mt-32 lg:mb-12',
       grid: 'flex flex-wrap gap-1',
       heading: 'sr-only',
       // Card styles for authors in grid

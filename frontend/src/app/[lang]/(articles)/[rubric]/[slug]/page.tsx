@@ -24,7 +24,7 @@ import ArticleContentRenderer from './_components/content/ArticleContentRenderer
 import { parseImageMetadata } from '@/lib/utils/bilingualParser';
 import Section from '@/features/layout/Section';
 import RelatedArticles from '@/features/article-display/RelatedArticles';
-import { LAYOUT_STYLES } from './_components/article.styles';
+import { LAYOUT_STYLES, NAVIGATION_STYLES } from './_components/article.styles';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -305,7 +305,8 @@ export default async function ArticlePage({
             />
 
             {article.authorsWithDetails.length > 0 && (
-              <AuthorsSection 
+              <AuthorsSection
+                className={NAVIGATION_STYLES.relatedLinks.authors.containerBottomMargin} 
                 authors={article.authorsWithDetails}
                 dictionary={dictionary}
               />

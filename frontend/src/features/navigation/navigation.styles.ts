@@ -57,14 +57,14 @@ export const NAV_LINK_STYLES = {
 } as const;
 
 export const QUICK_NAV_STYLES = {
-  nav: 'flex flex-wrap gap-2 md:gap-8 lg:gap-12 xl:gap-16 justify-center',
+  nav: 'flex flex-wrap xs:gap-2 md:gap-8 lg:gap-12 xl:gap-16 justify-center',
   link: cn(
     'inline-flex flex-col items-center gap-2',
     'text-pr-cont font-medium uppercase max-md:text-sm xl:text-lg', 
     'px-4 md:px-8 py-2 md:py-4 rounded-xl md:rounded-2xl', 
     'hover:bg-sf-hi hover:shadow-lg focus:shadow-sm transition-all duration-200', 
   ),
-  icon: 'w-16 md:w-20 xl:w-24 aspect-square relative',
+  icon: 'w-12 md:w-20 xl:w-24 aspect-square relative',
 } as const;
 
 /**

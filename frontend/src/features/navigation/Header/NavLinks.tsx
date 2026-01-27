@@ -49,7 +49,7 @@ export default function NavLinks({ dictionary, lang, variant = 'desktop' }: NavL
                       src={imageSrc}
                       alt=""
                       fill
-                      className="object-cover"
+                      className="object-contain"
                       sizes="96px"
                     />
                   </div>
