@@ -14,6 +14,7 @@ import {
   VKIcon, 
   InstagramIcon 
 } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/engagement/EngagementIcons';
+import Logo from '@/shared/primitives/Logo';
 
 interface FooterProps {
   lang: Lang;
@@ -72,9 +73,16 @@ export default function Footer({ lang, dictionary }: FooterProps) {
             
             {/* Column 1: About */}
             <section className={FOOTER_STYLES.section.wrapper}>
-              <h3 className={FOOTER_STYLES.section.heading}>
+              <h3 className="sr-only">
                 {footer.about.title}
               </h3>
+              <div className="mb-4">
+                <Logo 
+                  lang={lang} 
+                  variant="footer"
+                  aria-label={`${seo.site.name} - ${footer.about.title}`}
+                />
+              </div>
               <p className={FOOTER_STYLES.section.description}>
                 {footer.about.description}
               </p>
