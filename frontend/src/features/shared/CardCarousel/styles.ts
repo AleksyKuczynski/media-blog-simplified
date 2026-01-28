@@ -18,7 +18,7 @@ export function getCarouselStyles(cardType: CardType) {
   const cardWrapperWidths = {
     article: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px]',
     rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] 2xl:w-[232px]',
-    author: 'flex-none w-[220px] sm:w-[240px] lg:w-[260px] xl:w-[24%] 2xl:w-[24%]',
+    author: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] 2xl:w-[232px]',
   };
 
   return {
@@ -126,13 +126,13 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   container: 'block w-full h-full group',
 
   // Card structure
-  card: 'h-full bg-sf-hi rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  card: 'h-full group transition-all duration-200',
   
   // Content container
-  content: 'flex flex-col gap-4',
+  content: 'flex flex-col gap-6',
   
   // Image container
-  avatarWrapper: 'relative aspect-square flex-shrink-0 overflow-hidden rounded-xl',
+  avatarWrapper: 'relative aspect-square w-4/5 mx-auto flex-shrink-0 overflow-hidden rounded-full',
   
   // Image element
   avatarImage: 'object-cover',
@@ -140,9 +140,9 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   avatarFallbackText: 'text-on-pr-cont text-xl font-bold',
   
   // Text content container
-  textContent: 'p-8 pt-0 flex-1 min-w-0',
+  textContent: 'p-4 flex-1 min-w-0 bg-sf-cont rounded-xl ',
 
   // Text content
-  name: 'md:text-lg xl:text-xl uppercase text-center text-on-sf group-hover:text-pr-cont transition-colors',
-  bio: 'hidden max-lg:text-sm text-on-sf-var line-clamp-4 mt-8',
+  name: 'md:text-lg xl:text-lg uppercase text-center text-on-sf group-hover:text-pr-cont transition-colors',
+  bio: 'hidden max-lg:text-sm text-`on-sf-var line-clamp-4 mt-8',
 } as const;

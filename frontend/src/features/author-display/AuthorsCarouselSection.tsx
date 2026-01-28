@@ -19,7 +19,7 @@ export default async function AuthorsCarouselSection({
   dictionary,
   title,
   variant = 'tertiary',
-  limit = 4
+  limit = 6
 }: AuthorsCarouselSectionProps) {
   let cards;
   try {

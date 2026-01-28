@@ -97,9 +97,9 @@ export const FOOTER_STYLES = {
   ),  
 
   section: {
-    wrapper: 'space-y-4',
-    heading: 'text-lg font-semibold text-prcolor',
-    description: 'text-sm leading-relaxed',
+    wrapper: 'space-y-6',
+    heading: 'text-sm uppercase text-on-sf-dim',
+    description: 'text-xs leading-relaxed',
   },
   
   nav: {
@@ -108,8 +108,8 @@ export const FOOTER_STYLES = {
   },
   
   link: {
-    base: 'text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded',
-    external: 'text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded',
+    base: 'hover:text-on-sf transition-colors duration-200',
+    external: 'hover:text-on-sf transition-colors duration-200',
   },
   
   contact: {
