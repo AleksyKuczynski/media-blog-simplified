@@ -1,4 +1,4 @@
-// src/features/shared/CardCarousel/styles.ts
+// src/features/shared/CardCarousel/carousel.styles.ts
 
 import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
 import { cn } from '@/lib/utils/cn';
@@ -132,7 +132,7 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   content: 'flex flex-col gap-6',
   
   // Image container
-  avatarWrapper: 'relative aspect-square w-4/5 mx-auto flex-shrink-0 overflow-hidden rounded-full',
+  avatarWrapper: 'relative aspect-square w-4/5 mx-auto flex-shrink-0 overflow-hidden rounded-full shadow:md group-hover:shadow-lg transition-shadow duration-200',
   
   // Image element
   avatarImage: 'object-cover',
@@ -140,9 +140,9 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   avatarFallbackText: 'text-on-pr-cont text-xl font-bold',
   
   // Text content container
-  textContent: 'p-4 flex-1 min-w-0 bg-sf-cont rounded-xl ',
+  textContent: 'p-4 flex-1 min-w-0 bg-sf-cont rounded-xl shadow:md group-hover:shadow-lg transition-shadow duration-200',
 
   // Text content
-  name: 'md:text-lg xl:text-lg uppercase text-center text-on-sf group-hover:text-pr-cont transition-colors',
-  bio: 'hidden max-lg:text-sm text-`on-sf-var line-clamp-4 mt-8',
+  name: 'md:text-lg xl:text-lg uppercase text-center text-on-sf-var group-hover:text-on-sf transition-colors',
+  bio: 'hidden max-lg:text-sm text-on-sf-var line-clamp-4 mt-8',
 } as const;

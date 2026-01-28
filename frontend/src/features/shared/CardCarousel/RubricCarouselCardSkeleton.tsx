@@ -1,6 +1,6 @@
 // src/features/shared/CardCarousel/RubricCarouselCardSkeleton.tsx
 
-import { RUBRIC_CAROUSEL_CARD_STYLES } from './styles';
+import { RUBRIC_CAROUSEL_CARD_STYLES } from './carousel.styles';
 
 export function RubricCarouselCardSkeleton() {
   return (

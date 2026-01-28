@@ -3,7 +3,7 @@
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
-import { getCarouselStyles } from './styles';
+import { getCarouselStyles } from './carousel.styles';
 import ArticleCarouselCard from './ArticleCarouselCard';
 import RubricCarouselCard from './RubricCarouselCard';
 import AuthorCarouselCard from './AuthorCarouselCard';

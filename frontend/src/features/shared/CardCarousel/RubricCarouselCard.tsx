@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Dictionary } from '@/config/i18n';
-import { RUBRIC_CAROUSEL_CARD_STYLES } from './styles';
+import { RUBRIC_CAROUSEL_CARD_STYLES } from './carousel.styles';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import CollectionCount from '@/features/layout/CollectionCount';
 

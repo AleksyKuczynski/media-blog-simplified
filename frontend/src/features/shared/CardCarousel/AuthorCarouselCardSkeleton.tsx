@@ -1,6 +1,6 @@
 // src/features/shared/CardCarousel/AuthorCarouselCardSkeleton.tsx
 
-import { AUTHOR_CAROUSEL_CARD_STYLES } from './styles';
+import { AUTHOR_CAROUSEL_CARD_STYLES } from './carousel.styles';
 
 export function AuthorCarouselCardSkeleton() {
   return (

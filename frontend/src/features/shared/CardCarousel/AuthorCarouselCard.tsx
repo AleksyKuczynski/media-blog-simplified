@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Dictionary } from '@/config/i18n';
-import { AUTHOR_CAROUSEL_CARD_STYLES } from './styles';
+import { AUTHOR_CAROUSEL_CARD_STYLES } from './carousel.styles';
 
 interface AuthorCarouselCardProps {
   slug: string;
@@ -40,7 +40,7 @@ export default function AuthorCarouselCard({
                 alt={name}
                 fill
                 className={AUTHOR_CAROUSEL_CARD_STYLES.avatarImage}
-                sizes="56px"
+                sizes="240px"
               />
             </div>
           ) : (

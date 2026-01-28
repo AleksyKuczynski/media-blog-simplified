@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Lang } from '@/config/i18n';
-import { ARTICLE_CAROUSEL_CARD_STYLES } from './styles';
+import { ARTICLE_CAROUSEL_CARD_STYLES } from './carousel.styles';
 
 interface ArticleCarouselCardProps {
   slug: string;

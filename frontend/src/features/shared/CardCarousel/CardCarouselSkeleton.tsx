@@ -1,6 +1,6 @@
 // src/features/shared/CardCarousel/CardCarouselSkeleton.tsx
 
-import { getCarouselStyles } from './styles';
+import { getCarouselStyles } from './carousel.styles';
 import { RubricCarouselCardSkeleton } from './RubricCarouselCardSkeleton';
 import { AuthorCarouselCardSkeleton } from './AuthorCarouselCardSkeleton';
 
