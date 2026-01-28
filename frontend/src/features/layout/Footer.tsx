@@ -64,37 +64,55 @@ export default function Footer({ lang, dictionary }: FooterProps) {
         aria-label={footer.accessibility.footerNavigation}
         id="site-footer"
       >
-        <OrganizationSchema 
-          dictionary={dictionary} 
-          contactType="customer support" 
-        />
-
+        <OrganizationSchema dictionary={dictionary} />
+        
         <div className={FOOTER_STYLES.innerContainer}>
-          <div className={FOOTER_STYLES.grid}>
-            {/* LEFT COLUMN: About + Social (lg+) */}
-            <div className="flex flex-col gap-8 lg:col-span-1">
-              {/* About */}
-              <section className={FOOTER_STYLES.section.wrapper}>
-                <h3 className="sr-only">{footer.about.title}</h3>
-                <div className="mb-4">
+          {/* Mobile: Logo+Button > Social > About > Legal > QuickLinks */}
+          {/* MD: 2 columns (2:1) - Left: Logo+Button > Social > About | Right: Legal > QuickLinks */}
+          {/* LG+: 5 equal columns - About+Social span 2 | Logo+Button center | Legal+QuickLinks right 2 */}
+          <div className={cn(
+            // Base mobile: single column
+            'flex flex-col gap-8',
+            // MD: 2 columns with 2:1 ratio
+            'md:grid md:grid-cols-[2fr_1fr] md:gap-8',
+            // LG+: 5 equal columns
+            'lg:grid-cols-[2fr_2fr_1fr_1fr] lg:gap-6 xl:gap-8'
+          )}>
+            
+            {/* MOBILE ORDER 1 / MD LEFT COL ORDER 1 / LG+ CENTER COL */}
+            <section className={cn(
+              'flex flex-col gap-4',
+              'md:order-1',
+              'lg:col-start-2 lg:row-start-1 lg:items-center'
+            )}>
+              <div className="mb-4">
                   <Logo 
                     lang={lang} 
                     variant="footer"
                     aria-label={`${seo.site.name} - ${footer.about.title}`}
                   />
                 </div>
-                <p className={FOOTER_STYLES.section.description}>
-                  {footer.about.description}
-                </p>
-              </section>
+              <button
+                onClick={() => setIsContactModalOpen(true)}
+                className={FOOTER_STYLES.contact.button}
+                aria-label={footer.contact.buttonLabel}
+              >
+                {footer.contact.buttonLabel}
+              </button>
+            </section>
 
-              {/* Social Links */}
-              <section className={FOOTER_STYLES.section.wrapper}>
-                <h3 className={FOOTER_STYLES.section.heading}>
-                  {footer.socialLinks.title}
-                </h3>
-                <nav className={FOOTER_STYLES.nav.wrapper}>
-                  <div className="flex gap-4">
+            {/* MOBILE ORDER 2 / MD LEFT COL ORDER 2 / LG+ LEFT COL 2 (Social) */}
+            <section className={cn(
+              'md:order-2',
+              'lg:col-start-1 lg:row-start-2'
+            )}>
+              <h3 className={FOOTER_STYLES.section.heading}>
+                {footer.socialLinks.title}
+              </h3>
+              <nav 
+                className="flex gap-4 mt-4"
+                aria-label={footer.socialLinks.title}>
+                <div className="flex gap-4">
                     {SOCIAL_PLATFORMS.map((platform, index) => {
                       const Icon = platform.icon;
                       return (
@@ -111,85 +129,91 @@ export default function Footer({ lang, dictionary }: FooterProps) {
                       );
                     })}
                   </div>
-                </nav>
-              </section>
-            </div>
+              </nav>
+            </section>
 
-            {/* RIGHT COLUMN: Legal + Contact on left, Quick Links on right (lg+) */}
-            <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:col-span-1">
-              {/* Legal + Contact */}
-              <section className={FOOTER_STYLES.section.wrapper}>
-                <h3 className={FOOTER_STYLES.section.heading}>
-                  {footer.legal.title}
-                </h3>
-                <nav className={FOOTER_STYLES.nav.wrapper}>
-                  <div className={FOOTER_STYLES.nav.itemWrapper}>
-                    <Link 
-                      href={`/${lang}/privacy-policy`}
-                      className={FOOTER_STYLES.link.base}
-                    >
-                      {footer.legal.privacyPolicy}
-                    </Link>
-                  </div>
-                  <div className={FOOTER_STYLES.nav.itemWrapper}>
-                    <Link 
-                      href={`/${lang}/terms`}
-                      className={FOOTER_STYLES.link.base}
-                    >
-                      {footer.legal.terms}
-                    </Link>
-                  </div>
-                  <div className={FOOTER_STYLES.nav.itemWrapper}>
-                    <Link 
-                      href="/sitemap.xml"
-                      className={FOOTER_STYLES.link.base}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {footer.legal.sitemap}
-                    </Link>
-                  </div>
-                </nav>
-                <div className={FOOTER_STYLES.contact.divider}>
-                  <button
-                    onClick={() => setIsContactModalOpen(true)}
-                    className={FOOTER_STYLES.contact.button}
-                    aria-label={footer.contact.buttonLabel}
+            {/* MOBILE ORDER 3 / MD LEFT COL ORDER 3 / LG+ LEFT COL 1 (About - always visible) */}
+            <section className={cn(
+              'md:order-3',
+              'lg:col-start-1 lg:row-start-1'
+            )}>
+              <h3 className={FOOTER_STYLES.section.heading}>
+                {footer.about.title}
+              </h3>
+              <p className={FOOTER_STYLES.section.description}>
+                {footer.about.description}
+              </p>
+            </section>
+
+            {/* MOBILE ORDER 4 / MD RIGHT COL ORDER 1 / LG+ RIGHT COL 1 (Legal) */}
+            <section className={cn(
+              'md:order-5',
+              'lg:col-start-4 lg:row-start-1'
+            )}>
+              <h3 className={FOOTER_STYLES.section.heading}>
+                {footer.legal.title}
+              </h3>
+              <nav className={FOOTER_STYLES.nav.wrapper}>
+                <div className={FOOTER_STYLES.nav.itemWrapper}>
+                  <Link 
+                    href={`/${lang}/privacy-policy`}
+                    className={FOOTER_STYLES.link.base}
                   >
-                    {footer.contact.buttonLabel}
-                  </button>
+                    {footer.legal.privacyPolicy}
+                  </Link>
                 </div>
-              </section>
+                <div className={FOOTER_STYLES.nav.itemWrapper}>
+                  <Link 
+                    href={`/${lang}/terms`}
+                    className={FOOTER_STYLES.link.base}
+                  >
+                    {footer.legal.terms}
+                  </Link>
+                </div>
+                <div className={FOOTER_STYLES.nav.itemWrapper}>
+                  <Link 
+                    href="/sitemap.xml"
+                    className={FOOTER_STYLES.link.base}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {footer.legal.sitemap}
+                  </Link>
+                </div>
+              </nav>
+            </section>
 
-              {/* Quick Links - last on mobile, bottom-right on md+, right column on lg+ */}
-              <section className={cn(FOOTER_STYLES.section.wrapper, "order-first md:order-last")}>
-                <h3 className={FOOTER_STYLES.section.heading}>
-                  {footer.quickLinks.title}
-                </h3>
-                <nav 
-                  className={FOOTER_STYLES.nav.wrapper}
-                  aria-label={footer.quickLinks.ariaLabel}
-                >
-                  {footerNavItems.map((item) => (
-                    <div key={item.key} className={FOOTER_STYLES.nav.itemWrapper}>
-                      <Link 
-                        href={item.href}
-                        className={FOOTER_STYLES.link.base}
-                      >
-                        {item.label}
-                      </Link>
-                    </div>
-                  ))}
-                </nav>
-              </section>
-            </div>
+            {/* MOBILE ORDER 5 / MD RIGHT COL ORDER 2 / LG+ RIGHT COL 2 (Quick Links) */}
+            <section className={cn(
+              'md:order-4',
+              'lg:col-start-3 lg:row-start-1'
+            )}>
+              <h3 className={FOOTER_STYLES.section.heading}>
+                {footer.quickLinks.title}
+              </h3>
+              <nav 
+                className={FOOTER_STYLES.nav.wrapper}
+                aria-label={footer.quickLinks.ariaLabel}
+              >
+                {footerNavItems.map((item) => (
+                  <div key={item.href} className={FOOTER_STYLES.nav.itemWrapper}>
+                    <Link 
+                      href={item.href}
+                      className={FOOTER_STYLES.link.base}
+                    >
+                      {item.label}
+                    </Link>
+                  </div>
+                ))}
+              </nav>
+            </section>
           </div>
 
-          {/* Copyright */}
+          {/* Copyright - unaffected */}
           <div className={FOOTER_STYLES.copyright.wrapper}>
-            <div className={FOOTER_STYLES.copyright.text}>
-              <p>{copyrightText}</p>
-            </div>
+            <p className={FOOTER_STYLES.copyright.text}>
+              {copyrightText}
+            </p>
           </div>
         </div>
       </footer>

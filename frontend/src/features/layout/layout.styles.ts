@@ -13,11 +13,12 @@ export const COLLECTION_DESCRIPTION_STYLES = cn(
   'text-on-sf-var font-serif max-w-3xl shadow-sm leading-relaxed',
   'bg-sf-hi rounded-xl',
   'mx-4 p-6 pb-8 mb-8',
-  'xs:mx-6 xs:text-lg',
-  'sm:mx-8 sm:p-8 sm:pb-12',
-  'md:mx-16 md:mb-12 md:rounded-2xl',
-  'lg:mx-auto lg:p-12 lg:pb-16 lg:text-xl',
-  'xl:text-xl xl:p-16 xl:pb-20 xl:rounded-3xl'
+  'xs:mx-6 xs:text-lg xs:leading-relaxed',     
+  'sm:mx-8 sm:p-8 sm:pb-12 sm:leading-relaxed', 
+  'md:mx-16 md:mb-12 md:rounded-2xl md:leading-relaxed',
+  'lg:mx-auto lg:p-12 lg:pb-16 lg:text-xl lg:leading-relaxed',
+  'xl:text-xl xl:p-16 xl:pb-20 xl:rounded-3xl xl:leading-relaxed',
+  'leading-relaxed'
 )
 
 export const SECTION_COUNT_STYLES = cn(

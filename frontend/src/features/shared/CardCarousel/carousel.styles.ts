@@ -16,7 +16,7 @@ export function getCarouselStyles(cardType: CardType) {
   // - article: default scrollable
   
   const cardWrapperWidths = {
-    article: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px]',
+    article: 'flex-none w-[220px] sm:w-[240px] lg:w-[260px]',
     rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] 2xl:w-[232px]',
     author: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] 2xl:w-[232px]',
   };
@@ -71,7 +71,7 @@ export const ARTICLE_CAROUSEL_CARD_STYLES = {
   card: 'bg-sf-cont rounded-2xl overflow-hidden h-full flex flex-col',
   
   // Image container
-  imageContainer: `relative w-full ${IMAGE_RATIO_STRING} overflow-hidden bg-sf-hi`,
+  imageContainer: `relative w-full ${IMAGE_RATIO_STRING} overflow-hidden bg-sf-hi rounded-b-2xl`,
   
   // Image element
   image: 'object-cover',
@@ -80,7 +80,7 @@ export const ARTICLE_CAROUSEL_CARD_STYLES = {
   content: 'p-4 flex flex-col flex-grow',
   
   // Title
-  title: 'text-base font-semibold line-clamp-3 md:line-clamp-4 mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200 flex-grow',
+  title: 'text-base font-serif font-medium line-clamp-3 md:line-clamp-4 mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200 flex-grow',
   
   // Date
   date: 'max-sm:hidden text-xs text-on-sf-var mt-auto',

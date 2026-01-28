@@ -96,7 +96,7 @@ export default async function AuthorPage({
       container: 'container mx-auto px-4',
       layout: 'flex flex-col md:flex-row gap-6 max-w-6xl mx-auto',
       
-      leftColumn: 'w-full md:w-1/3 flex flex-col gap-6',
+      leftColumn: 'w-full max-w-md mx-auto md:w-1/3 flex flex-col gap-6',
       rightColumn: 'w-full md:w-2/3',
       
       avatar: {
@@ -107,9 +107,9 @@ export default async function AuthorPage({
       },
       
       nameCard: 'p-6 bg-sf-hi rounded-2xl shadow-sm',
-      name: 'md:text-lg xl:text-2xl uppercase text-center text-on-sf',
+      name: 'text-lg sm:text-xl xl:text-2xl uppercase text-center text-on-sf',
       
-      bioCard: 'p-8 bg-sf-cont rounded-2xl shadow-md',
+      bioCard: 'p-8 bg-sf-cont rounded-2xl shadow-md font-serif leading-relaxed lg:text-lg',
       bio: 'text-on-sf-var',
     },
   } as const;
