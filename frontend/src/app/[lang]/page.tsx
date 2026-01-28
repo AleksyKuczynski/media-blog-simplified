@@ -1,11 +1,14 @@
+// app/[lang]/page.tsx
+import { Suspense } from 'react';
 import { getDictionary, Lang } from '@/config/i18n';
 import HeroArticles from '@/features/article-display/HeroArticles';
 import HeroSection from '@/features/article-display/HeroSection';
 import AuthorsCarouselSection from '@/features/author-display/AuthorsCarouselSection';
 import RubricsCarouselSection from '@/features/rubric-display/RubricsCarouselSection';
 import HomePageSchema from '@/shared/seo/schemas/HomePageSchema';
-
-// Remove fetchHeroSlugs import and all Promise.all fetching
+import { HeroArticlesSkeleton } from '@/features/article-display/HeroArticlesSkeleton';
+import { CardCarouselSkeleton } from '@/features/shared/CardCarousel/CardCarouselSkeleton';
+import Section from '@/features/layout/Section';
 
 export default async function HomePage({
   params,
@@ -23,28 +26,64 @@ export default async function HomePage({
         currentPath={`/${lang}`}
       />
 
+      {/* HeroSection renders immediately - no data fetching */}
       <HeroSection dictionary={dictionary} />
 
-      <HeroArticles 
-        lang={lang} 
-        dictionary={dictionary}
-      />
+      {/* Wrap each data-fetching component in Suspense */}
+      <Suspense fallback={
+        <Section variant="default" hasNextSectionTitle={true}>
+          <HeroArticlesSkeleton latestCount={3} />
+        </Section>
+      }>
+        <HeroArticles 
+          lang={lang} 
+          dictionary={dictionary}
+        />
+      </Suspense>
 
-      <RubricsCarouselSection
-        lang={lang}
-        dictionary={dictionary}
-        title={dictionary.sections.home.featuredRubrics}
-        variant="primary"
-        limit={6}
-      />
+      <Suspense fallback={
+        <Section 
+          title={dictionary.sections.home.featuredRubrics}
+          variant="primary" 
+          hasNextSectionTitle={true}
+        >
+          <CardCarouselSkeleton 
+            cardCount={6}
+            cardType="rubric"
+            ariaLabel={dictionary.common.status.loading}
+          />
+        </Section>
+      }>
+        <RubricsCarouselSection
+          lang={lang}
+          dictionary={dictionary}
+          title={dictionary.sections.home.featuredRubrics}
+          variant="primary"
+          limit={6}
+        />
+      </Suspense>
 
-      <AuthorsCarouselSection
-        lang={lang}
-        dictionary={dictionary}
-        title={dictionary.sections.authors.ourAuthors}
-        variant="tertiary"
-        limit={6}
-      />
+      <Suspense fallback={
+        <Section 
+          title={dictionary.sections.authors.ourAuthors}
+          variant="tertiary" 
+          hasNextSectionTitle={true}
+        >
+          <CardCarouselSkeleton 
+            cardCount={6}
+            cardType="author"
+            ariaLabel={dictionary.common.status.loading}
+          />
+        </Section>
+      }>
+        <AuthorsCarouselSection
+          lang={lang}
+          dictionary={dictionary}
+          title={dictionary.sections.authors.ourAuthors}
+          variant="tertiary"
+          limit={6}
+        />
+      </Suspense>
     </>
   );
 }

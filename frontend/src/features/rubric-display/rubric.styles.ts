@@ -22,7 +22,7 @@ export const RUBRIC_CARD_STYLES = {
   iconFallbackText: 'text-on-pr-cont text-lg font-bold',
   
   // Title
-  title: 'mb-3 text-xl md:max-lg:text-2xl 2xl:text-2xl uppercase text-center grow self-center',
+  title: 'mb-3 text-xl md:max-lg:text-2xl 2xl:text-2xl font-medium font-serif uppercase text-center grow self-center',
   titleLink: 'before:absolute before:inset-0',
   
   // Description

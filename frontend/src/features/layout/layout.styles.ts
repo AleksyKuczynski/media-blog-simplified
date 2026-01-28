@@ -10,14 +10,14 @@
 import { cn } from "@/lib/utils";
 
 export const COLLECTION_DESCRIPTION_STYLES = cn(
-  'text-on-sf-var max-w-3xl shadow-sm',
+  'text-on-sf-var font-serif max-w-3xl shadow-sm leading-relaxed',
   'bg-sf-hi rounded-xl',
   'mx-4 p-6 pb-8 mb-8',
   'xs:mx-6 xs:text-lg',
   'sm:mx-8 sm:p-8 sm:pb-12',
   'md:mx-16 md:mb-12 md:rounded-2xl',
   'lg:mx-auto lg:p-12 lg:pb-16 lg:text-xl',
-  'xl:text-2xl xl:p-16 xl:pb-20 xl:rounded-3xl'
+  'xl:text-xl xl:p-16 xl:pb-20 xl:rounded-3xl'
 )
 
 export const SECTION_COUNT_STYLES = cn(

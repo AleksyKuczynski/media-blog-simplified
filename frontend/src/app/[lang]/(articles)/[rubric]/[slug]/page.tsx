@@ -25,6 +25,7 @@ import { parseImageMetadata } from '@/lib/utils/bilingualParser';
 import Section from '@/features/layout/Section';
 import RelatedArticles from '@/features/article-display/RelatedArticles';
 import { LAYOUT_STYLES, NAVIGATION_STYLES } from './_components/article.styles';
+import { ArticlePageSkeleton } from './_components/ArticlePageSkeleton';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -251,22 +252,18 @@ export default async function ArticlePage({
           authors={article.authorsWithDetails}
         />
 
-        <SmartBreadcrumbs
-          lang={lang}
-          articleData={articleBreadcrumbData}
-          dictionary={dictionary}
-        />
-        
         <article 
           className={LAYOUT_STYLES.articleContainer}
           itemScope
           itemType="https://schema.org/Article"
         >
-          <Suspense fallback={
-            <div className="text-center py-8">
-              <div className="text-lg">{dictionary.common.status.loading}</div>
-            </div>
-          }>
+          <Suspense fallback={<ArticlePageSkeleton dictionary={dictionary} />}>
+            <SmartBreadcrumbs
+              lang={lang}
+              articleData={articleBreadcrumbData}
+              dictionary={dictionary}
+            />
+        
             <CategoriesAndRubricSection
               categories={categoriesData}
               rubric={rubricData}
