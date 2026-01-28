@@ -43,7 +43,7 @@ export default async function HomePage({
         dictionary={dictionary}
         title={dictionary.sections.authors.ourAuthors}
         variant="tertiary"
-        limit={4}
+        limit={6}
       />
     </>
   );

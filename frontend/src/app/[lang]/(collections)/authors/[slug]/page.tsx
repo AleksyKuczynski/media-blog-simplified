@@ -86,15 +86,33 @@ export default async function AuthorPage({
   const { slugs: authoredSlugs, totalCount: authoredCount } = authoredResult;
   const { slugs: illustratedSlugs, totalCount: illustratedCount } = illustratedResult;
 
-  console.log('[AuthorPage] Author slug:', slug);
-  console.log('[AuthorPage] Authored articles count:', authoredCount);
-  console.log('[AuthorPage] Illustrated articles count:', illustratedCount);
-  console.log('[AuthorPage] Authored slugs:', authoredSlugs.map(s => s.slug));
-  console.log('[AuthorPage] Illustrated slugs:', illustratedSlugs.map(s => s.slug));
-
   const totalPages = Math.ceil(authoredCount / ITEMS_PER_PAGE);
   const illustratedTotalPages = Math.ceil(illustratedCount / ITEMS_PER_PAGE);
   const currentPath = `/${lang}/authors/${slug}`;
+
+  const AUTHOR_PAGE_STYLES = {
+    header: {
+      section: 'pb-40',
+      container: 'container mx-auto px-4',
+      layout: 'flex flex-col md:flex-row gap-6 max-w-6xl mx-auto',
+      
+      leftColumn: 'w-full md:w-1/3 flex flex-col gap-6',
+      rightColumn: 'w-full md:w-2/3',
+      
+      avatar: {
+        wrapper: 'relative aspect-square w-4/5 mx-auto overflow-hidden rounded-full shadow-md',
+        image: 'object-cover',
+        fallback: 'w-4/5 mx-auto aspect-square flex items-center justify-center bg-gradient-to-br from-pr-cont to-pr-fix overflow-hidden rounded-full shadow-md',
+        fallbackText: 'text-on-pr-cont text-6xl font-bold',
+      },
+      
+      nameCard: 'p-6 bg-sf-hi rounded-2xl shadow-sm',
+      name: 'md:text-lg xl:text-2xl uppercase text-center text-on-sf',
+      
+      bioCard: 'p-8 bg-sf-cont rounded-2xl shadow-md',
+      bio: 'text-on-sf-var',
+    },
+  } as const;
 
   return (
     <>
@@ -111,45 +129,55 @@ export default async function AuthorPage({
       />
 
       {/* Author Header */}
-      <section className="bg-sf-cont py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-            {author.avatar ? (
-              <div className="relative w-48 h-48 rounded-full overflow-hidden flex-shrink-0">
-                <Image
-                  src={`${DIRECTUS_URL}/assets/${author.avatar}`}
-                  alt={processTemplate(dictionary.sections.authors.authorPhoto, {
-                    name: author.name
-                  })}
-                  fill
-                  className="object-cover"
-                  sizes="192px"
-                  priority
-                />
-              </div>
-            ) : (
-              <div className="w-48 h-48 rounded-full bg-gradient-to-br from-pr-cont to-pr-fix flex items-center justify-center flex-shrink-0">
-                <span className="text-on-pr-cont text-6xl font-bold">
-                  {author.name.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
-            
-            <div className="flex-1">
-              <h1 
-                className="text-4xl font-bold mb-4 text-on-sf"
-                itemProp="name"
-              >
-                {author.name}
-              </h1>
-              
-              {author.bio && (
-                <p 
-                  className="text-lg text-on-sf-var mb-4 max-w-3xl"
-                  itemProp="description"
+      <section className={AUTHOR_PAGE_STYLES.header.section}>
+        <div className={AUTHOR_PAGE_STYLES.header.container}>
+          <div className={AUTHOR_PAGE_STYLES.header.layout}>
+            {/* Left Column: Avatar + Name (1/3) */}
+            <div className={AUTHOR_PAGE_STYLES.header.leftColumn}>
+              {/* Avatar */}
+              {author.avatar ? (
+                <div className={AUTHOR_PAGE_STYLES.header.avatar.wrapper}>
+                  <Image
+                    src={`${DIRECTUS_URL}/assets/${author.avatar}`}
+                    alt={processTemplate(dictionary.sections.authors.authorPhoto, {
+                      name: author.name
+                    })}
+                    fill
+                    className={AUTHOR_PAGE_STYLES.header.avatar.image}
+                    sizes="(max-width: 768px) 80vw, 320px"
+                    priority
+                  />
+                </div>
+              ) : (
+                <div className={AUTHOR_PAGE_STYLES.header.avatar.fallback}>
+                  <span className={AUTHOR_PAGE_STYLES.header.avatar.fallbackText}>
+                    {author.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )}
+
+              {/* Name */}
+              <div className={AUTHOR_PAGE_STYLES.header.nameCard}>
+                <h1 
+                  className={AUTHOR_PAGE_STYLES.header.name}
+                  itemProp="name"
                 >
-                  {author.bio}
-                </p>
+                  {author.name}
+                </h1>
+              </div>
+            </div>
+
+            {/* Right Column: Bio (2/3) */}
+            <div className={AUTHOR_PAGE_STYLES.header.rightColumn}>
+              {author.bio && (
+                <div className={AUTHOR_PAGE_STYLES.header.bioCard}>
+                  <p 
+                    className={AUTHOR_PAGE_STYLES.header.bio}
+                    itemProp="description"
+                  >
+                    {author.bio}
+                  </p>
+                </div>
               )}
             </div>
           </div>

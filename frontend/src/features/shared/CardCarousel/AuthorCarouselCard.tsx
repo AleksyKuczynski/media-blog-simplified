@@ -15,7 +15,6 @@ interface AuthorCarouselCardProps {
 }
 
 export default function AuthorCarouselCard({
-  slug,
   name,
   bio,
   avatarSrc,
