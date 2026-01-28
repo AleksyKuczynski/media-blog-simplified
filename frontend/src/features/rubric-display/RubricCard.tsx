@@ -57,6 +57,7 @@ export const RubricCard: React.FC<RubricCardProps> = ({
               className={RUBRIC_CARD_STYLES.iconImage}
               sizes="160px"
               loading="lazy"
+              unoptimized
             />
           </div>
         ) : (

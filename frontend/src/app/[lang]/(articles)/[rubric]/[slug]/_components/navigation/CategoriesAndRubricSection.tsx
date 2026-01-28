@@ -88,6 +88,7 @@ export default function CategoriesAndRubricSection({
                 fill
                 className="object-contain"
                 sizes="24px"
+                unoptimized
               />
             </div>
           )}
