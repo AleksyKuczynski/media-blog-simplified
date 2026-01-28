@@ -28,22 +28,13 @@ export default function SearchResultsHeader({
   // Build results text
   const parts: string[] = [];
   if (articlesCount > 0) {
-    parts.push(processTemplate(dictionary.sections.templates.totalCount, {
-      count: articlesCount.toString(),
-      countLabel: dictionary.common.count.articles,
-    }));
+    parts.push(`${dictionary.common.count.articles}: ${articlesCount}`);
   }
   if (authorsCount > 0) {
-    parts.push(processTemplate(dictionary.sections.templates.totalCount, {
-      count: authorsCount.toString(),
-      countLabel: dictionary.common.count.authors,
-    }));
+    parts.push(`${dictionary.common.count.authors}: ${authorsCount}`);
   }
   if (categoriesCount > 0) {
-    parts.push(processTemplate(dictionary.sections.templates.totalCount, {
-      count: categoriesCount.toString(),
-      countLabel: dictionary.common.count.categories,
-    }));
+    parts.push(`${dictionary.common.count.categories}: ${categoriesCount}`);  
   }
 
   const resultsText = parts.length > 0 

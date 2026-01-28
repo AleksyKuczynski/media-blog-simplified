@@ -85,8 +85,17 @@ export const SECTION_STYLES = {
 export const FOOTER_STYLES = {
   container: 'bg-sf-cont text-on-sf-var py-12 md:py-16',
   innerContainer: 'container mx-auto px-4',
-  grid: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6',
-  
+  grid: cn(
+    // Base grid
+    'grid gap-8',
+    // Mobile: single column, QuickLinks last
+    'grid-cols-1',
+    // Medium: 2 columns, QuickLinks bottom-right
+    'md:grid-cols-2 md:gap-x-12',
+    // Large+: 2 equal columns
+    'lg:grid-cols-2 lg:gap-x-16 lg:gap-y-0',
+  ),  
+
   section: {
     wrapper: 'space-y-4',
     heading: 'text-lg font-semibold text-prcolor',

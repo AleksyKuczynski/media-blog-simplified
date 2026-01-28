@@ -15,6 +15,7 @@ import {
   InstagramIcon 
 } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/engagement/EngagementIcons';
 import Logo from '@/shared/primitives/Logo';
+import { cn } from '@/lib/utils';
 
 interface FooterProps {
   lang: Lang;
@@ -70,104 +71,85 @@ export default function Footer({ lang, dictionary }: FooterProps) {
 
         <div className={FOOTER_STYLES.innerContainer}>
           <div className={FOOTER_STYLES.grid}>
-            
-            {/* Column 1: About */}
-            <section className={FOOTER_STYLES.section.wrapper}>
-              <h3 className="sr-only">
-                {footer.about.title}
-              </h3>
-              <div className="mb-4">
-                <Logo 
-                  lang={lang} 
-                  variant="footer"
-                  aria-label={`${seo.site.name} - ${footer.about.title}`}
-                />
-              </div>
-              <p className={FOOTER_STYLES.section.description}>
-                {footer.about.description}
-              </p>
-            </section>
+            {/* LEFT COLUMN: About + Social (lg+) */}
+            <div className="flex flex-col gap-8 lg:col-span-1">
+              {/* About */}
+              <section className={FOOTER_STYLES.section.wrapper}>
+                <h3 className="sr-only">{footer.about.title}</h3>
+                <div className="mb-4">
+                  <Logo 
+                    lang={lang} 
+                    variant="footer"
+                    aria-label={`${seo.site.name} - ${footer.about.title}`}
+                  />
+                </div>
+                <p className={FOOTER_STYLES.section.description}>
+                  {footer.about.description}
+                </p>
+              </section>
 
-            {/* Column 2: Quick Links */}
-            <section className={FOOTER_STYLES.section.wrapper}>
-              <h3 className={FOOTER_STYLES.section.heading}>
-                {footer.quickLinks.title}
-              </h3>
-              <nav 
-                className={FOOTER_STYLES.nav.wrapper}
-                aria-label={footer.quickLinks.ariaLabel}
-              >
-                {footerNavItems.map((item) => (
-                  <div key={item.key} className={FOOTER_STYLES.nav.itemWrapper}>
+              {/* Social Links */}
+              <section className={FOOTER_STYLES.section.wrapper}>
+                <h3 className={FOOTER_STYLES.section.heading}>
+                  {footer.socialLinks.title}
+                </h3>
+                <nav className={FOOTER_STYLES.nav.wrapper}>
+                  <div className="flex gap-4">
+                    {SOCIAL_PLATFORMS.map((platform, index) => {
+                      const Icon = platform.icon;
+                      return (
+                        <Link
+                          key={platform.key}
+                          href={seo.site.socialProfiles[index]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded"
+                          aria-label={platform.ariaLabel}
+                        >
+                          <Icon className="w-6 h-6" />
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </nav>
+              </section>
+            </div>
+
+            {/* RIGHT COLUMN: Legal + Contact on left, Quick Links on right (lg+) */}
+            <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:col-span-1">
+              {/* Legal + Contact */}
+              <section className={FOOTER_STYLES.section.wrapper}>
+                <h3 className={FOOTER_STYLES.section.heading}>
+                  {footer.legal.title}
+                </h3>
+                <nav className={FOOTER_STYLES.nav.wrapper}>
+                  <div className={FOOTER_STYLES.nav.itemWrapper}>
                     <Link 
-                      href={item.href}
+                      href={`/${lang}/privacy-policy`}
                       className={FOOTER_STYLES.link.base}
                     >
-                      {item.label}
+                      {footer.legal.privacyPolicy}
                     </Link>
                   </div>
-                ))}
-              </nav>
-            </section>
-
-            {/* Column 3: Social Links with Icons */}
-            <section className={FOOTER_STYLES.section.wrapper}>
-              <h3 className={FOOTER_STYLES.section.heading}>
-                {footer.socialLinks.title}
-              </h3>
-              <nav className={FOOTER_STYLES.nav.wrapper}>
-                <div className="flex gap-4">
-                  {SOCIAL_PLATFORMS.map((platform, index) => {
-                    const Icon = platform.icon;
-                    return (
-                      <Link
-                        key={platform.key}
-                        href={seo.site.socialProfiles[index]}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded"
-                        aria-label={platform.ariaLabel}
-                      >
-                        <Icon className="w-6 h-6" />
-                      </Link>
-                    );
-                  })}
-                </div>
-              </nav>
-            </section>
-
-            {/* Column 4: Legal + Contact */}
-            <section className={FOOTER_STYLES.section.wrapper}>
-              <h3 className={FOOTER_STYLES.section.heading}>
-                {footer.legal.title}
-              </h3>
-              <nav className={FOOTER_STYLES.nav.wrapper}>
-                <div className={FOOTER_STYLES.nav.itemWrapper}>
-                  <Link 
-                    href={`/${lang}/privacy`}
-                    className={FOOTER_STYLES.link.base}
-                  >
-                    {footer.legal.privacyPolicy}
-                  </Link>
-                </div>
-                <div className={FOOTER_STYLES.nav.itemWrapper}>
-                  <Link 
-                    href={`/${lang}/terms`}
-                    className={FOOTER_STYLES.link.base}
-                  >
-                    {footer.legal.terms}
-                  </Link>
-                </div>
-                <div className={FOOTER_STYLES.nav.itemWrapper}>
-                  <Link 
-                    href="/sitemap.xml"
-                    className={FOOTER_STYLES.link.base}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {footer.legal.sitemap}
-                  </Link>
-                </div>
+                  <div className={FOOTER_STYLES.nav.itemWrapper}>
+                    <Link 
+                      href={`/${lang}/terms`}
+                      className={FOOTER_STYLES.link.base}
+                    >
+                      {footer.legal.terms}
+                    </Link>
+                  </div>
+                  <div className={FOOTER_STYLES.nav.itemWrapper}>
+                    <Link 
+                      href="/sitemap.xml"
+                      className={FOOTER_STYLES.link.base}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {footer.legal.sitemap}
+                    </Link>
+                  </div>
+                </nav>
                 <div className={FOOTER_STYLES.contact.divider}>
                   <button
                     onClick={() => setIsContactModalOpen(true)}
@@ -177,8 +159,30 @@ export default function Footer({ lang, dictionary }: FooterProps) {
                     {footer.contact.buttonLabel}
                   </button>
                 </div>
-              </nav>
-            </section>
+              </section>
+
+              {/* Quick Links - last on mobile, bottom-right on md+, right column on lg+ */}
+              <section className={cn(FOOTER_STYLES.section.wrapper, "order-first md:order-last")}>
+                <h3 className={FOOTER_STYLES.section.heading}>
+                  {footer.quickLinks.title}
+                </h3>
+                <nav 
+                  className={FOOTER_STYLES.nav.wrapper}
+                  aria-label={footer.quickLinks.ariaLabel}
+                >
+                  {footerNavItems.map((item) => (
+                    <div key={item.key} className={FOOTER_STYLES.nav.itemWrapper}>
+                      <Link 
+                        href={item.href}
+                        className={FOOTER_STYLES.link.base}
+                      >
+                        {item.label}
+                      </Link>
+                    </div>
+                  ))}
+                </nav>
+              </section>
+            </div>
           </div>
 
           {/* Copyright */}
