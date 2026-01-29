@@ -1,13 +1,14 @@
 // src/features/search/page/SearchResults.tsx
 import { Suspense } from 'react';
 import Pagination from '@/shared/ui/Pagination';
-import SearchResultsHeader from './SearchResultsHeader';
 import { Dictionary, Lang } from '@/config/i18n';
 import { ArticleSearchResult, AuthorSearchResult, CategorySearchResult } from '@/api/directus';
 import ArticleList from '@/features/article-display/ArticleList';
 import AuthorResultCard from './AuthorResultCard';
 import CategoryResultCard from './CategoryResultCard';
-import { SEARCH_PAGE_STYLES, SEARCH_RESULTS_SECTION_STYLES } from '../search.styles';
+import { SEARCH_PAGE_STYLES, SEARCH_RESULTS_HEADER_STYLES, SEARCH_RESULTS_SECTION_STYLES } from '../search.styles';
+import { processTemplate } from '@/config/i18n/helpers/templates';
+import SortingControl from '@/features/navigation/Filter/SortingControl';
 
 interface SearchResultsProps {
   readonly dictionary: Dictionary;
@@ -27,6 +28,8 @@ interface SearchResultsProps {
 }
 
 const sectionStyles = SEARCH_RESULTS_SECTION_STYLES;
+
+// src/features/search/page/SearchResults.tsx
 
 export default function SearchResults({
   dictionary,
@@ -75,12 +78,11 @@ export default function SearchResults({
     );
   }
 
-  // Convert ArticleSearchResult to ArticleSlugInfo for ArticleList
   const articleSlugs = articles.map(article => ({
     slug: article.slug,
     rubric_slug: article.rubric_slug,
     layout: 'regular' as const,
-    published_at: new Date().toISOString(), // Will be fetched in ArticleCard
+    published_at: new Date().toISOString(),
     translations: [{
       languages_code: article.languages_code,
       title: article.title,
@@ -88,17 +90,32 @@ export default function SearchResults({
     }]
   }));
 
+  // Show sorting only if there are 2+ articles
+  const showSorting = totalArticles >= 2;
+
   return (
     <>
-      <SearchResultsHeader
-        dictionary={dictionary}
-        searchQuery={searchQuery}
-        resultsCount={totalResults}
-        articlesCount={totalArticles}
-        authorsCount={totalAuthors}
-        categoriesCount={totalCategories}
-        currentSort={currentSort}
-      />
+      {/* Results summary without sorting */}
+      <div className={SEARCH_RESULTS_HEADER_STYLES.container}>
+        <div className={SEARCH_RESULTS_HEADER_STYLES.textContainer}>
+          <h2 
+            id="search-results-heading"
+            className={SEARCH_RESULTS_HEADER_STYLES.title}
+          >
+            {processTemplate(dictionary.search.templates.resultsFor, { query: searchQuery })}
+          </h2>
+          <p 
+            className={SEARCH_RESULTS_HEADER_STYLES.count}
+            aria-live="polite"
+          >
+            {[
+              totalArticles > 0 && `${dictionary.common.count.articles}: ${totalArticles}`,
+              totalAuthors > 0 && `${dictionary.common.count.authors}: ${totalAuthors}`,
+              totalCategories > 0 && `${dictionary.common.count.categories}: ${totalCategories}`
+            ].filter(Boolean).join(', ')}
+          </p>
+        </div>
+      </div>
 
       {/* Authors Section */}
       {authors.length > 0 && (
@@ -141,9 +158,21 @@ export default function SearchResults({
       {/* Articles Section */}
       {articles.length > 0 && (
         <section className={sectionStyles.container}>
-          <h2 className={sectionStyles.heading}>
-            {dictionary.common.count.articles}: {totalArticles}
-          </h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className={sectionStyles.heading}>
+              {dictionary.common.count.articles}: {totalArticles}
+            </h2>
+            {showSorting && (
+              <aside aria-label={dictionary.filter.accessibility.sortingControl}>
+                <SortingControl
+                  dictionary={dictionary}
+                  currentSort={currentSort}
+                  variant="search"
+                />
+              </aside>
+            )}
+          </div>
+
           <Suspense fallback={<div>Loading articles...</div>}>
             <ArticleList
               dictionary={dictionary}

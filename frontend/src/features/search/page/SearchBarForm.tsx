@@ -20,6 +20,7 @@ interface SearchBarFormProps {
 export default function SearchBarForm({
   dictionary,
   lang,
+  currentQuery,
   hasResults = false,
   className = ''
 }: SearchBarFormProps) {
@@ -30,7 +31,8 @@ export default function SearchBarForm({
     handlers,
     refs,
   } = useSearchLogic({
-    lang
+    lang,
+    initialQuery: currentQuery
   });
 
   const handleFocus = () => {
