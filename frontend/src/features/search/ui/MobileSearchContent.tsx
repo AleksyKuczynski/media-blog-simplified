@@ -5,9 +5,10 @@ import React, { useEffect } from 'react';
 import SearchInput from './SearchInput';
 import { useSearchLogic } from '../logic/useSearchLogic';
 import { Dictionary, Lang } from '@/config/i18n';
-import { useRouter } from 'next/navigation';
+import { ReadonlyURLSearchParams, useRouter } from 'next/navigation';
 import { SearchIcon } from '@/shared/primitives/Icons';
 import { MOBILE_SEARCH_STYLES } from '../search.styles';
+import { createSearchUrl } from '../utils/createSearchUrl';
 
 interface MobileSearchContentProps {
   readonly dictionary: Dictionary;
@@ -39,6 +40,14 @@ export default function MobileSearchContent({
       return () => clearTimeout(timer);
     }
   }, [refs.inputRef]);
+
+  const handleSearchIconClick = () => {
+  if (state.query.length >= 3) {
+    const searchUrl = createSearchUrl(state.query, new ReadonlyURLSearchParams());
+    router.push(`/${lang}${searchUrl}`);
+    onSearchComplete?.();
+  }
+};
 
   const handleSuggestionSelect = (index: number) => {
     const suggestion = state.suggestions[index];
@@ -201,9 +210,15 @@ export default function MobileSearchContent({
       
       <div className={MOBILE_SEARCH_STYLES.inputContainer}>
         <div className={MOBILE_SEARCH_STYLES.inputWrapper}>
-          <div className={MOBILE_SEARCH_STYLES.iconWrapper}>
+          <button
+            type="button"
+            onClick={handleSearchIconClick}
+            className={MOBILE_SEARCH_STYLES.iconWrapper}
+            aria-label={dictionary.search.accessibility.searchButtonLabel}
+            disabled={state.query.length < 3}
+          >
             <SearchIcon />
-          </div>
+          </button>
           
           <SearchInput
             state={state}
@@ -211,6 +226,7 @@ export default function MobileSearchContent({
             onChange={handlers.handleInputChange}
             onKeyDown={handlers.handleKeyDown}
             onFocus={handlers.handleFocus}
+            onClear={handlers.handleClear}
             inputRef={refs.inputRef as React.RefObject<HTMLInputElement>}
             ariaLabel={dictionary.search.accessibility.searchInputLabel}
             ariaDescription={dictionary.search.accessibility.searchDescription}
