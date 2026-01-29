@@ -1,5 +1,5 @@
 // src/features/search/logic/useSearchLogic.ts
-import { useReducer, useRef, useCallback } from 'react';
+import { useReducer, useRef, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useOutsideClick } from '@/lib/hooks';
 import { searchReducer, getInitialState } from './searchReducer';
@@ -11,6 +11,7 @@ import { createSearchUrl } from '../utils/createSearchUrl';
 
 interface UseSearchLogicProps {
   lang: Lang;
+  initialQuery?: string;
   onSearchComplete?: () => void;
 }
 
@@ -36,6 +37,7 @@ interface UseSearchLogicReturn {
 
 export function useSearchLogic({
   lang,
+  initialQuery,
   onSearchComplete
 }: UseSearchLogicProps): UseSearchLogicReturn {
   const [state, dispatch] = useReducer(searchReducer, undefined, getInitialState);
@@ -46,8 +48,21 @@ export function useSearchLogic({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const hasNavigableContent = state.dropdown.content === 'suggestions' && 
-                            state.suggestions.length > 0;
+  // Initialize query from URL if present
+  useEffect(() => {
+    if (initialQuery && initialQuery !== state.query) {
+      dispatch({ type: 'SET_QUERY', payload: initialQuery });
+      // Set status to success when showing results page
+      if (initialQuery.length >= 3) {
+        dispatch({ 
+          type: 'SET_SUGGESTIONS',
+          payload: [] // Empty suggestions array for results page
+        });
+      }
+    }
+  }, [initialQuery]); // Only run when initialQuery changes
+  
+  const hasNavigableContent = state.dropdown.content === 'suggestions' && state.suggestions.length > 0;
 
   const cleanupAndClose = useCallback(() => {
     dispatch({ type: 'RESET_STATE' });

@@ -20,19 +20,25 @@ export default function SearchDropdown({
   ariaLabel
 }: SearchDropdownProps) {
 
-  const isVisible = state.dropdown.visibility === 'visible';
+  // Only show dropdown when there are suggestions
+  const isVisible = state.dropdown.visibility === 'visible' && state.dropdown.content === 'suggestions';
 
-  function renderContent() {
-    if (state.dropdown.content === 'message') {
-      return (
-        <div className={SEARCH_DROPDOWN_STYLES.content.message}>
-          {renderStatusMessage()}
-        </div>
-      );
-    }
+  if (!isVisible || state.suggestions.length === 0) {
+    return null;
+  }
 
-    if (state.dropdown.content === 'suggestions') {
-      return (
+  return (
+    <div 
+      className={`
+        ${SEARCH_DROPDOWN_STYLES.container.base}
+        ${SEARCH_DROPDOWN_STYLES.visibility.visible}
+        ${className}
+      `.trim()}
+      role="listbox"
+      aria-hidden={!isVisible}
+      aria-label={ariaLabel}
+    >
+      <div className={SEARCH_DROPDOWN_STYLES.content.wrapper}>
         <ul>
           {state.suggestions.map((suggestion, index) => (
             <SearchDropdownItem
@@ -44,42 +50,6 @@ export default function SearchDropdown({
             />
           ))}
         </ul>
-      );
-    }
-
-    return null;
-  }
-
-  function renderStatusMessage() {
-    switch (state.searchStatus.type) {
-      case 'minChars':
-        return dict.search.labels.minCharacters;
-      case 'searching':
-        return dict.search.labels.searching;
-      case 'noResults':
-        return dict.search.labels.noResults;
-      default:
-        return null;
-    }
-  }
-
-  if (!isVisible) {
-    return null;
-  }
-
-  return (
-    <div 
-      className={`
-        ${SEARCH_DROPDOWN_STYLES.container.base}
-        ${isVisible ? SEARCH_DROPDOWN_STYLES.visibility.visible : SEARCH_DROPDOWN_STYLES.visibility.hidden}
-        ${className}
-      `.trim()}
-      role="listbox"
-      aria-hidden={!isVisible}
-      aria-label={ariaLabel}
-    >
-      <div className={SEARCH_DROPDOWN_STYLES.content.wrapper}>
-        {renderContent()}
       </div>
     </div>
   );

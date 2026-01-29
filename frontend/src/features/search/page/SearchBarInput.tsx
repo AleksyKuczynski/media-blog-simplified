@@ -3,10 +3,14 @@ import React from 'react';
 import { SearchUIState } from '../types';
 import { SEARCH_BAR_FORM_STYLES } from '../search.styles';
 import { CloseIcon } from '@/shared/primitives/Icons';
+import { Dictionary } from '@/config/i18n';
 
 interface SearchBarInputProps {
   state: SearchUIState;
   placeholder: string;
+  dictionary: Dictionary;
+  isFocused: boolean;
+  hasResults: boolean;
   onChange: (value: string) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onFocus: () => void;
@@ -20,6 +24,9 @@ interface SearchBarInputProps {
 export default function SearchBarInput({
   state,
   placeholder,
+  dictionary,
+  isFocused,
+  hasResults,
   onChange,
   onKeyDown,
   onFocus,
@@ -33,6 +40,34 @@ export default function SearchBarInput({
   const resultsId = 'search-bar-input-results';
   const styles = SEARCH_BAR_FORM_STYLES.input;
 
+  // Determine label text based on focus, results, and search status
+  const getLabelText = () => {
+    // If on search results page, always show "results for {query}"
+    if (hasResults && state.query.length >= 3) {
+      return dictionary.search.templates.resultsFor.replace('{query}', state.query);
+    }
+
+    // If not focused, show placeholder
+    if (!isFocused) {
+      return placeholder;
+    }
+
+    // If focused, show status-based messages
+    switch (state.searchStatus.type) {
+      case 'minChars':
+        return dictionary.search.labels.minCharacters;
+      case 'searching':
+        return dictionary.search.labels.searching;
+      case 'noResults':
+        return dictionary.search.labels.noResults;
+      case 'success':
+        // Show "results for {query}" when suggestions appear
+        return dictionary.search.templates.resultsFor.replace('{query}', state.query);
+      default:
+        return placeholder;
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       {ariaDescription && (
@@ -40,6 +75,10 @@ export default function SearchBarInput({
           {ariaDescription}
         </div>
       )}
+      
+      <label htmlFor="search-bar-input" className={styles.label}>
+        {getLabelText()}
+      </label>
       
       <input
         id="search-bar-input"

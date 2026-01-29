@@ -65,6 +65,9 @@ export default function SearchBarForm({
           <SearchBarInput
             state={state}
             placeholder={dictionary.search.labels.placeholder}
+            dictionary={dictionary}
+            isFocused={isFocused}
+            hasResults={hasResults}
             onChange={handlers.handleInputChange}
             onKeyDown={handlers.handleKeyDown}
             onFocus={handleFocus}

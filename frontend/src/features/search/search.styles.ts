@@ -96,9 +96,14 @@ export const SEARCH_BAR_FORM_STYLES = {
   dropdown: 'absolute top-full left-0 right-0 mt-2 rounded-lg shadow-lg z-50',
   tips: 'absolute top-full left-0 right-0 mt-4 text-on-sf-var text-sm px-4 pointer-events-none',
   input: {
-    wrapper: 'relative flex-1 flex items-center',
-    input: 'w-full py-3 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
-    clearButton: 'absolute right-2 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
+    wrapper: 'relative flex-1 flex flex-col',
+    label: cn(
+      'text-xs lowercase font-medium text-sec-dim mb-1',
+      'md:text-sm',
+      'xl:text-base',
+    ),
+    input: 'w-full py-2 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none lowercase',
+    clearButton: 'absolute right-0 top-6 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
     clearIcon: 'w-5 h-5',
   }
 } as const;
