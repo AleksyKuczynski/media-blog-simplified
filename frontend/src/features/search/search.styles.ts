@@ -71,19 +71,19 @@ export const MOBILE_SEARCH_STYLES = {
 } as const;
 
 export const SEARCH_INPUT_STYLES = {
-  wrapper: 'relative flex-1',
+  wrapper: 'relative flex-1 flex items-center',
   input: 'w-full py-3 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
+  clearButton: 'absolute right-2 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
+  clearIcon: 'w-5 h-5',
 } as const;
 
 export const SEARCH_BAR_FORM_STYLES = {
   container: cn(
-    'mx-4 pt-4 pb-36',
+    'relative mx-4 pt-4',
     'xs:mx-6',
     'sm:mx-auto sm:max-w-md',
-    'md: pb-64',
     'lg:max-w-lg',
     'xl:max-w-lg',
-
   ),
   wrapper: 'relative',
   inputWrapper: 'flex items-center gap-3 bg-sf rounded-2xl shadow-md hover:shadow-lg focus-within:shadow-none focus-within:ring-1 focus-within:ring-pr-fix focus-within:ring-offset-2 transition-all duration-200 px-4 py-3',
@@ -93,7 +93,14 @@ export const SEARCH_BAR_FORM_STYLES = {
     'md:w-7 md:h-7',
     'xl:w-8 xl:h-8',
   ),
-  dropdown: 'rounded-lg shadow-lg',
+  dropdown: 'absolute top-full left-0 right-0 mt-2 rounded-lg shadow-lg z-50',
+  tips: 'absolute top-full left-0 right-0 mt-4 text-on-sf-var text-sm px-4 pointer-events-none',
+  input: {
+    wrapper: 'relative flex-1 flex items-center',
+    input: 'w-full py-3 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
+    clearButton: 'absolute right-2 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
+    clearIcon: 'w-5 h-5',
+  }
 } as const;
 
 export const SEARCH_PAGE_STYLES = {
@@ -148,7 +155,7 @@ export const SEARCH_RESULTS_HEADER_STYLES = {
   container: cn(
     'flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4',
     'max-w-5xl mx-auto',
-    '-mt-24 md:-mt-40 mb-6 xl:mb-16',
+    'mb-6 xl:mb-16',
     'border-b border-ol pb-6',
   ),
   title: 'text-3xl mb-4 text-on-sf',

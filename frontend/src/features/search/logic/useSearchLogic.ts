@@ -22,6 +22,7 @@ interface UseSearchLogicReturn {
     handleSelect: (index: number) => void;
     handleFocus: () => void;
     handleSearchButton: () => void;
+    handleClear: () => void;
   };
   refs: {
     containerRef: React.RefObject<HTMLDivElement | null>;
@@ -171,6 +172,11 @@ export function useSearchLogic({
     });
   }, []);
 
+  const handleClear = useCallback(() => {
+  dispatch({ type: 'RESET_STATE' });
+  inputRef.current?.focus();
+}, []);
+
   useOutsideClick(
     containerRef,
     null,
@@ -191,6 +197,7 @@ export function useSearchLogic({
       handleSelect,
       handleFocus,
       handleSearchButton,
+      handleClear
     },
     refs: {
       containerRef,

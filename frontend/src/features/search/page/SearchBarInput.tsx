@@ -1,10 +1,10 @@
-// src/features/search/ui/SearchInput.tsx
+// src/features/search/page/SearchBarInput.tsx
 import React from 'react';
 import { SearchUIState } from '../types';
-import { SEARCH_INPUT_STYLES } from '../search.styles';
+import { SEARCH_BAR_FORM_STYLES } from '../search.styles';
 import { CloseIcon } from '@/shared/primitives/Icons';
 
-interface SearchInputProps {
+interface SearchBarInputProps {
   state: SearchUIState;
   placeholder: string;
   onChange: (value: string) => void;
@@ -17,7 +17,7 @@ interface SearchInputProps {
   ariaDescription?: string;
 }
 
-export default function SearchInput({
+export default function SearchBarInput({
   state,
   placeholder,
   onChange,
@@ -28,14 +28,13 @@ export default function SearchInput({
   inputRef,
   ariaLabel,
   ariaDescription,
-  isMobile = false
-}: SearchInputProps & { isMobile?: boolean }) {
-  const inputId = isMobile ? 'mobile-search-input' : 'search-bar-input';
-  const descriptionId = `${inputId}-description`;
-  const resultsId = `${inputId}-results`;
+}: SearchBarInputProps) {
+  const descriptionId = 'search-bar-input-description';
+  const resultsId = 'search-bar-input-results';
+  const styles = SEARCH_BAR_FORM_STYLES.input;
 
   return (
-    <div className={SEARCH_INPUT_STYLES.wrapper}>
+    <div className={styles.wrapper}>
       {ariaDescription && (
         <div id={descriptionId} className="sr-only">
           {ariaDescription}
@@ -46,7 +45,7 @@ export default function SearchInput({
         id="search-bar-input"
         ref={inputRef}
         type="text"
-        className={SEARCH_INPUT_STYLES.input}
+        className={styles.input}
         placeholder={placeholder}
         value={state.query}
         onChange={(e) => onChange(e.target.value)}
@@ -70,10 +69,10 @@ export default function SearchInput({
         <button
           type="button"
           onClick={onClear}
-          className={SEARCH_INPUT_STYLES.clearButton}
+          className={styles.clearButton}
           aria-label="Clear search"
         >
-          <CloseIcon className={SEARCH_INPUT_STYLES.clearIcon} />
+          <CloseIcon className={styles.clearIcon} />
         </button>
       )}
     </div>

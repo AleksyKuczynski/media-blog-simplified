@@ -1,6 +1,5 @@
 // src/app/[lang]/search/page.tsx
 import { Metadata } from 'next';
-import SearchTips from '@/features/search/page/SearchTips';
 import SearchBarForm from '@/features/search/page/SearchBarForm';
 import SearchResults from '@/features/search/page/SearchResults';
 import Section from '@/features/layout/Section';
@@ -97,13 +96,13 @@ export default async function SearchPage({
         title={dictionary.search.templates.pageTitle}
         titleLevel="h1"
         hasNextSectionTitle={true}
+        className="min-h-[calc(100vh-8rem)] xl:min-h-[calc(100vh-14rem)]"
       >
-        <SearchTips dictionary={dictionary} />
-
         <SearchBarForm
           dictionary={dictionary}
           lang={lang}
           currentQuery={searchQuery}
+          hasResults={hasResults}
         />
 
         {resultsMode && (
