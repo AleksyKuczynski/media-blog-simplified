@@ -7,6 +7,7 @@ import type { ArticleCardData, RubricCardData, AuthorCardData } from '@/features
 import { fetchAllRubrics } from './fetchAllRubrics';
 import { fetchAllAuthors } from './fetchAllAuthors';
 import { fetchArticleCard } from './fetchArticleCard';
+import { getAuthorCarouselAvatarUrl } from '@/features/shared/CardCarousel/carousel.styles';
 
 /**
  * Transform rubrics to carousel card format
@@ -52,9 +53,9 @@ export async function transformAuthorsToCarousel(
   const authors = await fetchAllAuthors(lang);
   
   const transformed = authors.map((author: AuthorDetails) => {
-    const avatarSrc = author.avatar 
-      ? `${DIRECTUS_URL}/assets/${author.avatar}?width=200&height=200&quality=80&format=webp`
-      : undefined;
+  const avatarSrc = author.avatar && DIRECTUS_URL
+  ? getAuthorCarouselAvatarUrl(DIRECTUS_URL, author.avatar)
+  : undefined;
 
     return {
       type: 'author' as const,

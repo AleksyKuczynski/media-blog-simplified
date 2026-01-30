@@ -59,6 +59,15 @@ export function getCarouselStyles(cardType: CardType) {
   };
 }
 
+export const CAROUSEL_IMAGE_PARAMS = {
+  author: {
+    width: 480,
+    height: 480,
+    quality: 90,
+    format: 'webp'
+  },
+} as const;
+
 // ================================================================
 // ARTICLE CAROUSEL CARD STYLES (from RELATED_CARD_STYLES)
 // ================================================================
@@ -146,3 +155,8 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   name: 'max-sm:text-sm xl:text-lg uppercase text-center text-on-sf-var group-hover:text-on-sf transition-colors',
   bio: 'hidden max-lg:text-sm text-on-sf-var line-clamp-4 mt-8',
 } as const;
+
+export function getAuthorCarouselAvatarUrl(baseUrl: string, assetId: string): string {
+  const params = CAROUSEL_IMAGE_PARAMS.author;
+  return `${baseUrl}/assets/${assetId}?width=${params.width}&height=${params.height}&quality=${params.quality}&format=${params.format}`;
+}

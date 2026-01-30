@@ -402,8 +402,8 @@ export const dictionaryEN: Dictionary = {
     },
     home: {
       welcomeTitle: {
-        main: 'EventForMe blog:',
-        sub: 'wedding encyclopedia and inspiration for your celebration',
+        main: 'EventForMe:',
+        sub: 'Idea. Plan. Celebration.',
       },
       welcomeDescription: 'Expert articles on wedding planning, decor and fashion trends, real stories from couples, and advice from event industry professionals. From choosing a venue to organizing your honeymoon, we make wedding planning an easy and enjoyable process.',
       featuredContent: 'Featured',

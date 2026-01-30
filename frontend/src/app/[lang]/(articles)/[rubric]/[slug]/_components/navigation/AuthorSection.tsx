@@ -76,11 +76,11 @@ export default function AuthorSection({
         {author.avatar ? (
           <div className={styles.avatar}>
             <Image
-              src={`${DIRECTUS_URL}/assets/${author.avatar}?width=40&height=40&quality=80&format=webp`}
+              src={`${DIRECTUS_URL}/assets/${author.avatar}?width=128&height=128&quality=90&format=webp`}
               alt={author.name}
               fill
               className="object-cover"
-              sizes="40px"
+              sizes="(min-width: 1024px) 64px, 48px"
             />
           </div>
         ) : (
