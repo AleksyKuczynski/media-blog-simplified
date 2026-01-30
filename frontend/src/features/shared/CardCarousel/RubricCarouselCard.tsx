@@ -38,13 +38,10 @@ export default function RubricCarouselCard({
           {/* Icon */}
           {iconSrc ? (
             <div className={RUBRIC_CAROUSEL_CARD_STYLES.iconWrapper}>
-              <Image
+              <img
                 src={iconSrc}
                 alt={name}
-                fill
                 className={RUBRIC_CAROUSEL_CARD_STYLES.iconImage}
-                sizes="48px"
-                unoptimized
               />
             </div>
           ) : (

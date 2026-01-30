@@ -82,13 +82,10 @@ export default function CategoriesAndRubricSection({
         >
           {rubric.icon && (
             <div className={styles.rubricIcon}>
-              <Image
+              <img
                 src={`${DIRECTUS_URL}/assets/${rubric.icon}`}
                 alt={iconAlt}
-                fill
                 className="object-contain"
-                sizes="24px"
-                unoptimized
               />
             </div>
           )}

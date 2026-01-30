@@ -50,14 +50,11 @@ export const RubricCard: React.FC<RubricCardProps> = ({
       <div className={RUBRIC_CARD_STYLES.header}>
         {rubric.nav_icon ? (
           <div className={RUBRIC_CARD_STYLES.iconWrapper}>
-            <Image
+            <img
               src={`${DIRECTUS_URL}/assets/${rubric.nav_icon}`}
               alt={iconAltText}
-              fill
               className={RUBRIC_CARD_STYLES.iconImage}
-              sizes="160px"
               loading="lazy"
-              unoptimized
             />
           </div>
         ) : (

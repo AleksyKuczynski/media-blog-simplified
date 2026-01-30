@@ -39,7 +39,7 @@ export default function AuthorCarouselCard({
                 alt={name}
                 fill
                 className={AUTHOR_CAROUSEL_CARD_STYLES.avatarImage}
-                sizes="240px"
+                sizes="480px"
               />
             </div>
           ) : (

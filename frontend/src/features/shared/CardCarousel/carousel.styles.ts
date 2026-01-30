@@ -17,8 +17,8 @@ export function getCarouselStyles(cardType: CardType) {
   
   const cardWrapperWidths = {
     article: 'flex-none w-[220px] sm:w-[240px] lg:w-[260px]',
-    rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] 2xl:w-[232px]',
-    author: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] 2xl:w-[232px]',
+    rubric: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] 2xl:w-[238px]',
+    author: 'flex-none w-[200px] sm:w-[220px] lg:w-[240px] 2xl:w-[238px]',
   };
 
   return {
@@ -29,7 +29,7 @@ export function getCarouselStyles(cardType: CardType) {
     ),
     
     scrollContainer: cn(
-      'flex gap-4 overflow-x-auto scrollbar-hide',
+      'flex gap-2 overflow-x-auto scrollbar-hide',
       'snap-x snap-mandatory scroll-smooth',
       'px-4 sm:px-6 2xl:px-8',
       'py-5',
@@ -143,6 +143,6 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   textContent: 'p-4 flex-1 min-w-0 bg-sf-cont rounded-xl shadow:md group-hover:shadow-lg transition-shadow duration-200',
 
   // Text content
-  name: 'md:text-lg xl:text-lg uppercase text-center text-on-sf-var group-hover:text-on-sf transition-colors',
+  name: 'max-sm:text-sm xl:text-lg uppercase text-center text-on-sf-var group-hover:text-on-sf transition-colors',
   bio: 'hidden max-lg:text-sm text-on-sf-var line-clamp-4 mt-8',
 } as const;
