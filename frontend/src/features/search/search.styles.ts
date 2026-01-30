@@ -54,7 +54,7 @@ export const MOBILE_SEARCH_STYLES = {
   suggestion: {
     base: 'w-full text-left p-4 rounded-lg transition-all duration-200',
     default: 'text-on-sf-var hover:bg-sf-hi hover:text-on-sf',
-    active: 'bg-sf-hi text-on-sf',
+    highlighted: 'bg-sf-hi text-on-sf',
     badge: 'flex items-center gap-2 mb-1',
     badgeText: 'text-xs font-medium uppercase tracking-wide text-on-sf-var opacity-70',
     title: 'font-medium text-base',
