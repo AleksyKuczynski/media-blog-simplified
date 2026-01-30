@@ -23,7 +23,7 @@ export async function transformRubricsToCarousel(
   const transformed = rubrics.map((rubric: Rubric) => {
     const translation = rubric.translations?.find(t => t.languages_code === lang);
     const iconField = rubric.nav_icon;
-    const iconSrc = iconField ? `${DIRECTUS_URL}/assets/${iconField}` : undefined;
+    const iconSrc = iconField ? `/api/images/assets/${iconField}` : undefined;
 
     return {
       type: 'rubric' as const,

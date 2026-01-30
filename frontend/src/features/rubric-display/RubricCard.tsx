@@ -2,10 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Dictionary, Lang } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import { DIRECTUS_URL, Asset } from '@/api/directus';
+import { Asset } from '@/api/directus';
 import { RUBRIC_CARD_STYLES } from './rubric.styles';
 
 export interface RubricCardProps {
@@ -51,7 +50,7 @@ export const RubricCard: React.FC<RubricCardProps> = ({
         {rubric.nav_icon ? (
           <div className={RUBRIC_CARD_STYLES.iconWrapper}>
             <img
-              src={`${DIRECTUS_URL}/assets/${rubric.nav_icon}`}
+              src={`/api/images/assets/${rubric.nav_icon}`}
               alt={iconAltText}
               className={RUBRIC_CARD_STYLES.iconImage}
               loading="lazy"
