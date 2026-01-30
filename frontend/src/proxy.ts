@@ -8,7 +8,7 @@ export function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
   // Skip public files
-  if (PUBLIC_FILE.test(pathname)) return
+  if (PUBLIC_FILE.test(pathname)) return NextResponse.next()
 
   // ========================================
   // PREVIEW MODE HANDLING (Existing Logic)
