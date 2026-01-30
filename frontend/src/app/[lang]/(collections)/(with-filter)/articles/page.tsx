@@ -91,6 +91,7 @@ export default async function ArticlesPage({
         titleLevel="h1"
         ariaLabel={dictionary.sections.articles.allArticles}
         hasNextSectionTitle={true}
+        flexGrow={true}
       >
         {totalCount > 0 && (
           <CollectionCount
