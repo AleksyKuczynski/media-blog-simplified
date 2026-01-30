@@ -89,7 +89,7 @@ export const HERO_ARTICLES_STYLES = {
   // Latest articles grid
   latest: {
     wrapper: cn(
-      'grid grid-cols-1 gap-6',
+      'grid grid-cols-1 gap-4',
       'lg:max-2xl:grid-cols-3',
       'px-4 md:px-0',
       '',
@@ -147,7 +147,7 @@ export const STANDARD_CARD_STYLES = {
       'md:max-2xl:rounded-r-2xl',
       '2xl:rounded-2xl',
     ),
-    latest: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-md 2xl:col-span-2`,
+    latest: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-2xl 2xl:col-span-2`,
   },
 
   imageElement: 'object-cover',

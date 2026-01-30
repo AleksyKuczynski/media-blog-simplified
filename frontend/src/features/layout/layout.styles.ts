@@ -99,7 +99,7 @@ export const FOOTER_STYLES = {
 
   section: {
     wrapper: 'space-y-6',
-    heading: 'text-sm uppercase text-on-sf-dim',
+    heading: 'text-sm uppercase text-on-sf-dim pb-4',
     description: 'text-xs leading-relaxed',
   },
   
