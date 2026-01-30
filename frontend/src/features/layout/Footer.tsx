@@ -15,7 +15,6 @@ import {
   InstagramIcon 
 } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/engagement/EngagementIcons';
 import Logo from '@/shared/primitives/Logo';
-import { cn } from '@/lib/utils';
 
 interface FooterProps {
   lang: Lang;
@@ -67,31 +66,17 @@ export default function Footer({ lang, dictionary }: FooterProps) {
         <OrganizationSchema dictionary={dictionary} />
         
         <div className={FOOTER_STYLES.innerContainer}>
-          {/* Mobile: Logo+Button > Social > About > Legal > QuickLinks */}
-          {/* MD: 2 columns (2:1) - Left: Logo+Button > Social > About | Right: Legal > QuickLinks */}
-          {/* LG+: 5 equal columns - About+Social span 2 | Logo+Button center | Legal+QuickLinks right 2 */}
-          <div className={cn(
-            // Base mobile: single column
-            'flex flex-col gap-8',
-            // MD: 2 columns with 2:1 ratio
-            'md:grid md:grid-cols-[2fr_1fr] md:gap-8',
-            // LG+: 5 equal columns
-            'lg:grid-cols-[2fr_2fr_1fr_1fr] lg:gap-6 xl:gap-8'
-          )}>
+          <div className={FOOTER_STYLES.grid}>
             
-            {/* MOBILE ORDER 1 / MD LEFT COL ORDER 1 / LG+ CENTER COL */}
-            <section className={cn(
-              'flex flex-col gap-4',
-              'md:order-1',
-              'lg:col-start-2 lg:row-start-1 lg:items-center'
-            )}>
-              <div className="mb-4">
-                  <Logo 
-                    lang={lang} 
-                    variant="footer"
-                    aria-label={`${seo.site.name} - ${footer.about.title}`}
-                  />
-                </div>
+            {/* ORDER 1 (sm-lg) | LEFT COL (lg-xl) | COL 1 (xl+): Logo + Contact Button */}
+            <section className={FOOTER_STYLES.logoSection}>
+              <div className={FOOTER_STYLES.contact.logoWrapper}>
+                <Logo 
+                  lang={lang} 
+                  variant="footer"
+                  aria-label={`${seo.site.name} - ${footer.about.title}`}
+                />
+              </div>
               <button
                 onClick={() => setIsContactModalOpen(true)}
                 className={FOOTER_STYLES.contact.button}
@@ -101,42 +86,35 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               </button>
             </section>
 
-            {/* MOBILE ORDER 2 / MD LEFT COL ORDER 2 / LG+ LEFT COL 2 (Social) */}
-            <section className={cn(
-              'md:order-2',
-              'lg:col-start-1 lg:row-start-2'
-            )}>
+            {/* ORDER 2 (sm-lg) | LEFT COL (lg-xl) | COL 2 (xl+): Social Links */}
+            <section className={FOOTER_STYLES.socialSection}>
               <h3 className={FOOTER_STYLES.section.heading}>
                 {footer.socialLinks.title}
               </h3>
               <nav 
-                className="flex gap-4 mt-4"
-                aria-label={footer.socialLinks.title}>
-                <div className="flex gap-4">
-                    {SOCIAL_PLATFORMS.map((platform, index) => {
-                      const Icon = platform.icon;
-                      return (
-                        <Link
-                          key={platform.key}
-                          href={seo.site.socialProfiles[index]}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-on-sf-var hover:text-prcolor transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded"
-                          aria-label={platform.ariaLabel}
-                        >
-                          <Icon className="w-6 h-6" />
-                        </Link>
-                      );
-                    })}
-                  </div>
+                className={FOOTER_STYLES.social.wrapper}
+                aria-label={footer.socialLinks.title}
+              >
+                {SOCIAL_PLATFORMS.map((platform, index) => {
+                  const Icon = platform.icon;
+                  return (
+                    <Link
+                      key={platform.key}
+                      href={seo.site.socialProfiles[index]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={FOOTER_STYLES.social.link}
+                      aria-label={platform.ariaLabel}
+                    >
+                      <Icon className={FOOTER_STYLES.social.icon} />
+                    </Link>
+                  );
+                })}
               </nav>
             </section>
 
-            {/* MOBILE ORDER 3 / MD LEFT COL ORDER 3 / LG+ LEFT COL 1 (About - always visible) */}
-            <section className={cn(
-              'md:order-3',
-              'lg:col-start-1 lg:row-start-1'
-            )}>
+            {/* ORDER 3 (sm-lg) | LEFT COL (lg-xl) | COL 1 (xl+): About */}
+            <section className={FOOTER_STYLES.aboutSection}>
               <h3 className={FOOTER_STYLES.section.heading}>
                 {footer.about.title}
               </h3>
@@ -145,11 +123,8 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               </p>
             </section>
 
-            {/* MOBILE ORDER 4 / MD RIGHT COL ORDER 1 / LG+ RIGHT COL 1 (Legal) */}
-            <section className={cn(
-              'md:order-5',
-              'lg:col-start-4 lg:row-start-1'
-            )}>
+            {/* ORDER 4 (sm-lg) | RIGHT COL (lg-xl) | COL 4 (xl+): Legal */}
+            <section className={FOOTER_STYLES.legalSection}>
               <h3 className={FOOTER_STYLES.section.heading}>
                 {footer.legal.title}
               </h3>
@@ -183,11 +158,8 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               </nav>
             </section>
 
-            {/* MOBILE ORDER 5 / MD RIGHT COL ORDER 2 / LG+ RIGHT COL 2 (Quick Links) */}
-            <section className={cn(
-              'md:order-4',
-              'lg:col-start-3 lg:row-start-1'
-            )}>
+            {/* ORDER 5 (sm-lg) | RIGHT COL (lg-xl) | COL 3 (xl+): Quick Links */}
+            <section className={FOOTER_STYLES.quickLinksSection}>
               <h3 className={FOOTER_STYLES.section.heading}>
                 {footer.quickLinks.title}
               </h3>
@@ -209,7 +181,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
             </section>
           </div>
 
-          {/* Copyright - unaffected */}
+          {/* Copyright */}
           <div className={FOOTER_STYLES.copyright.wrapper}>
             <p className={FOOTER_STYLES.copyright.text}>
               {copyrightText}

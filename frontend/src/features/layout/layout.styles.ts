@@ -84,43 +84,115 @@ export const SECTION_STYLES = {
 } as const;
 
 export const FOOTER_STYLES = {
-  container: 'bg-sf-cont text-on-sf-var py-12 md:py-16',
-  innerContainer: 'container mx-auto px-4',
+  container: cn(
+    'w-full bg-gradient-to-b from-sf-hst to-sf-hi',
+    'border-t border-ol-var'
+  ),
+  innerContainer: 'max-w-7xl mx-auto px-4 sm:px-12 py-8 sm:py-12',
+  
+  // Responsive grid with order control
   grid: cn(
-    // Base grid
-    'grid gap-8',
-    // Mobile: single column, QuickLinks last
-    'grid-cols-1',
-    // Medium: 2 columns, QuickLinks bottom-right
-    'md:grid-cols-2 md:gap-x-12',
-    // Large+: 2 equal columns
-    'lg:grid-cols-2 lg:gap-x-16 lg:gap-y-0',
-  ),  
-
+    // sm-lg: single column, natural order
+    'grid grid-cols-2 gap-8',
+    // lg-xl: 2 columns (2:1 ratio)
+    'md:grid-cols-[2fr_1fr] md:gap-x-12 md:gap-y-8',
+    // xl+: 4 columns (2:2:1:1 ratio)
+    'xl:grid-cols-[2fr_2fr_1fr_1fr] xl:gap-16'
+  ),
+  
+  // Section-specific order classes
+  logoSection: cn(
+    // sm-md: order 1
+    'order-1 max-md:col-span-2 text-center',
+    // lg-xl: left column, order 1
+    'md:order-1 md:row-span-2',
+    // xl+: column 2, row 1
+    'xl:col-start-2 xl:row-start-1'
+  ),
+  
+  socialSection: cn(
+    // sm-md: order 5
+    'order-5 col-start-1',
+    // lg-xl: left column, order 2
+    'md:order-2 md:col-start-2',
+    // xl+: column 2, row 2
+    'xl:col-start-4 xl:row-start-2'
+  ),
+  
+  aboutSection: cn(
+    // sm-md: order 2
+    'order-2 max-md:col-span-2',
+    // lg-xl: left column, order 3
+    'md:order-4',
+    // xl+: column 1, row 1-2 (span 2 rows)
+    'xl:col-start-1 xl:row-start-1 xl:row-span-2'
+  ),
+  
+  legalSection: cn(
+    // sm-md: order 3
+    'order-3',
+    // lg-xl: right column, order 1
+    'md:order-3 md:col-start-2',
+    // xl+: column 4, row 1-2 (span 2 rows)
+    'xl:col-start-4 xl:row-start-1'
+  ),
+  
+  quickLinksSection: cn(
+    // sm-md: order 4
+    'order-4 row-span-2 col-start-2',
+    // lg-xl: right column, order 2
+    'md:order-5',
+    // xl+: column 3, row 1-2 (span 2 rows)
+    'xl:col-start-3 xl:row-start-1 xl:row-span-2'
+  ),
+  
   section: {
-    wrapper: 'space-y-6',
-    heading: 'text-sm uppercase text-on-sf-dim pb-4',
-    description: 'text-xs leading-relaxed',
+    wrapper: '',
+    heading: 'text-xs font-medium uppercase text-on-sf-dim mb-6',
+    description: 'text-on-sf-var leading-relaxed',
   },
   
   nav: {
-    wrapper: 'space-y-2',
+    wrapper: 'flex flex-col gap-2',
     itemWrapper: '',
   },
   
   link: {
-    base: 'hover:text-on-sf transition-colors duration-200',
-    external: 'hover:text-on-sf transition-colors duration-200',
+    base: cn(
+      'text-on-sf-var hover:text-prcolor',
+      'transition-colors duration-200',
+      'focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded',
+      'text-sm'
+    ),
+  },
+  
+  social: {
+    wrapper: 'flex gap-4',
+    link: cn(
+      'text-on-sf-var hover:text-prcolor',
+      'transition-colors duration-200',
+      'focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded'
+    ),
+    icon: 'w-6 h-6',
   },
   
   contact: {
-    divider: 'pt-2 border-t border-ol-var/20',
-    button: 'inline-block px-4 py-2 text-sm font-medium text-on-pr bg-pr-cont hover:bg-pr-fix rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2',
+    logoWrapper: 'mb-4',
+    button: cn(
+      'my-12 justify-self-center px-6 py-3 bg-pr-cont text-on-pr',
+      'hover:bg-pr-fix',
+      'rounded-xl transition-colors duration-200',
+      'focus:bg-pr-dim',
+      'font-medium'
+    ),
   },
   
   copyright: {
-    wrapper: 'mt-12 pt-8 border-t border-ol-var/20',
-    text: 'text-center text-sm text-on-sf-var',
+    wrapper: cn(
+      'mt-8 pt-6 border-t border-ol-var',
+      'text-center'
+    ),
+    text: 'text-sm text-on-sf-var',
   },
 } as const;
 
