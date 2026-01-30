@@ -52,7 +52,7 @@ export const SECTION_STYLES = {
     tertiary: 'bg-gradient-to-b from-tr-fix to-tr-sf',
     default: ' bg-gradient-to-b from-sf-hst to-sf-hi',
     withNextTitle: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px]',
-    flexGrow: 'flex-grow',
+    flexGrow: 'flex-grow min-h-0',
   },
   container: {
     base: 'mx-auto',

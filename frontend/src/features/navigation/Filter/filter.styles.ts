@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 export const FILTER_STYLES = {
   container: {
     base: cn(
-      'flex flex-row justify-center border border-ol mx-auto group transition-all duration-300',
+      'flex flex-row justify-center border border-ol mx-auto group transition-all duration-300 flex-shrink-0',
       '-mt-6 mb-16 rounded-xl',
       'max-xs:mx-2 max-sm:mx-6 sm:w-[498px]', 
       'md:mb-24 md:rounded-2xl',

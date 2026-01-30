@@ -12,28 +12,16 @@ export function FooterSkeleton({ ariaLabel }: { ariaLabel: string }) {
       <div className={FOOTER_STYLES.innerContainer}>
         <div className={FOOTER_STYLES.grid}>
           
-          {/* Column 1: About skeleton */}
-          <section className={FOOTER_STYLES.section.wrapper}>
-            <div className="h-6 w-24 bg-sf-hst rounded animate-pulse mb-4" />
-            <div className="space-y-2">
-              <div className="h-4 w-full bg-sf-hst rounded animate-pulse" />
-              <div className="h-4 w-5/6 bg-sf-hst rounded animate-pulse" />
-              <div className="h-4 w-4/6 bg-sf-hst rounded animate-pulse" />
+          {/* Logo + Contact Button skeleton */}
+          <section className={FOOTER_STYLES.logoSection}>
+            <div className={FOOTER_STYLES.contact.logoWrapper}>
+              <div className="h-12 w-48 bg-sf-hst rounded animate-pulse mx-auto" />
             </div>
+            <div className="h-10 w-40 bg-sf-hst rounded-lg animate-pulse mx-auto" />
           </section>
 
-          {/* Column 2: Quick Links skeleton */}
-          <section className={FOOTER_STYLES.section.wrapper}>
-            <div className="h-6 w-28 bg-sf-hst rounded animate-pulse mb-4" />
-            <div className={FOOTER_STYLES.nav.wrapper}>
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-4 w-32 bg-sf-hst rounded animate-pulse" />
-              ))}
-            </div>
-          </section>
-
-          {/* Column 3: Social Links skeleton */}
-          <section className={FOOTER_STYLES.section.wrapper}>
+          {/* Social Links skeleton */}
+          <section className={FOOTER_STYLES.socialSection}>
             <div className="h-6 w-32 bg-sf-hst rounded animate-pulse mb-4" />
             <div className="flex gap-4">
               {[1, 2, 3].map((i) => (
@@ -42,15 +30,33 @@ export function FooterSkeleton({ ariaLabel }: { ariaLabel: string }) {
             </div>
           </section>
 
-          {/* Column 4: Legal + Contact skeleton */}
-          <section className={FOOTER_STYLES.section.wrapper}>
+          {/* About skeleton */}
+          <section className={FOOTER_STYLES.aboutSection}>
+            <div className="h-6 w-24 bg-sf-hst rounded animate-pulse mb-4" />
+            <div className="space-y-2">
+              <div className="h-4 w-full bg-sf-hst rounded animate-pulse" />
+              <div className="h-4 w-5/6 bg-sf-hst rounded animate-pulse" />
+              <div className="h-4 w-4/6 bg-sf-hst rounded animate-pulse" />
+            </div>
+          </section>
+
+          {/* Legal skeleton */}
+          <section className={FOOTER_STYLES.legalSection}>
             <div className="h-6 w-20 bg-sf-hst rounded animate-pulse mb-4" />
             <div className={FOOTER_STYLES.nav.wrapper}>
               <div className="h-4 w-28 bg-sf-hst rounded animate-pulse" />
               <div className="h-4 w-36 bg-sf-hst rounded animate-pulse" />
+              <div className="h-4 w-24 bg-sf-hst rounded animate-pulse" />
             </div>
-            <div className={FOOTER_STYLES.contact.divider}>
-              <div className="h-9 w-32 bg-sf-hst rounded-lg animate-pulse" />
+          </section>
+
+          {/* Quick Links skeleton */}
+          <section className={FOOTER_STYLES.quickLinksSection}>
+            <div className="h-6 w-28 bg-sf-hst rounded animate-pulse mb-4" />
+            <div className={FOOTER_STYLES.nav.wrapper}>
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-4 w-32 bg-sf-hst rounded animate-pulse" />
+              ))}
             </div>
           </section>
         </div>

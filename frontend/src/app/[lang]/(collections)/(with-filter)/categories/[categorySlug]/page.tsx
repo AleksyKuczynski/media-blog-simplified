@@ -69,6 +69,7 @@ export default async function CategoryPage({
         titleLevel="h1"
         className="py-8"
         hasNextSectionTitle={true}
+        flexGrow={true}
       >
         <Suspense fallback={
           <div 
