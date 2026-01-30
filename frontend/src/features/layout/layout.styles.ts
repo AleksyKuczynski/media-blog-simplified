@@ -158,9 +158,9 @@ export const FOOTER_STYLES = {
   
   link: {
     base: cn(
-      'text-on-sf-var hover:text-prcolor',
+      'text-on-sf-var hover:text-on-sf-dim',
       'transition-colors duration-200',
-      'focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded',
+      'focus:text-on-sf',
       'text-sm'
     ),
   },

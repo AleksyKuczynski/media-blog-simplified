@@ -86,10 +86,10 @@ export const ARTICLE_CAROUSEL_CARD_STYLES = {
   image: 'object-cover',
   
   // Content container
-  content: 'p-4 flex flex-col flex-grow',
+  content: 'p-6 flex flex-col flex-grow',
   
   // Title
-  title: 'text-base font-serif font-medium line-clamp-3 md:line-clamp-4 mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200 flex-grow',
+  title: 'text-base font-serif font-medium line-clamp-3 md:line-clamp-4 mb-4 text-on-sf group-hover:text-pr-cont transition-colors duration-200 flex-grow',
   
   // Date
   date: 'max-sm:hidden text-xs text-on-sf-var mt-auto',
