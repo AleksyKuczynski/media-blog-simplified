@@ -68,7 +68,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
         <div className={FOOTER_STYLES.innerContainer}>
           <div className={FOOTER_STYLES.grid}>
             
-            {/* ORDER 1 (sm-lg) | LEFT COL (lg-xl) | COL 1 (xl+): Logo + Contact Button */}
+            {/* Logo + Contact Button */}
             <section className={FOOTER_STYLES.logoSection}>
               <div className={FOOTER_STYLES.contact.logoWrapper}>
                 <Logo 
@@ -86,7 +86,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               </button>
             </section>
 
-            {/* ORDER 2 (sm-lg) | LEFT COL (lg-xl) | COL 2 (xl+): Social Links */}
+            {/* Social Links */}
             <section className={FOOTER_STYLES.socialSection}>
               <h3 className={FOOTER_STYLES.section.heading}>
                 {footer.socialLinks.title}
@@ -113,7 +113,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               </nav>
             </section>
 
-            {/* ORDER 3 (sm-lg) | LEFT COL (lg-xl) | COL 1 (xl+): About */}
+            {/* About */}
             <section className={FOOTER_STYLES.aboutSection}>
               <h3 className={FOOTER_STYLES.section.heading}>
                 {footer.about.title}
@@ -123,7 +123,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               </p>
             </section>
 
-            {/* ORDER 4 (sm-lg) | RIGHT COL (lg-xl) | COL 4 (xl+): Legal */}
+            {/* Legal */}
             <section className={FOOTER_STYLES.legalSection}>
               <h3 className={FOOTER_STYLES.section.heading}>
                 {footer.legal.title}
@@ -158,7 +158,7 @@ export default function Footer({ lang, dictionary }: FooterProps) {
               </nav>
             </section>
 
-            {/* ORDER 5 (sm-lg) | RIGHT COL (lg-xl) | COL 3 (xl+): Quick Links */}
+            {/* Quick Links */}
             <section className={FOOTER_STYLES.quickLinksSection}>
               <h3 className={FOOTER_STYLES.section.heading}>
                 {footer.quickLinks.title}

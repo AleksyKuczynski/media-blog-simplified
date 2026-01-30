@@ -91,57 +91,39 @@ export const FOOTER_STYLES = {
   
   // Responsive grid with order control
   grid: cn(
-    // sm-lg: single column, natural order
     'grid grid-cols-2 gap-8 py-12',
-    // lg-xl: 2 columns (2:1 ratio)
     'md:grid-cols-[2fr_1fr] md:gap-x-12 md:gap-y-8 md:py-16',
-    // xl+: 4 columns (2:2:1:1 ratio)
     'xl:grid-cols-[2fr_2fr_1fr_1fr] xl:gap-16 xl:py-24 2xl:py-32'
   ),
   
   // Section-specific order classes
   logoSection: cn(
-    // sm-md: order 1
     'order-1 max-md:col-span-2 text-center',
-    // lg-xl: left column, order 1
     'md:order-1 md:row-span-2',
-    // xl+: column 2, row 1
     'xl:col-start-2 xl:row-start-1'
   ),
   
   socialSection: cn(
-    // sm-md: order 5
     'order-5 col-start-1',
-    // lg-xl: left column, order 2
     'md:order-2 md:col-start-2',
-    // xl+: column 2, row 2
     'xl:col-start-4 xl:row-start-2'
   ),
   
   aboutSection: cn(
-    // sm-md: order 2
     'order-2 max-md:col-span-2',
-    // lg-xl: left column, order 3
     'md:order-4',
-    // xl+: column 1, row 1-2 (span 2 rows)
     'xl:col-start-1 xl:row-start-1 xl:row-span-2'
   ),
   
   legalSection: cn(
-    // sm-md: order 3
     'order-3',
-    // lg-xl: right column, order 1
     'md:order-3 md:col-start-2',
-    // xl+: column 4, row 1-2 (span 2 rows)
     'xl:col-start-4 xl:row-start-1'
   ),
   
   quickLinksSection: cn(
-    // sm-md: order 4
     'order-4 row-span-2 col-start-2',
-    // lg-xl: right column, order 2
     'md:order-5',
-    // xl+: column 3, row 1-2 (span 2 rows)
     'xl:col-start-3 xl:row-start-1 xl:row-span-2'
   ),
   
