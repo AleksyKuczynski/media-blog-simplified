@@ -62,18 +62,18 @@ export async function detectBreadcrumbContext(
       featured: new RegExp(`\\/${lang}$`),
     };
 
-    // Author context detection
+// Author context detection
     const authorMatch = referrerPath.match(patterns.author);
-if (authorMatch) {
-  const authorSlug = authorMatch[1];
-  
-  // Fetch author name for breadcrumbs
-  let authorName: string | undefined;
-  try {
-    const { fetchAuthorBySlug } = await import('@/api/directus');
-    const author = await fetchAuthorBySlug(authorSlug, lang);
-    authorName = author?.name;
-  } catch (error) {
+    if (authorMatch) {
+      const authorSlug = authorMatch[1];
+      
+      // Fetch author name for breadcrumbs
+      let authorName: string | undefined;
+      try {
+        const { fetchAuthorBySlug } = await import('@/api/directus');
+        const author = await fetchAuthorBySlug(authorSlug, lang);
+        authorName = author?.name;
+    } catch (error) {
     console.error('Error fetching author name for breadcrumbs:', error);
   }
   
