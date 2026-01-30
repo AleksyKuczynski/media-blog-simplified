@@ -138,7 +138,7 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   card: 'h-full group transition-all duration-200',
   
   // Content container
-  content: 'flex flex-col gap-6',
+  content: 'flex flex-col gap-4',
   
   // Image container
   avatarWrapper: 'relative aspect-square w-4/5 mx-auto flex-shrink-0 overflow-hidden rounded-full shadow:md group-hover:shadow-lg transition-shadow duration-200',
@@ -149,7 +149,7 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   avatarFallbackText: 'text-on-pr-cont text-xl font-bold',
   
   // Text content container
-  textContent: 'p-4 flex-1 min-w-0 bg-sf-cont rounded-xl shadow:md group-hover:shadow-lg transition-shadow duration-200',
+  textContent: 'p-2 py-6 flex-1 min-w-0 bg-sf-cont rounded-2xl shadow:md group-hover:shadow-lg transition-shadow duration-200',
 
   // Text content
   name: 'max-sm:text-sm xl:text-lg uppercase text-center text-on-sf-var group-hover:text-on-sf transition-colors',

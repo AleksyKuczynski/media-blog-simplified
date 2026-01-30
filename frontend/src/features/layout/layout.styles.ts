@@ -86,18 +86,17 @@ export const SECTION_STYLES = {
 export const FOOTER_STYLES = {
   container: cn(
     'w-full bg-gradient-to-b from-sf-hst to-sf-hi',
-    'border-t border-ol-var'
   ),
-  innerContainer: 'max-w-7xl mx-auto px-4 sm:px-12 py-8 sm:py-12',
+  innerContainer: 'max-w-7xl mx-auto px-4 sm:px-12 py-12',
   
   // Responsive grid with order control
   grid: cn(
     // sm-lg: single column, natural order
-    'grid grid-cols-2 gap-8',
+    'grid grid-cols-2 gap-8 py-12',
     // lg-xl: 2 columns (2:1 ratio)
-    'md:grid-cols-[2fr_1fr] md:gap-x-12 md:gap-y-8',
+    'md:grid-cols-[2fr_1fr] md:gap-x-12 md:gap-y-8 md:py-16',
     // xl+: 4 columns (2:2:1:1 ratio)
-    'xl:grid-cols-[2fr_2fr_1fr_1fr] xl:gap-16'
+    'xl:grid-cols-[2fr_2fr_1fr_1fr] xl:gap-16 xl:py-24 2xl:py-32'
   ),
   
   // Section-specific order classes
@@ -189,7 +188,7 @@ export const FOOTER_STYLES = {
   
   copyright: {
     wrapper: cn(
-      'mt-8 pt-6 border-t border-ol-var',
+      'mt-8 pt-6 border-t border-on-sf-dim',
       'text-center'
     ),
     text: 'text-sm text-on-sf-var',
