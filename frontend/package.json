@@ -9,8 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tailwindcss/line-clamp": "^0.4.4",
-    "@tailwindcss/typography": "^0.5.19",
     "@types/unist": "^3.0.3",
     "clsx": "^2.1.1",
     "jsdom": "^27.4.0",
@@ -31,6 +29,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
+    "@tailwindcss/typography": "0.5.19",
     "@types/jsdom": "^27.0.0",
     "@types/node": "^25.1.0",
     "@types/react": "19.2.10",

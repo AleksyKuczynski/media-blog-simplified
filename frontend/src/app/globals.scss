@@ -1,8 +1,96 @@
-// src/app/globals.scss
-@tailwind base;
-@tailwind components; 
-@tailwind utilities;
+/* src/app/globals.scss - Tailwind CSS v4 */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
+/* Tailwind v4 Theme Configuration */
+@theme {
+  /* Breakpoints */
+  --breakpoint-xs: 412px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* Border Radius */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-3xl: 3rem;
+  --radius-full: 9999px;
+
+  /* Fonts */
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-display: var(--font-display);
+  --font-custom: var(--font-custom);
+
+  /* Animations */
+  --animate-shimmer: shimmer 1.5s infinite;
+
+  /* Spacing */
+  --spacing-caption-3line: var(--caption-three-line-height);
+
+  /* Colors - Surface hierarchy */
+  --color-sf: var(--color-surface);
+  --color-sf-cont: var(--color-surface-container);
+  --color-sf-hi: var(--color-surface-container-high);
+  --color-sf-hst: var(--color-surface-container-highest);
+
+  /* Colors - Primary hierarchy */
+  --color-pr-cont: var(--color-primary-container);
+  --color-pr-fix: var(--color-primary-fixed);
+  --color-pr-dim: var(--color-primary-fixed-dim);
+  --color-pr-sf: var(--color-primary-surface);
+  --color-pr-inv: var(--color-primary-container-inverted);
+  --color-pr-fix-inv: var(--color-primary-fixed-inverted);
+  --color-pr-dim-inv: var(--color-primary-fixed-dim-inverted);
+
+  /* Colors - Secondary hierarchy */
+  --color-sec-cont: var(--color-secondary-container);
+  --color-sec-fix: var(--color-secondary-fixed);
+  --color-sec-dim: var(--color-secondary-fixed-dim);
+  --color-sec-sf: var(--color-secondary-surface);
+
+  /* Colors - Tertiary hierarchy */
+  --color-tr-cont: var(--color-tertiary-container);
+  --color-tr-fix: var(--color-tertiary-fixed);
+  --color-tr-dim: var(--color-tertiary-fixed-dim);
+  --color-tr-sf: var(--color-tertiary-surface);
+
+  /* Colors - Text colors */
+  --color-on-sf: var(--color-on-surface);
+  --color-on-sf-var: var(--color-on-surface-variant);
+  --color-on-sf-dim: var(--color-on-surface-dim);
+  --color-on-pr: var(--color-on-primary-container);
+  --color-on-pr-var: var(--color-on-primary-container-variant);
+  --color-on-sec: var(--color-on-secondary-container);
+  --color-on-sec-var: var(--color-on-secondary-container-variant);
+  --color-on-tr: var(--color-on-tertiary-container);
+  --color-on-tr-var: var(--color-on-tertiary-container-variant);
+
+  /* Colors - Outline colors */
+  --color-ol: var(--color-outline);
+  --color-ol-var: var(--color-outline-variant);
+
+  /* Colors - Direct values */
+  --color-success: #06D6A0;
+  --color-error: #EF476F;
+  --color-warning: #FFC43D;
+  --color-info: #118AB2;
+}
+
+/* Keyframes */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Custom utilities */
 @layer utilities {
   .container-fluid {
     width: 100%;
@@ -11,7 +99,6 @@
     margin-right: auto;
     overflow-x: hidden;
 
-    
     /* Full width until md breakpoint (768px) */
     @media (max-width: 767.98px) {
       max-width: 100vw;
@@ -43,7 +130,7 @@ html {
 }
 
 :root {
-  // Common variables
+  /* Common variables */
   --transition-duration: 200ms;
   --scrollbar-width: 0px;
   --font-size-base: 1rem;
@@ -138,109 +225,5 @@ html {
     // Outlines
     --color-outline: #8c8c8c;
     --color-outline-variant: #595959;
-  }
-}
-
-/* ============================================
-   UNIFIED MOBILE PANEL STYLES
-   Applies to both #mobile-menu-content and #mobile-search-content
-   ============================================ */
-
-/* Ensure mobile panel content is always interactive */
-#mobile-menu-content,
-#mobile-search-content {
-  pointer-events: auto !important;
-  z-index: 60;
-}
-
-/* Ensure all interactive elements in mobile panels are clickable */
-#mobile-menu-content a,
-#mobile-menu-content button,
-#mobile-menu-content input,
-#mobile-menu-content textarea,
-#mobile-menu-content [role="button"],
-#mobile-menu-content [role="menuitem"],
-#mobile-menu-content [role="combobox"],
-#mobile-menu-content .search-container,
-#mobile-menu-content [data-interactive],
-#mobile-search-content a,
-#mobile-search-content button,
-#mobile-search-content input,
-#mobile-search-content textarea,
-#mobile-search-content [role="button"],
-#mobile-search-content [role="menuitem"],
-#mobile-search-content [role="combobox"],
-#mobile-search-content .search-container,
-#mobile-search-content [data-interactive] {
-  pointer-events: auto !important;
-  cursor: pointer;
-}
-
-/* Ensure search input shows text cursor */
-#mobile-menu-content input[type="text"],
-#mobile-menu-content input[type="search"],
-#mobile-search-content input[type="text"],
-#mobile-search-content input[type="search"] {
-  cursor: text;
-}
-
-/* Ensure hover states work properly */
-#mobile-menu-content a:hover,
-#mobile-menu-content button:hover,
-#mobile-search-content a:hover,
-#mobile-search-content button:hover {
-  opacity: 1;
-  transform: none;
-}
-
-/* Fix for transformed elements losing pointer events */
-#mobile-menu-content.translate-x-0,
-#mobile-search-content.translate-x-0 {
-  pointer-events: auto;
-}
-
-#mobile-menu-content.-translate-x-full,
-#mobile-menu-content.translate-x-full,
-#mobile-search-content.-translate-x-full,
-#mobile-search-content.translate-x-full {
-  pointer-events: none;
-}
-
-
-
-/* ============================================
-   SCROLL MARGIN FOR FIXED NAVIGATION
-   Prevents fixed header from covering anchor targets
-   ============================================ */
-
-/* Mobile: 64px (h-16) + 8px buffer = 72px */
-@media (max-width: 1279px) {
-  /* All headings with IDs (anchor targets) */
-  h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
-  [id^="heading-"],
-  /* Table of Contents might reference elements by ID */
-  article [id] {
-    scroll-margin-top: 72px;
-  }
-}
-
-/* Desktop: 96px (h-24) + 8px buffer = 104px */
-@media (min-width: 1280px) {
-  h1[id], h2[id], h3[id], h4[id], h5[id], h6[id],
-  [id^="heading-"],
-  article [id] {
-    scroll-margin-top: 104px;
-  }
-}
-
-/* Alternative: Apply to html for global scroll-padding  
-   (affects all anchor scrolling, including URL fragments) */
-html {
-  @media (max-width: 1279px) {
-    scroll-padding-top: 72px;
-  }
-  
-  @media (min-width: 1280px) {
-    scroll-padding-top: 104px;
   }
 }
