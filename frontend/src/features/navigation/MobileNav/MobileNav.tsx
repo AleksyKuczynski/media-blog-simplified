@@ -12,7 +12,7 @@ import { Dictionary, Lang } from '@/config/i18n'
 import HamburgerButton from './HamburgerButton'
 import { MOBILE_NAV_STYLES, PANEL_CONTENT_STYLES } from '../navigation.styles'
 import { cn } from '@/lib/utils'
-import { forwardRef, useImperativeHandle } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 
 interface MobileNavProps {
   dictionary: Dictionary
@@ -61,6 +61,15 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
   useImperativeHandle(ref, () => ({
     openSearch: toggleSearch
   }))
+
+  const [viewportWidth, setViewportWidth] = useState(0)
+
+  useEffect(() => {
+    const updateWidth = () => setViewportWidth(window.innerWidth)
+    updateWidth()
+    window.addEventListener('resize', updateWidth)
+    return () => window.removeEventListener('resize', updateWidth)
+  }, [])
   
   return (
     <>
@@ -99,6 +108,9 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
               role="img"
               aria-label={dictionary.navigation.accessibility.logoAlt}
             />
+            <span className="text-xs text-on-sf-var font-mono">
+              {viewportWidth}px
+            </span>
           </div>
           
           {/* Right side: Language Switcher + Search Button */}
