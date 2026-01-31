@@ -41,7 +41,7 @@ export function useSearchLogic({
   onSearchComplete
 }: UseSearchLogicProps): UseSearchLogicReturn {
   const [state, dispatch] = useReducer(searchReducer, undefined, getInitialState);
-  const { handleSearch } = useSearch();
+  const { handleSearch } = useSearch({ lang });
   const router = useRouter();
   const searchParams = useSearchParams();
 

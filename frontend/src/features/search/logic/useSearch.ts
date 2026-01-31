@@ -1,36 +1,37 @@
 // src/main/components/Search/useSearch.ts
 import { useState, useCallback } from 'react'
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { SearchResult } from '@/api/directus'
 import { Lang } from '@/config/i18n'
 import { SearchStatus } from '../types'
 import { createSearchUrl } from '../utils/createSearchUrl'
 import { getSearchSuggestions } from '../actions/getSearchSuggestions'
 
-export function useSearch() {
+interface UseSearchProps {
+  lang: Lang;
+}
+
+export function useSearch({ lang }: UseSearchProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestions, setSuggestions] = useState<SearchResult[]>([])
   const [isSearching, setIsSearching] = useState(false)
   const [searchStatus, setSearchStatus] = useState<SearchStatus>({ type: 'idle' })
   
   const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
 
   const handleSelect = useCallback(async (articleSlug: string, rubricSlug: string) => {
-    const lang = pathname.split('/')[1] as Lang
     // Reset states
     setSearchQuery('')
     setSuggestions([])
     setSearchStatus({ type: 'idle' })
     // Navigate to the selected article
     router.push(`/${lang}/${rubricSlug}/${articleSlug}`)
-  }, [pathname, router])
+  }, [lang, router])
 
   const handleSearchSubmit = useCallback((): boolean => {
     const trimmedQuery = searchQuery.trim()
     if (trimmedQuery.length >= 3) {
-      const lang = pathname.split('/')[1] as Lang
       const searchUrl = createSearchUrl(trimmedQuery, searchParams)
       router.push(`/${lang}${searchUrl}`)
       setSearchQuery('')
@@ -39,7 +40,7 @@ export function useSearch() {
       return true
     }
     return false
-  }, [searchQuery, pathname, router, searchParams])
+  }, [searchQuery, lang, router, searchParams])
 
   const handleSearch = useCallback(async (term: string): Promise<SearchResult[]> => {
     if (term.length >= 3) {
@@ -47,7 +48,7 @@ export function useSearch() {
       setSearchStatus({ type: 'searching' });
       
       try {
-        const results = await getSearchSuggestions(term, pathname.split('/')[1] as Lang);
+        const results = await getSearchSuggestions(term, lang);
         setSuggestions(results);
         return results;
       } finally {
@@ -55,7 +56,7 @@ export function useSearch() {
       }
     }
     return [];
-  }, [pathname]);
+  }, [lang]);
 
   // Animation-related states
   const shouldShowContent = searchStatus.type !== 'idle'

@@ -5,42 +5,6 @@
 
 import { cn } from "@/lib/utils";
 
-export const SEARCH_DROPDOWN_STYLES = {
-  container: {
-    base: 'absolute z-50 shadow-lg bg-sf-hi w-full top-full mt-2 max-h-[80vh] origin-top transition-none rounded-xl',
-  },
-  visibility: {
-    hidden: 'scale-y-0 opacity-0 -translate-y-4 pointer-events-none invisible',
-    animatingIn: 'scale-y-100 opacity-100 translate-y-0 transition-all duration-300 ease-out delay-150 visible',
-    visible: 'scale-y-100 opacity-100 translate-y-0 transition-none visible',
-    animatingOut: 'scale-y-0 opacity-0 -translate-y-4 transition-all duration-300 ease-in pointer-events-none',
-  },
-  content: {
-    wrapper: 'transition-opacity duration-150 opacity-100',
-    message: 'px-4 py-2 text-on-sf-var rounded-lg mx-2',
-  },
-} as const;
-
-export const SEARCH_DROPDOWN_ITEM_STYLES = {
-  item: {
-    base: 'cursor-pointer transition-colors duration-300 px-4 py-2 mx-2 first:mt-2 last:mb-2',
-    highlighted: 'bg-pr-fix text-on-pr rounded-lg',
-    default: 'text-on-sf hover:bg-sf-cont hover:text-pr-fix rounded-lg',
-  },
-  badge: 'text-xs font-medium uppercase tracking-wide opacity-70 mb-1',
-  title: 'font-medium',
-  description: {
-    base: 'text-sm truncate mt-0.5',
-    highlighted: 'text-txcolor-inverted/80',
-    default: 'text-txcolor-secondary',
-  },
-  meta: {
-    base: 'text-sm mt-0.5',
-    highlighted: 'text-txcolor-inverted/80',
-    default: 'text-txcolor-secondary',
-  },
-} as const;
-
 export const MOBILE_SEARCH_STYLES = {
   container: 'flex flex-col h-full',
   inputContainer: 'flex-shrink-0 px-3 py-3',
@@ -67,13 +31,6 @@ export const MOBILE_SEARCH_STYLES = {
     item: 'flex items-start gap-2',
   },
 
-} as const;
-
-export const SEARCH_INPUT_STYLES = {
-  wrapper: 'relative flex-1 flex items-center',
-  input: 'w-full py-3 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
-  clearButton: 'absolute right-2 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
-  clearIcon: 'w-5 h-5',
 } as const;
 
 export const SEARCH_BAR_FORM_STYLES = {
@@ -111,6 +68,49 @@ export const SEARCH_BAR_FORM_STYLES = {
   }
 } as const;
 
+export const SEARCH_DROPDOWN_STYLES = {
+  container: {
+    base: 'absolute z-50 shadow-lg bg-sf-hi w-full top-full mt-2 max-h-[80vh] origin-top transition-none rounded-xl',
+  },
+  visibility: {
+    hidden: 'scale-y-0 opacity-0 -translate-y-4 pointer-events-none invisible',
+    animatingIn: 'scale-y-100 opacity-100 translate-y-0 transition-all duration-300 ease-out delay-150 visible',
+    visible: 'scale-y-100 opacity-100 translate-y-0 transition-none visible',
+    animatingOut: 'scale-y-0 opacity-0 -translate-y-4 transition-all duration-300 ease-in pointer-events-none',
+  },
+  content: {
+    wrapper: 'transition-opacity duration-150 opacity-100',
+    message: 'px-4 py-2 text-on-sf-var rounded-lg mx-2',
+  },
+} as const;
+
+export const SEARCH_DROPDOWN_ITEM_STYLES = {
+  item: {
+    base: 'cursor-pointer transition-colors duration-300 px-4 py-2 mx-2 first:mt-2 last:mb-2',
+    highlighted: 'bg-pr-fix text-on-pr rounded-lg',
+    default: 'text-on-sf hover:bg-sf-cont hover:text-pr-fix rounded-lg',
+  },
+  badge: 'text-xs font-medium uppercase tracking-wide opacity-70 mb-1',
+  title: 'font-medium',
+  description: {
+    base: 'text-sm truncate mt-0.5',
+    highlighted: 'text-txcolor-inverted/80',
+    default: 'text-txcolor-secondary',
+  },
+  meta: {
+    base: 'text-sm mt-0.5',
+    highlighted: 'text-txcolor-inverted/80',
+    default: 'text-txcolor-secondary',
+  },
+} as const;
+
+export const SEARCH_INPUT_STYLES = {
+  wrapper: 'relative flex-1 flex items-center',
+  input: 'w-full py-3 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
+  clearButton: 'absolute right-2 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
+  clearIcon: 'w-5 h-5',
+} as const;
+
 export const SEARCH_PAGE_STYLES = {
   header: {
     container: 'mb-8',
@@ -140,7 +140,7 @@ export const SEARCH_PAGE_STYLES = {
 
 export const SEARCH_RESULT_CARD_STYLES = {
   author: {
-    link: 'block bg-sf-cont p-8 rounded-2xl transition-colors duration-200',
+    link: 'block bg-sf-cont mx-2 p-8 rounded-2xl transition-colors duration-200',
     container: 'flex items-start gap-6',
     content: 'flex-1',
     badge: {
@@ -148,13 +148,13 @@ export const SEARCH_RESULT_CARD_STYLES = {
       text: 'text-sm font-medium uppercase tracking-wide text-on-sf-var opacity-70',
     },
     name: 'text-2xl uppercase text-on-sf mb-2',
-    bio: 'text-on-sf-var line-clamp-2 mb-3',
+    bio: 'max-md:hidden text-on-sf-var line-clamp-2 mb-3',
     count: 'text-sm font-medium text-on-sf-var',
   },
   category: {
-    link: 'block p-6 px-8 bg-sf-cont rounded-xl hover:bg-sf-hi transition-colors duration-200',
-    container: 'flex items-center justify-between gap-4',
-    name: 'text-xl font-bold text-pr-cont p-4 border-2 border-pr-fix rounded-full',
+    link: 'block mx-2 transition-colors duration-200',
+    container: 'flex flex-col justify-between gap-1 px-8 py-2 bg-sf-cont text-pr-cont rounded-xl',
+    name: 'text-xl font-bold',
     count: 'text-sm font-medium text-on-sf-var',
   },
 } as const;
@@ -168,14 +168,15 @@ export const SEARCH_RESULTS_HEADER_STYLES = {
   ),
   title: 'text-3xl mb-4 text-on-sf',
   span: 'font-normal',
-  count: 'text-on-sf-var mb-4 lowercase',
+  count: 'mt-8 px-6 py-4 bg-sf-cont rounded-2xl text-sec-dim text-lg lowercase',
   description: 'text-lg text-on-sf-var',
-  textContainer: '',
+  textContainer: 'mx-auto',
   sortContainer: 'w-1/4',
 } as const;
 
 export const SEARCH_RESULTS_SECTION_STYLES = {
-  container: 'mb-12 max-w-3xl mx-auto',
-  heading: 'text-xl capitalize mb-4 xl:mb-6 text-on-sf-var',
+  container: 'mb-12 max-w-3xl mx-auto flex flex-col gap-2',
+  heading: 'mx-2 mb-4 xl:mb-6 font-medium uppercase text-on-sf-dim',
+  sorting: 'mx-auto -mt-4 mb-6',
   list: 'space-y-4',
 } as const;

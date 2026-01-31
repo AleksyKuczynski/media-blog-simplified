@@ -118,10 +118,10 @@ export const STANDARD_CARD_STYLES = {
   
   layouts: {
     regular: cn(
-      'w-full h-full bg-sf-cont rounded-lg', 
+      'w-full h-full bg-sf-cont rounded-xl', 
       'shadow-sm sm:rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
       'grid', 
-      'grid-cols-3',
+      'grid-cols-[4fr_9fr]',
     ),
     promoted: cn(
       'flex flex-col items-center overflow-hidden',
@@ -140,7 +140,7 @@ export const STANDARD_CARD_STYLES = {
   
   image: {
     base: `relative overflow-hidden bg-sf-hi`,
-    regular: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 sm:rounded-2xl`,
+    regular: `w-full h-full ${IMAGE_RATIO_STRING} flex-shrink-0 rounded-xl sm:rounded-2xl`,
     promoted: cn(
       'order-2 md:max-2xl:order-1',
       `max-md:-mt-8 w-full h-full ${IMAGE_RATIO_STRING} min-h-[300px]`,
@@ -156,7 +156,7 @@ export const STANDARD_CARD_STYLES = {
     regular: cn(
       'flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center',
       'p-4 lg:p-6', 
-      'col-span-2',
+      '',
     ),
     promoted: cn(
       'bg-sf z-10', 
@@ -180,7 +180,7 @@ export const STANDARD_CARD_STYLES = {
   title: {
     base: 'mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
     regular:  cn(
-      'line-clamp-3 sm:line-clamp-4 sm:grow', 
+      'font-serif line-clamp-3 sm:line-clamp-4 sm:grow', 
       'max-sm:font-medium text-lg sm:text-xl lg:text-2xl sm:uppercase',
     ),
     promoted: 'font-bold text-2xl font-display lg:text-3xl xl:text-4xl',

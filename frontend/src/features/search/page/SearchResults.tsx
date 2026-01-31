@@ -100,7 +100,7 @@ export default function SearchResults({
         <div className={SEARCH_RESULTS_HEADER_STYLES.textContainer}>
           <h2 
             id="search-results-heading"
-            className={SEARCH_RESULTS_HEADER_STYLES.title}
+            className={`${SEARCH_RESULTS_HEADER_STYLES.title} sr-only`}
           >
             {processTemplate(dictionary.search.templates.resultsFor, { query: searchQuery })}
           </h2>
@@ -116,25 +116,6 @@ export default function SearchResults({
           </p>
         </div>
       </div>
-
-      {/* Authors Section */}
-      {authors.length > 0 && (
-        <section className={sectionStyles.container}>
-          <h2 className={sectionStyles.heading}>
-            {dictionary.sections.labels.authors}: {totalAuthors}
-          </h2>
-          <div className={sectionStyles.list}>
-            {authors.map((author) => (
-              <AuthorResultCard
-                key={author.slug}
-                author={author}
-                lang={lang}
-                dictionary={dictionary}
-              />
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Categories Section */}
       {categories.length > 0 && (
@@ -155,23 +136,43 @@ export default function SearchResults({
         </section>
       )}
 
+      {/* Authors Section */}
+      {authors.length > 0 && (
+        <section className={sectionStyles.container}>
+          <h2 className={sectionStyles.heading}>
+            {dictionary.sections.labels.authors}: {totalAuthors}
+          </h2>
+          <div className={sectionStyles.list}>
+            {authors.map((author) => (
+              <AuthorResultCard
+                key={author.slug}
+                author={author}
+                lang={lang}
+                dictionary={dictionary}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Articles Section */}
       {articles.length > 0 && (
         <section className={sectionStyles.container}>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className={sectionStyles.heading}>
-              {dictionary.common.count.articles}: {totalArticles}
-            </h2>
-            {showSorting && (
-              <aside aria-label={dictionary.filter.accessibility.sortingControl}>
-                <SortingControl
-                  dictionary={dictionary}
-                  currentSort={currentSort}
-                  variant="search"
-                />
-              </aside>
-            )}
-          </div>
+          <h2 className={sectionStyles.heading}>
+            {dictionary.common.count.articles}: {totalArticles}
+          </h2>
+          {showSorting && (
+            <aside 
+              aria-label={dictionary.filter.accessibility.sortingControl}
+              className={sectionStyles.sorting}
+            >
+              <SortingControl
+                dictionary={dictionary}
+                currentSort={currentSort}
+                variant="search"
+              />
+            </aside>
+          )}
 
           <Suspense fallback={<div>Loading articles...</div>}>
             <ArticleList
