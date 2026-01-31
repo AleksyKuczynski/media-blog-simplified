@@ -27,23 +27,32 @@ export default function BreadcrumbsWrapper({
   const [authorName, setAuthorName] = useState<string | undefined>(serverAuthorName);
 
   useEffect(() => {
+    // Update state when server-provided name changes
+    if (serverAuthorName !== authorName) {
+      setAuthorName(serverAuthorName);
+    }
+  }, [serverAuthorName]);
+
+  useEffect(() => {
     // Extract author slug from pathname
     const match = pathname.match(/\/authors\/([^/?#]+)/);
     
     if (match && match[1]) {
       const authorSlug = decodeURIComponent(match[1]);
       
-      // Fetch author name if we don't have it or if pathname changed
-      fetchAuthorBySlug(authorSlug, lang)
-        .then(author => {
-          if (author) {
-            setAuthorName(author.name);
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching author:', error);
-          setAuthorName(undefined);
-        });
+      // Only fetch if we don't have the name yet
+      if (!authorName) {
+        fetchAuthorBySlug(authorSlug, lang)
+          .then(author => {
+            if (author) {
+              setAuthorName(author.name);
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching author:', error);
+            setAuthorName(undefined);
+          });
+      }
     } else {
       // Not on author page, clear author name
       setAuthorName(undefined);

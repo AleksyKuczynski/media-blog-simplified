@@ -52,7 +52,7 @@ export const FILTER_CONTROL_STYLES = {
       'xl:rounded-3xl xl:px-12 xl:py-4 xl:text-lg',
     ),
     icon: 'h-5 w-5 ml-2 flex-shrink-0',
-    text: 'truncate lowercase',
+    text: 'truncate lowercase text-on-sf',
   },
 } as const;
 

@@ -190,6 +190,7 @@ export default async function AuthorPage({
           title={processTemplate(dictionary.sections.authors.articlesWrittenBy, {
             author: author.name
           })}
+          variant="secondary"
           hasNextSectionTitle={illustratedCount > 0}
         >
           <CollectionCount 
@@ -223,6 +224,7 @@ export default async function AuthorPage({
         <Section 
           title={`${dictionary.sections.labels.illustratedBy} ${author.name}`}
           hasNextSectionTitle={false}
+          variant="tertiary"
         >
           <CollectionCount 
             count={illustratedCount}
