@@ -180,8 +180,8 @@ export const STANDARD_CARD_STYLES = {
   title: {
     base: 'mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
     regular:  cn(
-      'font-serif line-clamp-3 sm:line-clamp-4 sm:grow', 
-      'max-sm:font-medium text-lg sm:text-xl lg:text-2xl sm:uppercase',
+      'font-serif line-clamp-3 sm:grow', 
+      'font-medium text-lg sm:text-xl lg:text-2xl',
     ),
     promoted: 'font-bold text-2xl font-display lg:text-3xl xl:text-4xl',
     latest: cn(
@@ -200,7 +200,7 @@ export const STANDARD_CARD_STYLES = {
   
   // Description variants
   description: {
-    base: 'text-sm md:text-base line-clamp-3 mb-4 text-on-sf-var',
+    base: 'text-sm md:text-base line-clamp-2 mb-4 text-on-sf-var',
     regular: 'max-sm:hidden xl:text-lg',
     promoted: 'max-md:hidden xl:grow lg:text-xl lg:pt-4 2xl:hidden',
     latest: 'max-md:hidden xl:text-lg',
