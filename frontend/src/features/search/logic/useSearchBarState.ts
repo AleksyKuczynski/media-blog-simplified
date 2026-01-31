@@ -24,6 +24,11 @@ export function useSearchBarState({
     setIsEditingQuery(isEditing);
   }, [showSorting, currentQuery]);
 
+  const handleBlur = useCallback(() => {
+    // Reset editing state when unfocused without submitting
+    setIsEditingQuery(false);
+  }, []);
+
   const handleSearchSubmit = useCallback((
     query: string,
     cleanupAndClose: () => void
@@ -61,6 +66,7 @@ export function useSearchBarState({
   return {
     isEditingQuery,
     handleInputChange,
-    handleKeyDown
+    handleKeyDown,
+    handleBlur
   };
 }

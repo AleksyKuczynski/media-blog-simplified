@@ -61,10 +61,24 @@ export default function SearchBarForm({
     searchLogic.handlers.handleFocus();
   };
 
-  const showTips = !interactions.state.isFocused && !hasResults && searchLogic.state.query.length === 0 && dictionary.search.hub?.tips;
-  const showDivider = showSorting && !searchBarState.isEditingQuery && !interactions.state.isAnyDropdownOpen && 
+  const handleBlur = () => {
+    searchBarState.handleBlur();
+    interactions.handlers.handleBlur();
+  };
+
+const showTips = !interactions.state.isFocused && !hasResults && searchLogic.state.query.length === 0 && !!dictionary.search.hub?.tips;  const showDivider = showSorting && !searchBarState.isEditingQuery && !interactions.state.isAnyDropdownOpen && 
     (interactions.state.hoveredControl === null || !interactions.state.isHoveringContainer);
   const shouldShowSorting = showSorting && !searchBarState.isEditingQuery;
+
+  // Icon color: dimmed when showing tips, normal when query is clickable (3+ chars)
+  const getIconClassName = () => {
+    if (showTips) {
+      return 'text-on-sf-dim';
+    }
+    return searchLogic.state.query.length >= 3 
+      ? 'text-on-sf cursor-pointer hover:text-on-sf transition-colors'
+      : 'text-on-sf-var cursor-pointer hover:text-on-sf transition-colors';
+  };
 
   const getCombinedContainerClassName = () => {
     if (!showSorting) return '';
@@ -102,10 +116,11 @@ export default function SearchBarForm({
                   dictionary={dictionary}
                   isFocused={interactions.state.isFocused}
                   hasResults={hasResults}
+                  showTips={showTips}
                   onChange={searchBarHandlers.onInputChange}
                   onKeyDown={searchBarHandlers.onKeyDown}
                   onFocus={handleFocus}
-                  onBlur={interactions.handlers.handleBlur}
+                  onBlur={handleBlur}
                   onClear={searchLogic.handlers.handleClear}
                   inputRef={searchLogic.refs.inputRef}
                   ariaLabel={dictionary.search.accessibility.searchInputLabel}
@@ -113,7 +128,7 @@ export default function SearchBarForm({
                 />
 
                 <div className={SEARCH_BAR_FORM_STYLES.icon}>
-                  <SearchIcon className={SEARCH_BAR_FORM_STYLES.iconSize} />
+                  <SearchIcon className={cn(SEARCH_BAR_FORM_STYLES.iconSize, getIconClassName())} />
                 </div>          
               </div>
 
@@ -170,17 +185,18 @@ export default function SearchBarForm({
                     dictionary={dictionary}
                     isFocused={interactions.state.isFocused}
                     hasResults={hasResults}
+                    showTips={showTips}
                     onChange={searchBarHandlers.onInputChange}
                     onKeyDown={searchBarHandlers.onKeyDown}
                     onFocus={handleFocus}
-                    onBlur={interactions.handlers.handleBlur}
+                    onBlur={handleBlur}
                     onClear={searchLogic.handlers.handleClear}
                     inputRef={searchLogic.refs.inputRef}
                     ariaLabel={dictionary.search.accessibility.searchInputLabel}
                     ariaDescription={dictionary.search.accessibility.searchDescription}
                   />
 
-                  <div className="text-on-sf-var cursor-pointer hover:text-on-sf transition-colors">
+                  <div className={getIconClassName()}>
                     <SearchIcon className="w-5 h-5" />
                   </div>
                 </div>
@@ -205,10 +221,11 @@ export default function SearchBarForm({
               dictionary={dictionary}
               isFocused={interactions.state.isFocused}
               hasResults={hasResults}
+              showTips={showTips}
               onChange={searchBarHandlers.onInputChange}
               onKeyDown={searchBarHandlers.onKeyDown}
               onFocus={handleFocus}
-              onBlur={interactions.handlers.handleBlur}
+              onBlur={handleBlur}
               onClear={searchLogic.handlers.handleClear}
               inputRef={searchLogic.refs.inputRef}
               ariaLabel={dictionary.search.accessibility.searchInputLabel}
@@ -216,7 +233,7 @@ export default function SearchBarForm({
             />
 
             <div className={SEARCH_BAR_FORM_STYLES.icon}>
-              <SearchIcon className={SEARCH_BAR_FORM_STYLES.iconSize} />
+              <SearchIcon className={cn(SEARCH_BAR_FORM_STYLES.iconSize, getIconClassName())} />
             </div>          
           </div>
 

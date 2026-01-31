@@ -11,6 +11,7 @@ interface SearchBarInputProps {
   dictionary: Dictionary;
   isFocused: boolean;
   hasResults: boolean;
+  showTips: boolean;
   onChange: (value: string) => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onFocus: () => void;
@@ -27,6 +28,7 @@ export default function SearchBarInput({
   dictionary,
   isFocused,
   hasResults,
+  showTips,
   onChange,
   onKeyDown,
   onFocus,
@@ -42,6 +44,11 @@ export default function SearchBarInput({
 
   // Determine label text based on focus, results, and search status
   const getLabelText = () => {
+    // Hide label when showing tips
+    if (showTips) {
+      return '';
+    }
+
     // If on search results page, always show "results for {query}"
     if (hasResults && state.query.length >= 3) {
       return dictionary.search.templates.resultsFor.replace('{query}', state.query);
@@ -61,12 +68,13 @@ export default function SearchBarInput({
       case 'noResults':
         return dictionary.search.labels.noResults;
       case 'success':
-        // Show "results for {query}" when suggestions appear
         return dictionary.search.templates.resultsFor.replace('{query}', state.query);
       default:
         return placeholder;
     }
   };
+
+  const labelText = getLabelText();
 
   return (
     <div className={styles.wrapper}>
@@ -76,16 +84,18 @@ export default function SearchBarInput({
         </div>
       )}
       
-      <label htmlFor="search-bar-input" className={styles.label}>
-        {getLabelText()}
-      </label>
+      {labelText && (
+        <label htmlFor="search-bar-input" className={styles.label}>
+          {labelText}
+        </label>
+      )}
       
       <input
         id="search-bar-input"
         ref={inputRef}
         type="text"
         className={styles.input}
-        placeholder={placeholder}
+        placeholder={showTips ? '' : placeholder}
         value={state.query}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
