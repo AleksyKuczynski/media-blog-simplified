@@ -1,5 +1,5 @@
 /* src/app/globals.scss - Tailwind CSS v4 */
-@import "tailwindcss";
+@use "tailwindcss";
 @plugin "@tailwindcss/typography";
 
 /* Tailwind v4 Theme Configuration */

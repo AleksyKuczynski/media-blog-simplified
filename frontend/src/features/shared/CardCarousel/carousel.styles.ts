@@ -149,7 +149,7 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   avatarFallbackText: 'text-on-pr-cont text-xl font-bold',
   
   // Text content container
-  textContent: 'p-2 py-6 flex-1 min-w-0 bg-sf-cont rounded-2xl shadow:md group-hover:shadow-lg transition-shadow duration-200',
+  textContent: 'px-2 pt-8 pb-3 flex-1 min-w-0 bg-sf-cont rounded-t-3xl rounded-b-md shadow:md group-hover:shadow-lg transition-shadow duration-200',
 
   // Text content
   name: 'max-sm:text-sm xl:text-lg uppercase text-center text-on-sf-var group-hover:text-on-sf transition-colors',

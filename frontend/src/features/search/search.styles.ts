@@ -93,7 +93,7 @@ export const SEARCH_BAR_FORM_STYLES = {
     'xl:w-8 xl:h-8',
   ),
   dropdown: 'absolute top-full left-0 right-0 mt-2 rounded-lg shadow-lg z-50',
-  tips: 'absolute top-full left-0 right-0 mt-4 text-on-sf-var text-sm px-4 pointer-events-none',
+  tips: 'absolute top-full left-0 right-0 mt-4 text-on-sf-var p-6 bg-sf-cont rounded-2xl pointer-events-none',
   input: {
     wrapper: 'relative flex-1 flex flex-col',
     label: cn(
@@ -128,9 +128,9 @@ export const SEARCH_PAGE_STYLES = {
     stateText: 'text-on-sf-var',
   },
   tips: {
-    span: 'font-bold mt-0.5',
-    list: 'space-y-1 max-xl:text-sm',
-    item: 'flex items-start gap-2',
+    span: 'font-black mt-1 text-sec-cont',
+    list: 'space-y-1',
+    item: 'flex items-start gap-2 lowercase',
   },
 } as const;
 
