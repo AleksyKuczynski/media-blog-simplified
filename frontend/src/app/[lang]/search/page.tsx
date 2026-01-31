@@ -103,6 +103,8 @@ export default async function SearchPage({
           lang={lang}
           currentQuery={searchQuery}
           hasResults={hasResults}
+          showSorting={hasResults && searchResults.totalArticles >= 2}
+          currentSort={currentSort}
         />
 
         {resultsMode && (

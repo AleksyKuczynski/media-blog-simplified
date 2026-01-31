@@ -28,8 +28,6 @@ interface SearchResultsProps {
 
 const sectionStyles = SEARCH_RESULTS_SECTION_STYLES;
 
-// src/features/search/page/SearchResults.tsx
-
 export default function SearchResults({
   dictionary,
   lang,
@@ -88,12 +86,13 @@ export default function SearchResults({
     }]
   }));
 
-  // Show sorting only if there are 2+ articles
   const showSorting = totalArticles >= 2;
+  const hasLeftColumn = categories.length > 0 || authors.length > 0;
+  const hasRightColumn = articles.length > 0;
 
   return (
     <>
-      {/* Results summary without sorting */}
+      {/* Results summary */}
       <div className={SEARCH_RESULTS_HEADER_STYLES.container}>
         <div className={SEARCH_RESULTS_HEADER_STYLES.textContainer}>
           <h2 
@@ -115,83 +114,95 @@ export default function SearchResults({
         </div>
       </div>
 
-      {/* Categories Section */}
-      {categories.length > 0 && (
-        <section className={sectionStyles.container}>
-          <h2 className={sectionStyles.heading}>
-            {dictionary.sections.labels.categories}: {totalCategories}
-          </h2>
-          <div className={sectionStyles.list}>
-            {categories.map((category) => (
-              <CategoryResultCard
-                key={category.slug}
-                category={category}
-                lang={lang}
-                dictionary={dictionary}
-              />
-            ))}
+      {/* 2-column layout on xl+ screens */}
+      <div className={hasLeftColumn && hasRightColumn ? 'xl:grid xl:grid-cols-3 xl:gap-8 xl:items-start' : ''}>
+        
+        {/* Left column: Categories + Authors (1/3 width on xl+) */}
+        {hasLeftColumn && (
+          <div className={hasRightColumn ? 'xl:col-span-1' : ''}>
+            {/* Categories Section */}
+            {categories.length > 0 && (
+              <section className={sectionStyles.container}>
+                <h2 className={sectionStyles.heading}>
+                  {dictionary.sections.labels.categories}: {totalCategories}
+                </h2>
+                <div className={sectionStyles.list}>
+                  {categories.map((category) => (
+                    <CategoryResultCard
+                      key={category.slug}
+                      category={category}
+                      lang={lang}
+                      dictionary={dictionary}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Authors Section */}
+            {authors.length > 0 && (
+              <section className={sectionStyles.container}>
+                <h2 className={sectionStyles.heading}>
+                  {dictionary.sections.labels.authors}: {totalAuthors}
+                </h2>
+                <div className={sectionStyles.list}>
+                  {authors.map((author) => (
+                    <AuthorResultCard
+                      key={author.slug}
+                      author={author}
+                      lang={lang}
+                      dictionary={dictionary}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
-        </section>
-      )}
+        )}
 
-      {/* Authors Section */}
-      {authors.length > 0 && (
-        <section className={sectionStyles.container}>
-          <h2 className={sectionStyles.heading}>
-            {dictionary.sections.labels.authors}: {totalAuthors}
-          </h2>
-          <div className={sectionStyles.list}>
-            {authors.map((author) => (
-              <AuthorResultCard
-                key={author.slug}
-                author={author}
-                lang={lang}
-                dictionary={dictionary}
-              />
-            ))}
+        {/* Right column: Articles (2/3 width on xl+) */}
+        {hasRightColumn && (
+          <div className={hasLeftColumn ? 'xl:col-span-2' : ''}>
+            <section className={sectionStyles.container}>
+              <h2 className={sectionStyles.heading}>
+                {dictionary.common.count.articles}: {totalArticles}
+              </h2>
+              {/* Show sorting on xs-xl screens only */}
+              {showSorting && (
+                <aside 
+                  aria-label={dictionary.filter.accessibility.sortingControl}
+                  className={`${sectionStyles.sorting} xl:hidden`}
+                >
+                  <SortingControl
+                    dictionary={dictionary}
+                    currentSort={currentSort}
+                    variant="search"
+                  />
+                </aside>
+              )}
+
+              <Suspense fallback={<div>Loading articles...</div>}>
+                <ArticleList
+                  dictionary={dictionary}
+                  slugInfos={articleSlugs}
+                  lang={lang}
+                  className={SEARCH_PAGE_STYLES.results.list}
+                />
+              </Suspense>
+
+              {totalPages > 1 && (
+                <div className={SEARCH_PAGE_STYLES.results.pagination}>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    dictionary={dictionary}
+                  />
+                </div>
+              )}
+            </section>
           </div>
-        </section>
-      )}
-
-      {/* Articles Section */}
-      {articles.length > 0 && (
-        <section className={sectionStyles.container}>
-          <h2 className={sectionStyles.heading}>
-            {dictionary.common.count.articles}: {totalArticles}
-          </h2>
-          {showSorting && (
-            <aside 
-              aria-label={dictionary.filter.accessibility.sortingControl}
-              className={sectionStyles.sorting}
-            >
-              <SortingControl
-                dictionary={dictionary}
-                currentSort={currentSort}
-                variant="search"
-              />
-            </aside>
-          )}
-
-          <Suspense fallback={<div>Loading articles...</div>}>
-            <ArticleList
-              dictionary={dictionary}
-              slugInfos={articleSlugs}
-              lang={lang}
-              className={SEARCH_PAGE_STYLES.results.list}
-            />
-          </Suspense>
-
-          {totalPages > 1 && (
-            <div className={SEARCH_PAGE_STYLES.results.pagination}>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                dictionary={dictionary}
-              />
-            </div>
-          )}
-        </section>
-      )}
+        )}
+      </div>
     </>
   );
 }
