@@ -68,6 +68,38 @@ export const SEARCH_BAR_FORM_STYLES = {
   }
 } as const;
 
+export const SEARCH_WITH_SORTING_STYLES = {
+  // Combined container (like FilterGroup)
+  container: cn(
+    'flex flex-row justify-center border dark:border-2 border-ol mx-auto group transition-all duration-300 flex-shrink-0',
+    'mb-8 rounded-xl mx-4',
+    'xs:mx-6',
+    'sm:mx-auto sm:max-w-[720px]',
+    'md:rounded-2xl',
+    'lg:max-w-[896px]',
+    'xl:max-w-[1024px] xl:rounded-3xl',
+  ),
+  inactive: 'bg-sf shadow-md',
+  active: 'bg-sf-hst shadow-none',
+  activeHover: 'bg-sf-hi shadow-none',
+  
+  // Divider between controls
+  divider: {
+    base: 'w-px dark:w-[2px] bg-ol self-center h-12 md:h-16 xl:h-20 transition-opacity duration-300',
+    visible: 'opacity-100',
+    hidden: 'opacity-0',
+  },
+  
+  // Search wrapper (takes remaining space)
+  searchWrapper: 'flex flex-col flex-1',
+  
+  // Sorting wrapper (fixed width like in FilterGroup)
+  sortingWrapper: cn(
+    'flex flex-col',
+    'w-[200px] xl:w-[240px]',
+  ),
+} as const;
+
 export const SEARCH_DROPDOWN_STYLES = {
   container: {
     base: 'absolute z-50 shadow-lg bg-sf-hi w-full top-full mt-2 max-h-[80vh] origin-top transition-none rounded-xl',
