@@ -93,7 +93,11 @@ export const SEARCH_BAR_FORM_STYLES = {
     'xl:w-8 xl:h-8',
   ),
   dropdown: 'absolute top-full left-0 right-0 mt-2 rounded-lg shadow-lg z-50',
-  tips: 'absolute top-full left-0 right-0 mt-4 text-on-sf-var p-6 bg-sf-cont rounded-2xl pointer-events-none',
+  tips: {
+    base: 'absolute top-full left-0 right-0 mt-4 text-on-sf-var p-6 bg-sf-cont rounded-2xl pointer-events-none origin-top transition-all duration-300',
+    visible: 'opacity-100 scale-y-100',
+    hidden: 'opacity-0 scale-y-0',
+  },
   input: {
     wrapper: 'relative flex-1 flex flex-col',
     label: cn(
@@ -122,7 +126,7 @@ export const SEARCH_PAGE_STYLES = {
     list: 'space-y-6',
     pagination: 'mt-8',
     invalidState: 'text-center py-8 mb-8 bg-sf-hi rounded-lg',
-    emptyState: 'text-center py-8 mb-8 bg-sf-hi rounded-lg',
+    emptyState: 'text-center py-12 text-on-sf-var origin-top transition-all duration-300 opacity-100 scale-y-100',
     emptyTitle: 'text-xl font-bold mb-2 text-on-sf',
     emptyDescription: 'text-on-sf-var',
     stateText: 'text-on-sf-var',

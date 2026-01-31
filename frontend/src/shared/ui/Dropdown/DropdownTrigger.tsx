@@ -1,7 +1,7 @@
 // src/shared/ui/Dropdown/DropdownTrigger.tsx
 import React from 'react';
 import { useDropdownContext } from './useDropdown';
-import { ChevronDownIcon, CloseIcon } from '@/shared/primitives/Icons';
+import { CloseIcon } from '@/shared/primitives/Icons';
 
 interface DropdownTriggerProps {
   children: React.ReactNode;

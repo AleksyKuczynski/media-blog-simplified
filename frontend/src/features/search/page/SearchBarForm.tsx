@@ -90,8 +90,8 @@ export default function SearchBarForm({
         />
       </div>
 
-      {showTips && (
-        <div className={SEARCH_BAR_FORM_STYLES.tips}>
+      {dictionary.search.hub?.tips && (
+        <div className={`${SEARCH_BAR_FORM_STYLES.tips.base} ${showTips ? SEARCH_BAR_FORM_STYLES.tips.visible : SEARCH_BAR_FORM_STYLES.tips.hidden}`}>
           <ul className={SEARCH_PAGE_STYLES.tips.list}>
             {dictionary.search.hub.tips.map((tip, index) => (
               <li key={index} className={SEARCH_PAGE_STYLES.tips.item}>
