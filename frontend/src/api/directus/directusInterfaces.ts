@@ -209,6 +209,7 @@ export interface ArticleSearchResult extends BaseSearchResult {
   description: string;
   rubric_slug: string;
   languages_code: string;
+  published_at?: string;
 }
 
 export type SearchResult = AuthorSearchResult | CategorySearchResult | ArticleSearchResult;

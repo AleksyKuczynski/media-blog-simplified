@@ -140,21 +140,21 @@ export const SEARCH_PAGE_STYLES = {
 
 export const SEARCH_RESULT_CARD_STYLES = {
   author: {
-    link: 'block bg-sf-cont mx-2 p-8 rounded-2xl transition-colors duration-200',
+    link: 'block bg-sf-cont mx-2 max-w-80 px-8 py-4 rounded-xl transition-colors duration-200',
     container: 'flex items-start gap-6',
     content: 'flex-1',
     badge: {
       container: 'flex items-center gap-2 mb-2',
       text: 'text-sm font-medium uppercase tracking-wide text-on-sf-var opacity-70',
     },
-    name: 'text-2xl uppercase text-on-sf mb-2',
+    name: 'text-xl uppercase text-on-sf mb-2',
     bio: 'max-md:hidden text-on-sf-var line-clamp-2 mb-3',
     count: 'text-sm font-medium text-on-sf-var',
   },
   category: {
-    link: 'block mx-2 transition-colors duration-200',
-    container: 'flex flex-col justify-between gap-1 px-8 py-2 bg-sf-cont text-pr-cont rounded-xl',
-    name: 'text-xl font-bold',
+    link: 'block mx-2 max-w-80 transition-colors duration-200',
+    container: 'flex flex-col justify-between gap-1 px-8 py-4 bg-sf-cont text-pr-cont rounded-xl',
+    name: 'text-xl uppercase',
     count: 'text-sm font-medium text-on-sf-var',
   },
 } as const;
@@ -163,19 +163,22 @@ export const SEARCH_RESULTS_HEADER_STYLES = {
   container: cn(
     'flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4',
     'max-w-5xl mx-auto',
-    'mb-6 xl:mb-16',
-    'border-b border-ol pb-6',
+    'my-6 xl:mb-16',
+    '',
   ),
   title: 'text-3xl mb-4 text-on-sf',
   span: 'font-normal',
-  count: 'mt-8 px-6 py-4 bg-sf-cont rounded-2xl text-sec-dim text-lg lowercase',
+  count: 'mt-8 px-6 py-4 bg-sf rounded-2xl text-sec-dim font-medium lowercase',
   description: 'text-lg text-on-sf-var',
   textContainer: 'mx-auto',
   sortContainer: 'w-1/4',
 } as const;
 
 export const SEARCH_RESULTS_SECTION_STYLES = {
-  container: 'mb-12 max-w-3xl mx-auto flex flex-col gap-2',
+  container: cn(
+    'mx-auto mb-12 max-w-3xl flex flex-col gap-2',
+    'sm:px-6 lg:px-8',
+  ),
   heading: 'mx-2 mb-4 xl:mb-6 font-medium uppercase text-on-sf-dim',
   sorting: 'mx-auto -mt-4 mb-6',
   list: 'space-y-4',

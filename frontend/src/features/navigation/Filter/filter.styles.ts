@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 export const FILTER_STYLES = {
   container: {
     base: cn(
-      'flex flex-row justify-center border border-ol mx-auto group transition-all duration-300 flex-shrink-0',
+      'flex flex-row justify-center border dark:border-2 border-ol mx-auto group transition-all duration-300 flex-shrink-0',
       '-mt-6 mb-16 rounded-xl',
       'max-xs:mx-2 max-sm:mx-6 sm:w-[498px]', 
       'md:mb-24 md:rounded-2xl',
@@ -27,7 +27,7 @@ export const FILTER_STYLES = {
     activeHover: 'bg-sf-hi shadow-none',
   },
   divider: {
-    base: 'w-px bg-ol self-center h-12 transition-opacity duration-300',
+    base: 'w-px dark:w-[2px] bg-ol self-center h-12 transition-opacity duration-300',
     visible: 'opacity-100',
     hidden: 'opacity-0',
   },
@@ -46,7 +46,7 @@ export const FILTER_CONTROL_STYLES = {
     button: cn('flex flex-col items-start w-full', 
       'hover:bg-sf-hi border border-transparent transition-all duration-300',
       'focus:bg-sf focus:shadow-md',
-      '[&.is-dropdown-open]:bg-sf [&.is-dropdown-open]:shadow-md [&.is-dropdown-open]:border-ol',
+      '[&.is-dropdown-open]:bg-sf [&.is-dropdown-open]:shadow-md',
       'rounded-xl px-6 py-2 text-sm',
       'md:rounded-2xl md:px-8 md:py-3 md:text-base',
       'xl:rounded-3xl xl:px-12 xl:py-4 xl:text-lg',
@@ -75,7 +75,7 @@ export const SEARCH_SORTING_STYLES = {
   dropdown: {
     button: cn(
       'flex flex-col items-start w-full',
-      'bg-sf hover:bg-sf-hi border border-ol transition-all duration-300',
+      'bg-sf hover:bg-sf-hi dark:border-2 border-ol shadow-lg transition-all duration-300',
       'focus:shadow-md',
       '[&.is-dropdown-open]:bg-sf [&.is-dropdown-open]:shadow-md',
       'rounded-2xl px-6 py-3',

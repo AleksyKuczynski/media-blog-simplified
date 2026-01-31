@@ -62,7 +62,7 @@ export default async function SearchPage({
   // Fetch search results if valid query
   if (hasValidQuery) {
     try {
-      searchResults = await fetchUnifiedSearch(searchQuery, lang, currentPage);
+      searchResults = await fetchUnifiedSearch(searchQuery, lang, currentPage, currentSort);
     } catch (error) {
       console.error('Search error:', error);
     }
@@ -116,7 +116,6 @@ export default async function SearchPage({
             totalArticles={searchResults.totalArticles}
             totalAuthors={searchResults.totalAuthors}
             totalCategories={searchResults.totalCategories}
-            totalResults={searchResults.totalResults}
             totalPages={totalPages}
             currentPage={currentPage}
             currentSort={currentSort}

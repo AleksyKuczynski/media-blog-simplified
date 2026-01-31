@@ -20,7 +20,6 @@ interface SearchResultsProps {
   readonly totalArticles: number;
   readonly totalAuthors: number;
   readonly totalCategories: number;
-  readonly totalResults: number;
   readonly totalPages: number;
   readonly currentPage: number;
   readonly currentSort: string;
@@ -41,7 +40,6 @@ export default function SearchResults({
   totalArticles,
   totalAuthors,
   totalCategories,
-  totalResults,
   totalPages,
   currentPage,
   currentSort,
