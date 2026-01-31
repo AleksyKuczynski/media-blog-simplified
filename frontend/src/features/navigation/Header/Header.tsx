@@ -14,7 +14,7 @@ import {
   isSearchPage, 
   normalizeCurrentPath 
 } from './utils/header.utils'
-import { focusVisibleSearchInput } from '@/features/search/utils/searchFocus'
+import { useNavigationSearch } from '../hooks/useNavigationSearch'
 
 interface NavigationProps {
   dictionary: Dictionary
@@ -34,13 +34,10 @@ export default function Navigation({
   const normalizedPath = normalizeCurrentPath(currentPath, pathname)
   const mobileNavRef = useRef<MobileNavRef>(null)
 
-  const handleSearchClick = () => {
-    if (searchPage) {
-      focusVisibleSearchInput()
-    } else {
-      mobileNavRef.current?.openSearch()
-    }
-  }
+  const { handleSearchClick } = useNavigationSearch({
+    isSearchPage: searchPage,
+    onOpenSearch: () => mobileNavRef.current?.openSearch()
+  })
 
   return (
     <>

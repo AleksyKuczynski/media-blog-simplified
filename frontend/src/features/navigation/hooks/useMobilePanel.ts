@@ -1,6 +1,5 @@
-// src/main/components/Navigation/useMobilePanel.ts
+// src/main/components/Navigation/logic/useMobilePanel.ts
 // Unified hook for mobile offcanvas panels (menu and search)
-// FIXED: No history manipulation - prevents duplicate entries
 
 import { useState, useRef, useReducer, useCallback, useEffect } from 'react'
 import { usePathname } from 'next/navigation'

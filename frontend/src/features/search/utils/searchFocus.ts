@@ -2,7 +2,8 @@
 
 /**
  * Finds and focuses the visible search input on the page.
- * Excludes inputs that are inside aria-hidden containers (e.g., mobile offcanvas).
+ * Excludes inputs that are inside aria-hidden containers (e.g., mobile offcanvas)
+ * or hidden by CSS classes.
  */
 export function focusVisibleSearchInput(): void {
   requestAnimationFrame(() => {
@@ -16,7 +17,14 @@ export function focusVisibleSearchInput(): void {
         }
         element = element.parentElement
       }
-      return true
+      
+      // Check if input is actually visible (not hidden by Tailwind classes)
+      const rect = input.getBoundingClientRect()
+      const isVisible = rect.width > 0 && rect.height > 0 && 
+                       window.getComputedStyle(input).display !== 'none' &&
+                       window.getComputedStyle(input).visibility !== 'hidden'
+      
+      return isVisible
     })
     
     if (searchInput) {

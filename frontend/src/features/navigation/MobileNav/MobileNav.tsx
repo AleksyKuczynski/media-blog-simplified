@@ -7,12 +7,13 @@ import SearchButton from './SearchButton'
 import OffcanvasPanel from './OffcanvasPanel'
 import MobileSearchContent from '../../search/ui/MobileSearchContent'
 import LanguageSwitcher from '../Header/LanguageSwitcher'
-import { useMobilePanel } from './useMobilePanel'
 import { Dictionary, Lang } from '@/config/i18n'
 import HamburgerButton from './HamburgerButton'
 import { MOBILE_NAV_STYLES, PANEL_CONTENT_STYLES } from '../navigation.styles'
 import { cn } from '@/lib/utils'
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
+import { forwardRef } from 'react'
+import { useMobileNavSearch } from '../hooks/useMobileNavSearch'
+import { useMobilePanel } from '../hooks/useMobilePanel'
 
 interface MobileNavProps {
   dictionary: Dictionary
@@ -29,6 +30,7 @@ export interface MobileNavRef {
 const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
   dictionary,
   lang,
+  isSearchPage,
 }, ref) => {
   
   // Menu panel state management
@@ -38,7 +40,6 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
     toggleRef: menuToggleRef,
     togglePanel: toggleMenu,
     handleClose: closeMenu,
-    handleContentComplete: handleMenuComplete,
   } = useMobilePanel({
     side: 'left',
     focusSelector: 'a, button:not([aria-hidden="true"])'
@@ -51,25 +52,16 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
     toggleRef: searchToggleRef,
     togglePanel: toggleSearch,
     handleClose: closeSearch,
-    handleContentComplete: handleSearchComplete,
   } = useMobilePanel({
     side: 'right',
     focusSelector: 'input[type="text"], input[type="search"]'
   })
 
-  // Expose search control to parent
-  useImperativeHandle(ref, () => ({
-    openSearch: toggleSearch
-  }))
-
-  const [viewportWidth, setViewportWidth] = useState(0)
-
-  useEffect(() => {
-    const updateWidth = () => setViewportWidth(window.innerWidth)
-    updateWidth()
-    window.addEventListener('resize', updateWidth)
-    return () => window.removeEventListener('resize', updateWidth)
-  }, [])
+  const { handleSearchClick } = useMobileNavSearch({
+    isSearchPage,
+    toggleSearch,
+    ref
+  })
   
   return (
     <>
@@ -108,9 +100,6 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
               role="img"
               aria-label={dictionary.navigation.accessibility.logoAlt}
             />
-            <span className="text-xs text-on-sf-var font-mono">
-              {viewportWidth}px
-            </span>
           </div>
           
           {/* Right side: Language Switcher + Search Button */}
@@ -123,7 +112,7 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
             
             <SearchButton
               isOpen={isSearchOpen}
-              onClick={toggleSearch}
+              onClick={handleSearchClick}
               ariaControls="mobile-search-content"
               openLabel={dictionary.search.accessibility.openSearch}
               closeLabel={dictionary.search.accessibility.closeSearch}

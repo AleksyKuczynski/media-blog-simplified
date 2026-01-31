@@ -11,6 +11,7 @@ import { SearchIcon } from '@/shared/primitives/Icons';
 import { SEARCH_BAR_FORM_STYLES, SEARCH_WITH_SORTING_STYLES } from '../search.styles';
 import SortingControl from '@/features/navigation/Filter/SortingControl';
 import { cn } from '@/lib/utils';
+import { useSearchBarFocusHandlers } from '../logic/useSearchBarFocusHandlers';
 
 interface SearchBarFormProps {
   readonly dictionary: Dictionary;
@@ -56,17 +57,14 @@ export default function SearchBarForm({
     selectedIndex: searchLogic.state.selectedIndex
   });
 
-  const handleFocus = () => {
-    interactions.handlers.handleFocus();
-    searchLogic.handlers.handleFocus();
-  };
-
-  const handleBlur = () => {
-    searchBarState.handleBlur();
-    interactions.handlers.handleBlur();
-  };
-
-const showTips = !interactions.state.isFocused && !hasResults && searchLogic.state.query.length === 0 && !!dictionary.search.hub?.tips;  const showDivider = showSorting && !searchBarState.isEditingQuery && !interactions.state.isAnyDropdownOpen && 
+  const { handleFocus, handleBlur } = useSearchBarFocusHandlers({
+    interactionsFocus: interactions.handlers.handleFocus,
+    interactionsBlur: interactions.handlers.handleBlur,
+    searchLogicFocus: searchLogic.handlers.handleFocus,
+    searchBarStateBlur: searchBarState.handleBlur
+  })
+  
+  const showTips = !interactions.state.isFocused && !hasResults && searchLogic.state.query.length === 0 && !!dictionary.search.hub?.tips;  const showDivider = showSorting && !searchBarState.isEditingQuery && !interactions.state.isAnyDropdownOpen && 
     (interactions.state.hoveredControl === null || !interactions.state.isHoveringContainer);
   const shouldShowSorting = showSorting && !searchBarState.isEditingQuery;
 
