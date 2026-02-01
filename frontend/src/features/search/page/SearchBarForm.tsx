@@ -92,66 +92,25 @@ export default function SearchBarForm({
   };
 
   return (
-    <search 
-      ref={searchLogic.refs.containerRef}
-      className={showSorting ? `relative pt-4 ${className}` : `${SEARCH_BAR_FORM_STYLES.container} ${className}`}
-      role="search"
-      aria-label={dictionary.search.accessibility.searchLabel}
-      itemScope
-      itemType="https://schema.org/SearchAction"
+    <section             
+      className="min-h-[calc(100vh-4rem)] xl:min-h-[calc(100vh-8rem)]"
     >
-      <meta itemProp="target" content={`https://${dictionary.seo.site.url}/${lang}/search?search={search_term_string}`} />
-      <meta itemProp="query-input" content="required name=search_term_string" />
-      
-      {showSorting ? (
-        <>
-          <div className="xl:hidden">
-            <div className={SEARCH_BAR_FORM_STYLES.wrapper}>
-              <div className={SEARCH_BAR_FORM_STYLES.inputWrapper}>
-                <SearchBarInput
-                  state={searchLogic.state}
-                  placeholder={dictionary.search.labels.placeholder}
-                  dictionary={dictionary}
-                  isFocused={interactions.state.isFocused}
-                  hasResults={hasResults}
-                  showTips={showTips}
-                  onChange={searchBarHandlers.onInputChange}
-                  onKeyDown={searchBarHandlers.onKeyDown}
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  onClear={searchLogic.handlers.handleClear}
-                  inputRef={searchLogic.refs.inputRef}
-                  ariaLabel={dictionary.search.accessibility.searchInputLabel}
-                  ariaDescription={dictionary.search.accessibility.searchDescription}
-                />
-
-                <div className={SEARCH_BAR_FORM_STYLES.icon}>
-                  <SearchIcon className={cn(SEARCH_BAR_FORM_STYLES.iconSize, getIconClassName())} />
-                </div>          
-              </div>
-
-              <SearchDropdown
-                state={searchLogic.state}
-                dict={dictionary}
-                onItemSelect={searchLogic.handlers.handleSelect}
-                className={SEARCH_BAR_FORM_STYLES.dropdown}
-                ariaLabel={dictionary.search.accessibility.searchResultsLabel}
-              />
-            </div>
-          </div>
-
-          <div 
-            className={cn("max-xl:hidden", getCombinedContainerClassName())}
-            onMouseEnter={() => interactions.handlers.setContainerHover(true)}
-            onMouseLeave={() => interactions.handlers.setContainerHover(false)}
-          >
-            <div 
-              className={SEARCH_WITH_SORTING_STYLES.searchWrapper}
-              onMouseEnter={() => interactions.handlers.handleSearchHoverChange(true)}
-              onMouseLeave={() => interactions.handlers.handleSearchHoverChange(false)}
-            >
-              <div className="relative p-2 md:p-3 xl:p-4">
-                <div className="flex items-center gap-3">
+      <search 
+        ref={searchLogic.refs.containerRef}
+        className={showSorting ? `relative pt-4 ${className}` : `${SEARCH_BAR_FORM_STYLES.container} ${className}`}
+        role="search"
+        aria-label={dictionary.search.accessibility.searchLabel}
+        itemScope
+        itemType="https://schema.org/SearchAction"
+      >
+        <meta itemProp="target" content={`https://${dictionary.seo.site.url}/${lang}/search?search={search_term_string}`} />
+        <meta itemProp="query-input" content="required name=search_term_string" />
+        
+        {showSorting ? (
+          <>
+            <div className="xl:hidden">
+              <div className={SEARCH_BAR_FORM_STYLES.wrapper}>
+                <div className={SEARCH_BAR_FORM_STYLES.inputWrapper}>
                   <SearchBarInput
                     state={searchLogic.state}
                     placeholder={dictionary.search.labels.placeholder}
@@ -169,87 +128,132 @@ export default function SearchBarForm({
                     ariaDescription={dictionary.search.accessibility.searchDescription}
                   />
 
-                  <div className={getIconClassName()}>
-                    <SearchIcon className="w-5 h-5" />
-                  </div>
+                  <div className={SEARCH_BAR_FORM_STYLES.icon}>
+                    <SearchIcon className={cn(SEARCH_BAR_FORM_STYLES.iconSize, getIconClassName())} />
+                  </div>          
                 </div>
 
                 <SearchDropdown
                   state={searchLogic.state}
                   dict={dictionary}
                   onItemSelect={searchLogic.handlers.handleSelect}
-                  className="absolute left-0 right-0 top-full mt-2"
+                  className={SEARCH_BAR_FORM_STYLES.dropdown}
                   ariaLabel={dictionary.search.accessibility.searchResultsLabel}
                 />
               </div>
             </div>
 
             <div 
-              className={cn(
-                SEARCH_WITH_SORTING_STYLES.divider.base,
-                showDivider 
-                  ? SEARCH_WITH_SORTING_STYLES.divider.visible 
-                  : SEARCH_WITH_SORTING_STYLES.divider.hidden
+              className={cn("max-xl:hidden", getCombinedContainerClassName())}
+              onMouseEnter={() => interactions.handlers.setContainerHover(true)}
+              onMouseLeave={() => interactions.handlers.setContainerHover(false)}
+            >
+              <div 
+                className={SEARCH_WITH_SORTING_STYLES.searchWrapper}
+                onMouseEnter={() => interactions.handlers.handleSearchHoverChange(true)}
+                onMouseLeave={() => interactions.handlers.handleSearchHoverChange(false)}
+              >
+                <div className="relative p-2 md:p-3 xl:p-4">
+                  <div className="flex items-center gap-3">
+                    <SearchBarInput
+                      state={searchLogic.state}
+                      placeholder={dictionary.search.labels.placeholder}
+                      dictionary={dictionary}
+                      isFocused={interactions.state.isFocused}
+                      hasResults={hasResults}
+                      showTips={showTips}
+                      onChange={searchBarHandlers.onInputChange}
+                      onKeyDown={searchBarHandlers.onKeyDown}
+                      onFocus={handleFocus}
+                      onBlur={handleBlur}
+                      onClear={searchLogic.handlers.handleClear}
+                      inputRef={searchLogic.refs.inputRef}
+                      ariaLabel={dictionary.search.accessibility.searchInputLabel}
+                      ariaDescription={dictionary.search.accessibility.searchDescription}
+                    />
+
+                    <div className={getIconClassName()}>
+                      <SearchIcon className="w-5 h-5" />
+                    </div>
+                  </div>
+
+                  <SearchDropdown
+                    state={searchLogic.state}
+                    dict={dictionary}
+                    onItemSelect={searchLogic.handlers.handleSelect}
+                    className="absolute left-0 right-0 top-full mt-2"
+                    ariaLabel={dictionary.search.accessibility.searchResultsLabel}
+                  />
+                </div>
+              </div>
+
+              <div 
+                className={cn(
+                  SEARCH_WITH_SORTING_STYLES.divider.base,
+                  showDivider 
+                    ? SEARCH_WITH_SORTING_STYLES.divider.visible 
+                    : SEARCH_WITH_SORTING_STYLES.divider.hidden
+                )}
+              />
+
+              {shouldShowSorting && (
+                <div 
+                  className={SEARCH_WITH_SORTING_STYLES.sortingWrapper}
+                  onMouseEnter={() => interactions.handlers.handleSortingHoverChange(true)}
+                  onMouseLeave={() => interactions.handlers.handleSortingHoverChange(false)}
+                >
+                  <SortingControl
+                    dictionary={dictionary}
+                    currentSort={currentSort}
+                    variant="search"
+                    onOpenChange={interactions.handlers.handleSortingOpenChange}
+                    onHoverChange={interactions.handlers.handleSortingHoverChange}
+                  />
+                </div>
               )}
+            </div>
+          </>
+        ) : (
+          <div className={SEARCH_BAR_FORM_STYLES.wrapper}>
+            <div className={SEARCH_BAR_FORM_STYLES.inputWrapper}>
+              <SearchBarInput
+                state={searchLogic.state}
+                placeholder={dictionary.search.labels.placeholder}
+                dictionary={dictionary}
+                isFocused={interactions.state.isFocused}
+                hasResults={hasResults}
+                showTips={showTips}
+                onChange={searchBarHandlers.onInputChange}
+                onKeyDown={searchBarHandlers.onKeyDown}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                onClear={searchLogic.handlers.handleClear}
+                inputRef={searchLogic.refs.inputRef}
+                ariaLabel={dictionary.search.accessibility.searchInputLabel}
+                ariaDescription={dictionary.search.accessibility.searchDescription}
+              />
+
+              <div className={SEARCH_BAR_FORM_STYLES.icon}>
+                <SearchIcon className={cn(SEARCH_BAR_FORM_STYLES.iconSize, getIconClassName())} />
+              </div>          
+            </div>
+
+            <SearchDropdown
+              state={searchLogic.state}
+              dict={dictionary}
+              onItemSelect={searchLogic.handlers.handleSelect}
+              className={SEARCH_BAR_FORM_STYLES.dropdown}
+              ariaLabel={dictionary.search.accessibility.searchResultsLabel}
             />
 
-            {shouldShowSorting && (
-              <div 
-                className={SEARCH_WITH_SORTING_STYLES.sortingWrapper}
-                onMouseEnter={() => interactions.handlers.handleSortingHoverChange(true)}
-                onMouseLeave={() => interactions.handlers.handleSortingHoverChange(false)}
-              >
-                <SortingControl
-                  dictionary={dictionary}
-                  currentSort={currentSort}
-                  variant="search"
-                  onOpenChange={interactions.handlers.handleSortingOpenChange}
-                  onHoverChange={interactions.handlers.handleSortingHoverChange}
-                />
+            {showTips && (
+              <div className={cn(SEARCH_BAR_FORM_STYLES.tips.base, SEARCH_BAR_FORM_STYLES.tips.visible)}>
+                {dictionary.search.hub.tips}
               </div>
             )}
           </div>
-        </>
-      ) : (
-        <div className={SEARCH_BAR_FORM_STYLES.wrapper}>
-          <div className={SEARCH_BAR_FORM_STYLES.inputWrapper}>
-            <SearchBarInput
-              state={searchLogic.state}
-              placeholder={dictionary.search.labels.placeholder}
-              dictionary={dictionary}
-              isFocused={interactions.state.isFocused}
-              hasResults={hasResults}
-              showTips={showTips}
-              onChange={searchBarHandlers.onInputChange}
-              onKeyDown={searchBarHandlers.onKeyDown}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              onClear={searchLogic.handlers.handleClear}
-              inputRef={searchLogic.refs.inputRef}
-              ariaLabel={dictionary.search.accessibility.searchInputLabel}
-              ariaDescription={dictionary.search.accessibility.searchDescription}
-            />
-
-            <div className={SEARCH_BAR_FORM_STYLES.icon}>
-              <SearchIcon className={cn(SEARCH_BAR_FORM_STYLES.iconSize, getIconClassName())} />
-            </div>          
-          </div>
-
-          <SearchDropdown
-            state={searchLogic.state}
-            dict={dictionary}
-            onItemSelect={searchLogic.handlers.handleSelect}
-            className={SEARCH_BAR_FORM_STYLES.dropdown}
-            ariaLabel={dictionary.search.accessibility.searchResultsLabel}
-          />
-
-          {showTips && (
-            <div className={cn(SEARCH_BAR_FORM_STYLES.tips.base, SEARCH_BAR_FORM_STYLES.tips.visible)}>
-              {dictionary.search.hub.tips}
-            </div>
-          )}
-        </div>
-      )}
-    </search>
+        )}
+      </search>
+    </section>
   );
 }

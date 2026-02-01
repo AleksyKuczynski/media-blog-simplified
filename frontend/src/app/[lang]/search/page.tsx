@@ -99,13 +99,13 @@ export default async function SearchPage({
         hasResults={hasResults}
         showSorting={hasResults && searchResults.totalArticles >= 2}
       >
-        <Section 
-          title={dictionary.search.templates.pageTitle}
-          titleLevel="h1"
-          hasNextSectionTitle={true}
-          className="min-h-[calc(100vh-8rem)] xl:min-h-[calc(100vh-14rem)]"
-        >
-          {resultsMode && (
+        {resultsMode && (
+          <Section 
+            title={dictionary.search.templates.pageTitle}
+            titleLevel="h1"
+            hasNextSectionTitle={true}
+            flexGrow={true}
+          >
             <SearchResults
               dictionary={dictionary}
               lang={lang}
@@ -121,8 +121,8 @@ export default async function SearchPage({
               currentSort={currentSort}
               mode={resultsMode}
             />
-          )}
-        </Section>
+          </Section>
+        )}
 
         <RandomArticlesSection
           lang={lang}
