@@ -92,17 +92,20 @@ export default async function SearchPage({
         resultCount={searchResults.totalResults}
       />
 
+      <h1 className="sr-only">{dictionary.search.templates.pageTitle}</h1>
+
       <SearchPageWrapper
         dictionary={dictionary}
         lang={lang}
         currentQuery={searchQuery}
         hasResults={hasResults}
         showSorting={hasResults && searchResults.totalArticles >= 2}
+        resultsMode={resultsMode}
       >
         {resultsMode && (
           <Section 
-            title={dictionary.search.templates.pageTitle}
-            titleLevel="h1"
+            title={dictionary.search.labels.results}
+            titleLevel="h2"
             hasNextSectionTitle={true}
             flexGrow={true}
           >

@@ -66,22 +66,23 @@ export const FILTER_BUTTON_STYLES = {
 
 export const SEARCH_SORTING_STYLES = {
   wrapper: cn(
-    'flex flex-col',
+    'flex flex-col w-full',
   ),
   label: cn(
-    'text-xs lowercase font-medium text-sec-dim mb-1',
+    'text-xs lowercase font-medium text-sec-dim',
     'md:text-sm',
+    'xl:text-base',
   ),
   dropdown: {
-    button: cn(
-      'flex flex-col items-start w-full',
-      'bg-sf hover:bg-sf-hi dark:border-2 border-ol shadow-lg transition-all duration-300',
-      'focus:shadow-md',
+    button: cn('flex flex-col items-start w-full truncate', 
+      'hover:bg-sf-hi border border-transparent transition-all duration-300',
+      'focus:bg-sf focus:shadow-md',
       '[&.is-dropdown-open]:bg-sf [&.is-dropdown-open]:shadow-md',
-      'rounded-2xl px-6 py-3',
-      'md:rounded-3xl md:px-12 md:py-6 md:text-base',
+      'rounded-full px-6 py-2 text-sm',
+      'md:px-8 md:py-3 md:text-base',
+      'xl:px-12 xl:py-4 xl:text-lg',
     ),
-    icon: 'h-4 w-4 ml-2 flex-shrink-0 md:h-5 md:w-5',
+    icon: 'h-5 w-5 ml-2 flex-shrink-0',
     text: 'truncate lowercase text-on-sf',
   },
 } as const;

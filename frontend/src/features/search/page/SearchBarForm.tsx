@@ -12,6 +12,7 @@ import { SEARCH_BAR_FORM_STYLES, SEARCH_WITH_SORTING_STYLES } from '../search.st
 import SortingControl from '@/features/navigation/Filter/SortingControl';
 import { cn } from '@/lib/utils';
 import { useSearchBarFocusHandlers } from '../logic/useSearchBarFocusHandlers';
+import SearchBar from './SearchBar';
 
 interface SearchBarFormProps {
   readonly dictionary: Dictionary;
@@ -21,6 +22,7 @@ interface SearchBarFormProps {
   readonly className?: string;
   readonly showSorting?: boolean;
   readonly currentSort?: string;
+  readonly resultsMode?: 'results' | 'no-results' | 'invalid-query' | null;
 }
 
 export default function SearchBarForm({
@@ -30,7 +32,8 @@ export default function SearchBarForm({
   hasResults = false,
   className = '',
   showSorting = false,
-  currentSort = 'desc'
+  currentSort = 'desc',
+  resultsMode = null
 }: SearchBarFormProps) {
   const interactions = useSearchBarInteractions();
   
@@ -68,6 +71,26 @@ export default function SearchBarForm({
     (interactions.state.hoveredControl === null || !interactions.state.isHoveringContainer);
   const shouldShowSorting = showSorting && !searchBarState.isEditingQuery;
 
+   // Helper to create search bar props
+  const getSearchBarProps = (variant: 'standalone' | 'combined') => ({
+    state: searchLogic.state,
+    placeholder: dictionary.search.labels.placeholder,
+    dictionary,
+    isFocused: interactions.state.isFocused,
+    hasResults,
+    showTips,
+    onChange: searchBarHandlers.onInputChange,
+    onKeyDown: searchBarHandlers.onKeyDown,
+    onFocus: handleFocus,
+    onBlur: handleBlur,
+    onClear: searchLogic.handlers.handleClear,
+    inputRef: searchLogic.refs.inputRef,
+    ariaLabel: dictionary.search.accessibility.searchInputLabel,
+    ariaDescription: dictionary.search.accessibility.searchDescription,
+    iconClassName: getIconClassName(),
+    variant
+  });
+ 
   // Icon color: dimmed when showing tips, normal when query is clickable (3+ chars)
   const getIconClassName = () => {
     if (showTips) {
@@ -93,8 +116,8 @@ export default function SearchBarForm({
 
   return (
     <section             
-      className="min-h-[calc(100vh-4rem)] xl:min-h-[calc(100vh-8rem)]"
-    >
+      className={resultsMode === null ? "min-h-[calc(100vh-4rem)] xl:min-h-[calc(100vh-8rem)]" : "min-h-72"}
+    >      
       <search 
         ref={searchLogic.refs.containerRef}
         className={showSorting ? `relative pt-4 ${className}` : `${SEARCH_BAR_FORM_STYLES.container} ${className}`}
@@ -110,28 +133,7 @@ export default function SearchBarForm({
           <>
             <div className="xl:hidden">
               <div className={SEARCH_BAR_FORM_STYLES.wrapper}>
-                <div className={SEARCH_BAR_FORM_STYLES.inputWrapper}>
-                  <SearchBarInput
-                    state={searchLogic.state}
-                    placeholder={dictionary.search.labels.placeholder}
-                    dictionary={dictionary}
-                    isFocused={interactions.state.isFocused}
-                    hasResults={hasResults}
-                    showTips={showTips}
-                    onChange={searchBarHandlers.onInputChange}
-                    onKeyDown={searchBarHandlers.onKeyDown}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    onClear={searchLogic.handlers.handleClear}
-                    inputRef={searchLogic.refs.inputRef}
-                    ariaLabel={dictionary.search.accessibility.searchInputLabel}
-                    ariaDescription={dictionary.search.accessibility.searchDescription}
-                  />
-
-                  <div className={SEARCH_BAR_FORM_STYLES.icon}>
-                    <SearchIcon className={cn(SEARCH_BAR_FORM_STYLES.iconSize, getIconClassName())} />
-                  </div>          
-                </div>
+                <SearchBar {...getSearchBarProps('standalone')} />
 
                 <SearchDropdown
                   state={searchLogic.state}
@@ -153,29 +155,8 @@ export default function SearchBarForm({
                 onMouseEnter={() => interactions.handlers.handleSearchHoverChange(true)}
                 onMouseLeave={() => interactions.handlers.handleSearchHoverChange(false)}
               >
-                <div className="relative p-2 md:p-3 xl:p-4">
-                  <div className="flex items-center gap-3">
-                    <SearchBarInput
-                      state={searchLogic.state}
-                      placeholder={dictionary.search.labels.placeholder}
-                      dictionary={dictionary}
-                      isFocused={interactions.state.isFocused}
-                      hasResults={hasResults}
-                      showTips={showTips}
-                      onChange={searchBarHandlers.onInputChange}
-                      onKeyDown={searchBarHandlers.onKeyDown}
-                      onFocus={handleFocus}
-                      onBlur={handleBlur}
-                      onClear={searchLogic.handlers.handleClear}
-                      inputRef={searchLogic.refs.inputRef}
-                      ariaLabel={dictionary.search.accessibility.searchInputLabel}
-                      ariaDescription={dictionary.search.accessibility.searchDescription}
-                    />
-
-                    <div className={getIconClassName()}>
-                      <SearchIcon className="w-5 h-5" />
-                    </div>
-                  </div>
+                <div>
+                  <SearchBar {...getSearchBarProps('combined')} />
 
                   <SearchDropdown
                     state={searchLogic.state}
@@ -215,28 +196,7 @@ export default function SearchBarForm({
           </>
         ) : (
           <div className={SEARCH_BAR_FORM_STYLES.wrapper}>
-            <div className={SEARCH_BAR_FORM_STYLES.inputWrapper}>
-              <SearchBarInput
-                state={searchLogic.state}
-                placeholder={dictionary.search.labels.placeholder}
-                dictionary={dictionary}
-                isFocused={interactions.state.isFocused}
-                hasResults={hasResults}
-                showTips={showTips}
-                onChange={searchBarHandlers.onInputChange}
-                onKeyDown={searchBarHandlers.onKeyDown}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                onClear={searchLogic.handlers.handleClear}
-                inputRef={searchLogic.refs.inputRef}
-                ariaLabel={dictionary.search.accessibility.searchInputLabel}
-                ariaDescription={dictionary.search.accessibility.searchDescription}
-              />
-
-              <div className={SEARCH_BAR_FORM_STYLES.icon}>
-                <SearchIcon className={cn(SEARCH_BAR_FORM_STYLES.iconSize, getIconClassName())} />
-              </div>          
-            </div>
+            <SearchBar {...getSearchBarProps('standalone')} />
 
             <SearchDropdown
               state={searchLogic.state}

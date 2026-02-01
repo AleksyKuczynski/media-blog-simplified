@@ -5,6 +5,7 @@
 
 import { cn } from "@/lib/utils";
 
+// Styles for the mobile search component
 export const MOBILE_SEARCH_STYLES = {
   container: 'flex flex-col h-full',
   inputContainer: 'flex-shrink-0 px-3 py-3',
@@ -33,21 +34,32 @@ export const MOBILE_SEARCH_STYLES = {
 
 } as const;
 
+export const SEARCH_INPUT_STYLES = {
+  wrapper: 'relative flex-1 flex items-center',
+  input: 'w-full py-3 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
+  clearButton: 'absolute right-2 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
+  clearIcon: 'w-5 h-5',
+} as const;
+
+// Styles for the search bar form component
 export const SEARCH_BAR_FORM_STYLES = {
   container: cn(
-    'relative mx-4 pt-4',
+    'flex flex-row justify-center border dark:border-2 border-ol mx-auto group transition-all duration-300 flex-shrink-0',
+    'mb-8 rounded-full mx-4',
     'xs:mx-6',
-    'sm:mx-auto sm:max-w-md',
-    'lg:max-w-lg',
-    'xl:max-w-lg',
+    'sm:mx-auto sm:max-w-[720px]',
+    '',
+    'lg:max-w-[896px]',
+    'xl:max-w-[896px]',
   ),
   wrapper: 'relative',
-  inputWrapper: 'flex items-center gap-3 bg-sf rounded-2xl shadow-md hover:shadow-lg focus-within:shadow-none focus-within:ring-1 focus-within:ring-pr-fix focus-within:ring-offset-2 transition-all duration-200 px-4 py-3',
-  icon: 'text-on-sf-var pointer-events-none flex-shrink-0',
+  inputWrapper: 'flex items-center gap-3 bg-sf rounded-full shadow-md hover:shadow-lg focus-within:shadow-none focus-within:ring-1 focus-within:ring-pr-fix focus-within:ring-offset-2 transition-all duration-200 px-4 py-3',
+  icon: 'text-sf pointer-events-none flex-shrink-0',
   iconSize: cn(
-    'w-6 h-6',
-    'md:w-7 md:h-7',
-    'xl:w-8 xl:h-8',
+    'aspect-square bg-sf-hi p-3 rounded-full',
+    'w-6',
+    'md:w-7',
+    'xl:w-16',
   ),
   dropdown: 'absolute top-full left-0 right-0 mt-2 rounded-lg shadow-lg z-50',
   tips: {
@@ -56,13 +68,23 @@ export const SEARCH_BAR_FORM_STYLES = {
     hidden: 'opacity-0 scale-y-0',
   },
   input: {
-    wrapper: 'relative flex-1 flex flex-col',
+    wrapper: cn(
+      'relative flex-1 flex flex-col truncate',
+      'rounded-full px-2 py-2 text-sm',
+      'md:pr-8 md:py-3 md:text-base',
+      'xl:pr-12 xl:py-4 xl:text-lg',
+    ),
     label: cn(
-      'text-xs lowercase font-medium text-sec-dim mb-1',
+      'text-xs lowercase font-medium text-sec-dim',
       'md:text-sm',
       'xl:text-base',
     ),
-    input: 'w-full py-2 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none lowercase',
+    input: cn(
+      'w-full bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none lowercase',
+      'text-sm',
+      'md:text-base',
+      'xl:text-lg',
+    ),
     clearButton: 'absolute right-0 top-6 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
     clearIcon: 'w-5 h-5',
   }
@@ -72,12 +94,12 @@ export const SEARCH_WITH_SORTING_STYLES = {
   // Combined container (like FilterGroup)
   container: cn(
     'flex flex-row justify-center border dark:border-2 border-ol mx-auto group transition-all duration-300 flex-shrink-0',
-    'mb-8 rounded-xl mx-4',
+    'mb-8 rounded-full mx-4',
     'xs:mx-6',
     'sm:mx-auto sm:max-w-[720px]',
-    'md:rounded-2xl',
+    '',
     'lg:max-w-[896px]',
-    'xl:max-w-[1024px] xl:rounded-3xl',
+    'xl:max-w-[896px]',
   ),
   inactive: 'bg-sf shadow-md',
   active: 'bg-sf-hst shadow-none',
@@ -91,7 +113,7 @@ export const SEARCH_WITH_SORTING_STYLES = {
   },
   
   // Search wrapper (takes remaining space)
-  searchWrapper: 'flex flex-col flex-1',
+  searchWrapper: 'flex flex-col flex-1 px-3 ',
   
   // Sorting wrapper (fixed width like in FilterGroup)
   sortingWrapper: cn(
@@ -136,13 +158,7 @@ export const SEARCH_DROPDOWN_ITEM_STYLES = {
   },
 } as const;
 
-export const SEARCH_INPUT_STYLES = {
-  wrapper: 'relative flex-1 flex items-center',
-  input: 'w-full py-3 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
-  clearButton: 'absolute right-2 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
-  clearIcon: 'w-5 h-5',
-} as const;
-
+// Styles for the main search page component
 export const SEARCH_PAGE_STYLES = {
   header: {
     container: 'mb-8',
@@ -170,6 +186,32 @@ export const SEARCH_PAGE_STYLES = {
   },
 } as const;
 
+// Styles for the results section component
+export const SEARCH_RESULTS_SECTION_STYLES = {
+  container: cn(
+    'mx-auto mb-12 max-w-3xl flex flex-col gap-2',
+    'sm:px-6 lg:px-8',
+  ),
+  heading: 'mx-2 mb-4 xl:mb-6 font-medium uppercase text-on-sf-dim',
+  sorting: 'mx-auto -mt-4 mb-6',
+  list: 'space-y-4',
+} as const;
+
+export const SEARCH_RESULTS_HEADER_STYLES = {
+  container: cn(
+    'flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4',
+    'max-w-5xl mx-auto',
+    'my-6 xl:mb-16',
+    '',
+  ),
+  title: 'text-3xl mb-4 text-on-sf',
+  span: 'font-normal',
+  count: 'mt-8 px-6 py-4 bg-sf rounded-2xl text-sec-dim font-medium lowercase',
+  description: 'text-lg text-on-sf-var',
+  textContainer: 'mx-auto',
+  sortContainer: 'w-1/4',
+} as const;
+
 export const SEARCH_RESULT_CARD_STYLES = {
   author: {
     link: 'block bg-sf-cont mx-2 max-w-80 px-8 py-4 rounded-xl transition-colors duration-200',
@@ -189,29 +231,4 @@ export const SEARCH_RESULT_CARD_STYLES = {
     name: 'text-xl uppercase',
     count: 'text-sm font-medium text-on-sf-var',
   },
-} as const;
-
-export const SEARCH_RESULTS_HEADER_STYLES = {
-  container: cn(
-    'flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4',
-    'max-w-5xl mx-auto',
-    'my-6 xl:mb-16',
-    '',
-  ),
-  title: 'text-3xl mb-4 text-on-sf',
-  span: 'font-normal',
-  count: 'mt-8 px-6 py-4 bg-sf rounded-2xl text-sec-dim font-medium lowercase',
-  description: 'text-lg text-on-sf-var',
-  textContainer: 'mx-auto',
-  sortContainer: 'w-1/4',
-} as const;
-
-export const SEARCH_RESULTS_SECTION_STYLES = {
-  container: cn(
-    'mx-auto mb-12 max-w-3xl flex flex-col gap-2',
-    'sm:px-6 lg:px-8',
-  ),
-  heading: 'mx-2 mb-4 xl:mb-6 font-medium uppercase text-on-sf-dim',
-  sorting: 'mx-auto -mt-4 mb-6',
-  list: 'space-y-4',
 } as const;

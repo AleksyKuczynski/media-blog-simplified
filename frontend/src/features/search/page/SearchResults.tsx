@@ -95,12 +95,12 @@ export default function SearchResults({
       {/* Results summary */}
       <div className={SEARCH_RESULTS_HEADER_STYLES.container}>
         <div className={SEARCH_RESULTS_HEADER_STYLES.textContainer}>
-          <h2 
+          <h3 
             id="search-results-heading"
             className={`${SEARCH_RESULTS_HEADER_STYLES.title} sr-only`}
           >
             {processTemplate(dictionary.search.templates.resultsFor, { query: searchQuery })}
-          </h2>
+          </h3>
           <p 
             className={SEARCH_RESULTS_HEADER_STYLES.count}
             aria-live="polite"
@@ -164,9 +164,9 @@ export default function SearchResults({
         {hasRightColumn && (
           <div className={hasLeftColumn ? 'xl:col-span-2' : ''}>
             <section className={sectionStyles.container}>
-              <h2 className={sectionStyles.heading}>
+              <h3 className={sectionStyles.heading}>
                 {dictionary.common.count.articles}: {totalArticles}
-              </h2>
+              </h3>
               {/* Show sorting on xs-xl screens only */}
               {showSorting && (
                 <aside 

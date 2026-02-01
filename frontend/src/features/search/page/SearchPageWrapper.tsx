@@ -13,6 +13,7 @@ interface SearchPageWrapperProps {
   currentQuery: string;
   hasResults: boolean;
   showSorting: boolean;
+  resultsMode: 'results' | 'no-results' | 'invalid-query' | null;
 }
 
 export default function SearchPageWrapper({
@@ -21,7 +22,8 @@ export default function SearchPageWrapper({
   lang,
   currentQuery,
   hasResults,
-  showSorting
+  showSorting,
+  resultsMode
 }: SearchPageWrapperProps) {
   const searchParams = useSearchParams();
   const currentSort = searchParams.get('sort') || 'desc';
@@ -35,6 +37,7 @@ export default function SearchPageWrapper({
         hasResults={hasResults}
         showSorting={showSorting}
         currentSort={currentSort}
+        resultsMode={resultsMode}
       />
       {children}
     </>
