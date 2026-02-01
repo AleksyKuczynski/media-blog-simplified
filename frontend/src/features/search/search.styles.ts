@@ -37,7 +37,7 @@ export const MOBILE_SEARCH_STYLES = {
 export const SEARCH_INPUT_STYLES = {
   wrapper: 'relative flex-1 flex items-center',
   input: 'w-full py-3 px-4 bg-transparent text-on-sf placeholder:text-on-sf-var/50 focus:outline-none',
-  clearButton: 'absolute right-2 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
+  clearButton: 'absolute right-2 pb-3 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
   clearIcon: 'w-5 h-5',
 } as const;
 
@@ -45,6 +45,7 @@ export const SEARCH_INPUT_STYLES = {
 export const SEARCH_BAR_FORM_STYLES = {
   container: cn(
     'flex flex-row justify-center border dark:border-2 border-ol mx-auto group transition-all duration-300 flex-shrink-0',
+    'focus-within:border-transparent focus-within:ring-1 focus-within:ring-ol focus-within:ring-offset-1',
     'mb-8 rounded-full mx-4',
     'xs:mx-6',
     'sm:mx-auto sm:max-w-[720px]',
@@ -52,14 +53,18 @@ export const SEARCH_BAR_FORM_STYLES = {
     'lg:max-w-[896px]',
     'xl:max-w-[896px]',
   ),
-  wrapper: 'relative',
-  inputWrapper: 'flex items-center gap-3 bg-sf rounded-full shadow-md hover:shadow-lg focus-within:shadow-none focus-within:ring-1 focus-within:ring-pr-fix focus-within:ring-offset-2 transition-all duration-200 px-4 py-3',
+  wrapper: 'relative w-full',
+  inputWrapper: cn(
+    'flex items-center gap-3',
+    'bg-sf rounded-full shadow-md hover:shadow-lg focus-within:shadow-none transition-all duration-200',
+    ' px-3 py-3',
+  ),
   icon: 'text-sf pointer-events-none flex-shrink-0',
   iconSize: cn(
-    'aspect-square bg-sf-hi p-3 rounded-full',
+    'aspect-square bg-sf-hst p-3 rounded-full',
     'w-6',
     'md:w-7',
-    'xl:w-16',
+    'xl:w-[60px]',
   ),
   dropdown: 'absolute top-full left-0 right-0 mt-2 rounded-lg shadow-lg z-50',
   tips: {
@@ -70,9 +75,9 @@ export const SEARCH_BAR_FORM_STYLES = {
   input: {
     wrapper: cn(
       'relative flex-1 flex flex-col truncate',
-      'rounded-full px-2 py-2 text-sm',
-      'md:pr-8 md:py-3 md:text-base',
-      'xl:pr-12 xl:py-4 xl:text-lg',
+      'rounded-r-full text-sm',
+      'md:text-base',
+      'xl:text-lg',
     ),
     label: cn(
       'text-xs lowercase font-medium text-sec-dim',
@@ -85,7 +90,7 @@ export const SEARCH_BAR_FORM_STYLES = {
       'md:text-base',
       'xl:text-lg',
     ),
-    clearButton: 'absolute right-0 top-6 p-2 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
+    clearButton: 'absolute right-0 top-6 pt-1 pr-3 text-on-sf-var hover:text-on-sf transition-colors duration-200 rounded-full hover:bg-sf-hi',
     clearIcon: 'w-5 h-5',
   }
 } as const;
@@ -113,7 +118,11 @@ export const SEARCH_WITH_SORTING_STYLES = {
   },
   
   // Search wrapper (takes remaining space)
-  searchWrapper: 'flex flex-col flex-1 px-3 ',
+  searchWrapper: cn(
+    'flex flex-col flex-1 py-3 px-3',
+    'hover:bg-sf-hi rounded-full',
+    'focus-within:bg-sf focus-within:shadow-md focus-within:rounded-full transition-all duration-200',
+  ),
   
   // Sorting wrapper (fixed width like in FilterGroup)
   sortingWrapper: cn(

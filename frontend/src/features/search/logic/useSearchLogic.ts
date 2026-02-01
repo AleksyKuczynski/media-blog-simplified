@@ -47,6 +47,7 @@ export function useSearchLogic({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize query from URL if present
   useEffect(() => {
@@ -61,6 +62,15 @@ export function useSearchLogic({
       }
     }
   }, [initialQuery]); // Only run when initialQuery changes
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
   
   const hasNavigableContent = state.dropdown.content === 'suggestions' && state.suggestions.length > 0;
 
@@ -81,19 +91,26 @@ export function useSearchLogic({
       payload: value,
       dispatch
     });
-  
+
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
     if (value.length >= 3) {
-      try {
-        const searchResults = await handleSearch(value);
-        dispatch({ 
-          type: 'SET_SUGGESTIONS',
-          payload: searchResults 
-        });
-      } catch (error) {
-        dispatch({ type: 'SET_SEARCH_ERROR' });
-      }
+      // Debounce: wait 300ms after user stops typing
+      debounceTimerRef.current = setTimeout(async () => {
+        try {
+          const searchResults = await handleSearch(value);
+          dispatch({ 
+            type: 'SET_SUGGESTIONS',
+            payload: searchResults 
+          });
+        } catch (error) {
+          dispatch({ type: 'SET_SEARCH_ERROR' });
+        }
+      }, 300);
     } else if (value.length > 0) {
-      // Clear suggestions and show min chars message
       dispatch({ type: 'CLEAR_SUGGESTIONS' });
     }
   }, [handleSearch]);
@@ -188,8 +205,11 @@ export function useSearchLogic({
   }, []);
 
   const handleClear = useCallback(() => {
+  if (debounceTimerRef.current) {
+    clearTimeout(debounceTimerRef.current);
+  }
+  
   dispatch({ type: 'RESET_STATE' });
-  inputRef.current?.focus();
 }, []);
 
   useOutsideClick(

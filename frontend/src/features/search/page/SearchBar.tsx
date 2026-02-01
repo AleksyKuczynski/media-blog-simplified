@@ -5,7 +5,6 @@ import { Dictionary } from '@/config/i18n';
 import { SearchIcon } from '@/shared/primitives/Icons';
 import { SEARCH_BAR_FORM_STYLES } from '../search.styles';
 import SearchBarInput from './SearchBarInput';
-import { cn } from '@/lib/utils';
 
 interface SearchBarProps {
   state: SearchUIState;
@@ -22,7 +21,6 @@ interface SearchBarProps {
   inputRef: React.RefObject<HTMLInputElement | null>;
   ariaLabel?: string;
   ariaDescription?: string;
-  iconClassName: string;
   variant?: 'standalone' | 'combined';
 }
 
@@ -41,14 +39,13 @@ export default function SearchBar({
   inputRef,
   ariaLabel,
   ariaDescription,
-  iconClassName,
   variant = 'standalone'
 }: SearchBarProps) {
   const isStandalone = variant === 'standalone';
 
   return (
     <div className={isStandalone ? SEARCH_BAR_FORM_STYLES.inputWrapper : 'flex items-center gap-3'}>
-      <div className={isStandalone ? SEARCH_BAR_FORM_STYLES.icon : iconClassName}>
+      <div className={SEARCH_BAR_FORM_STYLES.icon}>
         <SearchIcon className={SEARCH_BAR_FORM_STYLES.iconSize} />
       </div>
 
