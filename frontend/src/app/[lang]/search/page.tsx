@@ -1,6 +1,5 @@
 // src/app/[lang]/search/page.tsx
 import { Metadata } from 'next';
-import SearchBarForm from '@/features/search/page/SearchBarForm';
 import SearchResults from '@/features/search/page/SearchResults';
 import Section from '@/features/layout/Section';
 import { getDictionary, Lang } from '@/config/i18n';
@@ -11,6 +10,7 @@ import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
 import RubricsCarouselSection from '@/features/rubric-display/RubricsCarouselSection';
 import AuthorsCarouselSection from '@/features/author-display/AuthorsCarouselSection';
+import SearchPageWrapper from '@/features/search/page/SearchPageWrapper';
 
 export const revalidate = 0;
 
@@ -92,61 +92,60 @@ export default async function SearchPage({
         resultCount={searchResults.totalResults}
       />
 
-      <Section 
-        title={dictionary.search.templates.pageTitle}
-        titleLevel="h1"
-        hasNextSectionTitle={true}
-        className="min-h-[calc(100vh-8rem)] xl:min-h-[calc(100vh-14rem)]"
+      <SearchPageWrapper
+        dictionary={dictionary}
+        lang={lang}
+        currentQuery={searchQuery}
+        hasResults={hasResults}
+        showSorting={hasResults && searchResults.totalArticles >= 2}
       >
-        <SearchBarForm
-          dictionary={dictionary}
+        <Section 
+          title={dictionary.search.templates.pageTitle}
+          titleLevel="h1"
+          hasNextSectionTitle={true}
+          className="min-h-[calc(100vh-8rem)] xl:min-h-[calc(100vh-14rem)]"
+        >
+          {resultsMode && (
+            <SearchResults
+              dictionary={dictionary}
+              lang={lang}
+              searchQuery={searchQuery}
+              articles={searchResults.articles}
+              authors={searchResults.authors}
+              categories={searchResults.categories}
+              totalArticles={searchResults.totalArticles}
+              totalAuthors={searchResults.totalAuthors}
+              totalCategories={searchResults.totalCategories}
+              totalPages={totalPages}
+              currentPage={currentPage}
+              currentSort={currentSort}
+              mode={resultsMode}
+            />
+          )}
+        </Section>
+
+        <RandomArticlesSection
           lang={lang}
-          currentQuery={searchQuery}
-          hasResults={hasResults}
-          showSorting={hasResults && searchResults.totalArticles >= 2}
-          currentSort={currentSort}
+          dictionary={dictionary}
+          title={dictionary.sections.rubrics.readMoreAbout}
+          variant="secondary"
+          limit={6}
         />
 
-        {resultsMode && (
-          <SearchResults
-            dictionary={dictionary}
-            lang={lang}
-            searchQuery={searchQuery}
-            articles={searchResults.articles}
-            authors={searchResults.authors}
-            categories={searchResults.categories}
-            totalArticles={searchResults.totalArticles}
-            totalAuthors={searchResults.totalAuthors}
-            totalCategories={searchResults.totalCategories}
-            totalPages={totalPages}
-            currentPage={currentPage}
-            currentSort={currentSort}
-            mode={resultsMode}
-          />
-        )}
-      </Section>
+        <RubricsCarouselSection
+          lang={lang}
+          dictionary={dictionary}
+          title={dictionary.search.hub.browseCategories}
+          variant="primary"
+        />
 
-      <RandomArticlesSection
-        lang={lang}
-        dictionary={dictionary}
-        title={dictionary.sections.rubrics.readMoreAbout}
-        variant="secondary"
-        limit={6}
-      />
-
-      <RubricsCarouselSection
-        lang={lang}
-        dictionary={dictionary}
-        title={dictionary.search.hub.browseCategories}
-        variant="primary"
-      />
-
-      <AuthorsCarouselSection
-        lang={lang}
-        dictionary={dictionary}
-        title={dictionary.sections.authors.ourAuthors}
-        variant="tertiary"
-      />
+        <AuthorsCarouselSection
+          lang={lang}
+          dictionary={dictionary}
+          title={dictionary.sections.authors.ourAuthors}
+          variant="tertiary"
+        />
+      </SearchPageWrapper>
     </>
   );
 }
