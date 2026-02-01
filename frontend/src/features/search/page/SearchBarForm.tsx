@@ -145,31 +145,6 @@ export default function SearchBarForm({
             onMouseEnter={() => interactions.handlers.setContainerHover(true)}
             onMouseLeave={() => interactions.handlers.setContainerHover(false)}
           >
-            {shouldShowSorting && (
-              <div 
-                className={SEARCH_WITH_SORTING_STYLES.sortingWrapper}
-                onMouseEnter={() => interactions.handlers.handleSortingHoverChange(true)}
-                onMouseLeave={() => interactions.handlers.handleSortingHoverChange(false)}
-              >
-                <SortingControl
-                  dictionary={dictionary}
-                  currentSort={currentSort}
-                  variant="search"
-                  onOpenChange={interactions.handlers.handleSortingOpenChange}
-                  onHoverChange={interactions.handlers.handleSortingHoverChange}
-                />
-              </div>
-            )}
-
-            <div 
-              className={cn(
-                SEARCH_WITH_SORTING_STYLES.divider.base,
-                showDivider 
-                  ? SEARCH_WITH_SORTING_STYLES.divider.visible 
-                  : SEARCH_WITH_SORTING_STYLES.divider.hidden
-              )}
-            />
-
             <div 
               className={SEARCH_WITH_SORTING_STYLES.searchWrapper}
               onMouseEnter={() => interactions.handlers.handleSearchHoverChange(true)}
@@ -208,6 +183,31 @@ export default function SearchBarForm({
                 />
               </div>
             </div>
+
+            <div 
+              className={cn(
+                SEARCH_WITH_SORTING_STYLES.divider.base,
+                showDivider 
+                  ? SEARCH_WITH_SORTING_STYLES.divider.visible 
+                  : SEARCH_WITH_SORTING_STYLES.divider.hidden
+              )}
+            />
+
+            {shouldShowSorting && (
+              <div 
+                className={SEARCH_WITH_SORTING_STYLES.sortingWrapper}
+                onMouseEnter={() => interactions.handlers.handleSortingHoverChange(true)}
+                onMouseLeave={() => interactions.handlers.handleSortingHoverChange(false)}
+              >
+                <SortingControl
+                  dictionary={dictionary}
+                  currentSort={currentSort}
+                  variant="search"
+                  onOpenChange={interactions.handlers.handleSortingOpenChange}
+                  onHoverChange={interactions.handlers.handleSortingHoverChange}
+                />
+              </div>
+            )}
           </div>
         </>
       ) : (
