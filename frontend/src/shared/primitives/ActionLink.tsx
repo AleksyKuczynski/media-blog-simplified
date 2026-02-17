@@ -18,7 +18,7 @@ const VARIANT_STYLES = {
   default: 'text-pr-cont hover:text-pr-fix',
 } as const;
 
-const BASE_STYLES = 'font-medium transition-colors duration-200 flex justify-end items-end';
+const BASE_STYLES = 'mt-4 font-medium transition-colors duration-200 flex justify-end items-end';
 const INNER_STYLES = 'inline-flex items-center gap-2 group';
 
 export function ActionLink({ 
@@ -34,7 +34,7 @@ export function ActionLink({
         className="transform transition-transform duration-200 group-hover:translate-x-1"
         aria-hidden="true"
       >
-        🡪
+        →
       </span>
     </>
   );
