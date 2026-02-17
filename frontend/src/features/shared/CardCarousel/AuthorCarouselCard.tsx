@@ -4,11 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Dictionary } from '@/config/i18n';
 import { AUTHOR_CAROUSEL_CARD_STYLES } from './carousel.styles';
+import CollectionCount from '@/features/layout/CollectionCount';
 
 interface AuthorCarouselCardProps {
   slug: string;
   name: string;
-  bio?: string;
+  count?: number;
   avatarSrc?: string;
   url: string;
   dictionary: Dictionary;
@@ -16,7 +17,7 @@ interface AuthorCarouselCardProps {
 
 export default function AuthorCarouselCard({
   name,
-  bio,
+  count,
   avatarSrc,
   url,
   dictionary
@@ -55,11 +56,14 @@ export default function AuthorCarouselCard({
             <h3 className={AUTHOR_CAROUSEL_CARD_STYLES.name}>
               {name}
             </h3>
-            {bio && (
-              <p className={AUTHOR_CAROUSEL_CARD_STYLES.bio}>
-                {bio}
-              </p>
-            )}
+            {count !== undefined && count > 0 && (
+              <CollectionCount
+                count={count}
+                countLabel={dictionary.common.count.articles}
+                dictionary={dictionary}
+                className={AUTHOR_CAROUSEL_CARD_STYLES.count}
+              />
+            )}            
           </div>
         </div>
       </article>

@@ -27,7 +27,7 @@ export interface AuthorCardData {
   type: 'author';
   slug: string;
   name: string;
-  bio?: string;
+  count?: number;
   avatarSrc?: string;
   url: string;
 }

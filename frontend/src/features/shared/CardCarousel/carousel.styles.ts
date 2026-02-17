@@ -138,7 +138,7 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   card: 'h-full group transition-all duration-200',
   
   // Content container
-  content: 'flex flex-col gap-4',
+  content: 'flex flex-col gap-8 pb-4',
   
   // Image container
   avatarWrapper: 'relative aspect-square w-4/5 mx-auto flex-shrink-0 overflow-hidden rounded-full shadow:md group-hover:shadow-lg transition-shadow duration-200',
@@ -149,11 +149,11 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   avatarFallbackText: 'text-on-pr-cont text-xl font-bold',
   
   // Text content container
-  textContent: 'px-2 pt-8 pb-3 flex-1 min-w-0 bg-sf-cont rounded-t-3xl rounded-b-md shadow:md group-hover:shadow-lg transition-shadow duration-200',
+  textContent: 'px-2 flex-1 min-w-0 text-center text-on-sf-var group-hover:text-on-sf transition-colors',
 
   // Text content
-  name: 'max-sm:text-sm xl:text-lg uppercase text-center text-on-sf-var group-hover:text-on-sf transition-colors',
-  bio: 'hidden max-lg:text-sm text-on-sf-var line-clamp-4 mt-8',
+  name: 'pb-2 max-sm:text-sm xl:text-lg uppercase',
+  count: 'max-lg:text-sm',
 } as const;
 
 export function getAuthorCarouselAvatarUrl(baseUrl: string, assetId: string): string {

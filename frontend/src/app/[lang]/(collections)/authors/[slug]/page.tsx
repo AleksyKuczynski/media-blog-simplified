@@ -191,7 +191,7 @@ export default async function AuthorPage({
             author: author.name
           })}
           variant="secondary"
-          hasNextSectionTitle={illustratedCount > 0}
+          hasNextSectionTitle={true}
         >
           <CollectionCount 
             count={authoredCount}
@@ -223,7 +223,7 @@ export default async function AuthorPage({
       {illustratedCount > 0 && (
         <Section 
           title={`${dictionary.sections.labels.illustratedBy} ${author.name}`}
-          hasNextSectionTitle={false}
+          hasNextSectionTitle={true}
           variant="tertiary"
         >
           <CollectionCount 

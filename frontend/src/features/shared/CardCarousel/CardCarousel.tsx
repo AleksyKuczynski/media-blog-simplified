@@ -124,7 +124,7 @@ export default function CardCarousel({
               <AuthorCarouselCard
                 slug={card.slug}
                 name={card.name}
-                bio={card.bio}
+                count={card.count}
                 avatarSrc={card.avatarSrc}
                 url={card.url}
                 dictionary={dictionary}

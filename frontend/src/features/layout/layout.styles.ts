@@ -23,9 +23,9 @@ export const COLLECTION_DESCRIPTION_STYLES = cn(
 
 export const SECTION_COUNT_STYLES = cn(
   'mx-auto text-center font-semibold text-on-sf-var bg-sf-cont rounded-full shadow-sm',
-  'text-xs w-32 p-2 mb-4',
-  'sm:text-sm sm:w-32 sm:mb-6',
-  'lg:text-base lg:w-36 lg:p-3',
+  'text-xs w-32 p-2 mb-6',
+  'sm:text-sm sm:w-32 sm:mb-8',
+  'lg:text-base lg:w-36 lg:p-3 md:mb-12',
 );
 
 // When positioned with description
@@ -60,20 +60,20 @@ export const SECTION_STYLES = {
     flexGrow: 'flex flex-col flex-grow',
   },
   header: {
-    wrapper: cn('absolute -top-7 -left-[2px] right-0', 
+    wrapper: cn('absolute -top-7 -left-[2px] right-0 truncate', 
             'sm:-top-8', 
-            'md:-top-10 md:-left-[3px]', 
-            'lg:-top-[50px] lg:-left-[4px]',
-            'xl:-top-[60px] xl:-left-[5px]'),
+            'md:-top-9 md:-left-[3px]', 
+            'lg:-top-10 lg:-left-[3px]',
+            'xl:-top-[50px] xl:-left-[4px]'),
     title: {
       base: cn(
         'pl-3 font-display font-semibold max-md:font-bold uppercase leading-tight',
 
         'text-xl', 
         'sm:text-2xl', 
-        'md:text-4xl', 
-        'lg:text-5xl', 
-        'xl:text-6xl'
+        'md:text-3xl', 
+        'lg:text-4xl', 
+        'xl:text-5xl'
       ),
       primary: 'text-pr-fix',
       secondary: 'text-sec-fix',

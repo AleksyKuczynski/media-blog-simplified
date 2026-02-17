@@ -61,7 +61,7 @@ export async function transformAuthorsToCarousel(
       type: 'author' as const,
       slug: author.slug,
       name: author.name,
-      bio: author.bio,
+      count: author.articleCount || 0,
       avatarSrc,
       url: `/${lang}/authors/${author.slug}`,
     };
