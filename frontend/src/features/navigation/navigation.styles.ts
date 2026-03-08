@@ -82,13 +82,17 @@ export const QUICK_NAV_STYLES = {
 export const MOBILE_NAV_STYLES = {
   nav: {
     container: 'xl:hidden bg-sf-cont/80 backdrop-blur-lg border-b border-ol-var/20 transition-all duration-300 relative z-50',
-    topBar: 'flex items-center justify-between h-16 px-4',
+    topBar: cn(
+      'grid grid-cols-3', 
+      'px-3 sm:px-6',
+      'py-2'
+    ),
   },
   
   sections: {
-    left: 'flex-1 flex justify-start',
-    center: 'flex-1 flex justify-center',
-    right: 'flex items-center gap-2',
+    left: 'flex justify-start items-center',
+    center: 'flex justify-center items-center',
+    right: 'flex justify-end items-center',
   },
   
   spacer: 'w-12',

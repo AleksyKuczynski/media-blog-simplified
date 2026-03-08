@@ -75,31 +75,35 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
         <div className={MOBILE_NAV_STYLES.nav.topBar}>
           
           {/* Hamburger Menu Button - Left */}
-          {!isSearchOpen && (
-            <HamburgerButton
-              isOpen={isMenuOpen}
-              onClick={toggleMenu}
-              ariaControls="mobile-menu-content"
-              openLabel={dictionary.navigation.accessibility.openMenu}
-              closeLabel={dictionary.navigation.accessibility.closeMenu}
-              buttonRef={menuToggleRef}
-            />
-          )}
+          <div className={MOBILE_NAV_STYLES.sections.left}>
+            {!isSearchOpen && (
+              <HamburgerButton
+                isOpen={isMenuOpen}
+                onClick={toggleMenu}
+                ariaControls="mobile-menu-content"
+                openLabel={dictionary.navigation.accessibility.openMenu}
+                closeLabel={dictionary.navigation.accessibility.closeMenu}
+                buttonRef={menuToggleRef}
+              />
+            )}
+          </div>
           
           {isSearchOpen && <div className={MOBILE_NAV_STYLES.spacer} />}
           
           {/* Logo - Center (hidden when any panel is open) */}
-          <div className={cn(
-            'transition-opacity duration-300',
-            (isMenuOpen || isSearchOpen) ?
-            'opacity-0 pointer-events-none' : 'opacity-100'
-          )}>
-            <Logo 
-              lang={lang}
-              variant="mobile"
-              role="img"
-              aria-label={dictionary.navigation.accessibility.logoAlt}
-            />
+          <div className={MOBILE_NAV_STYLES.sections.center}>
+            <div className={cn(
+              'transition-opacity duration-300',
+              (isMenuOpen || isSearchOpen) ?
+              'opacity-0 pointer-events-none' : 'opacity-100'
+            )}>
+              <Logo 
+                lang={lang}
+                variant="mobile"
+                role="img"
+                aria-label={dictionary.navigation.accessibility.logoAlt}
+              />
+            </div>
           </div>
           
           {/* Right side: Language Switcher + Search Button */}
