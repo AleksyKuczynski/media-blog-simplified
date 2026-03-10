@@ -16,9 +16,9 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: '51.21.135.65',
-        port: '8055',
+        protocol: 'https',
+        hostname: 'cms.event4me.vip',
+        port: '',
         pathname: '/assets/**',
       },
     ],
@@ -37,7 +37,7 @@ const nextConfig = {
   },
 
   async headers() {
-    const DIRECTUS_URL = process.env.DIRECTUS_URL || 'http://51.21.135.65:8055';
+    const DIRECTUS_URL = process.env.DIRECTUS_URL || 'cms.event4me.vip';
     
     return [
       {
