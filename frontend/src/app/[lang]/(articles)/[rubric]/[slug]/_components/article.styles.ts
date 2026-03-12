@@ -157,15 +157,12 @@ export const ELEMENTS_STYLES = {
 export const MEDIA_STYLES = {
   // ImageFrame
   imageFrame: {
-    figure: `max-w-svw -mx-2 my-8 md:my-12 lg:my-16
-              md:mx-auto`,
-    container: `relative mx-auto overflow-hidden bg-sf-cont
-            max-h-[90vh] w-auto max-w-full 
-            flex items-center justify-center`,
-    image: 'w-full max-w-full object-contain',
+    figure: `max-w-svw -mx-2 my-8 md:my-12 lg:my-16 md:mx-auto`,
+    container: `mx-auto overflow-hidden bg-sf-cont`,
+    image: 'block w-full h-full object-contain',
     caption: 'max-w-2xl mx-auto mt-2 px-4 prose lg:prose-lg text-on-sf-var',
-  },
-
+  },  
+  
   // ImageFrame Skeleton
   imageSkeleton: {
     container: 'relative mx-auto overflow-hidden bg-sf-cont animate-pulse',

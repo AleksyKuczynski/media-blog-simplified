@@ -67,6 +67,8 @@ export const ImageFrame = memo(function ImageFrame({
   className
 }: ImageFrameProps) {
   const hasCaption = Boolean(processedCaption || caption);
+  const w = imageAttributes.width || 1200;
+  const h = imageAttributes.height || 800;
 
   return (
     <figure 
@@ -77,7 +79,10 @@ export const ImageFrame = memo(function ImageFrame({
       <div 
         className={cn(styles.container, className)}
         style={{
-          maxWidth: maxWidth || '100%'
+          aspectRatio: `${w} / ${h}`,
+          maxWidth: maxWidth || '100%',
+          maxHeight: '90vh',
+          width: `min(100%, calc(90vh * ${w} / ${h}))`,
         }}
       >
         <Image
