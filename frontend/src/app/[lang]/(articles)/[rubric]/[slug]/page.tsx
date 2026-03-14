@@ -41,7 +41,7 @@ export async function generateMetadata({
 
     const cookieStore = await cookies();
     const inPreview = cookieStore.get('preview-mode')?.value === 'true';
-    
+
     const articleSlug = await resolveArticleSlug(slug, lang, inPreview);
     if (!articleSlug) {
       throw new Error('Article not found');
@@ -122,9 +122,12 @@ export default async function ArticlePage({
 }) {
   const { lang, rubric, slug } = await params;
   const dictionary = getDictionary(lang as Lang);
+  const cookieStore = await cookies();
+  const inPreview = cookieStore.get('preview-mode')?.value === 'true';
+
 
   // Resolve slug first
-  const articleSlug = await resolveArticleSlug(slug, lang);
+  const articleSlug = await resolveArticleSlug(slug, lang, inPreview);
   if (!articleSlug) {
     // Neither main slug nor local_slug found
     throw new Error('Article not found');
@@ -132,9 +135,6 @@ export default async function ArticlePage({
 
 
   try {
-    const cookieStore = await cookies();
-    const inPreview = cookieStore.get('preview-mode')?.value === 'true';
-
     const [article, rubricBasics] = await Promise.all([
       fetchFullArticle(articleSlug, lang, inPreview),
       fetchRubricBasics(lang),
