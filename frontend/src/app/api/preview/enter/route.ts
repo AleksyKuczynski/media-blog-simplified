@@ -2,20 +2,71 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
+const DIRECTUS_URL = process.env.DIRECTUS_URL;
+const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
+
+/**
+ * Resolve article URL path from slug.
+ * Queries Directus for rubric_slug and available translations,
+ * then picks the best language (prefers 'ru', falls back to first available).
+ */
+async function resolveArticlePath(slug: string): Promise<string | null> {
+  try {
+    const filter = encodeURIComponent(JSON.stringify({ slug: { _eq: slug } }));
+    const fields = 'slug,rubric_slug.slug,translations.languages_code';
+    const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=${fields}&limit=1`;
+
+    const headers: HeadersInit = {};
+    if (DIRECTUS_API_TOKEN) {
+      headers['Authorization'] = `Bearer ${DIRECTUS_API_TOKEN}`;
+    }
+
+    const response = await fetch(url, { cache: 'no-store', headers });
+    if (!response.ok) return null;
+
+    const data = await response.json();
+    const article = data.data?.[0];
+    if (!article) return null;
+
+    const rubric = article.rubric_slug?.slug;
+    if (!rubric) return null;
+
+    const langs: string[] = (article.translations ?? []).map((t: any) => t.languages_code);
+    // Prefer 'ru', then 'en', then first available
+    const lang = langs.includes('ru') ? 'ru' : langs.includes('en') ? 'en' : langs[0];
+    if (!lang) return null;
+
+    return `/${lang}/${rubric}/${slug}`;
+  } catch {
+    return null;
+  }
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const secret = searchParams.get('secret');
-  const redirect = searchParams.get('redirect') || '/';
+  const slugParam = searchParams.get('slug');
+  // Also support explicit redirect= for flexibility
+  const redirectParam = searchParams.get('redirect');
 
   if (!secret || secret !== process.env.PREVIEW_SECRET) {
     return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
   }
 
-  // Validate redirect path to prevent open redirect
-  const safePath = redirect.startsWith('/') ? redirect : '/';
+  let safePath: string;
 
-  // Instead of a 302 redirect (which causes browsers to drop Set-Cookie in iframes),
-  // serve an HTML page that sets the cookie and navigates via JS/meta-refresh.
+  if (redirectParam) {
+    safePath = redirectParam.startsWith('/') ? redirectParam : '/';
+  } else if (slugParam) {
+    const resolved = await resolveArticlePath(slugParam);
+    safePath = resolved ?? '/';
+  } else {
+    safePath = '/';
+  }
+
+  // Serve an HTML page that sets the cookie client-side then navigates.
+  // A plain 302 redirect causes browsers to silently drop Set-Cookie
+  // headers when the response is inside a cross-origin iframe (Directus → Vercel).
   const html = `<!DOCTYPE html>
 <html>
   <head>
@@ -34,7 +85,6 @@ export async function GET(request: NextRequest) {
     status: 200,
     headers: {
       'Content-Type': 'text/html',
-      // Also attempt Set-Cookie header as fallback
       'Set-Cookie': `preview-mode=true; Path=/; Max-Age=3600; SameSite=None; Secure; HttpOnly`,
     },
   });
