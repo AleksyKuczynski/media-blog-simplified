@@ -9,13 +9,13 @@ import ArticleContentRenderer from '@/app/[lang]/(articles)/[rubric]/[slug]/_com
 import { TableOfContents } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/navigation/TableOfContents';
 import { LAYOUT_STYLES } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/article.styles';
 import Collapsible from '@/shared/ui/Collapsible';
+import PreviewTabs from './_components/PreviewTabs';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 async function resolvePreviewArticle(slug: string): Promise<{
-  lang: Lang;
-  rubricSlug: string;
+  langs: Lang[];
   articleSlug: string;
 } | null> {
   const DIRECTUS_URL = process.env.DIRECTUS_URL;
@@ -25,7 +25,7 @@ async function resolvePreviewArticle(slug: string): Promise<{
     const filter = encodeURIComponent(
       JSON.stringify({ slug: { _eq: slug }, status: { _in: ['published', 'draft'] } })
     );
-    const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=slug,rubric_slug,translations.languages_code&limit=1`;
+    const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=slug,translations.languages_code&limit=1`;
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) return null;
 
@@ -33,17 +33,64 @@ async function resolvePreviewArticle(slug: string): Promise<{
     const article = data.data?.[0];
     if (!article) return null;
 
-    const rubricSlug = article.rubric_slug?.slug ?? article.rubric_slug;
-    if (!rubricSlug) return null;
+    const langs = ((article.translations ?? []).map((t: any) => t.languages_code) as Lang[])
+      .filter(Boolean);
+    if (langs.length === 0) return null;
 
-    const langs: string[] = (article.translations ?? []).map((t: any) => t.languages_code);
-    const lang = (langs.includes('ru') ? 'ru' : langs.includes('en') ? 'en' : langs[0]) as Lang;
-    if (!lang) return null;
-
-    return { lang, rubricSlug, articleSlug: slug };
+    return { langs, articleSlug: slug };
   } catch {
     return null;
   }
+}
+
+async function buildTabContent(articleSlug: string, lang: Lang) {
+  const dictionary = getDictionary(lang);
+  const article = await fetchFullArticle(articleSlug, lang, true);
+  if (!article) return null;
+
+  const translation = article.translations[0];
+  if (!translation) return null;
+
+  const publishedDate = article.published_at ? new Date(article.published_at) : null;
+  const formattedDate = publishedDate
+    ? publishedDate.toLocaleDateString(dictionary.locale, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : '';
+
+  const rawContent = translation.article_body
+    ?.map((block: any) => block.item?.content || '')
+    .join('\n\n') || '';
+
+  const { chunks: contentChunks, toc: tocItems } = await processContent(rawContent, lang);
+
+  return {
+    lang,
+    content: (
+      <article className={LAYOUT_STYLES.articleContainer}>
+        <Header
+          title={translation.title || '[No title]'}
+          lead={translation.lead}
+          imagePath={article.article_heading_img}
+          authors={article.authorsWithDetails}
+          illustrator={article.illustratorWithDetails}
+          publishedDate={formattedDate}
+          dictionary={dictionary}
+        />
+        {article.toc && tocItems.length > 0 && (
+          <Collapsible
+            title={dictionary.content.labels.tableOfContents}
+            ariaLabel={dictionary.content.labels.tableOfContents}
+          >
+            <TableOfContents items={tocItems} />
+          </Collapsible>
+        )}
+        <ArticleContentRenderer chunks={contentChunks} lang={lang} />
+      </article>
+    ),
+  };
 }
 
 export default async function PreviewPage({
@@ -55,72 +102,16 @@ export default async function PreviewPage({
 
   try {
     const resolved = await resolvePreviewArticle(slug);
-    if (!resolved) {
-      notFound();
-    }
+    if (!resolved) notFound();
 
-    const { lang, rubricSlug, articleSlug } = resolved;
-    const dictionary = getDictionary(lang);
+    const { langs, articleSlug } = resolved;
 
-    const [article, rubricBasics] = await Promise.all([
-      fetchFullArticle(articleSlug, lang, true),
-      fetchRubricBasics(lang),
-    ]);
+    const tabResults = await Promise.all(langs.map(lang => buildTabContent(articleSlug, lang)));
+    const tabs = tabResults.filter(Boolean) as NonNullable<Awaited<ReturnType<typeof buildTabContent>>>[];
 
-    if (!article) {
-      notFound();
-    }
+    if (tabs.length === 0) notFound();
 
-    const translation = article.translations[0];
-    if (!translation) {
-      notFound();
-    }
-
-    const publishedDate = article.published_at ? new Date(article.published_at) : null;
-    const formattedDate = publishedDate
-      ? publishedDate.toLocaleDateString(dictionary.locale, {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-      : '';
-
-    const rawContent = translation.article_body
-      ?.map((block: any) => block.item?.content || '')
-      .join('\n\n') || '';
-
-    const processedContent = await processContent(rawContent, lang);
-    const { chunks: contentChunks, toc: tocItems } = processedContent;
-
-    return (
-      <>
-        <article className={LAYOUT_STYLES.articleContainer}>
-          <Header
-            title={translation.title || '[No title]'}
-            lead={translation.lead}
-            imagePath={article.article_heading_img}
-            authors={article.authorsWithDetails}
-            illustrator={article.illustratorWithDetails}
-            publishedDate={formattedDate}
-            dictionary={dictionary}
-          />
-
-          {article.toc && tocItems.length > 0 && (
-            <Collapsible
-              title={dictionary.content.labels.tableOfContents}
-              ariaLabel={dictionary.content.labels.tableOfContents}
-            >
-              <TableOfContents items={tocItems} />
-            </Collapsible>
-          )}
-
-          <ArticleContentRenderer
-            chunks={contentChunks}
-            lang={lang}
-          />
-        </article>
-      </>
-    );
+    return <PreviewTabs tabs={tabs} />;
 
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
