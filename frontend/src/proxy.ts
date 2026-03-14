@@ -10,6 +10,11 @@ export function proxy(request: NextRequest) {
   // Skip public files
   if (PUBLIC_FILE.test(pathname)) return NextResponse.next()
 
+  // Skip preview routes — they don't need language prefix
+  if (pathname.startsWith('/preview/')) {
+    return NextResponse.next();
+  }
+
   // ========================================
   // LANGUAGE DETECTION & ROUTING
   // ========================================
