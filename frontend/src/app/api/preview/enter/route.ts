@@ -81,11 +81,17 @@ export async function GET(request: NextRequest) {
   </body>
 </html>`;
 
+  const directusUrl = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
+
   return new NextResponse(html, {
     status: 200,
     headers: {
       'Content-Type': 'text/html',
       'Set-Cookie': `preview-mode=true; Path=/; Max-Age=3600; SameSite=None; Secure; HttpOnly`,
+      // Allow this page to load inside the Directus iframe
+      'Content-Security-Policy': `frame-ancestors 'self' ${directusUrl}`,
+      // Override Vercel's default X-Frame-Options: SAMEORIGIN
+      'X-Frame-Options': 'ALLOWALL',
     },
   });
 }
