@@ -32,35 +32,18 @@ export const dynamicParams = true;
 
 export async function generateMetadata({ 
   params,
-  searchParams,
 }: { 
   params: Promise<{ lang: string; rubric: string; slug: string }>;
-  searchParams: Promise<{ preview?: string }>;
 }): Promise<Metadata> {
   return safeGenerateMetadata(params, 'article', async (lang, dictionary, resolvedParams) => {
     const { rubric, slug } = resolvedParams;
-    const cookieStore = await cookies();
-    const resolvedSearch = await searchParams;
-    const inPreview = cookieStore.get('preview-mode')?.value === 'true' 
-      || resolvedSearch?.preview === 'true';
 
-    // For preview, return minimal metadata immediately — skip all SEO processing
-    // that may throw on incomplete draft data (null publishedAt, missing fields, etc.)
-    if (inPreview) {
-      return {
-        title: `[Preview] ${slug}`,
-        robots: { index: false, follow: false, nocache: true },
-      };
-    }
-
-
-    const articleSlug = await resolveArticleSlug(slug, lang, inPreview);
+    const articleSlug = await resolveArticleSlug(slug, lang);
     if (!articleSlug) {
       throw new Error('Article not found');
     }
-    
-    const article = await fetchFullArticle(articleSlug, lang, inPreview);
 
+    const article = await fetchFullArticle(articleSlug, lang);
     if (!article) {
       throw new Error('Article not found');
     }
@@ -70,7 +53,6 @@ export async function generateMetadata({
       throw new Error('Translation not found');
     }
 
-    // Fetch image metadata if article has heading image
     let imageMetadata = null;
     if (article.article_heading_img) {
       const imageData = await fetchAssetMetadata(article.article_heading_img);
@@ -78,7 +60,6 @@ export async function generateMetadata({
     }
 
     const articleData = {
-      // Basic fields
       title: translation.title,
       description: translation.description,
       lead: translation.lead,
@@ -92,8 +73,6 @@ export async function generateMetadata({
       imageId: article.article_heading_img || null,
       imageAlt: imageMetadata?.altText,
       tags: article.categories?.map(cat => cat.name) || [rubric],
-      
-      // SEO fields - ENHANCED
       seoTitle: translation.seo_title,
       seoDescription: translation.seo_description,
       ogTitle: translation.og_title,
@@ -101,58 +80,31 @@ export async function generateMetadata({
       focusKeyword: translation.focus_keyword,
       metaKeywords: translation.meta_keywords,
       yandexDescription: translation.yandex_description,
-      
-      // Content metrics - ENHANCED
       readingTime: translation.reading_time,
       wordCount: translation.word_count,
     };
 
-    const metadata = generateArticleMetadata({
-      dictionary,
-      articleData,
-    });
-
-    if (inPreview) {
-      return {
-        ...metadata,
-        robots: {
-          index: false,
-          follow: false,
-          nocache: true,
-        },
-      };
-    }
-
-    return metadata;
+    return generateArticleMetadata({ dictionary, articleData });
   });
 }
 
 export default async function ArticlePage({ 
   params,
-  searchParams,
 }: { 
   params: Promise<{ lang: Lang, rubric: string, slug: string }>,
-  searchParams: Promise<{ preview?: string }>,
 }) {
   const { lang, rubric, slug } = await params;
-  const resolvedSearch = await searchParams;
-  const cookieStore = await cookies();
-  const inPreview = cookieStore.get('preview-mode')?.value === 'true'
-    || resolvedSearch?.preview === 'true';
 
   const dictionary = getDictionary(lang as Lang);
 
-  // Resolve slug first
-  const articleSlug = await resolveArticleSlug(slug, lang, inPreview);
+  const articleSlug = await resolveArticleSlug(slug, lang);
   if (!articleSlug) {
-    // Neither main slug nor local_slug found
     throw new Error('Article not found');
   }
 
-
   try {
     const [article, rubricBasics] = await Promise.all([
-      fetchFullArticle(articleSlug, lang, inPreview),
+      fetchFullArticle(articleSlug, lang),
       fetchRubricBasics(lang),
     ]);
 
@@ -246,26 +198,24 @@ export default async function ArticlePage({
 
     return (
       <>
-        {!inPreview && (
-          <>
-            <ArticleSchema
-              dictionary={dictionary}
-              articleData={articleSchemaData}
-            />
+        <>
+          <ArticleSchema
+            dictionary={dictionary}
+            articleData={articleSchemaData}
+          />
 
-            <QuickNavigationSchema
-              lang={lang}
-              dictionary={dictionary}
-              currentArticleUrl={currentArticleUrl}
-            />
+          <QuickNavigationSchema
+            lang={lang}
+            dictionary={dictionary}
+            currentArticleUrl={currentArticleUrl}
+          />
 
-            <AuthorsSectionSchema
-              lang={lang}
-              dictionary={dictionary}
-              authors={article.authorsWithDetails}
-            />
-          </>
-        )}
+          <AuthorsSectionSchema
+            lang={lang}
+            dictionary={dictionary}
+            authors={article.authorsWithDetails}
+          />
+        </>
 
         <article 
           className={LAYOUT_STYLES.articleContainer}
@@ -354,18 +304,6 @@ export default async function ArticlePage({
     );
 
   } catch (error) {
-    // In preview mode, surface the real error for debugging
-    if (inPreview) {
-      const message = error instanceof Error ? error.message : String(error);
-      const stack = error instanceof Error ? error.stack : '';
-      return (
-        <div style={{ padding: '2rem', fontFamily: 'monospace', background: '#fee', color: '#900' }}>
-          <h2>Preview Error</h2>
-          <pre style={{ whiteSpace: 'pre-wrap' }}>{message}</pre>
-          <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8em', opacity: 0.7 }}>{stack}</pre>
-        </div>
-      );
-    }
     return (
       <StandardError
         dictionary={dictionary}
