@@ -64,19 +64,22 @@ export async function GET(request: NextRequest) {
     safePath = '/';
   }
 
-  const previewPath = safePath + (safePath.includes('?') ? '&' : '?') + 'preview=true';
-    const directusUrl = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
+  const directusUrl = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
 
-    const html = `<!DOCTYPE html>
-  <html>
-    <head>
-      <meta charset="utf-8" />
-      <meta http-equiv="refresh" content="0;url=${previewPath}" />
-    </head>
-    <body>
-      <script>window.location.replace(${JSON.stringify(previewPath)});</script>
-    </body>
-  </html>`;
+  // Append ?preview=true so proxy.ts can set frame-ancestors CSP
+  // without relying on cookies (blocked by browsers in cross-origin iframes)
+  const previewPath = safePath + (safePath.includes('?') ? '&' : '?') + 'preview=true';
+
+  const html = `<!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="refresh" content="0;url=${previewPath}" />
+      </head>
+      <body>
+        <script>window.location.replace(${JSON.stringify(previewPath)});</script>
+      </body>
+    </html>`;
 
   return new NextResponse(html, {
     status: 200,
@@ -85,5 +88,4 @@ export async function GET(request: NextRequest) {
       'Content-Security-Policy': `frame-ancestors 'self' ${directusUrl}`,
       'X-Frame-Options': 'ALLOWALL',
     },
-  });
-}
+  });}

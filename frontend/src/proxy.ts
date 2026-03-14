@@ -12,10 +12,7 @@ export function proxy(request: NextRequest) {
 
   // ========================================
   // PREVIEW MODE HANDLING
-  // Set CSP frame-ancestors when preview cookie is present
-  // (cookie is set by /api/preview/enter route)
   // ========================================
-  
   const previewCookie = request.cookies.get('preview-mode');
   const previewParam = request.nextUrl.searchParams.get('preview');
   const inPreview = previewCookie?.value === 'true' || previewParam === 'true';
@@ -27,7 +24,7 @@ export function proxy(request: NextRequest) {
     response.headers.set('x-pathname', pathname);
     return response;
   }
-
+  
   // ========================================
   // LANGUAGE DETECTION & ROUTING
   // ========================================
