@@ -5,6 +5,7 @@ import { fetchArticleContributors } from './fetchArticleContributors'; // CHANGE
 import { Lang } from "@/config/i18n";
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
+const PREVIEW_SECRET = process.env.PREVIEW_SECRET;
 
 export async function fetchFullArticle(
   slug: string, 
@@ -74,7 +75,14 @@ export async function fetchFullArticle(
 
     const url = `${DIRECTUS_URL}/items/articles?filter=${encodedFilter}&fields=${fields}&deep=${encodedDeepFilter}`;
 
+    // Drafts require authentication — Directus returns 403 without a token
+    const headers: HeadersInit = {};
+    if (includesDrafts && PREVIEW_SECRET) {
+      headers['Authorization'] = `Bearer ${PREVIEW_SECRET}`;
+    }
+
     const response = await fetch(url, { 
+      headers,
       cache: includesDrafts ? 'no-store' : 'default',
       next: includesDrafts ? undefined : { 
         revalidate: 3600,
