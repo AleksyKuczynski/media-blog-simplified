@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
-const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
+const PREVIEW_SECRET = process.env.PREVIEW_SECRET;
 
 /**
  * Resolve article URL path from slug.
@@ -17,8 +17,8 @@ async function resolveArticlePath(slug: string): Promise<string | null> {
     const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=${fields}&limit=1`;
 
     const headers: HeadersInit = {};
-    if (DIRECTUS_API_TOKEN) {
-      headers['Authorization'] = `Bearer ${DIRECTUS_API_TOKEN}`;
+    if (PREVIEW_SECRET) {
+      headers['Authorization'] = `Bearer ${PREVIEW_SECRET}`;
     }
 
     const response = await fetch(url, { cache: 'no-store', headers });
