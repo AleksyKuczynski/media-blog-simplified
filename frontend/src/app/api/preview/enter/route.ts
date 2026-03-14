@@ -2,27 +2,19 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-const DIRECTUS_URL = process.env.DIRECTUS_URL;
-const PREVIEW_TOKEN = process.env.PREVIEW_SECRET;
+const DIRECTUS_URL = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
 
-/**
- * Resolve article URL path from slug.
- * Queries Directus for rubric_slug and available translations,
- * then picks the best language (prefers 'ru', falls back to first available).
- */
 async function resolveArticlePath(slug: string): Promise<string | null> {
   try {
-    const filter = encodeURIComponent(JSON.stringify({ 
+    const filter = encodeURIComponent(JSON.stringify({
       slug: { _eq: slug },
-      status: { _in: ['published', 'draft'] }
     }));
     const fields = 'slug,rubric_slug.slug,translations.languages_code';
     const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=${fields}&limit=1`;
 
-    const headers: HeadersInit = {};
-    if (PREVIEW_TOKEN) {
-      headers['Authorization'] = `Bearer ${PREVIEW_TOKEN}`;
-    }
+    const headers: HeadersInit = {
+      'Authorization': `Bearer ${process.env.PREVIEW_SECRET}`,
+    };
 
     const response = await fetch(url, { cache: 'no-store', headers });
     if (!response.ok) return null;
@@ -31,11 +23,11 @@ async function resolveArticlePath(slug: string): Promise<string | null> {
     const article = data.data?.[0];
     if (!article) return null;
 
-    const rubric = article.rubric_slug?.slug;
+    // rubric_slug is M2O — Directus may return object or plain string
+    const rubric = article.rubric_slug?.slug ?? article.rubric_slug;
     if (!rubric) return null;
 
     const langs: string[] = (article.translations ?? []).map((t: any) => t.languages_code);
-    // Prefer 'ru', then 'en', then first available
     const lang = langs.includes('ru') ? 'ru' : langs.includes('en') ? 'en' : langs[0];
     if (!lang) return null;
 
@@ -49,7 +41,6 @@ export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const secret = searchParams.get('secret');
   const slugParam = searchParams.get('slug');
-  // Also support explicit redirect= for flexibility
   const redirectParam = searchParams.get('redirect');
 
   if (!secret || secret !== process.env.PREVIEW_SECRET) {
@@ -67,28 +58,12 @@ export async function GET(request: NextRequest) {
     safePath = '/';
   }
 
-  const directusUrl = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
-
-  // Append ?preview=true so proxy.ts can set frame-ancestors CSP
-  // without relying on cookies (blocked by browsers in cross-origin iframes)
   const previewPath = safePath + (safePath.includes('?') ? '&' : '?') + 'preview=true';
 
-  const html = `<!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="refresh" content="0;url=${previewPath}" />
-      </head>
-      <body>
-        <script>window.location.replace(${JSON.stringify(previewPath)});</script>
-      </body>
-    </html>`;
-
-  return new NextResponse(html, {
-    status: 200,
+  return NextResponse.redirect(new URL(previewPath, request.url), {
+    status: 302,
     headers: {
-      'Content-Type': 'text/html',
-      'Content-Security-Policy': `frame-ancestors 'self' ${directusUrl}`,
-      'X-Frame-Options': 'ALLOWALL',
+      'Content-Security-Policy': `frame-ancestors 'self' ${DIRECTUS_URL}`,
     },
-  });}
+  });
+}
