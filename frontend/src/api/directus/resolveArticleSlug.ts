@@ -3,7 +3,7 @@
 import { Lang } from "@/config/i18n";
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
-const PREVIEW_SECRET = process.env.PREVIEW_SECRET;
+const PREVIEW_TOKEN = process.env.PREVIEW_SECRET;
 
 /**
  * Resolves URL slug param to main article slug
@@ -54,8 +54,8 @@ async function checkMainSlugExists(slug: string, includesDrafts: boolean): Promi
     const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=slug&limit=1`;
 
     const headers: HeadersInit = {};
-    if (includesDrafts && PREVIEW_SECRET) {
-      headers['Authorization'] = `Bearer ${PREVIEW_SECRET}`;
+    if (includesDrafts && PREVIEW_TOKEN) {
+      headers['Authorization'] = `Bearer ${PREVIEW_TOKEN}`;
     }
 
     const response = await fetch(url, {
