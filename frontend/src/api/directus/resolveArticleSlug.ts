@@ -42,24 +42,13 @@ export async function resolveArticleSlug(
  */
 async function checkMainSlugExists(slug: string, includesDrafts: boolean): Promise<boolean> {
   try {
-    const statusFilter = includesDrafts
-      ? { status: { _in: ['published', 'draft'] } }
-      : { status: { _eq: 'published' } };
-      
-    const filter = encodeURIComponent(JSON.stringify({
-      slug: { _eq: slug },
-      ...statusFilter
-    }));
+    const filter = includesDrafts
+      ? encodeURIComponent(JSON.stringify({ slug: { _eq: slug } }))
+      : encodeURIComponent(JSON.stringify({ slug: { _eq: slug }, status: { _eq: 'published' } }));
 
     const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=slug&limit=1`;
 
-    const headers: HeadersInit = {};
-    if (includesDrafts && PREVIEW_TOKEN) {
-      headers['Authorization'] = `Bearer ${PREVIEW_TOKEN}`;
-    }
-
     const response = await fetch(url, {
-      headers,
       cache: includesDrafts ? 'no-store' : undefined,
       next: includesDrafts ? undefined : { revalidate: 3600, tags: ['article', 'slug-check'] },
     });

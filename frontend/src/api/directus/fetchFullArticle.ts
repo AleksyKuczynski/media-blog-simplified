@@ -54,7 +54,7 @@ export async function fetchFullArticle(
     ].join(',');
 
     const statusFilter = includesDrafts 
-      ? { status: { _in: ['published', 'draft'] } }
+      ? {}
       : { status: { _eq: 'published' } };
 
     const filter = {
@@ -75,14 +75,7 @@ export async function fetchFullArticle(
 
     const url = `${DIRECTUS_URL}/items/articles?filter=${encodedFilter}&fields=${fields}&deep=${encodedDeepFilter}`;
 
-    // Drafts require authentication — Directus returns 403 without a token
-    const headers: HeadersInit = {};
-    if (includesDrafts && PREVIEW_SECRET) {
-      headers['Authorization'] = `Bearer ${PREVIEW_SECRET}`;
-    }
-
     const response = await fetch(url, { 
-      headers,
       cache: includesDrafts ? 'no-store' : 'default',
       next: includesDrafts ? undefined : { 
         revalidate: 3600,
