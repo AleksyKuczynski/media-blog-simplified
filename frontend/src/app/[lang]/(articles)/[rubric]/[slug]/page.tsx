@@ -156,12 +156,14 @@ export default async function ArticlePage({
       notFound();
     }
 
-    const publishedDate = new Date(article.published_at);
-    const formattedDate = publishedDate.toLocaleDateString(dictionary.locale, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    const publishedDate = article.published_at ? new Date(article.published_at) : null;
+    const formattedDate = publishedDate
+      ? publishedDate.toLocaleDateString(dictionary.locale, {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
+      : '';
 
     const rawContent = translation.article_body
       ?.map((block: any) => block.item?.content || '')
