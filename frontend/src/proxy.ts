@@ -15,15 +15,16 @@ export function proxy(request: NextRequest) {
   // Set CSP frame-ancestors when preview cookie is present
   // (cookie is set by /api/preview/enter route)
   // ========================================
+  
   const previewCookie = request.cookies.get('preview-mode');
+  const previewParam = request.nextUrl.searchParams.get('preview');
+  const inPreview = previewCookie?.value === 'true' || previewParam === 'true';
 
-  if (previewCookie?.value === 'true') {
+  if (inPreview) {
     const directusUrl = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
     const response = NextResponse.next();
-    response.headers.set(
-      'Content-Security-Policy',
-      `frame-ancestors 'self' ${directusUrl}`
-    );
+    response.headers.set('Content-Security-Policy', `frame-ancestors 'self' ${directusUrl}`);
+    response.headers.set('x-pathname', pathname);
     return response;
   }
 

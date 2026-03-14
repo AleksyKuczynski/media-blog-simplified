@@ -64,33 +64,25 @@ export async function GET(request: NextRequest) {
     safePath = '/';
   }
 
-  // Serve an HTML page that sets the cookie client-side then navigates.
-  // A plain 302 redirect causes browsers to silently drop Set-Cookie
-  // headers when the response is inside a cross-origin iframe (Directus → Vercel).
-  const html = `<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="0;url=${safePath}" />
-  </head>
-  <body>
-    <script>
-      document.cookie = "preview-mode=true; path=/; max-age=3600; SameSite=None; Secure";
-      window.location.replace(${JSON.stringify(safePath)});
-    </script>
-  </body>
-</html>`;
+  const previewPath = safePath + (safePath.includes('?') ? '&' : '?') + 'preview=true';
+    const directusUrl = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
 
-  const directusUrl = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
+    const html = `<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="refresh" content="0;url=${previewPath}" />
+    </head>
+    <body>
+      <script>window.location.replace(${JSON.stringify(previewPath)});</script>
+    </body>
+  </html>`;
 
   return new NextResponse(html, {
     status: 200,
     headers: {
       'Content-Type': 'text/html',
-      'Set-Cookie': `preview-mode=true; Path=/; Max-Age=3600; SameSite=None; Secure; HttpOnly`,
-      // Allow this page to load inside the Directus iframe
       'Content-Security-Policy': `frame-ancestors 'self' ${directusUrl}`,
-      // Override Vercel's default X-Frame-Options: SAMEORIGIN
       'X-Frame-Options': 'ALLOWALL',
     },
   });

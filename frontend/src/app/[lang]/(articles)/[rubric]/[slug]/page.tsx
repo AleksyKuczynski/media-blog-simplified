@@ -32,15 +32,18 @@ export const revalidate = 3600;
 export const dynamicParams = true;
 
 export async function generateMetadata({ 
-  params 
+  params,
+  searchParams,
 }: { 
-  params: Promise<{ lang: string; rubric: string; slug: string }> 
+  params: Promise<{ lang: string; rubric: string; slug: string }>;
+  searchParams: Promise<{ preview?: string }>;
 }): Promise<Metadata> {
   return safeGenerateMetadata(params, 'article', async (lang, dictionary, resolvedParams) => {
     const { rubric, slug } = resolvedParams;
-
     const cookieStore = await cookies();
-    const inPreview = cookieStore.get('preview-mode')?.value === 'true';
+    const resolvedSearch = await searchParams;
+    const inPreview = cookieStore.get('preview-mode')?.value === 'true' 
+      || resolvedSearch?.preview === 'true';
 
     const articleSlug = await resolveArticleSlug(slug, lang, inPreview);
     if (!articleSlug) {
@@ -117,14 +120,18 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ 
   params,
+  searchParams,
 }: { 
   params: Promise<{ lang: Lang, rubric: string, slug: string }>,
+  searchParams: Promise<{ preview?: string }>,
 }) {
   const { lang, rubric, slug } = await params;
-  const dictionary = getDictionary(lang as Lang);
+  const resolvedSearch = await searchParams;
   const cookieStore = await cookies();
-  const inPreview = cookieStore.get('preview-mode')?.value === 'true';
+  const inPreview = cookieStore.get('preview-mode')?.value === 'true'
+    || resolvedSearch?.preview === 'true';
 
+  const dictionary = getDictionary(lang as Lang);
 
   // Resolve slug first
   const articleSlug = await resolveArticleSlug(slug, lang, inPreview);
