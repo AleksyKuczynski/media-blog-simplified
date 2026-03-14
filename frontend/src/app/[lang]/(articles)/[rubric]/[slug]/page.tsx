@@ -26,14 +26,10 @@ import Section from '@/features/layout/Section';
 import RelatedArticles from '@/features/article-display/RelatedArticles';
 import { LAYOUT_STYLES, NAVIGATION_STYLES } from './_components/article.styles';
 import { ArticlePageSkeleton } from './_components/ArticlePageSkeleton';
+import { cookies } from 'next/headers';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
-
-function isValidPreview(previewParam: string | undefined, secretParam: string | undefined): boolean {
-  const PREVIEW_SECRET = process.env.PREVIEW_SECRET;
-  return previewParam === 'true' && secretParam === PREVIEW_SECRET;
-}
 
 export async function generateMetadata({ 
   params 
@@ -48,7 +44,8 @@ export async function generateMetadata({
       throw new Error('Article not found');
     }
     
-    const inPreview = false; // TODO: Implement proper preview detection
+    const cookieStore = await cookies();
+    const inPreview = cookieStore.get('preview-mode')?.value === 'true';    
     
     const article = await fetchFullArticle(articleSlug, lang, inPreview);
 
@@ -120,10 +117,8 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ 
   params,
-  searchParams
 }: { 
   params: Promise<{ lang: Lang, rubric: string, slug: string }>,
-  searchParams: Promise<{ preview?: string, secret?: string }>
 }) {
   const { lang, rubric, slug } = await params;
   const dictionary = getDictionary(lang as Lang);
@@ -137,8 +132,8 @@ export default async function ArticlePage({
 
 
   try {
-    const { preview, secret } = await searchParams;
-    const inPreview = isValidPreview(preview, secret);
+    const cookieStore = await cookies();
+    const inPreview = cookieStore.get('preview-mode')?.value === 'true';
 
     const [article, rubricBasics] = await Promise.all([
       fetchFullArticle(articleSlug, lang, inPreview),

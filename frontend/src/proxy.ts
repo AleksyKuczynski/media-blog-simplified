@@ -5,39 +5,32 @@ import { SUPPORTED_LANGUAGES, DEFAULT_LANG, GEO_LANGUAGE_MAP } from '@/config/co
 const PUBLIC_FILE = /\.(.*)$/
 
 export function proxy(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl;
+  const { pathname } = request.nextUrl;
 
   // Skip public files
   if (PUBLIC_FILE.test(pathname)) return NextResponse.next()
 
   // ========================================
-  // PREVIEW MODE HANDLING (Existing Logic)
+  // PREVIEW MODE HANDLING
+  // Set CSP frame-ancestors when preview cookie is present
+  // (cookie is set by /api/preview/enter route)
   // ========================================
-  const previewParam = searchParams.get('preview');
-  const secretParam = searchParams.get('secret');
+  const previewCookie = request.cookies.get('preview-mode');
 
-  if (previewParam === 'true' && secretParam) {
-    const validSecret = process.env.PREVIEW_SECRET;
-    
-    if (secretParam === validSecret) {
-      console.log('✅ Preview request:', pathname);
-      
-      const response = NextResponse.next();
-      
-      const directusUrl = process.env.DIRECTUS_URL || 'http://51.21.135.65:8055';
-      response.headers.set(
-        'Content-Security-Policy', 
-        `frame-ancestors 'self' ${directusUrl}`
-      );
-      
-      return response;
-    }
+  if (previewCookie?.value === 'true') {
+    const directusUrl = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
+    const response = NextResponse.next();
+    response.headers.set(
+      'Content-Security-Policy',
+      `frame-ancestors 'self' ${directusUrl}`
+    );
+    return response;
   }
 
   // ========================================
   // LANGUAGE DETECTION & ROUTING
   // ========================================
-  
+
   // Check if pathname already has language prefix
   const pathnameHasLocale = SUPPORTED_LANGUAGES.some(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
@@ -81,7 +74,6 @@ function detectLanguage(request: NextRequest): string {
   }
 
   // 2. Geo-location (Vercel provides x-vercel-ip-country header)
-  // ✅ FIX: Use headers instead of request.geo
   const country = request.headers.get('x-vercel-ip-country');
   if (country && GEO_LANGUAGE_MAP[country]) {
     return GEO_LANGUAGE_MAP[country];
@@ -94,7 +86,7 @@ function detectLanguage(request: NextRequest): string {
       .split(',')[0]
       ?.split('-')[0]
       ?.toLowerCase();
-    
+
     if (preferredLang === 'ru' && SUPPORTED_LANGUAGES.includes('ru')) {
       return 'ru';
     }
