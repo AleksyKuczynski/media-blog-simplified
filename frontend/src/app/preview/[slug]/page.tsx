@@ -40,21 +40,11 @@ export default async function PreviewRedirectPage({
 }) {
   const { slug } = await params;
 
-  // Set the preview-mode cookie so the article page passes inPreview=true
-  // to fetchFullArticle without relying solely on the query param
-  const cookieStore = await cookies();
-  cookieStore.set('preview-mode', 'true', {
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
-    // No maxAge — session cookie, cleared when browser closes or via /api/preview/exit
-  });
-
   const path = await resolveFullPath(slug);
 
   if (!path) {
     redirect('/');
   }
 
-  redirect(`${path}?preview=true&t=${Date.now()}`);
+  redirect(`${path}?preview=true`);
 }

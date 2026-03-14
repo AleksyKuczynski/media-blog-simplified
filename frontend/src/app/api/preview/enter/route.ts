@@ -19,8 +19,6 @@ export async function GET(request: NextRequest) {
   if (redirectParam) {
     safePath = redirectParam.startsWith('/') ? redirectParam : '/';
   } else if (slugParam) {
-    // Redirect to /preview/[slug] — a dedicated preview resolver page
-    // that runs server-side with full access to resolveArticleSlug(slug, lang, true)
     safePath = `/preview/${encodeURIComponent(slugParam)}`;
   } else {
     safePath = '/';
@@ -28,10 +26,21 @@ export async function GET(request: NextRequest) {
 
   const previewPath = safePath + (safePath.includes('?') ? '&' : '?') + 'preview=true';
 
-  return NextResponse.redirect(new URL(previewPath, request.url), {
+  const response = NextResponse.redirect(new URL(previewPath, request.url), {
     status: 302,
-    headers: {
-      'Content-Security-Policy': `frame-ancestors 'self' ${DIRECTUS_URL}`,
-    },
   });
+
+  // Set cookie here — Route Handlers can set cookies on responses
+  response.cookies.set('preview-mode', 'true', {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+  });
+
+  response.headers.set(
+    'Content-Security-Policy',
+    `frame-ancestors 'self' ${DIRECTUS_URL}`
+  );
+
+  return response;
 }
