@@ -357,6 +357,18 @@ export default async function ArticlePage({
     );
 
   } catch (error) {
+    // In preview mode, surface the real error for debugging
+    if (inPreview) {
+      const message = error instanceof Error ? error.message : String(error);
+      const stack = error instanceof Error ? error.stack : '';
+      return (
+        <div style={{ padding: '2rem', fontFamily: 'monospace', background: '#fee', color: '#900' }}>
+          <h2>Preview Error</h2>
+          <pre style={{ whiteSpace: 'pre-wrap' }}>{message}</pre>
+          <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8em', opacity: 0.7 }}>{stack}</pre>
+        </div>
+      );
+    }
     return (
       <StandardError
         dictionary={dictionary}
