@@ -11,21 +11,6 @@ export function proxy(request: NextRequest) {
   if (PUBLIC_FILE.test(pathname)) return NextResponse.next()
 
   // ========================================
-  // PREVIEW MODE HANDLING
-  // ========================================
-  const previewCookie = request.cookies.get('preview-mode');
-  const previewParam = request.nextUrl.searchParams.get('preview');
-  const inPreview = previewCookie?.value === 'true' || previewParam === 'true';
-
-  if (inPreview) {
-    const directusUrl = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
-    const response = NextResponse.next();
-    response.headers.set('Content-Security-Policy', `frame-ancestors 'self' ${directusUrl}`);
-    response.headers.set('x-pathname', pathname);
-    return response;
-  }
-  
-  // ========================================
   // LANGUAGE DETECTION & ROUTING
   // ========================================
 
