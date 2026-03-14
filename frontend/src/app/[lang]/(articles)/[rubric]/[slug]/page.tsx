@@ -45,6 +45,16 @@ export async function generateMetadata({
     const inPreview = cookieStore.get('preview-mode')?.value === 'true' 
       || resolvedSearch?.preview === 'true';
 
+    // For preview, return minimal metadata immediately — skip all SEO processing
+    // that may throw on incomplete draft data (null publishedAt, missing fields, etc.)
+    if (inPreview) {
+      return {
+        title: `[Preview] ${slug}`,
+        robots: { index: false, follow: false, nocache: true },
+      };
+    }
+
+
     const articleSlug = await resolveArticleSlug(slug, lang, inPreview);
     if (!articleSlug) {
       throw new Error('Article not found');

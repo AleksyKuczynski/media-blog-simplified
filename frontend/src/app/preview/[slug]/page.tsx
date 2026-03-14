@@ -56,5 +56,5 @@ export default async function PreviewRedirectPage({
     redirect('/');
   }
 
-  redirect(`${path}?preview=true`);
+  redirect(`${path}?preview=true&t=${Date.now()}`);
 }
