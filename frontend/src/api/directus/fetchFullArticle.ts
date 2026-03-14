@@ -101,14 +101,16 @@ export async function fetchFullArticle(
     }
 
     // Process article body
-    const articleBody: ArticleBlock[] = (translation.body ?? []).map((block: any) => ({
+    const articleBody: ArticleBlock[] = (translation.body ?? [])
+      .filter((block: any) => block?.item != null)
+      .map((block: any) => ({
       collection: 'block_markdown',
       item: {
         id: block.item.id,
         content: block.item.text
       }
     }));
-    
+
     // Fetch contributors and categories in parallel
     const [contributors, categories] = await Promise.all([
       fetchArticleContributors(slug, lang),
