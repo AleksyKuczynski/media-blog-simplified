@@ -239,22 +239,26 @@ export default async function ArticlePage({
       <>
         {inPreview && <PreviewBanner />}
         
-        <ArticleSchema
-          dictionary={dictionary}
-          articleData={articleSchemaData}
-        />
+        {!inPreview && (
+          <>
+            <ArticleSchema
+              dictionary={dictionary}
+              articleData={articleSchemaData}
+            />
 
-        <QuickNavigationSchema 
-          lang={lang}
-          dictionary={dictionary}
-          currentArticleUrl={currentArticleUrl}
-        />
-        
-        <AuthorsSectionSchema
-          lang={lang}
-          dictionary={dictionary}
-          authors={article.authorsWithDetails}
-        />
+            <QuickNavigationSchema
+              lang={lang}
+              dictionary={dictionary}
+              currentArticleUrl={currentArticleUrl}
+            />
+
+            <AuthorsSectionSchema
+              lang={lang}
+              dictionary={dictionary}
+              authors={article.authorsWithDetails}
+            />
+          </>
+        )}
 
         <article 
           className={LAYOUT_STYLES.articleContainer}
