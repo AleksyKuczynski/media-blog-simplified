@@ -14,14 +14,14 @@ export default function PreviewTabs({ tabs }: { tabs: Tab[] }) {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 flex border-b border-outline bg-surface">
+      <div className="sticky top-0 z-10 flex border-b border-outline bg-sf">
         {tabs.map((tab, i) => (
           <button
             key={tab.lang}
             onClick={() => setActive(i)}
             className={`px-6 py-3 text-sm font-semibold uppercase tracking-widest transition-colors ${
               active === i
-                ? 'border-b-2 border-primary text-primary'
+                ? 'border-b-2 border-primary text-pr-cont'
                 : 'text-on-surface-variant hover:text-on-surface'
             }`}
           >
