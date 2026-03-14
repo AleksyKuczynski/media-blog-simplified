@@ -6,7 +6,6 @@ import { fetchFullArticle, fetchRubricBasics } from '@/api/directus';
 import { processContent } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/markdown/processContent';
 import { Header } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/Header';
 import ArticleContentRenderer from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/content/ArticleContentRenderer';
-import PreviewBanner from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/PreviewBanner';
 import { TableOfContents } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/navigation/TableOfContents';
 import { LAYOUT_STYLES } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/article.styles';
 import Collapsible from '@/shared/ui/Collapsible';
@@ -95,8 +94,6 @@ export default async function PreviewPage({
 
     return (
       <>
-        <PreviewBanner />
-
         <article className={LAYOUT_STYLES.articleContainer}>
           <Header
             title={translation.title || '[No title]'}

@@ -17,7 +17,6 @@ import { Header } from './_components/Header';
 import Collapsible from '@/shared/ui/Collapsible';
 import { TableOfContents } from './_components/navigation/TableOfContents';
 import { ScrollToTopButton } from './_components/ScrollToTopButton';
-import PreviewBanner from './_components/PreviewBanner';
 import StandardError from '@/shared/errors/StandardError';
 import { processContent } from './_components/markdown/processContent';
 import ArticleContentRenderer from './_components/content/ArticleContentRenderer';
@@ -247,8 +246,6 @@ export default async function ArticlePage({
 
     return (
       <>
-        {inPreview && <PreviewBanner />}
-        
         {!inPreview && (
           <>
             <ArticleSchema

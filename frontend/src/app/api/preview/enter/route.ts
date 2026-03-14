@@ -30,13 +30,6 @@ export async function GET(request: NextRequest) {
     status: 302,
   });
 
-  // Set cookie here — Route Handlers can set cookies on responses
-  response.cookies.set('preview-mode', 'true', {
-    httpOnly: true,
-    sameSite: 'lax',
-    path: '/',
-  });
-
   response.headers.set(
     'Content-Security-Policy',
     `frame-ancestors 'self' ${DIRECTUS_URL}`
