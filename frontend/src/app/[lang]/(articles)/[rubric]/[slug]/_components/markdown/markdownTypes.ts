@@ -114,7 +114,7 @@ export interface QuoteBlockquote extends BlockquoteBase {
 
 export interface EpigraphBlockquote extends BlockquoteBase {
   type: '3';
-  source: string;
+  source?: string;
   author: string;
 }
 

@@ -24,21 +24,28 @@ import { BLOCKS_STYLES } from "../article.styles";
 interface Type3Props {
   content: string;
   author: string;
-  source: string;
+  source?: string;
 }
 
 const styles = BLOCKS_STYLES.blockquote3;
 
 export function Type3Blockquote({ content, author, source }: Type3Props) {
+  const lines = content.split('\n').filter(line => line.trim() !== '');
+
   return (
     <blockquote className={styles.container}>
       <p className={styles.content}>
-        {content}
+        {lines.map((line, index) => (
+          <span key={index}>
+            {line}
+            {index < lines.length - 1 && <br />}
+          </span>
+        ))}
       </p>
       <footer className={styles.footer}>
         <cite className={styles.cite}>
           <span className={styles.author}>— {author}</span>
-          <span className={styles.source}>{source}</span>
+          {source && <span className={styles.source}>{source}</span>}
         </cite>
       </footer>
     </blockquote>

@@ -55,16 +55,19 @@ function parseQuote(content: string): QuoteBlockquote | null {
 function parseEpigraph(content: string): EpigraphBlockquote | null {
   const lines = content.trim().split('\n');
   const sourceMatch = lines[0].match(/^# (.+)$/);
-  const authorMatch = lines[1]?.match(/^## (.+)$/);
-  
-  if (!sourceMatch || !authorMatch) return null;
-  
-  const epigraphContent = lines.slice(2).join('\n').trim();
+  const authorMatch = sourceMatch
+    ? lines[1]?.match(/^## (.+)$/)
+    : lines[0].match(/^## (.+)$/);
+
+  if (!authorMatch) return null;
+
+  const contentStartIndex = sourceMatch ? 2 : 1;
+  const epigraphContent = lines.slice(contentStartIndex).join('\n').trim();
   if (!epigraphContent) return null;
 
   return {
     type: '3',
-    source: sourceMatch[1].trim(),
+    ...(sourceMatch && { source: sourceMatch[1].trim() }),
     author: authorMatch[1].trim(),
     content: epigraphContent
   };
