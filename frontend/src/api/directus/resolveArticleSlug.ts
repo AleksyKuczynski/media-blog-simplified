@@ -1,7 +1,9 @@
 // src/api/directus/resolveArticleSlug.ts
 
-import { DIRECTUS_URL } from "./index";
 import { Lang } from "@/config/i18n";
+
+const DIRECTUS_URL = process.env.DIRECTUS_URL;
+const PREVIEW_SECRET = process.env.PREVIEW_SECRET;
 
 /**
  * Resolves URL slug param to main article slug
@@ -16,13 +18,14 @@ import { Lang } from "@/config/i18n";
  */
 export async function resolveArticleSlug(
   slugParam: string,
-  lang: Lang
+  lang: Lang,
+  includesDrafts: boolean = false
 ): Promise<string | null> {
   // Normalize Unicode: u + combining accent -> single ú character
   const normalizedSlug = slugParam.normalize('NFC');
   
   // Step 1: Check if it's a main article slug
-  const existsAsMainSlug = await checkMainSlugExists(normalizedSlug);
+  const existsAsMainSlug = await checkMainSlugExists(normalizedSlug, includesDrafts);
   
   if (existsAsMainSlug) {
     return normalizedSlug;
@@ -37,17 +40,28 @@ export async function resolveArticleSlug(
 /**
  * Check if article exists by main slug (lightweight query)
  */
-async function checkMainSlugExists(slug: string): Promise<boolean> {
+async function checkMainSlugExists(slug: string, includesDrafts: boolean): Promise<boolean> {
   try {
+    const statusFilter = includesDrafts
+      ? { status: { _in: ['published', 'draft'] } }
+      : { status: { _eq: 'published' } };
+      
     const filter = encodeURIComponent(JSON.stringify({
       slug: { _eq: slug },
-      status: { _eq: 'published' }
+      ...statusFilter
     }));
 
     const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=slug&limit=1`;
 
+    const headers: HeadersInit = {};
+    if (includesDrafts && PREVIEW_SECRET) {
+      headers['Authorization'] = `Bearer ${PREVIEW_SECRET}`;
+    }
+
     const response = await fetch(url, {
-      next: { revalidate: 3600, tags: ['article', 'slug-check'] }
+      headers,
+      cache: includesDrafts ? 'no-store' : undefined,
+      next: includesDrafts ? undefined : { revalidate: 3600, tags: ['article', 'slug-check'] },
     });
 
     if (!response.ok) {

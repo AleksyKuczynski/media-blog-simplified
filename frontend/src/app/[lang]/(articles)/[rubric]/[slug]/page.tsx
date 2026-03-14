@@ -39,13 +39,13 @@ export async function generateMetadata({
   return safeGenerateMetadata(params, 'article', async (lang, dictionary, resolvedParams) => {
     const { rubric, slug } = resolvedParams;
 
-    const articleSlug = await resolveArticleSlug(slug, lang);
+    const cookieStore = await cookies();
+    const inPreview = cookieStore.get('preview-mode')?.value === 'true';
+    
+    const articleSlug = await resolveArticleSlug(slug, lang, inPreview);
     if (!articleSlug) {
       throw new Error('Article not found');
     }
-    
-    const cookieStore = await cookies();
-    const inPreview = cookieStore.get('preview-mode')?.value === 'true';    
     
     const article = await fetchFullArticle(articleSlug, lang, inPreview);
 
