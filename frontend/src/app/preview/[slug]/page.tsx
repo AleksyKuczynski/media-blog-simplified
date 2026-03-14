@@ -1,15 +1,8 @@
 // frontend/src/app/preview/[slug]/page.tsx
-//
-// Renders draft and published articles directly — no redirect to the ISR-cached
-// article page. This avoids two fundamental issues:
-//   1. SameSite=Lax cookies are blocked in cross-site iframes (Directus preview)
-//   2. Next.js ISR ignores query params, so ?preview=true never busts the cache
-//
-// This page is force-dynamic and always fetches fresh from Directus.
 
 import { notFound } from 'next/navigation';
 import { getDictionary, Lang } from '@/config/i18n';
-import { fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
+import { fetchFullArticle, fetchRubricBasics } from '@/api/directus';
 import { processContent } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/markdown/processContent';
 import { Header } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/Header';
 import ArticleContentRenderer from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/content/ArticleContentRenderer';
@@ -61,76 +54,98 @@ export default async function PreviewPage({
 }) {
   const { slug } = await params;
 
-  const resolved = await resolvePreviewArticle(slug);
-  if (!resolved) {
-    notFound();
+  try {
+    const resolved = await resolvePreviewArticle(slug);
+    if (!resolved) {
+      notFound();
+    }
+
+    const { lang, rubricSlug, articleSlug } = resolved;
+    const dictionary = getDictionary(lang);
+
+    const [article, rubricBasics] = await Promise.all([
+      fetchFullArticle(articleSlug, lang, true),
+      fetchRubricBasics(lang),
+    ]);
+
+    if (!article) {
+      notFound();
+    }
+
+    const translation = article.translations[0];
+    if (!translation) {
+      notFound();
+    }
+
+    const publishedDate = article.published_at ? new Date(article.published_at) : null;
+    const formattedDate = publishedDate
+      ? publishedDate.toLocaleDateString(dictionary.locale, {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })
+      : '';
+
+    const rawContent = translation.article_body
+      ?.map((block: any) => block.item?.content || '')
+      .join('\n\n') || '';
+
+    const processedContent = await processContent(rawContent, lang);
+    const { chunks: contentChunks, toc: tocItems } = processedContent;
+
+    return (
+      <>
+        <PreviewBanner />
+
+        <article className={LAYOUT_STYLES.articleContainer}>
+          <Header
+            title={translation.title || '[No title]'}
+            lead={translation.lead}
+            imagePath={article.article_heading_img}
+            authors={article.authorsWithDetails}
+            illustrator={article.illustratorWithDetails}
+            publishedDate={formattedDate}
+            dictionary={dictionary}
+          />
+
+          {article.toc && tocItems.length > 0 && (
+            <Collapsible
+              title={dictionary.content.labels.tableOfContents}
+              ariaLabel={dictionary.content.labels.tableOfContents}
+            >
+              <TableOfContents items={tocItems} />
+            </Collapsible>
+          )}
+
+          <ArticleContentRenderer
+            chunks={contentChunks}
+            lang={lang}
+          />
+        </article>
+      </>
+    );
+
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const stack = error instanceof Error ? (error.stack ?? '') : '';
+    return (
+      <div style={{
+        padding: '2rem',
+        fontFamily: 'monospace',
+        background: '#fff0f0',
+        color: '#900',
+        margin: '1rem',
+        borderRadius: '8px',
+        border: '2px solid #f99',
+      }}>
+        <h2 style={{ marginTop: 0 }}>⚠️ Preview render error</h2>
+        <p><strong>Slug:</strong> {slug}</p>
+        <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{message}</pre>
+        <details>
+          <summary style={{ cursor: 'pointer' }}>Stack trace</summary>
+          <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8em', opacity: 0.7 }}>{stack}</pre>
+        </details>
+      </div>
+    );
   }
-
-  const { lang, rubricSlug, articleSlug } = resolved;
-  const dictionary = getDictionary(lang);
-
-  const [article, rubricBasics] = await Promise.all([
-    fetchFullArticle(articleSlug, lang, true), // includesDrafts = true
-    fetchRubricBasics(lang),
-  ]);
-
-  if (!article) {
-    notFound();
-  }
-
-  const translation = article.translations[0];
-  if (!translation) {
-    notFound();
-  }
-
-  const publishedDate = article.published_at ? new Date(article.published_at) : null;
-  const formattedDate = publishedDate
-    ? publishedDate.toLocaleDateString(dictionary.locale, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
-    : '';
-
-  const rawContent = translation.article_body
-    ?.map((block: any) => block.item?.content || '')
-    .join('\n\n') || '';
-
-  const processedContent = await processContent(rawContent, lang);
-  const { chunks: contentChunks, toc: tocItems } = processedContent;
-
-  const rubricDetails = rubricBasics.find(r => r.slug === rubricSlug);
-  const rubricName = rubricDetails?.name || rubricSlug;
-
-  return (
-    <>
-      <PreviewBanner />
-
-      <article className={LAYOUT_STYLES.articleContainer}>
-        <Header
-          title={translation.title || '[No title]'}
-          lead={translation.lead}
-          imagePath={article.article_heading_img}
-          authors={article.authorsWithDetails}
-          illustrator={article.illustratorWithDetails}
-          publishedDate={formattedDate}
-          dictionary={dictionary}
-        />
-
-        {article.toc && tocItems.length > 0 && (
-          <Collapsible
-            title={dictionary.content.labels.tableOfContents}
-            ariaLabel={dictionary.content.labels.tableOfContents}
-          >
-            <TableOfContents items={tocItems} />
-          </Collapsible>
-        )}
-
-        <ArticleContentRenderer
-          chunks={contentChunks}
-          lang={lang}
-        />
-      </article>
-    </>
-  );
 }
