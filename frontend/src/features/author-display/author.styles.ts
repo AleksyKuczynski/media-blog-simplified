@@ -33,7 +33,7 @@ export const AUTHOR_CARD_STYLES = {
   
   // Author name
   name: cn(
-    'text-on-sf grow',
+    'text-on-tr grow',
     'text-xl sm:text-xl md:text-2xl lg:max-xl:text-xl xl:max-2xl:text-2xl uppercase'
 
   ),
@@ -46,7 +46,7 @@ export const AUTHOR_CARD_STYLES = {
   ),
 
   // Total articles
-  count: 'text-sm text-on-sf-var mt-1',
+  count: 'text-sm text-on-tr-var mt-1',
 } as const;
 
 export const AUTHOR_CARD_SKELETON_STYLES = {

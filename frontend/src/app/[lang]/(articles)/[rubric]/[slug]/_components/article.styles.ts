@@ -71,7 +71,7 @@ export const LAYOUT_STYLES = {
     
     // Lead paragraph - order-4, full width
     lead: cn(
-      'order-4 font-light text-on-sf',
+      'order-4 font-light dark:font-extralight text-on-sf',
       'max-sm:px-4 pt-6', 
       'md:col-span-2 md:max-w-2xl md:mx-auto', 
       'text-xl leading-9',
@@ -123,11 +123,14 @@ export const ELEMENTS_STYLES = {
 
   // Paragraph
   paragraph: {
-    base: `font-serif text-on-sf first:mt-0 last:mb-0
-          mb-3 
-          max-w-2xl mx-auto
-          text-lg leading-[1.5]
-          lg:text-xl lg:leading-[1.5] lg:max-w-4xl`,
+    base: cn(
+      'font-serif dark:font-light text-on-sf', 
+      'first:mt-0 last:mb-0',
+      'mb-3',
+      'max-w-2xl mx-auto',
+      'text-lg leading-[1.5]',
+      'lg:text-xl lg:leading-[1.5] lg:max-w-4xl'
+    )
   },
 
   // Links
@@ -139,11 +142,13 @@ export const ELEMENTS_STYLES = {
 
   // Lists
   list: {
-    base: `font-serif text-on-sf 
-          my-6 pl-6 space-y-2
-          max-w-2xl mx-auto
-          text-lg leading-[1.5]
-          lg:text-xl lg:leading-[1.5] lg:max-w-3xl lg:mb-16`,
+    base: cn(
+      'font-serif dark:font-light text-on-sf',
+      'my-6 pl-6 space-y-2',
+      'max-w-2xl mx-auto',
+      'text-lg leading-[1.5]',
+      'lg:text-xl lg:leading-[1.5] lg:max-w-3xl lg:mb-16'
+    ),
     ordered: 'list-decimal list-outside',
     unordered: 'list-disc list-outside',
     item: 'text-on-sf marker:text-sec-cont last:mb-0',

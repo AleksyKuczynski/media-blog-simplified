@@ -46,9 +46,6 @@
   --color-pr-fix: var(--color-primary-fixed);
   --color-pr-dim: var(--color-primary-fixed-dim);
   --color-pr-sf: var(--color-primary-surface);
-  --color-pr-inv: var(--color-primary-container-inverted);
-  --color-pr-fix-inv: var(--color-primary-fixed-inverted);
-  --color-pr-dim-inv: var(--color-primary-fixed-dim-inverted);
 
   /* Colors - Secondary hierarchy */
   --color-sec-cont: var(--color-secondary-container);
@@ -149,9 +146,6 @@ html {
   --color-primary-fixed: #4abbbb;
   --color-primary-fixed-dim: #036565;
   --color-primary-surface: #76c6c6;
-  --color-primary-container-inverted: #dbeafe;
-  --color-primary-fixed-inverted: #bfdbfe;
-  --color-primary-fixed-dim-inverted: #93c5fd;
 
   // Secondary hierarchy
   --color-secondary-container: #f2a2bb;
@@ -185,8 +179,8 @@ html {
 @media (prefers-color-scheme: dark) {
   :root {
     // Surface hierarchy
-    --color-surface: #10151c;
-    --color-surface-container: #18222d;
+    --color-surface: #1c2734;
+    --color-surface-container: #10151c;
     --color-surface-container-high: #2b3949;
     --color-surface-container-highest: #324454;
 
@@ -194,10 +188,7 @@ html {
     --color-primary-container: #077777;
     --color-primary-fixed: #016464;
     --color-primary-fixed-dim: #036565;
-    --color-primary-surface: #034040;
-    --color-primary-container-inverted: #1e293b;
-    --color-primary-fixed-inverted: #334155;
-    --color-primary-fixed-dim-inverted: #475569;
+    --color-primary-surface: #0b4e4e;
 
     // Secondary hierarchy
     --color-secondary-container: #f2a2bb;
@@ -209,18 +200,17 @@ html {
     --color-tertiary-container: #b7676f;
     --color-tertiary-fixed: #803940;
     --color-tertiary-fixed-dim: #a2565e;
-    --color-tertiary-surface: #3b1619;
+    --color-tertiary-surface: #561e23;
 
     // Text colors
     --color-on-surface: #FFFFFF;
-    --color-on-surface-variant: #E6E6E6;
     --color-on-surface-variant: #b2b2b2;
-    --color-on-primary-container: #1a1a1a;
-    --color-on-primary-container-variant: #333333;
-    --color-on-secondary-container: #1a1a1a;
-    --color-on-secondary-container-variant: #333333;
-    --color-on-tertiary-container: #1a1a1a;
-    --color-on-tertiary-container-variant: #333333;
+    --color-on-primary-container: #23abab;
+    --color-on-primary-container-variant: #33c4c4;
+    --color-on-secondary-container: #f8b2c8;
+    --color-on-secondary-container-variant: rgb(249, 190, 209);
+    --color-on-tertiary-container: #c9727b;
+    --color-on-tertiary-container-variant: rgb(216, 111, 122);
 
     // Outlines
     --color-outline: #8c8c8c;
