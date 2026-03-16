@@ -163,12 +163,12 @@ html {
   --color-on-surface: #0f172a;
   --color-on-surface-variant: #475569;
   --color-on-surface-dim: #909fb5;
-  --color-on-primary-container: #ffffff;
-  --color-on-primary-container-variant: #f1f5f9;
-  --color-on-secondary-container: #ffffff;
-  --color-on-secondary-container-variant: #f1f5f9;
-  --color-on-tertiary-container: #ffffff;
-  --color-on-tertiary-container-variant: #f1f5f9;
+  --color-on-primary-container: #149393;
+  --color-on-primary-container-variant: #01a7a7;
+  --color-on-secondary-container: #d27995;
+  --color-on-secondary-container-variant: rgb(246, 116, 157);
+  --color-on-tertiary-container: #833d44;
+  --color-on-tertiary-container-variant: rgb(147, 38, 49);
 
   // Outlines
   --color-outline: #cbd5e1;
@@ -179,28 +179,28 @@ html {
 @media (prefers-color-scheme: dark) {
   :root {
     // Surface hierarchy
-    --color-surface: #1c2734;
-    --color-surface-container: #10151c;
-    --color-surface-container-high: #2b3949;
-    --color-surface-container-highest: #324454;
+    --color-surface: #2b3949;
+    --color-surface-container: #26323d;
+    --color-surface-container-high: #1c2734;
+    --color-surface-container-highest: #10151c;
 
     // Primary hierarchy - inverted for dark mode
     --color-primary-container: #077777;
-    --color-primary-fixed: #016464;
+    --color-primary-fixed: #0b4e4e;
     --color-primary-fixed-dim: #036565;
-    --color-primary-surface: #0b4e4e;
+    --color-primary-surface: #055858;
 
     // Secondary hierarchy
     --color-secondary-container: #f2a2bb;
-    --color-secondary-fixed: #df6f93;
+    --color-secondary-fixed: #a74967;
     --color-secondary-fixed-dim: #e28aa6;
-    --color-secondary-surface: #a74967;
+    --color-secondary-surface: #cf6889;
 
     // Tertiary hierarchy
     --color-tertiary-container: #b7676f;
-    --color-tertiary-fixed: #803940;
+    --color-tertiary-fixed: #561e23;
     --color-tertiary-fixed-dim: #a2565e;
-    --color-tertiary-surface: #561e23;
+    --color-tertiary-surface: #703238;
 
     // Text colors
     --color-on-surface: #FFFFFF;
