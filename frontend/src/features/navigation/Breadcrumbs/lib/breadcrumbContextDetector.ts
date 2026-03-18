@@ -2,10 +2,9 @@
 // Detects breadcrumb context and handles language switching
 
 import { headers } from 'next/headers';
-import { Lang } from '@/config/i18n';
+import { Dictionary, Lang } from '@/config/i18n';
 import { BreadcrumbContext, SmartBreadcrumbItem } from '@/features/navigation/Breadcrumbs/types';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import Dictionary from '../../../../config/i18n/types';
 
 /**
  * Detect user's navigation context based on referrer and URL patterns
@@ -280,9 +279,16 @@ export function generateContextualBreadcrumbs(
 
 case 'author':
   if (context.contextData?.authorSlug) {
-    // Use authorName from context if available, otherwise fall back to slug
-    const displayName = context.contextData.authorName || context.contextData.authorSlug;
-    
+    const authorSlug = context.contextData.authorSlug;
+
+    // Only show author context if this author is actually connected to the article
+    const isRelated = articleData.authors?.some(a => a.slug === authorSlug);
+    if (!isRelated) {
+      userPath = canonicalPath;
+      break;
+    }
+
+    const displayName = context.contextData.authorName || authorSlug;
     userPath = [
       baseHome,
       {
