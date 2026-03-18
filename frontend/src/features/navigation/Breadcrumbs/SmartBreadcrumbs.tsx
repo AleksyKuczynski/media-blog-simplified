@@ -43,7 +43,11 @@ export default async function SmartBreadcrumbs({
 }: SmartBreadcrumbsProps) {
   
   // Detect context from referrer
-  const context = await detectBreadcrumbContext(dictionary, lang);
+  const context = await detectBreadcrumbContext(
+    dictionary,
+    lang,
+    `/${lang}/${articleData.rubricSlug}/${articleData.slug}`
+  );
 
   // Generate contextual breadcrumb paths
   const { userPath, canonicalPath, seoAlternatives } = generateContextualBreadcrumbs(

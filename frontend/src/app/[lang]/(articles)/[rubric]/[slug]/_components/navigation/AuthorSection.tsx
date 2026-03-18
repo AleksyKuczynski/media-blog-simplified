@@ -22,14 +22,14 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Dictionary } from '@/config/i18n';
-import { DEFAULT_LANG } from '@/config/constants/constants';
+import { Dictionary, Lang } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
 import { DIRECTUS_URL } from '@/api/directus';
 import { NAVIGATION_STYLES } from '../article.styles';
 
 interface AuthorSectionProps {
   dictionary: Dictionary
+  lang: Lang;
   author: {
     name: string;
     slug: string;
@@ -45,11 +45,12 @@ interface AuthorSectionProps {
  */
 export default function AuthorSection({
   dictionary,
+  lang,
   author,
 }: AuthorSectionProps) {
   const styles = NAVIGATION_STYLES.relatedLinks.author;
   
-  const authorUrl = `/${DEFAULT_LANG}/authors/${author.slug}`;
+  const authorUrl = `/${lang}/authors/${author.slug}`;
   
   // Generate aria label
   const ariaLabel = processTemplate(

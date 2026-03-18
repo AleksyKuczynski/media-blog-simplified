@@ -14,6 +14,7 @@ import Dictionary from '../../../../config/i18n/types';
 export async function detectBreadcrumbContext(
   dictionary: Dictionary,
   lang: Lang,
+  currentPath?: string,
 ): Promise<BreadcrumbContext> {
   try {
     const headersList = await headers();
@@ -35,6 +36,11 @@ export async function detectBreadcrumbContext(
 
     // Extract referrer path for pattern matching
     const referrerPath = new URL(referrer).pathname;
+
+    // Self-referral = page refresh → fall back to canonical
+    if (currentPath && referrerPath === currentPath) {
+      return { type: 'direct' };
+    }
     
     // Check if referrer is from a different language (language switch scenario)
     const referrerLangMatch = referrerPath.match(/^\/([a-z]{2})\//);

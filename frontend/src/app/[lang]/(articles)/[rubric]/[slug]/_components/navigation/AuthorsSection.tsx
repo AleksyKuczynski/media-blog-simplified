@@ -24,7 +24,7 @@
  * @param dictionary - Translations
  */
 
-import { Dictionary } from '@/config/i18n';
+import { Dictionary, Lang } from '@/config/i18n';
 import { NAVIGATION_STYLES } from '../article.styles';
 import AuthorSection from './AuthorSection';
 
@@ -35,12 +35,14 @@ interface AuthorsSectionProps {
     avatar?: string;
   }>;
   className?: string;
+  lang: Lang;
   dictionary: Dictionary;
 }
 
 export default function AuthorsSection({
   authors,
   className,
+  lang,
   dictionary
 }: AuthorsSectionProps) {
   // Filter out editorial/placeholder authors
@@ -69,7 +71,8 @@ export default function AuthorsSection({
       <div className={styles.grid}>
         {realAuthors.map((author) => (
           <AuthorSection
-            dictionary={dictionary} 
+            dictionary={dictionary}
+            lang={lang} 
             key={author.slug} 
             author={author}
           />

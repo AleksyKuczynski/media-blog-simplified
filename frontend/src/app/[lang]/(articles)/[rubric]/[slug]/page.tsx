@@ -243,6 +243,7 @@ export default async function ArticlePage({
               authors={article.authorsWithDetails}
               illustrator={article.illustratorWithDetails}
               publishedDate={formattedDate}
+              lang={lang}
               dictionary={dictionary}
             />
 
@@ -270,6 +271,7 @@ export default async function ArticlePage({
               <AuthorsSection
                 className={NAVIGATION_STYLES.relatedLinks.authors.containerBottomMargin} 
                 authors={article.authorsWithDetails}
+                lang={lang}
                 dictionary={dictionary}
               />
             )}

@@ -30,7 +30,7 @@
 
 import Image from 'next/image';
 import { DIRECTUS_URL, ArticleAuthor } from '@/api/directus';
-import { Dictionary } from '@/config/i18n';
+import { Dictionary, Lang } from '@/config/i18n';
 import { LAYOUT_STYLES } from './article.styles';
 import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
 import AuthorsSection from './navigation/AuthorsSection';
@@ -40,6 +40,7 @@ interface HeaderProps {
   title: string;
   publishedDate: string;
   authors: ArticleAuthor[];
+  lang: Lang;
   dictionary: Dictionary;
   imagePath?: string;
   lead?: string;
@@ -52,6 +53,7 @@ export function Header({
   title, 
   publishedDate, 
   authors,
+  lang,
   dictionary,
   imagePath,
   lead,
@@ -105,6 +107,7 @@ export function Header({
         <div className={styles.metadataBox}>
           <AuthorsSection 
             authors={authors}
+            lang={lang}
             dictionary={dictionary}
             className={styles.authorsWrapper}
           />

@@ -40,7 +40,7 @@ export const ENGAGEMENT_BAR_STYLES = {
     base: `fixed bottom-4 left-4 z-[60] 
             flex xl:flex-col gap-2 
             py-3 px-4 
-            bg-pr-cont hover:bg-pr-fix text-on-pr rounded-full 
+            bg-pr-cont hover:bg-pr-dim text-on-pr rounded-full 
             shadow-lg hover:shadow-xl transition-all duration-300`,
     visible: 'opacity-100 translate-y-0',
     hidden: 'opacity-0 translate-y-4 pointer-events-none',

@@ -12,10 +12,10 @@ interface ActionLinkProps {
 }
 
 const VARIANT_STYLES = {
-  primary: 'text-on-pr hover:text-on-pr-var transition-colors duration-200',
-  secondary: 'text-on-sec hover:text-on-sec-var transition-colors duration-200',
-  tertiary: 'text-on-tr hover:text-on-tr-var transition-colors duration-200',
-  default: 'text-on-pr hover:text-on-pr-var transition-colors duration-200',
+  primary: 'text-pr-cont hover:text-on-pr-var transition-colors duration-200',
+  secondary: 'text-on-sec hover:text-on-pr-var transition-colors duration-200',
+  tertiary: 'text-on-tr hover:text-on-pr-var transition-colors duration-200',
+  default: 'text-on-sf-var hover:text-on-pr transition-colors duration-200',
 } as const;
 
 const BASE_STYLES = 'mt-4 font-medium transition-colors duration-200 flex justify-end items-end';
