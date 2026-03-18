@@ -12,7 +12,7 @@ interface LogoProps {
 }
 
 const variantStyles = {
-  desktop: 'w-20 aspect-square',
+  desktop: 'w-16 aspect-square',
   mobile: 'w-12 lg:w-16 aspect-square',
   footer: 'w-60 h-28'
 }

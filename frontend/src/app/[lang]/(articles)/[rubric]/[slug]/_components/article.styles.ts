@@ -165,7 +165,7 @@ export const MEDIA_STYLES = {
     figure: `max-w-svw -mx-2 my-8 md:my-12 lg:my-16 md:mx-auto`,
     container: `mx-auto overflow-hidden bg-sf-cont`,
     image: 'block w-full h-full object-contain',
-    caption: 'max-w-2xl mx-auto mt-2 px-4 prose lg:prose-lg text-on-sf-var',
+    caption: 'max-md:mx-2 max-w-2xl lg:max-w-4xl mx-auto mt-2 prose lg:prose-lg text-on-sf-var',
   },  
   
   // ImageFrame Skeleton

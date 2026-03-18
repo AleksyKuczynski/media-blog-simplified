@@ -18,7 +18,7 @@ export const HEADER_STYLES = {
 
 export const DESKTOP_NAV_STYLES = {
   container: 'hidden xl:block py-2 backdrop-blur-lg transition-all duration-300',
-  grid: 'grid grid-cols-3 items-center mx-auto px-8',
+  grid: 'grid grid-cols-3 items-center mx-auto px-4',
   
   leftSection: 'flex items-center justify-start',
   centerSection: 'flex items-center justify-center',
