@@ -7,9 +7,10 @@ export default async function AuthorLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ lang: Lang; slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }) {
-  const { lang, slug } = await params;
+  const { lang: langParam, slug } = await params;
+  const lang = langParam as Lang;
   const dictionary = getDictionary(lang);
   const pathname = `/${lang}/authors/${slug}`;
 

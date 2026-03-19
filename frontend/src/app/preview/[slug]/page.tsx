@@ -78,6 +78,7 @@ async function buildTabContent(articleSlug: string, lang: Lang) {
           illustrator={article.illustratorWithDetails}
           publishedDate={formattedDate}
           dictionary={dictionary}
+          lang={lang}
         />
         {article.toc && tocItems.length > 0 && (
           <Collapsible
