@@ -102,6 +102,7 @@ export default async function CategoryPage({
                 dictionary={dictionary}
                 categorySlug={categorySlug}
                 ariaLabel={`${dictionary.sections.templates.categoryDescription} ${category.name}`}
+                fromContext={`category:${categorySlug}`}
               />
               
               <Pagination

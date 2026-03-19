@@ -111,6 +111,7 @@ export default async function RubricPage({
                   lang={lang}
                   dictionary={dictionary}
                   ariaLabel={`${dictionary.sections.labels.articles} в рубрике ${rubricName}`}
+                  fromContext={`rubric:${rubric}`}
                 />
                 
                 {totalPages > 1 && (

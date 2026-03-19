@@ -90,10 +90,13 @@ export async function generateMetadata({
 
 export default async function ArticlePage({ 
   params,
+  searchParams,
 }: { 
   params: Promise<{ lang: Lang, rubric: string, slug: string }>,
+  searchParams: Promise<{ from?: string }>,
 }) {
   const { lang, rubric, slug } = await params;
+  const { from } = await searchParams;
 
   const dictionary = getDictionary(lang as Lang);
 
@@ -227,6 +230,7 @@ export default async function ArticlePage({
               lang={lang}
               articleData={articleBreadcrumbData}
               dictionary={dictionary}
+              fromParam={from}
             />
         
             <CategoriesAndRubricSection

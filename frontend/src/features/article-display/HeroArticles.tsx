@@ -46,6 +46,7 @@ async function HeroArticlesContent({ lang, dictionary, rubricSlug }: HeroArticle
             rubricSlug={rubricSlug} 
             layout="promoted"
             dictionary={dictionary}
+            fromContext="home"
           />
         </div>
         
@@ -59,6 +60,7 @@ async function HeroArticlesContent({ lang, dictionary, rubricSlug }: HeroArticle
               rubricSlug={rubricSlug} 
               layout="latest"
               dictionary={dictionary}
+              fromContext="home"
             />
           ))}
         </div>

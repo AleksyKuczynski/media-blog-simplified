@@ -206,6 +206,7 @@ export default async function AuthorPage({
                 slugInfos={authoredSlugs} 
                 lang={lang}
                 dictionary={dictionary}
+                fromContext={`author:${slug}`}
               />
               {totalPages > 1 && (
                 <Pagination
@@ -239,6 +240,7 @@ export default async function AuthorPage({
                 slugInfos={illustratedSlugs} 
                 lang={lang}
                 dictionary={dictionary}
+                fromContext={`author:${slug}`}
               />
               {illustratedTotalPages > 1 && (
                 <Pagination

@@ -1,7 +1,7 @@
 // src/main/components/ArticleCards/interfaces.ts
 // MIGRATED: Clean interfaces using new dictionary system
 import { Dictionary, Lang } from "@/config/i18n";
-import { ArticleCardType } from "@/api/directus";
+import { ArticleCardType, ArticleSlugInfo } from "@/api/directus";
 
 // Enhanced ImageProps with proper Next.js Image support
 export interface ImageProps {
@@ -13,11 +13,23 @@ export interface ImageProps {
   readonly height?: number;
 }
 
-// MIGRATED: Base props now use full dictionary
+export interface ArticleListProps {
+  readonly slugInfos: ArticleSlugInfo[];
+  readonly lang: Lang;
+  readonly dictionary: Dictionary;
+  readonly authorSlug?: string;
+  readonly categorySlug?: string;
+  readonly rubricSlug?: string;
+  readonly className?: string;
+  readonly ariaLabel?: string;
+  readonly errorMessage?: string;
+  readonly fromContext?: string;
+}
+
 interface BaseArticleCardProps {
   readonly article: ArticleCardType;
   readonly articleLink: string;
-  readonly dictionary: Dictionary; // MIGRATED: Full dictionary instead of dict.common
+  readonly dictionary: Dictionary;
   readonly lang: Lang;
 }
 
@@ -27,7 +39,8 @@ export interface ArticleCardProps {
   readonly authorSlug?: string;
   readonly rubricSlug?: string;
   readonly layout?: ArticleCardType['layout'];
-  readonly dictionary: Dictionary; // MIGRATED: Now properly used
+  readonly dictionary: Dictionary;
+  readonly fromContext?: string;
 }
 
 export interface ArticleCardVariantProps extends BaseArticleCardProps {

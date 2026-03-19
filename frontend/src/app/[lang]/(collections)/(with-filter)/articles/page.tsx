@@ -113,6 +113,7 @@ export default async function ArticlesPage({
                 slugInfos={currentPageSlugs} 
                 lang={lang as Lang}
                 dictionary={dictionary}
+                fromContext="articles"
               />
               
               {totalPages > 1 && (

@@ -1,24 +1,11 @@
 // src/features/article-display/ArticleList.tsx
 
 import { Suspense } from 'react';
-import { Dictionary, Lang } from '@/config/i18n';
 import ArticleCard from './ArticleCard';
 import { ArticleCardSkeletonVariant } from './ArticleCardVariant';
 import { ARTICLE_LIST_STYLES } from './articles.styles';
-import { ArticleSlugInfo } from '@/api/directus';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-
-interface ArticleListProps {
-  readonly slugInfos: ArticleSlugInfo[];
-  readonly lang: Lang;
-  readonly dictionary: Dictionary;
-  readonly authorSlug?: string;
-  readonly categorySlug?: string;
-  readonly rubricSlug?: string;
-  readonly className?: string;
-  readonly ariaLabel?: string;
-  readonly errorMessage?: string;
-}
+import { ArticleListProps } from './interfaces';
 
 export default function ArticleList({
   slugInfos,
@@ -28,7 +15,8 @@ export default function ArticleList({
   dictionary,
   errorMessage,
   className = '',
-  ariaLabel
+  ariaLabel,
+  fromContext
 }: ArticleListProps) {
   
   // Empty state
@@ -104,6 +92,7 @@ export default function ArticleList({
               rubricSlug={rubricSlug}
               layout={slugInfo.layout}
               dictionary={dictionary}
+              fromContext={fromContext}
               aria-posinset={index + 1}
               aria-setsize={slugInfos.length}
             />
