@@ -14,7 +14,8 @@ export default async function ArticleCard({
   authorSlug, 
   rubricSlug, 
   layout,
-  dictionary 
+  dictionary,
+  fromContext
 }: ArticleCardProps) {
   const article = await getArticleCardData(slug, lang);
 
@@ -32,6 +33,10 @@ export default async function ArticleCard({
   const articleLink = rubricSlug
     ? generateArticleLink(rubricSlug, slug, lang, translation.local_slug)
     : await generateArticleLinkAsync(slug, lang, authorSlug);
+
+  const finalLink = fromContext
+  ? `${articleLink}?from=${encodeURIComponent(fromContext)}`
+  : articleLink;
 
   const cardLayout = layout || article.layout || 'regular';
 
@@ -51,7 +56,7 @@ export default async function ArticleCard({
       <ArticleCardVariant
         article={article}
         formattedDate={formattedDate}
-        articleLink={articleLink}
+        articleLink={finalLink}
         dictionary={dictionary}
         imageProps={imageProps}
         layout={cardLayout}
