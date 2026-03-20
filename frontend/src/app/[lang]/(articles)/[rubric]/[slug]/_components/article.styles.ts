@@ -185,26 +185,34 @@ export const MEDIA_STYLES = {
 export const BLOCKS_STYLES = {
   // Blockquote Type 1 (Highlight)
   blockquote1: {
-    container: `relative mb-6 p-6 pt-8 
-            max-w-xl mx-auto
-            lg:my-12
-            before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
-    content: `text-on-sf-var my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif
-            text-xl leading-[1.75] 
-            md:text-2xl md:leading-[1.75] 
-            lg:text-3xl lg:leading-[1.75]`,
+    container: cn(
+      'relative mb-6 p-6 pt-8',
+      'max-w-xl mx-auto',
+      'lg:my-12',
+      'before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2'
+    ),
+    content: cn(
+      'text-on-sf-var my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif',
+      'text-xl leading-[1.75]',
+      'md:text-2xl md:leading-[1.75]',
+      'lg:text-3xl lg:leading-[1.75]'
+    ),
   },
 
 // Blockquote Type 2 (Quote with Author)
   blockquote2: {
-    container: `relative mb-6 p-6 pt-8
-            max-w-xl mx-auto
-            lg:my-12
-            before:content-["""] before:text-8xl before:text-sec-cont before:absolute before:-mt-2`,
-    content: `text-on-sf-var my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif 
-            text-xl leading-[1.75] 
-            md:text-2xl md:leading-[1.75] 
-            lg:text-3xl lg:leading-[1.75]`,
+    container: cn(
+      'relative mb-6 p-6 pt-8',
+      'max-w-xl mx-auto',
+      'lg:my-12',
+      'before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2'
+    ),
+    content: cn(
+      'text-on-sf-var my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif',
+      'text-xl leading-[1.75]',
+      'md:text-2xl md:leading-[1.75]',
+      'lg:text-3xl lg:leading-[1.75]'
+    ),
     footer: 'text-right mb-2',
     cite: 'text-on-sf-var max-sm:text-sm font-medium not-italic',
   },
@@ -221,51 +229,65 @@ export const BLOCKS_STYLES = {
 
   // Blockquote Type 4 (Profile with Avatar)
   blockquote4: {
-    container: `relative flex flex-col 
-            rounded-2xl border border-ol shadow-sm
-            max-w-xl mx-auto my-12
-            max-sm:mx-6
-            lg:my-12 lg:max-w-2xl`,
-    label: `bg-sf text-sec-cont font-semibold tracking-wide
-            -mt-4 mx-auto px-3 py-1 
-            md:text-lg md:px-4
-            lg:text-2xl`,
-    content: `text-lg font-serif leading-relaxed text-on-sf-var
-            p-6 pt-2
-            md:p-8 md:pt-4
-            lg:text-2xl lg:leading-[1.75] lg:p-12 lg:pt-6`,
+    container: cn(
+      'relative flex flex-col',
+      'rounded-2xl border border-ol shadow-sm',
+      'max-w-xl mx-auto my-12',
+      'max-sm:mx-6',
+      'lg:my-12 lg:max-w-2xl'
+    ),
+    label: cn(
+      'bg-sf text-sec-cont font-semibold tracking-wide',
+      '-mt-4 mx-auto px-3 py-1',
+      'md:text-lg md:px-4',
+      'lg:text-2xl'
+    ),
+    content: cn(
+      'text-lg font-serif leading-relaxed text-on-sf-var',
+      'p-6 pt-2',
+      'md:p-8 md:pt-4',
+      'lg:text-2xl lg:leading-[1.75] lg:p-12 lg:pt-6'
+    ),
   },
 
 // Table
   table: {
     wrapper: `max-w-svw -mx-2 my-8 md:my-12 lg:my-16 md:mx-auto`,
-    container: `relative mx-auto overflow-x-auto
-                max-w-full
-                [&::-webkit-scrollbar]:h-2
-                [&::-webkit-scrollbar-track]:bg-sf-cont
-                [&::-webkit-scrollbar-thumb]:bg-ol
-                [&::-webkit-scrollbar-thumb]:rounded-full`,
+    container: cn(
+      'relative mx-auto overflow-x-auto',
+      'max-w-full',
+      ' [&::-webkit-scrollbar]:h-2',
+      ' [&::-webkit-scrollbar-track]:bg-sf-cont',
+      ' [&::-webkit-scrollbar-thumb]:bg-ol',
+      ' [&::-webkit-scrollbar-thumb]:rounded-full'
+    ),
     table: `w-full border-collapse
             min-w-[600px]
             max-w-4xl mx-auto`,
     header: 'bg-sf-var',
-    headerCell: `px-4 py-3 font-semibold text-on-sf border-b-2 border-ol
-                 text-sm md:text-base
-                 min-w-[100px] max-w-[300px]
-                 first:sticky first:left-0 first:bg-sf-var first:z-10
-                 first:min-w-[120px]`,
-    bodyRow: `even:bg-sf-cont odd:bg-sf
-              hover:bg-sf-hi transition-colors`,
-    bodyCell: `px-4 py-3 text-on-sf-var border-b border-ol-var
-               text-sm md:text-base
-               min-w-[100px] max-w-[300px]
-               first:sticky first:left-0 first:z-10
-               first:font-medium first:text-on-sf
-               first:min-w-[120px]
-               even:first:bg-sf-cont odd:first:bg-sf
-               hover:first:bg-sf-hi`,
-    caption: `max-w-2xl mx-auto mt-2 px-4 prose lg:prose-lg text-on-sf-var
-              text-center italic`,
+    headerCell: cn(
+      'px-4 py-3 font-semibold text-on-sf border-b-2 border-ol',
+      'text-sm md:text-base',
+      'min-w-[100px] max-w-[300px]',
+      'first:sticky first:left-0 first:bg-sf-var first:z-10',
+      'first:min-w-[120px]'
+    ),
+    bodyRow: cn('even:bg-sf-cont odd:bg-sf',
+              'hover:bg-sf-hi transition-colors'),
+    bodyCell: cn(
+      'px-4 py-3 text-on-sf-var border-b border-ol-var',
+      'text-sm md:text-base',
+      'min-w-[100px] max-w-[300px]',
+      'first:sticky first:left-0 first:z-10',
+      'first:font-medium first:text-on-sf',
+      'first:min-w-[120px]',
+      'even:first:bg-sf-cont odd:first:bg-sf',
+      'hover:first:bg-sf-hi'
+    ),
+    caption: cn(
+      'max-w-2xl mx-auto mt-2 px-4 prose lg:prose-lg text-on-sf-var',
+      'text-center italic'
+    ),
   },
 
   // InlineArticleCard
