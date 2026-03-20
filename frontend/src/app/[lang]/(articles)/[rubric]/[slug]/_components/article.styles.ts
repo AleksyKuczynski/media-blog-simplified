@@ -186,7 +186,7 @@ export const BLOCKS_STYLES = {
   // Blockquote Type 1 (Highlight)
   blockquote1: {
     container: cn(
-      'relative mb-6 p-6 pt-8',
+      'relative mb-6 p-6 mt-8',
       'max-w-xl mx-auto',
       'lg:my-12',
       'before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2'
@@ -202,7 +202,7 @@ export const BLOCKS_STYLES = {
 // Blockquote Type 2 (Quote with Author)
   blockquote2: {
     container: cn(
-      'relative mb-6 p-6 pt-8',
+      'relative mb-6 p-6 mt-8',
       'max-w-xl mx-auto',
       'lg:my-12',
       'before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2'
