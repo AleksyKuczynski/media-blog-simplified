@@ -22,17 +22,10 @@ export default function InlineArticleCard({
     description,
     imageSrc,
     rubricSlug,
-    publishedAt
   } = articleCardData;
   
   const articleLink = `/${lang}/${rubricSlug}/${slug}`;
   
-  const formattedDate = new Date(publishedAt).toLocaleDateString(lang, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-
   return (
     <div className={styles.container}>
       <Link 
@@ -72,14 +65,6 @@ export default function InlineArticleCard({
                 {description}
               </p>
             )}
-
-            {/* Date - hidden on mobile */}
-            <time 
-              dateTime={publishedAt}
-              className={styles.date}
-            >
-              {formattedDate}
-            </time>
           </div>
         </article>
       </Link>

@@ -292,17 +292,30 @@ export const BLOCKS_STYLES = {
 
   // InlineArticleCard
   inlineArticleCard: {
-    container: 'not-prose my-6 md:my-12 w-full max-w-xl shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300',
+    container: cn(
+      'not-prose', 
+      'my-6 md:my-12',
+      'mx-8 sm:mx-auto',
+      'max-w-xl md:max-w-2xl', 
+      'shadow-md rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300'
+    ),
     link: 'group block w-full',
-    card: 'bg-sf-cont flex flex-row items-stretch h-20 sm:h-28 md:h-32',
-    imageContainer: `relative flex-shrink-0 overflow-hidden bg-sf-hi 
-          w-28 md:w-32`,
-    image: 'object-cover group-hover:scale-110 transition-transform duration-300',
-    content: 'flex flex-col justify-center flex-grow p-3 sm:p-4 min-w-0',
+    card: 'bg-sf-cont flex flex-row items-stretch h-24 sm:h-28 md:h-48',
+    imageContainer: `relative flex-shrink-0 overflow-hidden rounded-xl bg-sf-hi 
+          w-20 sm:w-24 md:w-40`,
+    image: 'object-cover',
+    content: 'flex flex-col justify-center flex-grow gap-1 p-3 sm:p-4 min-w-0',
     label: 'text-xs font-medium uppercase tracking-wide mb-1 text-pr-cont hidden sm:block',
-    title: 'font-semibold text-on-sf group-hover:text-pr-cont transition-colors duration-200 line-clamp-1 sm:line-clamp-2 text-sm sm:text-base',
-    description: 'text-xs text-on-sf-var mt-1 line-clamp-1 hidden md:block',
-    date: 'text-xs text-on-sf-var mt-1 hidden sm:block',
+    title: cn(
+      'font-semibold font-serif text-on-sf-var group-hover:text-on-sf transition-colors duration-200',
+      'line-clamp-1 sm:line-clamp-2', 
+      'text-sm sm:text-base md:text-lg'
+    ),
+    description: cn(
+      'text-on-sf-var group-hover:text-on-sf transition-colors duration-200', 
+      'mt-1 line-clamp-3 hidden md:block',
+      'text-xs md:text-sm'
+    ),
   },
 
   // BalloonTip (actual implementation from BalloonTip.tsx)
