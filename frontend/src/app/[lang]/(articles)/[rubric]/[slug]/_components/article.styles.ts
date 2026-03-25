@@ -192,7 +192,7 @@ export const BLOCKS_STYLES = {
       'before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2'
     ),
     content: cn(
-      'text-on-sf-var my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif',
+      'text-on-sf-var dark:text-on-sf my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif',
       'text-xl leading-[1.75]',
       'md:text-2xl md:leading-[1.75]',
       'lg:text-3xl lg:leading-[1.75]'
@@ -208,12 +208,12 @@ export const BLOCKS_STYLES = {
       'before:content-["”"] before:text-8xl before:text-sec-cont before:absolute before:-mt-2'
     ),
     content: cn(
-      'text-on-sf-var my-0 pt-12 pb-4 font-semibold dark:font-medium font-serif',
+      'text-on-sf-var dark:text-on-sf my-0 pt-12 pb-4 font-medium dark:font-normal font-serif',
       'text-xl leading-[1.75]',
-      'md:text-2xl md:leading-[1.75]',
-      'lg:text-3xl lg:leading-[1.75]'
+      'md:text-xl md:leading-[1.65]',
+      'lg:text-2xl'
     ),
-    footer: 'text-right mb-2',
+    footer: 'text-on-sf-var text-right mt-3 mb-2',
     cite: 'text-on-sf-var max-sm:text-sm font-medium not-italic',
   },
 
@@ -227,7 +227,7 @@ export const BLOCKS_STYLES = {
     source: 'italic max-sm:text-sm mt-0',
   },
 
-  // Blockquote Type 4 (Profile with Avatar)
+  // Blockquote Type 4 (Advice of portal)
   blockquote4: {
     container: cn(
       'relative flex flex-col',
@@ -243,7 +243,7 @@ export const BLOCKS_STYLES = {
       'lg:text-2xl'
     ),
     content: cn(
-      'text-lg font-serif leading-relaxed text-on-sf-var',
+      'text-lg font-serif leading-relaxed text-on-sf-var dark:text-on-sf',
       'p-6 pt-2',
       'md:p-8 md:pt-4',
       'lg:text-2xl lg:leading-[1.75] lg:p-12 lg:pt-6'
