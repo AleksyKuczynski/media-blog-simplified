@@ -14,8 +14,7 @@ import { cn } from "@/lib/utils";
 export const BREADCRUMB_STYLES = {
   nav: {
     container: cn(
-      'max-lg:text-sm mx-2 mb-12 max-w-6xl overflow-x-auto scrollbar-hide',
-      'md:px-2',
+      'max-lg:text-sm mt-2 mb-8 max-w-6xl overflow-x-auto scrollbar-hide',
       'lg:mt-6 lg:mb-16',
       'xl:mb-20',
     ),
@@ -24,7 +23,7 @@ export const BREADCRUMB_STYLES = {
   base: 'list-none flex flex-nowrap',
   },
   separator: {
-  container: 'mx-2 flex-shrink-0',
+  container: 'mx-1 md:mx-2 flex-shrink-0',
   icon: 'w-3 h-3 text-pr-cont',
   },
 } as const;
@@ -49,14 +48,14 @@ export const SIMPLE_BREADCRUMB_STYLES = {
   ),
   // Context link (Authors, Rubrics)
   context: cn(
-  'truncate line-clamp-1 text-ellipsis text-pr-cont',
+  'truncate text-ellipsis text-pr-cont',
   'hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200',
   'max-w-[80px] sm:max-w-[100px] inline-block',
   ),
   },
   currentPage: {
   // Last item - generous width for author/rubric/category names
-  base: 'text-on-sf-var truncate line-clamp-1 max-w-[180px] sm:max-w-[260px] md:max-w-[360px] lg:max-w-[480px] inline-block',
+  base: 'text-on-sf-var truncate max-w-[180px] sm:max-w-[260px] md:max-w-[360px] lg:max-w-[480px] inline-block',
   },
 } as const;
 
@@ -70,7 +69,7 @@ export const SMART_BREADCRUMB_STYLES = {
   // Context (Authors/Rubrics) - controlled
   context: 'flex items-center flex-shrink-0',
   // Parent (Author name/Rubric name) - needs truncation
-  parent: 'flex items-center flex-shrink-0 min-w-0',
+  parent: 'flex items-center flex-shrink min-w-0',
   // Article title - flexible
   article: 'flex items-center flex-shrink min-w-0',
   },
@@ -82,19 +81,19 @@ export const SMART_BREADCRUMB_STYLES = {
   ),
   // Context link (Authors, Rubrics)
   context: cn(
-  'truncate line-clamp-1 text-ellipsis text-pr-cont',
+  'truncate text-ellipsis text-pr-cont',
   'hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200',
-  'max-w-[80px] sm:max-w-[100px] inline-block',
+  'max-w-[88px] xs:max-w-[100px] inline-block',
   ),
   // Parent link (Author name, Rubric name) - medium truncation
   parent: cn(
-  'truncate line-clamp-1 text-ellipsis text-pr-cont',
+  'text-pr-cont',
   'hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200',
-  'max-w-[120px] sm:max-w-[180px] md:max-w-[240px] inline-block',
+  'max-w-[88px] xs:max-w-[180px] md:max-w-[240px] inline-block',
   ),
   },
   currentPage: {
   // Article title - flexible width
-  base: 'text-on-sf-var truncate line-clamp-1 max-w-[140px] sm:max-w-[200px] md:max-w-[280px] lg:max-w-[360px] inline-block',
+  base: 'text-on-sf-var truncate max-w-[140px] sm:max-w-[200px] md:max-w-[280px] lg:max-w-[360px] inline-block',
   },
 } as const;

@@ -103,7 +103,9 @@ export default function SmartBreadcrumbs({
                   </span>
                 ) : (
                   <Link href={item.href} className={linkClass} itemProp="item" aria-label={item.ariaLabel}>
-                    <span itemProp="name">{item.label}</span>
+                    <span itemProp="name" className="truncate block">
+                      {item.label}
+                    </span>
                   </Link>
                 )}
                 <meta itemProp="position" content={`${index + 1}`} />
