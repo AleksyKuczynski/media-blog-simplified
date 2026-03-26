@@ -49,14 +49,14 @@ export const SIMPLE_BREADCRUMB_STYLES = {
   ),
   // Context link (Authors, Rubrics)
   context: cn(
-  'truncate text-ellipsis text-pr-cont',
+  'truncate line-clamp-1 text-ellipsis text-pr-cont',
   'hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200',
   'max-w-[80px] sm:max-w-[100px] inline-block',
   ),
   },
   currentPage: {
   // Last item - generous width for author/rubric/category names
-  base: 'text-on-sf-var truncate max-w-[180px] sm:max-w-[260px] md:max-w-[360px] lg:max-w-[480px] inline-block',
+  base: 'text-on-sf-var truncate line-clamp-1 max-w-[180px] sm:max-w-[260px] md:max-w-[360px] lg:max-w-[480px] inline-block',
   },
 } as const;
 
@@ -82,19 +82,19 @@ export const SMART_BREADCRUMB_STYLES = {
   ),
   // Context link (Authors, Rubrics)
   context: cn(
-  'truncate text-ellipsis text-pr-cont',
+  'truncate line-clamp-1 text-ellipsis text-pr-cont',
   'hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200',
   'max-w-[80px] sm:max-w-[100px] inline-block',
   ),
   // Parent link (Author name, Rubric name) - medium truncation
   parent: cn(
-  'truncate text-ellipsis text-pr-cont',
+  'truncate line-clamp-1 text-ellipsis text-pr-cont',
   'hover:text-pr-fix hover:underline underline-offset-4 transition-all duration-200',
   'max-w-[120px] sm:max-w-[180px] md:max-w-[240px] inline-block',
   ),
   },
   currentPage: {
   // Article title - flexible width
-  base: 'text-on-sf-var truncate max-w-[140px] sm:max-w-[200px] md:max-w-[280px] lg:max-w-[360px] inline-block',
+  base: 'text-on-sf-var truncate line-clamp-1 max-w-[140px] sm:max-w-[200px] md:max-w-[280px] lg:max-w-[360px] inline-block',
   },
 } as const;
