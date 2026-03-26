@@ -263,7 +263,7 @@ export const BLOCKS_STYLES = {
     ),
     table: cn(
       'table-auto w-full border-collapse', 
-      'min-w-[600px] max-w-4xl mx-auto'
+      'min-w-[375px] max-w-4xl mx-auto'
     ),
     header: 'bg-sf-var',
     headerCell: cn(
