@@ -261,26 +261,27 @@ export const BLOCKS_STYLES = {
       ' [&::-webkit-scrollbar-thumb]:bg-ol',
       ' [&::-webkit-scrollbar-thumb]:rounded-full'
     ),
-    table: `w-full border-collapse
-            min-w-[600px]
-            max-w-4xl mx-auto`,
+    table: cn(
+      'table-auto w-full border-collapse', 
+      'min-w-[600px] max-w-4xl mx-auto'
+    ),
     header: 'bg-sf-var',
     headerCell: cn(
       'px-4 py-3 font-semibold text-on-sf border-b-2 border-ol',
       'text-sm md:text-base',
-      'min-w-[100px] max-w-[300px]',
+      'w-auto',
       'first:sticky first:left-0 first:bg-sf-var first:z-10',
-      'first:min-w-[120px]'
     ),
-    bodyRow: cn('even:bg-sf-cont odd:bg-sf',
-              'hover:bg-sf-hi transition-colors'),
+    bodyRow: cn(
+      'even:bg-sf-cont odd:bg-sf',
+      'hover:bg-sf-hi transition-colors'
+    ),
     bodyCell: cn(
       'px-4 py-3 text-on-sf-var border-b border-ol-var',
       'text-sm md:text-base',
-      'min-w-[100px] max-w-[300px]',
+      'w-auto',
       'first:sticky first:left-0 first:z-10',
       'first:font-medium first:text-on-sf',
-      'first:min-w-[120px]',
       'even:first:bg-sf-cont odd:first:bg-sf',
       'hover:first:bg-sf-hi'
     ),
