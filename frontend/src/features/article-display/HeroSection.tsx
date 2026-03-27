@@ -1,5 +1,6 @@
 // src/features/article-display/HeroSection.tsx
 
+import Image from 'next/image';
 import { HERO_SECTION_STYLES } from './articles.styles';
 import { Dictionary } from '@/config/i18n';
 
@@ -30,6 +31,13 @@ export default function HeroSection({
           <p className={HERO_SECTION_STYLES.description}>
             {dictionary.sections.home.welcomeDescription}
           </p>
+          <Image
+            src="/hero.svg"
+            alt="Welcome"
+            width={800}
+            height={600}
+          />
+
         </header>
       </div>
     </div>
