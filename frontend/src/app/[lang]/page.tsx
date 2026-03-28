@@ -27,7 +27,7 @@ export default async function HomePage({
       />
 
       {/* HeroSection renders immediately - no data fetching */}
-      <HeroSection dictionary={dictionary} />
+      <HeroSection lang={lang} dictionary={dictionary} />
 
       {/* Wrap each data-fetching component in Suspense */}
       <Suspense fallback={

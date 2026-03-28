@@ -1,7 +1,7 @@
 // src/features/article-display/HeroSection.tsx
 
 import Image from 'next/image';
-import { Dictionary } from '@/config/i18n';
+import { Dictionary, Lang } from '@/config/i18n';
 import { EFMHeroImage, EFMTitle } from './HeroSvgs';
 import { cn } from '@/lib/utils';
 
@@ -42,6 +42,7 @@ export const HERO_SECTION_STYLES = {
 } as const;
 
 interface HeroSectionProps {
+  lang: Lang;
   dictionary: Dictionary;
 }
 
@@ -51,6 +52,7 @@ interface HeroSectionProps {
  * Does NOT include articles - those go in a separate Section
  */
 export default function HeroSection({
+  lang,
   dictionary
 }: HeroSectionProps) {
   const styles = HERO_SECTION_STYLES;
