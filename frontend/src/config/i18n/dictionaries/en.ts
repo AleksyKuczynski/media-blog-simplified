@@ -403,7 +403,7 @@ export const dictionaryEN: Dictionary = {
     home: {
       welcomeTitle: {
         main: 'EventForMe:',
-        sub: 'Tips on budgeting, decor ideas, and wedding fashion trends. We make wedding planning a simple and straightforward process.',
+        sub: 'A blog about weddings and more. Tips on planning, stylish ideas and the latest trends. We make wedding planning a simple and enjoyable process.',
       },
       welcomeDescription: 'Expert articles on wedding planning, decor and fashion trends, real stories from couples, and advice from event industry professionals. From choosing a venue to organizing your honeymoon, we make wedding planning an easy and enjoyable process.',
       featuredContent: 'Featured',

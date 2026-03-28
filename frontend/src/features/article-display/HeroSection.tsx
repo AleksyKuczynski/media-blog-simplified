@@ -12,10 +12,10 @@ import { cn } from '@/lib/utils';
 
 export const HERO_SECTION_STYLES = {
   // Section wrapper (applied to Section component)
-  section: 'py-16',
+  section: 'py-16 lg:py-32',
   
   // Container
-  container: 'container mx-auto px-6 lg:px-3',
+  container: 'container mx-auto max-lg:px-6 lg:max-w-[90vw]',
   
   // Header
   header: cn(
