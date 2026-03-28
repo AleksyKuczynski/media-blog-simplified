@@ -1,6 +1,6 @@
 // src/api/directus/fetchUnifiedSearch.ts
 
-import { DIRECTUS_URL } from "./directusConstants";
+import { DIRECTUS_URL } from "../../config/constants/directusConstants";
 import { Lang } from "@/config/i18n";
 import { SearchResult, AuthorSearchResult, CategorySearchResult, ArticleSearchResult } from "./directusInterfaces";
 

@@ -59,7 +59,7 @@ export async function fetchAllAuthors(
             };
           } else {
             // For authors, use the junction table
-            const countUrl = `${DIRECTUS_URL}/items/articles_authors?filter[authors_slug][_eq]=${slug}&aggregate[count]=*`;
+            const countUrl = `${DIRECTUS_URL}/items/articles?filter[author_slugs][authors_slug][_eq]=${slug}&filter[status][_eq]=published&aggregate[count]=*`;
             const countResponse = await fetch(countUrl, { 
               next: { 
                 revalidate: 3600,
@@ -70,7 +70,7 @@ export async function fetchAllAuthors(
             return {
               slug,
               count: countData.data?.[0]?.count || 0
-            };
+            };          
           }
         })
       )

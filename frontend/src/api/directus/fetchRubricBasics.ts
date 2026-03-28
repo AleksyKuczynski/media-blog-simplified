@@ -1,6 +1,6 @@
 // src/api/directus/fetchRubricBasics.ts
 
-import { DIRECTUS_URL } from './directusConstants';
+import { DIRECTUS_URL } from '../../config/constants/directusConstants';
 import { RubricBasic } from './directusInterfaces';
 import { Lang } from "@/config/i18n";
 

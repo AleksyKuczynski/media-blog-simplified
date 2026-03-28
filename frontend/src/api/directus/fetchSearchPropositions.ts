@@ -1,6 +1,6 @@
 // src/api/directus/fetchSearchPropositions.ts
 
-import { DIRECTUS_URL, MAX_SEARCH_PROPOSITIONS } from "./directusConstants";
+import { DIRECTUS_URL, MAX_SEARCH_PROPOSITIONS } from "../../config/constants/directusConstants";
 import { Lang } from "@/config/i18n";
 import { SearchResult, AuthorSearchResult, CategorySearchResult, ArticleSearchResult } from "./directusInterfaces";
 

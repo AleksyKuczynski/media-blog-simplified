@@ -1,6 +1,6 @@
 // /src/api/directus/fetchArticleSlugs.ts
 
-import { DIRECTUS_URL, ITEMS_PER_PAGE } from "./directusConstants";
+import { DIRECTUS_URL, ITEMS_PER_PAGE } from "../../config/constants/directusConstants";
 import { ArticleSlugInfo } from "./directusInterfaces";
 
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;

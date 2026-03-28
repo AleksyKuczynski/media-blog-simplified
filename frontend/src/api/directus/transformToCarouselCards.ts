@@ -1,7 +1,7 @@
 // src/api/directus/transformToCarouselCards.ts
 
 import { Lang } from '@/config/i18n';
-import { DIRECTUS_URL } from './directusConstants';
+import { DIRECTUS_URL } from '../../config/constants/directusConstants';
 import { Rubric, AuthorDetails, ArticleSlugInfo } from './directusInterfaces';
 import type { ArticleCardData, RubricCardData, AuthorCardData } from '@/features/shared/CardCarousel/types';
 import { fetchAllRubrics } from './fetchAllRubrics';

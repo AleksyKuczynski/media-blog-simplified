@@ -1,6 +1,6 @@
 // src/api/directus/index.ts
 
-export * from './directusConstants';
+export * from '../../config/constants/directusConstants';
 export * from './directusInterfaces';
 export { fetchAllAuthors } from './fetchAllAuthors';
 export { fetchAllRubrics } from './fetchAllRubrics';

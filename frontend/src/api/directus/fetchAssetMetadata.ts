@@ -1,6 +1,6 @@
 // frontend/src/api/directus/fetchAssetMetadata.ts
 
-import { DIRECTUS_URL } from './directusConstants';
+import { DIRECTUS_URL } from '../../config/constants/directusConstants';
 import { Asset } from './directusInterfaces';
 
 export async function fetchAssetMetadata(assetId: string): Promise<Asset | null> {

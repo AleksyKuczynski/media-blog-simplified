@@ -1,7 +1,7 @@
 // /src/api/directus/fetchArticles.ts
 
 import { Lang } from "@/config/i18n";
-import { DIRECTUS_URL } from "./directusConstants";
+import { DIRECTUS_URL } from "../../config/constants/directusConstants";
 import { ArticleCardType } from "./directusInterfaces";
 
 export async function fetchArticles(

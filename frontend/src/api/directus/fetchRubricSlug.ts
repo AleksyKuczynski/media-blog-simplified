@@ -1,6 +1,6 @@
 // src/api/directus/fetchRubricSlug.ts
 
-import { DIRECTUS_URL } from "./directusConstants";
+import { DIRECTUS_URL } from "../../config/constants/directusConstants";
 
 export async function fetchRubricSlug(articleSlug: string): Promise<string | null> {
     try {

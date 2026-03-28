@@ -1,7 +1,7 @@
 // frontend/src/api/directus/fetchIllustratorForArticle.ts
 
 import { Lang } from "@/config/i18n";
-import { DIRECTUS_URL } from "./directusConstants";
+import { DIRECTUS_URL } from "../../config/constants/directusConstants";
 import { AuthorDetails } from "./directusInterfaces";
 
 export async function fetchIllustratorForArticle(
