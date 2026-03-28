@@ -20,11 +20,10 @@ export default async function AuthorsCarouselSection({
   dictionary,
   title,
   variant = 'tertiary',
-  limit = 6
 }: AuthorsCarouselSectionProps) {
   let cards;
   try {
-    cards = await transformAuthorsToCarousel(lang, limit);
+    cards = await transformAuthorsToCarousel(lang);
   } catch (error) {
     console.error('Error fetching authors:', error);
     return null;
