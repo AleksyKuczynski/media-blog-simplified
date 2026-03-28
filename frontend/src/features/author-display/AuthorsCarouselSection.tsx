@@ -5,6 +5,7 @@ import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
 import { ActionLink } from '@/shared/primitives/ActionLink';
 import { Dictionary, Lang } from '@/config/i18n';
 import { transformAuthorsToCarousel } from '@/api/directus/transformToCarouselCards';
+import ShuffledCarouselWrapper from '../shared/CardCarousel/ShuffledCarouselWrapper';
 
 interface AuthorsCarouselSectionProps {
   lang: Lang;
@@ -40,11 +41,13 @@ export default async function AuthorsCarouselSection({
       variant={variant}
       hasNextSectionTitle={true}
     >
-      <CardCarousel
-        cards={cards}
-        lang={lang}
-        dictionary={dictionary}
-      />
+      <ShuffledCarouselWrapper visibleCount={6}>
+        <CardCarousel
+          cards={cards}
+          lang={lang}
+          dictionary={dictionary}
+        />
+      </ShuffledCarouselWrapper>      
       
       <ActionLink 
         href={`/${lang}/authors`}

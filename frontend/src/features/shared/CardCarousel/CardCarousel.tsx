@@ -96,6 +96,7 @@ export default function CardCarousel({
           <div 
             key={`${card.type}-${card.slug}`}
             role="listitem"
+            data-carousel-item
             className={CAROUSEL_STYLES.cardWrapper}
           >
             {card.type === 'article' && (
