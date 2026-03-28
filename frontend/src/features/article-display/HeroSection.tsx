@@ -71,7 +71,7 @@ export default function HeroSection({
             {dictionary.sections.home.welcomeDescription}
           </p>
           <div className={styles.image}>
-            <EFMHeroImage />
+            <EFMHeroImage lang={lang} />
           </div>
         </header>
       </div>
