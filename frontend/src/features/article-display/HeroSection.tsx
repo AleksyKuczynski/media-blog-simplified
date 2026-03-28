@@ -21,6 +21,7 @@ export const HERO_SECTION_STYLES = {
     base: 'leading-tight font-bold font-display text-on-sf-var w-fullflex flex-col',
     main:'text-3xl md:text-7xl uppercase',
     dot: 'text-5xl md:text-8xl mb-6 max-w-3xl text-pr-cont',
+    sub: 'text-lg md:text-2xl mt-4 text-on-sf-var max-w-3xl mx-auto leading-relaxed',
   },
   description: 'sr-only text-xl text-on-sf-var max-w-3xl mr-0 leading-relaxed',
   image: 'w-full h-auto my-12',
@@ -68,6 +69,9 @@ export default function HeroSection({
               Me
             </span>
           </h1>
+          <p className={styles.title.sub}>
+            {dictionary.sections.home.welcomeTitle.sub}
+          </p>
           <p className={styles.description}>
             {dictionary.sections.home.welcomeDescription}
           </p>
