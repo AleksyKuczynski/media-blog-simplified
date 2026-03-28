@@ -63,7 +63,9 @@ export async function getRandomArticles(
     }
 
     const data = await response.json();
-    const articles: RandomArticle[] = data.data || [];
+    const articles: RandomArticle[] = (data.data || []).filter(
+      (a: RandomArticle) => a.translations && a.translations.length > 0
+    );
 
     const shuffled = [...articles].sort(() => Math.random() - 0.5);
     const randomArticles = shuffled.slice(0, limit);

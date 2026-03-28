@@ -3,33 +3,6 @@
 import { cn } from '@/lib/utils/cn';
 import { IMAGE_RATIO_STRING } from '../mainConstants';
 
-// ================================================================
-// HERO SECTION STYLES
-// ================================================================
-
-export const HERO_SECTION_STYLES = {
-  // Section wrapper (applied to Section component)
-  section: 'py-8',
-  
-  // Container
-  container: 'container mx-auto px-4',
-  
-  // Header
-  header: 'mb-12',
-  title: {
-    base: 'leading-tight font-bold font-display text-on-sf w-fullflex flex-col',
-    main:'text-4xl md:text-5xl mb-6 max-w-3xl',
-    sub: 'text-2xl md:text-3xl max-w-3xl',
-  },
-  description: 'sr-only text-xl text-on-sf-var max-w-3xl mr-0 leading-relaxed',
-  
-  // Loading state
-  loading: {
-    wrapper: 'text-center py-12',
-    spinner: 'animate-spin rounded-full h-12 w-12 border-b-2 border-prcolor mx-auto mb-4',
-    text: 'text-on-sf-var',
-  },
-} as const;
 
 // ================================================================
 // ARTICLE LIST STYLES
