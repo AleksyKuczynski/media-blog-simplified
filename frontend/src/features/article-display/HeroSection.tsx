@@ -15,7 +15,7 @@ export const HERO_SECTION_STYLES = {
   section: 'py-16',
   
   // Container
-  container: 'container mx-auto px-6',
+  container: 'container mx-auto px-6 lg:px-3',
   
   // Header
   header: cn(
