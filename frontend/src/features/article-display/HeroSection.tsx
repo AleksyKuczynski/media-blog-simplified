@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Dictionary } from '@/config/i18n';
 import { EFMHeroImage, EFMTitle } from './HeroSvgs';
+import { cn } from '@/lib/utils';
 
 
 // ================================================================
@@ -17,12 +18,18 @@ export const HERO_SECTION_STYLES = {
   container: 'container mx-auto px-6',
   
   // Header
-  header: 'text-center text-on-sf',
+  header: cn(
+    'max-lg:text-center text-on-sf',
+    'lg:grid lg:grid-cols-2',
+  ),
   title: {
     wrapper: 'w-full',
-    sub: 'text-lg md:text-2xl mt-4 max-w-3xl mx-auto leading-relaxed',
+    sub: cn(
+      'text-lg sm:text-xl xl:text-2xl leading-relaxed',
+      'max-w-3xl mx-auto my-8 sm:my-12 lg:my-16 lg:pr-8 xl:pr-12'
+    ),
   },
-  image: 'w-full h-auto my-12',  
+  image: 'w-full h-auto my-12 sm:my-16',  
   description: 'sr-only text-xl max-w-3xl mr-0 leading-relaxed',
 
   
@@ -53,10 +60,11 @@ export default function HeroSection({
         <header className={styles.header}>
           <div className={styles.title.wrapper}>
             <EFMTitle />
+
+            <p className={styles.title.sub}>
+              {dictionary.sections.home.welcomeTitle.sub}
+            </p>
           </div>
-          <p className={styles.title.sub}>
-            {dictionary.sections.home.welcomeTitle.sub}
-          </p>
           <p className={styles.description}>
             {dictionary.sections.home.welcomeDescription}
           </p>
