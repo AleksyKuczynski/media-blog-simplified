@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Dictionary } from '@/config/i18n';
+import { EFMHeroImage, EFMTitle } from './HeroSvgs';
 
 
 // ================================================================
@@ -16,15 +17,13 @@ export const HERO_SECTION_STYLES = {
   container: 'container mx-auto px-6',
   
   // Header
-  header: 'text-center',
+  header: 'text-center text-on-sf',
   title: {
-    base: 'leading-tight font-bold font-display text-on-sf-var w-fullflex flex-col',
-    main:'text-3xl md:text-7xl uppercase',
-    dot: 'text-5xl md:text-8xl mb-6 max-w-3xl text-pr-cont',
-    sub: 'text-lg md:text-2xl mt-4 text-on-sf-var max-w-3xl mx-auto leading-relaxed',
+    wrapper: 'w-full',
+    sub: 'text-lg md:text-2xl mt-4 max-w-3xl mx-auto leading-relaxed',
   },
-  description: 'sr-only text-xl text-on-sf-var max-w-3xl mr-0 leading-relaxed',
-  image: 'w-full h-auto my-12',
+  image: 'w-full h-auto my-12',  
+  description: 'sr-only text-xl max-w-3xl mr-0 leading-relaxed',
 
   
   // Loading state
@@ -52,37 +51,18 @@ export default function HeroSection({
     <div className={styles.section}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1 className={styles.title.base}>
-            <span className={styles.title.main}>
-              Event
-            </span>
-            <span className={styles.title.dot}>
-              .
-            </span>
-            <span className={styles.title.main}>
-              For
-            </span>
-            <span className={styles.title.dot}>
-              .
-            </span>
-            <span className={styles.title.main}>
-              Me
-            </span>
-          </h1>
+          <div className={styles.title.wrapper}>
+            <EFMTitle />
+          </div>
           <p className={styles.title.sub}>
             {dictionary.sections.home.welcomeTitle.sub}
           </p>
           <p className={styles.description}>
             {dictionary.sections.home.welcomeDescription}
           </p>
-          <Image
-            src="/hero.svg"
-            alt="Welcome"
-            className={styles.image}
-            width={800}
-            height={600}
-          />
-
+          <div className={styles.image}>
+            <EFMHeroImage />
+          </div>
         </header>
       </div>
     </div>
