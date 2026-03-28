@@ -14,7 +14,9 @@ import { cn } from "@/lib/utils";
 export const BREADCRUMB_STYLES = {
   nav: {
     container: cn(
-      'max-lg:text-sm mt-2 md:mt-4 mb-8 md:mb-12 max-w-6xl overflow-x-auto scrollbar-hide',
+      'overflow-x-auto scrollbar-hide',
+      'px-2',
+      'max-lg:text-sm mt-2 md:mt-4 mb-8 md:mb-12 max-w-6xl',
       'lg:mt-6 lg:mb-16',
       'xl:mb-20',
     ),

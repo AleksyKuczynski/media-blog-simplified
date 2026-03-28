@@ -371,7 +371,7 @@ export const NAVIGATION_STYLES = {
     author: {
       container: 'w-full max-w-2xl mx-auto',
       link: 'inline-flex items-stretch gap-3 pr-4 transition-colors group',
-      avatar: 'relative w-12 lg:w-16 aspect-square rounded-lg lg:rounded-xl overflow-hidden',
+      avatar: 'relative w-12 lg:w-16 aspect-square rounded-full overflow-hidden',
       info: 'flex flex-col justify-between',
       name: 'block font-medium text-pr-cont group-hover:text-pr-fix text-lg lg:text-xl',
       label: 'block text-xs lg:text-sm font-medium text-on-sf-var uppercase',

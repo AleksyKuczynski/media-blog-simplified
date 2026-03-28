@@ -117,7 +117,7 @@ export default function Pagination({
         className={styles.arrow}
       >
         <span className="sr-only">{dictionary.common.pagination.previous}</span>
-        <span aria-hidden="true">🡠</span>
+        <span aria-hidden="true">◀</span>
       </button>
 
       <div className={styles.list} role="list">
@@ -168,7 +168,7 @@ export default function Pagination({
         aria-label={dictionary.common.pagination.next}
       >
         <span className="sr-only">{dictionary.common.pagination.next}</span>
-        <span aria-hidden="true">🡢</span>
+        <span aria-hidden="true">▶</span>
       </button>
 
       <div className="sr-only" role="status" aria-live="polite">
