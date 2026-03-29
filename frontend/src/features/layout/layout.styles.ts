@@ -47,9 +47,9 @@ export const CARD_GRID_STYLES = cn(
 export const SECTION_STYLES = {
   wrapper: {
     base: 'w-full pb-6 lg:pb-8 xl:pb-12 relative',
-    primary: 'bg-gradient-to-b from-pr-fix to-pr-sf',
-    secondary: 'bg-gradient-to-b from-sec-fix to-sec-sf',
-    tertiary: 'bg-gradient-to-b from-tr-fix to-tr-sf',
+    primary: 'bg-gradient-to-b from-pr-sf to-pr-sf-end',
+    secondary: 'bg-gradient-to-b from-sec-sf to-sec-sf-end',
+    tertiary: 'bg-gradient-to-b from-tr-sf to-tr-sf-end',
     default: ' bg-gradient-to-b from-sf-hst to-sf-hi',
     withNextTitle: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px]',
     flexGrow: 'flex-grow min-h-0',
@@ -75,9 +75,9 @@ export const SECTION_STYLES = {
         'lg:text-4xl', 
         'xl:text-5xl'
       ),
-      primary: 'text-pr-fix',
-      secondary: 'text-sec-fix',
-      tertiary: 'text-tr-fix',
+      primary: 'text-pr-sf',
+      secondary: 'text-sec-sf',
+      tertiary: 'text-tr-sf',
       default: 'text-sf-hst',
     },
   },

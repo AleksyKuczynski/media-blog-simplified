@@ -43,32 +43,42 @@
 
   /* Colors - Primary hierarchy */
   --color-pr-cont: var(--color-primary-container);
-  --color-pr-fix: var(--color-primary-fixed);
-  --color-pr-dim: var(--color-primary-fixed-dim);
+  --color-pr-fix: color-mix(in oklch, var(--color-primary-container) 80%, white);
+  --color-pr-dim: color-mix(in oklch, var(--color-primary-container) 80%, black);
   --color-pr-sf: var(--color-primary-surface);
-
+  --color-pr-sf-end: var(--color-primary-surface-end);
   /* Colors - Secondary hierarchy */
   --color-sec-cont: var(--color-secondary-container);
-  --color-sec-fix: var(--color-secondary-fixed);
-  --color-sec-dim: var(--color-secondary-fixed-dim);
+  --color-sec-fix: color-mix(in oklch, var(--color-secondary-container) 60%, white);
+  --color-sec-dim:  color-mix(in oklch, var(--color-secondary-container) 60%, black);
   --color-sec-sf: var(--color-secondary-surface);
+  --color-sec-sf-end: var(--color-secondary-surface-end);
+
 
   /* Colors - Tertiary hierarchy */
   --color-tr-cont: var(--color-tertiary-container);
-  --color-tr-fix: var(--color-tertiary-fixed);
-  --color-tr-dim: var(--color-tertiary-fixed-dim);
+  --color-tr-fix: color-mix(in oklch, var(--color-tertiary-container) 80%, white);
+  --color-tr-dim: color-mix(in oklch, var(--color-tertiary-container) 80%, black);
   --color-tr-sf: var(--color-tertiary-surface);
+  --color-tr-sf-end: var(--color-tertiary-surface-end);
 
   /* Colors - Text colors */
   --color-on-sf: var(--color-on-surface);
   --color-on-sf-var: var(--color-on-surface-variant);
   --color-on-sf-dim: var(--color-on-surface-dim);
-  --color-on-pr: var(--color-on-primary-container);
-  --color-on-pr-var: var(--color-on-primary-container-variant);
-  --color-on-sec: var(--color-on-secondary-container);
-  --color-on-sec-var: var(--color-on-secondary-container-variant);
-  --color-on-tr: var(--color-on-tertiary-container);
-  --color-on-tr-var: var(--color-on-tertiary-container-variant);
+
+  --color-on-pr: color-mix(in oklch, var(--color-primary-container) 80%, var(--color-on-surface));
+  --color-on-pr-var: color-mix(in oklch, var(--color-primary-container) 60%, var(--color-on-surface));
+  --color-on-pr-fix:  color-mix(in oklch, var(--color-primary-container) 40%, var(--color-on-surface));
+//  --color-on-pr-dim: color-mix(in oklch, var(--color-on-primary-container) 80%, black);
+
+  --color-on-sec: color-mix(in oklch, var(--color-secondary-container) 80%, var(--color-on-surface));
+  --color-on-sec-var:  color-mix(in oklch, var(--color-secondary-container) 60%, var(--color-on-surface));
+  --color-on-sec-fix:  color-mix(in oklch, var(--color-secondary-container) 40%, var(--color-on-surface));
+ 
+  --color-on-tr:  color-mix(in oklch, var(--color-tertiary-container) 80%, var(--color-on-surface));
+  --color-on-tr-var:  color-mix(in oklch, var(--color-tertiary-container) 60%, var(--color-on-surface));
+  --color-on-tr-fix:  color-mix(in oklch, var(--color-tertiary-container) 40%, var(--color-on-surface));
 
   /* Colors - Outline colors */
   --color-ol: var(--color-outline);
@@ -143,28 +153,31 @@ html {
 
   // Primary hierarchy
   --color-primary-container: #077777;
-  --color-primary-fixed: #4abbbb;
-  --color-primary-fixed-dim: #036565;
-  --color-primary-surface: #76c6c6;
+  //--color-primary-fixed: #4abbbb;
+  //--color-primary-fixed-dim: #036565;
+  --color-primary-surface: #4abbbb;
+  --color-primary-surface-end: #76c6c6;
 
   // Secondary hierarchy
   --color-secondary-container: #f2a2bb;
-  --color-secondary-fixed: #e8aabd;
-  --color-secondary-fixed-dim: #e28aa6;
-  --color-secondary-surface: #f2cfda;
+  //--color-secondary-fixed: #e8aabd;
+  //--color-secondary-fixed-dim: #e28aa6;
+  --color-secondary-surface: #e8aabd;
+  --color-secondary-surface-end: #f2cfda;
 
   // Tertiary hierarchy
   --color-tertiary-container: #935272;
-  --color-tertiary-fixed: #d3828a;
-  --color-tertiary-fixed-dim: #a2565e;
-  --color-tertiary-surface: #cf7b83;
+  //--color-tertiary-fixed: #d3828a;
+  //--color-tertiary-fixed-dim: #a2565e;
+  --color-tertiary-surface: #ac6e93;
+  --color-tertiary-surface-end: #c17e9a;
 
   // Text colors
   --color-on-surface: #0f172a;
   --color-on-surface-variant: #475569;
   --color-on-surface-dim: #909fb5;
-  --color-on-primary-container: #ffffff;
-  --color-on-primary-container-variant: #edeef4;
+  --color-on-primary-container: #73cece;
+  --color-on-primary-container-variant: #72f6f6;
   --color-on-secondary-container: #d27995;
   --color-on-secondary-container-variant: rgb(246, 116, 157);
   --color-on-tertiary-container: #833d44;
@@ -188,19 +201,22 @@ html {
     --color-primary-container: #077777;
     --color-primary-fixed: #1c5255;
     --color-primary-fixed-dim: #036565;
-    --color-primary-surface: #055858;
+    --color-primary-surface: #1c5255;
+    --color-primary-surface-end: #055858;
 
     // Secondary hierarchy
     --color-secondary-container: #f2a2bb;
-    --color-secondary-fixed: #945272;
-    --color-secondary-fixed-dim: #e28aa6;
-    --color-secondary-surface: #a45d7b;
+  //  --color-secondary-fixed: #945272;
+  //  --color-secondary-fixed-dim: #e28aa6;
+    --color-secondary-surface: #945272;
+    --color-secondary-surface-end: #a45d7b;
 
     // Tertiary hierarchy
     --color-tertiary-container: #935272;
-    --color-tertiary-fixed: #533144;
-    --color-tertiary-fixed-dim: #a2565e;
-    --color-tertiary-surface: #663248;
+  //  --color-tertiary-fixed: #533144;
+  //  --color-tertiary-fixed-dim: #a2565e;
+    --color-tertiary-surface: #533144;
+    --color-tertiary-surface-end: #663248;
 
     // Text colors
     --color-on-surface: #FFFFFF;
