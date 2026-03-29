@@ -1,7 +1,6 @@
-// src/features/shared/CardCarousel/ShuffledCarouselWrapper.tsx
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 
 interface Props {
   visibleCount: number;
@@ -11,13 +10,12 @@ interface Props {
 export default function ShuffledCarouselWrapper({ visibleCount, children }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const container = ref.current;
     if (!container) return;
     const items = Array.from(container.querySelectorAll<HTMLElement>('[data-carousel-item]'));
     if (items.length <= visibleCount) return;
 
-    // Pick random visible indices
     const indices = Array.from({ length: items.length }, (_, i) => i);
     for (let i = indices.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

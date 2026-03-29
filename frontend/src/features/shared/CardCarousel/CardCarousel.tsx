@@ -1,5 +1,3 @@
-// src/features/shared/CardCarousel/CardCarousel.tsx
-
 'use client';
 
 import { useRef, useState, useEffect } from 'react';
@@ -28,8 +26,8 @@ export default function CardCarousel({
     if (!container) return;
 
     const { scrollLeft, scrollWidth, clientWidth } = container;
-    const hasScroll = scrollWidth > clientWidth;
-    
+    const hasScroll = scrollWidth > clientWidth + 1; // +1 to avoid sub-pixel false positives
+
     setIsScrollable(hasScroll);
     setCanScrollLeft(scrollLeft > 10);
     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
@@ -39,16 +37,16 @@ export default function CardCarousel({
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    updateScrollButtons();
+    // ResizeObserver fires after layout, reliably catching when hidden items are removed
+    const ro = new ResizeObserver(() => updateScrollButtons());
+    ro.observe(container);
     container.addEventListener('scroll', updateScrollButtons);
-    return () => container.removeEventListener('scroll', updateScrollButtons);
-  }, [cards]);
 
-  useEffect(() => {
-    const handleResize = () => updateScrollButtons();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    return () => {
+      ro.disconnect();
+      container.removeEventListener('scroll', updateScrollButtons);
+    };
+  }, [cards]);
 
   const scroll = (direction: 'left' | 'right') => {
     const container = scrollContainerRef.current;
@@ -57,10 +55,7 @@ export default function CardCarousel({
     const cardWidth = cardType === 'author' ? 280 : cardType === 'rubric' ? 240 : 320;
     const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
 
-    container.scrollBy({
-      left: scrollAmount,
-      behavior: 'smooth'
-    });
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   };
 
   if (isLoading) {
@@ -81,19 +76,15 @@ export default function CardCarousel({
 
   return (
     <div className={CAROUSEL_STYLES.wrapper}>
-      {/* Scroll container */}
       <div
         ref={scrollContainerRef}
         className={CAROUSEL_STYLES.scrollContainer}
-        style={{
-          scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
-        }}
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         role="list"
         aria-label="Card carousel"
       >
         {cards.map((card) => (
-          <div 
+          <div
             key={`${card.type}-${card.slug}`}
             role="listitem"
             data-carousel-item
@@ -135,7 +126,6 @@ export default function CardCarousel({
         ))}
       </div>
 
-      {/* Navigation buttons - only show if scrollable */}
       {isScrollable && (
         <div className={CAROUSEL_STYLES.navButtonContainer}>
           <button
@@ -148,7 +138,6 @@ export default function CardCarousel({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-
           <button
             onClick={() => scroll('right')}
             className={CAROUSEL_STYLES.navButton.base}
