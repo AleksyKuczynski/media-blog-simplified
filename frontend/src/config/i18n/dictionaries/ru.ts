@@ -446,7 +446,7 @@ const dictionaryRU: Dictionary = {
       collectionPageDescription: 'Исследуйте наши рубрики и найдите интересующие вас темы о культуре и искусстве',
       noRubricsAvailable: 'Пока нет доступных рубрик',
       checkBackLater: 'Заходите позже',
-      readMoreAbout: 'Читать больше о',
+      readMoreAbout: 'Не пропустите',
       exploreRubric: 'Изучить рубрику',
       iconAltText: 'Иконка рубрики',
       noIcon: 'Нет иконки',

@@ -84,15 +84,15 @@ export const HERO_ARTICLES_SKELETON_STYLES = {
 // ================================================================
 
 export const STANDARD_CARD_STYLES = {
-  base: 'w-full h-full',
+  base: 'w-full h-full text-on-sf',
 
   link: 'block group flex flex-col items-center',
   linkPromoted: '2xl:h-full',
   
   layouts: {
     regular: cn(
-      'w-full h-full bg-sf-cont rounded-xl', 
-      'shadow-sm sm:rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
+      'w-full h-full rounded-xl bg-sf-cont hover:bg-sf/80 transition-all duration-200', 
+      'shadow-sm sm:rounded-2xl hover:shadow-xl duration-200 overflow-hidden',
       'grid', 
       'grid-cols-[4fr_9fr]',
     ),
@@ -103,7 +103,7 @@ export const STANDARD_CARD_STYLES = {
       '2xl:grid-cols-1 2xl:h-full',
     ),
     latest: cn(
-      'w-full h-full bg-sf-cont shadow-sm rounded-2xl hover:shadow-xl transition-shadow duration-200 overflow-hidden',
+      'w-full h-full rounded-2xl bg-sf-cont hover:bg-sf/80 shadow-sm hover:shadow-xl transition-all duration-200 overflow-hidden',
       'grid', 
       'max-sm:mx-4 max-sm:max-w-[400]',
       'sm:max-lg:grid-cols-3',
@@ -133,14 +133,14 @@ export const STANDARD_CARD_STYLES = {
     ),
     promoted: cn(
       'bg-sf z-10', 
-        'order-1 md:max-2xl:order-2',
-        'max-md:shadow-sm max-md:hover:shadow-xl max-md:transition-shadow max-md:duration-200',
-        'max-md:rounded-2xl max-md:overflow-hidden', 
-        'max-md:max-w-[400] max-md:mx-4',
-        'md:mx-0 md:w-full md:max-w-full md:h-full',
-        'md:max-2xl:rounded-none',
-        'p-6 lg:p-8 flex flex-col lg:max-xl:justify-center',
-      ),
+      'order-1 md:max-2xl:order-2',
+      'max-md:shadow-sm max-md:hover:shadow-xl max-md:transition-shadow max-md:duration-200',
+      'max-md:rounded-2xl max-md:overflow-hidden', 
+      'max-md:max-w-[400] max-md:mx-4',
+      'md:mx-0 md:w-full md:max-w-full md:h-full',
+      'md:max-2xl:rounded-none',
+      'p-6 lg:p-8 flex flex-col lg:max-xl:justify-center',
+    ),
     latest: cn(
       'flex flex-col flex-grow sm:max-lg:justify-center xl:justify-center',
       'p-4 lg:p-6', 
@@ -151,7 +151,7 @@ export const STANDARD_CARD_STYLES = {
   
   // Title variants
   title: {
-    base: 'mb-2 text-on-sf group-hover:text-pr-cont transition-colors duration-200',
+    base: 'mb-2',
     regular:  cn(
       'font-serif line-clamp-3 sm:grow', 
       'font-medium text-lg sm:text-xl lg:text-2xl',
@@ -165,7 +165,7 @@ export const STANDARD_CARD_STYLES = {
   
   // Date variants
   date: {
-    base: ' text-on-sf-var',
+    base: ' text-on-sf-fix group-hover:text-on-sf-var transition-colors duration-200',
     regular: '',
     promoted: '',
     latest: '',
@@ -173,7 +173,7 @@ export const STANDARD_CARD_STYLES = {
   
   // Description variants
   description: {
-    base: 'text-sm md:text-base line-clamp-2 mb-4 text-on-sf-var',
+    base: 'text-sm md:text-base line-clamp-2 mb-4 text-on-sf-fix group-hover:text-on-sf-var transition-colors duration-200',
     regular: 'max-sm:hidden xl:text-lg',
     promoted: 'max-md:hidden xl:grow lg:text-xl lg:pt-4 2xl:hidden',
     latest: 'max-md:hidden xl:text-lg',

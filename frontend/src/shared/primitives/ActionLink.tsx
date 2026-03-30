@@ -15,7 +15,7 @@ const VARIANT_STYLES = {
   primary: 'text-on-pr hover:text-on-pr-var focus:text-on-pr-fix transition-colors duration-200',
   secondary: 'text-on-sec hover:text-on-sec-var focus:text-on-sec-fix transition-colors duration-200',
   tertiary: 'text-on-tr hover:text-on-tr-var focus:text-on-tr-fix transition-colors duration-200',
-  default: 'text-on-sf-var hover:text-on-pr transition-colors duration-200',
+  default: 'text-on-pr hover:text-on-pr-var focus:text-on-pr-fix transition-colors duration-200',
 } as const;
 
 const BASE_STYLES = 'mt-4 font-medium transition-colors duration-200 flex justify-end items-end';

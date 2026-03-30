@@ -6,7 +6,7 @@ export const RUBRIC_CARD_STYLES = {
   // Card container - manages its own responsive width
   card: cn(
     'group relative overflow-hidden rounded-2xl',
-    'bg-sf-cont shadow-sm hover:shadow-lg transition-all duration-200',
+    'bg-sf-cont hover:bg-sf/90 shadow-sm hover:shadow-lg transition-all duration-200',
     // Width control: 2 cols on small screens, 3 cols on lg+
     'w-full max-w-[360px] mx-auto',
     'p-8 2xl:p-8 flex flex-col'
@@ -22,18 +22,18 @@ export const RUBRIC_CARD_STYLES = {
   iconFallbackText: 'text-on-pr-cont text-lg font-bold',
   
   // Title
-  title: 'mt-3 py-3 text-xl text-on-sf md:max-lg:text-2xl 2xl:text-2xl font-medium font-serif uppercase text-center grow self-center',
+  title: 'mt-3 py-3 text-xl text-on-sf group-hover:text-on-sf-var md:max-lg:text-2xl 2xl:text-2xl font-semibold dark:font-medium font-serif uppercase text-center grow self-center transition-colors duration-200',
   titleLink: 'before:absolute before:inset-0',
   
   // Description
-  description: 'max-md:hidden text-on-sf-var mb-4 line-clamp-3 lg:text-lg',
+  description: 'max-md:hidden text-on-sf-fix group-hover:text-on-sf-var mb-4 line-clamp-3 lg:text-lg transition-colors duration-200',
   
   // Action link
   action: 'w-full mt-auto pt-2 flex justify-between',
-  actionText: 'max-lg:text-sm font-medium text-pr-cont group-hover:underline inline-flex items-center gap-1',
+  actionText: 'max-lg:text-sm font-medium text-on-pr group-hover:text-on-pr-var inline-flex items-center gap-1 transition-colors duration-200',
   
   // Article count
-  articleCount: 'max-lg:text-sm text-on-sf-var font-medium',
+  articleCount: 'max-lg:text-sm text-on-sf-fix group-hover:text-on-sf-var font-medium transition-colors duration-200',
   
   // Screen reader
   srOnly: 'sr-only',

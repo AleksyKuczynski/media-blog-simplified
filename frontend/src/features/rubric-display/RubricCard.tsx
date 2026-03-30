@@ -101,7 +101,7 @@ export const RubricCard: React.FC<RubricCardProps> = ({
         )}
 
         <span className={RUBRIC_CARD_STYLES.actionText}>
-          {dictionary.common.actions.explore} →
+          {dictionary.common.actions.explore} ▶
         </span>
       </div>
       

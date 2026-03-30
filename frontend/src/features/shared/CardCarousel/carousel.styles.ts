@@ -48,8 +48,8 @@ export function getCarouselStyles(cardType: CardType) {
     
     navButton: {
       base: cn(
-        'bg-sf-cont hover:bg-sf-hi',
-        'rounded-full p-3 shadow-md',
+        'bg-sf-cont/80 hover:bg-sf/90',
+        'rounded-full p-3 shadow-md hover:shadow-lg',
         'transition-all duration-200',
         'disabled:opacity-30 disabled:cursor-not-allowed',
         'flex items-center justify-center'
@@ -77,7 +77,7 @@ export const ARTICLE_CAROUSEL_CARD_STYLES = {
   container: 'group block w-full h-full rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300',
   
   // Card structure
-  card: 'bg-sf-cont rounded-2xl overflow-hidden h-full flex flex-col',
+  card: 'bg-sf-cont/80 hover:bg-sf/90 rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-200',
   
   // Image container
   imageContainer: `relative w-full ${IMAGE_RATIO_STRING} overflow-hidden bg-sf-hi rounded-b-2xl`,
@@ -89,10 +89,14 @@ export const ARTICLE_CAROUSEL_CARD_STYLES = {
   content: 'p-6 flex flex-col flex-grow',
   
   // Title
-  title: 'text-base font-serif font-medium line-clamp-3 md:line-clamp-4 mb-4 text-on-sf group-hover:text-pr-cont transition-colors duration-200 flex-grow',
+  title: 'text-base font-serif font-medium line-clamp-3 md:line-clamp-4 mb-4 text-on-sf group-hover:text-on-sf-var transition-colors duration-200 flex-grow',
   
   // Date
-  date: 'max-sm:hidden text-xs text-on-sf-var mt-auto',
+  date: cn(
+    'max-sm:hidden text-xs lg:text-sm mt-auto',
+    'text-on-sf-fix group-hover:text-on-sf-var',
+    'transition-colors duration-200'
+  ),
 } as const;
 
 // ================================================================
@@ -104,7 +108,7 @@ export const RUBRIC_CAROUSEL_CARD_STYLES = {
   container: 'block w-full h-full group',
 
   // Card structure
-  card: 'h-full w-full bg-sf-cont rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
+  card: 'h-full w-full bg-sf-cont/90 hover:bg-sf/90 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200',
   
   // Content container
   content: 'h-full p-6 flex flex-col items-center gap-8',
@@ -121,9 +125,9 @@ export const RUBRIC_CAROUSEL_CARD_STYLES = {
   textContent: 'w-full flex flex-col gap-6 min-w-0 grow',
 
   // Text content
-  name: 'text-lg text-on-sf text-center uppercase group-hover:text-pr-cont transition-colors grow',
-  description: 'max-md:hidden text-on-sf-var line-clamp-2 mt-1',
-  articleCount: 'text-sm font-semibold text-on-sf bg-sf-hi rounded-full mt-1 p-2 px-4',
+  name: 'text-lg text-on-sf text-center uppercase group-hover:text-on-sf-var transition-colors duration-200 grow',
+  description: 'max-md:hidden text-on-sf-fix group-hover:text-on-sf-var transition-colors duration-200 line-clamp-2 mt-1',
+  articleCount: 'text-sm font-semibold text-on-sf-fix group-hover:text-on-sf-var transition-colors duration-200 bg-sf-hst/80 rounded-full mt-1 p-2 px-4',
 } as const;
 
 // ================================================================
@@ -138,10 +142,10 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   card: 'h-full group transition-all duration-200',
   
   // Content container
-  content: 'flex flex-col gap-8 pb-4',
+  content: 'flex flex-col gap-4 pb-4',
   
   // Image container
-  avatarWrapper: 'relative aspect-square w-4/5 mx-auto flex-shrink-0 overflow-hidden rounded-full shadow:md group-hover:shadow-lg transition-shadow duration-200',
+  avatarWrapper: 'relative aspect-square w-4/5 mx-auto flex-shrink-0 overflow-hidden rounded-full shadow-sm group-hover:shadow-lg transition-shadow duration-200',
   
   // Image element
   avatarImage: 'object-cover',
@@ -149,11 +153,17 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   avatarFallbackText: 'text-on-pr-cont text-xl font-bold',
   
   // Text content container
-  textContent: 'px-2 flex-1 min-w-0 text-center text-on-sf-var group-hover:text-on-sf transition-colors',
+  textContent: cn(
+    'p-2 pt-8 flex-1 min-w-0 rounded-full', 
+    'text-center text-on-sf-var group-hover:text-on-sf', 
+    'bg-sf-cont/90 group-hover:bg-sf/90', 
+    'shadow-sm group-hover:shadow-lg', 
+    'transition-all duration-200'
+  ),
 
   // Text content
-  name: 'pb-2 max-sm:text-sm xl:text-lg uppercase',
-  count: 'max-lg:text-sm',
+  name: 'pb-2 max-sm:text-sm xl:text-lg uppercase text-on-sf-var group-hover:text-on-sf transition-colors duration-200',
+  count: 'text-xs lg:text-sm text-on-sf-fix group-hover:text-on-sf transition-colors duration-200',
 } as const;
 
 export function getAuthorCarouselAvatarUrl(baseUrl: string, assetId: string): string {

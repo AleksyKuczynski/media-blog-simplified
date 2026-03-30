@@ -64,21 +64,22 @@
 
   /* Colors - Text colors */
   --color-on-sf: var(--color-on-surface);
+  --color-on-sf-fix: var(--color-on-surface-fix);
   --color-on-sf-var: var(--color-on-surface-variant);
   --color-on-sf-dim: var(--color-on-surface-dim);
 
-  --color-on-pr: color-mix(in oklch, var(--color-primary-container) 80%, var(--color-on-surface));
-  --color-on-pr-var: color-mix(in oklch, var(--color-primary-container) 60%, var(--color-on-surface));
-  --color-on-pr-fix:  color-mix(in oklch, var(--color-primary-container) 40%, var(--color-on-surface));
+  --color-on-pr: color-mix(in oklch, var(--color-primary-container) 70%, var(--color-on-surface-variant));
+  --color-on-pr-var: color-mix(in oklch, var(--color-primary-container) 90%, var(--color-on-surface-variant));
+  --color-on-pr-fix:  color-mix(in oklch, var(--color-primary-container) 40%, var(--color-on-surface-variant));
 //  --color-on-pr-dim: color-mix(in oklch, var(--color-on-primary-container) 80%, black);
 
-  --color-on-sec: color-mix(in oklch, var(--color-secondary-container) 80%, var(--color-on-surface));
-  --color-on-sec-var:  color-mix(in oklch, var(--color-secondary-container) 60%, var(--color-on-surface));
-  --color-on-sec-fix:  color-mix(in oklch, var(--color-secondary-container) 40%, var(--color-on-surface));
+  --color-on-sec: color-mix(in oklch, var(--color-secondary-container) 80%, var(--color-on-surface-variant));
+  --color-on-sec-var:  color-mix(in oklch, var(--color-secondary-container) 60%, var(--color-on-surface-variant));
+  --color-on-sec-fix:  color-mix(in oklch, var(--color-secondary-container) 40%, var(--color-on-surface-variant));
  
-  --color-on-tr:  color-mix(in oklch, var(--color-tertiary-container) 80%, var(--color-on-surface));
-  --color-on-tr-var:  color-mix(in oklch, var(--color-tertiary-container) 60%, var(--color-on-surface));
-  --color-on-tr-fix:  color-mix(in oklch, var(--color-tertiary-container) 40%, var(--color-on-surface));
+  --color-on-tr:  color-mix(in oklch, var(--color-tertiary-container) 80%, var(--color-on-surface-variant));
+  --color-on-tr-var:  color-mix(in oklch, var(--color-tertiary-container) 60%, var(--color-on-surface-variant));
+  --color-on-tr-fix:  color-mix(in oklch, var(--color-tertiary-container) 40%, var(--color-on-surface-variant));
 
   /* Colors - Outline colors */
   --color-ol: var(--color-outline);
@@ -173,8 +174,9 @@ html {
   --color-tertiary-surface-end: #c17e9a;
 
   // Text colors
-  --color-on-surface: #0f172a;
-  --color-on-surface-variant: #475569;
+  --color-on-surface: #1a2132;
+  --color-on-surface-variant: #000000;
+  --color-on-surface-fix: #475569;
   --color-on-surface-dim: #909fb5;
 //  --color-on-primary-container: #73cece;
 //  --color-on-primary-container-variant: #72f6f6;
@@ -215,12 +217,13 @@ html {
     --color-tertiary-container: #935272;
   //  --color-tertiary-fixed: #533144;
   //  --color-tertiary-fixed-dim: #a2565e;
-    --color-tertiary-surface: #533144;
-    --color-tertiary-surface-end: #663248;
+    --color-tertiary-surface: #6d3756;
+    --color-tertiary-surface-end: #7a3c56;
 
     // Text colors
-    --color-on-surface: #FFFFFF;
-    --color-on-surface-variant: #b2b2b2;
+    --color-on-surface: #dfdddd;
+    --color-on-surface-fix: #b2b2b2;
+    --color-on-surface-variant: #ffffff;
     --color-on-primary-container: #ffffff;
     --color-on-primary-container-variant: #edeef4;
     --color-on-secondary-container: #f8b2c8;

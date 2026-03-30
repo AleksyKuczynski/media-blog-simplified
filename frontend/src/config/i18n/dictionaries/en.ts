@@ -444,7 +444,7 @@ export const dictionaryEN: Dictionary = {
       collectionPageDescription: 'Explore our rubrics and find topics of interest about culture and art',
       noRubricsAvailable: 'No rubrics available yet',
       checkBackLater: 'Check back later',
-      readMoreAbout: 'Read more about',
+      readMoreAbout: 'Don’t miss out',
       exploreRubric: 'Explore rubric',
       iconAltText: 'Rubric icon',
       noIcon: 'No icon',
