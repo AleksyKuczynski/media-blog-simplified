@@ -47,10 +47,10 @@ export const NAV_LINK_STYLES = {
   base: cn(
     'px-6 py-2 h-full rounded-full', 
     'font-medium', 
-    'text-on-pr', 
-    'hover:text-on-pr-var hover:bg-ol transition-colors duration-200', 
-    'transition-all duration-200'),
-  active: 'pointer-events-none bg-sf-hi text-on-sf-dim hover:bg-sf-hi hover:text-on-sf-dim ',
+    'text-on-pr-var focus:text-sf dark:focus:text-sf', 
+    'hover:bg-ol dark:hover:text-on-pr-fix transition-colors duration-200', 
+  ),
+  active: 'pointer-events-none bg-pr-fix text-sf hover:bg-sf-hi hover:text-on-sf-dim ',
   listItem: 'list-none flex items-stretch',
   mobile: {
     link: cn(
