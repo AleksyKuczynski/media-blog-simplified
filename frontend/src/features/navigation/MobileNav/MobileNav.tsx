@@ -149,6 +149,7 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
                   variant="mobile"
                   role="img"
                   aria-label={dictionary.navigation.accessibility.logoAlt}
+                  className="w-full lg:py-6 hover:bg-ol hover:shadow-lg focus:shadow-sm transition-all duration-200 py-4 rounded-2xl"
                 />
                 <ul className={PANEL_CONTENT_STYLES.menu.list}>
                   <NavLinks 

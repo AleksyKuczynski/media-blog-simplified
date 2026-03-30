@@ -94,7 +94,7 @@ export const MOBILE_NAV_STYLES = {
     topBar: cn(
       'grid grid-cols-3', 
       'px-3 sm:px-6',
-      'py-2'
+      'py-2',
     ),
   },
   
@@ -127,7 +127,7 @@ export const OFFCANVAS_PANEL_STYLES = {
   },
   
   header: {
-    container: 'flex items-center justify-between px-6 py-4 text-on-sf-var',
+    container: 'flex items-center justify-between px-6 py-4 text-on-sf-fix',
     title: 'text-md font-medium uppercase',
     closeButton: 'p-2 rounded-full hover:bg-sf-hst transition-colors active:scale-95',
     closeIcon: 'w-6 h-6',
@@ -140,7 +140,7 @@ export const PANEL_OVERLAY_STYLES = {
 
 export const PANEL_CONTENT_STYLES = {
   menu: {
-    container: 'flex flex-col mx-2 h-full bg-sf-cont rounded-t-2xl overflow-hidden',
+    container: 'flex flex-col mx-2 h-full bg-sf-cont/60 rounded-t-2xl overflow-hidden',
     scrollArea: 'flex-1 overflow-y-auto py-12 md:py-16',
     nav: 'px-2',
     wrapper: 'flex flex-col items-center gap-8',

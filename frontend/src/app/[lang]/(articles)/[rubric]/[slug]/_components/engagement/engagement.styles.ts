@@ -38,9 +38,9 @@
 export const ENGAGEMENT_BAR_STYLES = {
   container: {
     base: `fixed bottom-4 left-4 z-[60] 
-            flex xl:flex-col gap-2 
+            flex md:flex-col gap-2 
             py-3 px-4 
-            bg-pr-cont hover:bg-pr-dim text-on-pr rounded-full 
+            bg-sec-cont hover:bg-sec-var rounded-full 
             shadow-lg hover:shadow-xl transition-all duration-300`,
     visible: 'opacity-100 translate-y-0',
     hidden: 'opacity-0 translate-y-4 pointer-events-none',
@@ -50,7 +50,7 @@ export const ENGAGEMENT_BAR_STYLES = {
 
 export const ENGAGEMENT_METRIC_STYLES = {
   container: {
-    base: 'flex xl:flex-col gap-1 items-center justify-center transition-all rounded-lg',
+    base: 'flex md:flex-col gap-1 items-center justify-center',
     interactive: 'cursor-pointer hover:scale-105',
     disabled: 'opacity-50 cursor-not-allowed',
     loading: 'animate-pulse',
@@ -63,16 +63,16 @@ export const ENGAGEMENT_METRIC_STYLES = {
   },
   states: {
     view: {
-      active: 'text-on-pr',
-      inactive: 'text-on-pr/70',
+      active: 'text-tr-cont',
+      inactive: 'text-tr-fix',
     },
     like: {
       active: 'text-error',
-      inactive: 'text-on-pr/70 hover:text-error',
+      inactive: 'text-tr-fix hover:text-error',
     },
     share: {
       active: 'text-on-pr',
-      inactive: 'text-on-pr/70 hover:text-on-pr',
+      inactive: 'text-tr-fix hover:text-tr-cont',
     },
   },
 } as const;
