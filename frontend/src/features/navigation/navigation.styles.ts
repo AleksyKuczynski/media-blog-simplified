@@ -55,11 +55,11 @@ export const NAV_LINK_STYLES = {
   mobile: {
     link: cn(
       'flex flex-col items-center gap-3 w-full',
-      'text-on-sf font-medium uppercase text-sm md:text-base',
+      'text-on-pr-var dark:font-medium uppercase text-sm md:text-base',
       'py-4 mt-2 rounded-2xl',
-      'hover:bg-sf-hi hover:shadow-sm transition-all duration-200',
+      'hover:bg-ol hover:shadow-lg focus:shadow-sm transition-all duration-200',
     ),
-    active: 'bg-sf text-on-sf-var hover:bg-sf hover:shadow-none pointer-events-none',
+    active: 'bg-pr-cont/10 text-on-sf-fix font-medium pointer-events-none',
     listItem: 'list-none',
     icon: 'w-12 md:w-16 aspect-square relative',
   },
