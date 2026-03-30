@@ -154,7 +154,7 @@ export const AUTHOR_CAROUSEL_CARD_STYLES = {
   
   // Text content container
   textContent: cn(
-    'p-2 pt-8 flex-1 min-w-0 rounded-full', 
+    'p-2 pt-8 flex-1 min-w-0 rounded-3xl', 
     'text-center text-on-sf-var group-hover:text-on-sf', 
     'bg-sf-cont/90 group-hover:bg-sf/90', 
     'shadow-sm group-hover:shadow-lg', 

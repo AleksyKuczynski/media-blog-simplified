@@ -5,7 +5,6 @@ import CardCarousel from '@/features/shared/CardCarousel/CardCarousel';
 import { ActionLink } from '@/shared/primitives/ActionLink';
 import { Dictionary, Lang } from '@/config/i18n';
 import { transformAuthorsToCarousel } from '@/api/directus/transformToCarouselCards';
-import ShuffledCarouselWrapper from '../shared/CardCarousel/ShuffledCarouselWrapper';
 
 interface AuthorsCarouselSectionProps {
   lang: Lang;
@@ -33,7 +32,10 @@ export default async function AuthorsCarouselSection({
   if (!cards.length) return null;
 
   // Shuffle and slice server-side
-  const shuffled = [...cards].sort(() => Math.random() - 0.5).slice(0, limit);
+  const shuffled = [...cards]
+    .filter(card => (card.count ?? 0) > 0)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, limit);
 
   return (
     <Section 

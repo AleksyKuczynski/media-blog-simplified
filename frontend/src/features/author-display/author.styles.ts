@@ -5,9 +5,8 @@ export const AUTHOR_CARD_STYLES = {
   // Container styling - manages its own responsive width
   container: cn(
     'w-full h-full relative overflow-hidden',
-    'dark:hover:shadow-[0px_0px_7px_5px_rgba(255,255,255,0.2)] transition-shadow duration-200 group',
-    'transition-shadow duration-200 group',
-    'bg-sf-cont rounded-2xl shadow-sm hover:shadow-lg',
+    'transition-all duration-200 group',
+    'bg-sf-cont/90 hover:bg-sf/90 rounded-2xl shadow-sm hover:shadow-lg',
     'flex'
   ),
   
@@ -33,20 +32,21 @@ export const AUTHOR_CARD_STYLES = {
   
   // Author name
   name: cn(
-    'text-on-tr grow',
-    'text-xl sm:text-xl md:text-2xl lg:max-xl:text-xl xl:max-2xl:text-2xl uppercase'
-
+    'grow',
+    'text-xl sm:text-xl md:text-2xl lg:max-xl:text-xl xl:max-2xl:text-2xl uppercase',
+    'text-on-sf group-hover:text-on-sf-var transition-colors duration-200'
   ),
   
   // Bio text
   bio: cn(
-    'text-on-sf-var',
     'line-clamp-2 sm:line-clamp-4',
-    'max-sm:text-sm xl:text-lg'
+    'max-sm:text-sm xl:text-lg',
+    'text-on-sf-fix group-hover:text-on-sf-var transition-colors duration-200',
+
   ),
 
   // Total articles
-  count: 'text-sm text-on-tr-var mt-1',
+  count: 'text-sm text-on-sf-fix group-hover:text-on-sf-var transition-colors duration-200',
 } as const;
 
 export const AUTHOR_CARD_SKELETON_STYLES = {
