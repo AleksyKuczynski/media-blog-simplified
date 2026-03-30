@@ -20,6 +20,7 @@ export default async function AuthorsCarouselSection({
   dictionary,
   title,
   variant = 'tertiary',
+  limit = 6,
 }: AuthorsCarouselSectionProps) {
   let cards;
   try {
@@ -29,9 +30,10 @@ export default async function AuthorsCarouselSection({
     return null;
   }
 
-  if (!cards.length) {
-    return null;
-  }
+  if (!cards.length) return null;
+
+  // Shuffle and slice server-side
+  const shuffled = [...cards].sort(() => Math.random() - 0.5).slice(0, limit);
 
   return (
     <Section 
@@ -40,18 +42,12 @@ export default async function AuthorsCarouselSection({
       variant={variant}
       hasNextSectionTitle={true}
     >
-      <ShuffledCarouselWrapper visibleCount={6}>
-        <CardCarousel
-          cards={cards}
-          lang={lang}
-          dictionary={dictionary}
-        />
-      </ShuffledCarouselWrapper>      
-      
-      <ActionLink 
-        href={`/${lang}/authors`}
-        variant={variant}
-      >
+      <CardCarousel
+        cards={shuffled}
+        lang={lang}
+        dictionary={dictionary}
+      />
+      <ActionLink href={`/${lang}/authors`} variant={variant}>
         {dictionary.sections.authors.allAuthors}
       </ActionLink>
     </Section>
