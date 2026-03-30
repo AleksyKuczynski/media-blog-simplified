@@ -440,7 +440,7 @@ export const dictionaryEN: Dictionary = {
       rubricList: 'Rubric List',
       rubricsCatalog: 'Rubric Catalog',
       browseAllRubrics: 'Browse All Rubrics',
-      categoriesDescription: 'Explore our thematic categories',
+      categoriesDescription: 'Over 400 articles organized by key topics — from planning the celebration to the mystique of wedding traditions. Choose the topic that interests you and find answers to all your questions about preparing for your big day',
       collectionPageDescription: 'Explore our rubrics and find topics of interest about culture and art',
       noRubricsAvailable: 'No rubrics available yet',
       checkBackLater: 'Check back later',

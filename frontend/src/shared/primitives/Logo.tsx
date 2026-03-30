@@ -58,7 +58,7 @@ export default function Logo({
         <svg 
           xmlns="http://www.w3.org/2000/svg" 
           viewBox="0 0 10400 10400" 
-          className={`w-full h-full ${variant === 'footer' ? 'text-on-sf-var' : ''}`}
+          className='w-full h-full'
         >
           <g>
             <path 

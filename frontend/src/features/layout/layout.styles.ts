@@ -85,7 +85,7 @@ export const SECTION_STYLES = {
 
 export const FOOTER_STYLES = {
   container: cn(
-    'w-full bg-gradient-to-b from-sf-hst to-sf-hi',
+    'w-full bg-gradient-to-b from-sf-hst to-sf-hi text-on-sf-fix',
   ),
   innerContainer: 'max-w-7xl mx-auto px-4 sm:px-12 py-12',
   
@@ -130,7 +130,7 @@ export const FOOTER_STYLES = {
   section: {
     wrapper: '',
     heading: 'text-xs font-medium uppercase text-on-sf-dim mb-6',
-    description: 'text-on-sf-var leading-relaxed',
+    description: 'leading-relaxed',
   },
   
   nav: {
@@ -140,9 +140,8 @@ export const FOOTER_STYLES = {
   
   link: {
     base: cn(
-      'text-on-sf-var hover:text-on-sf-dim',
+      'hover:text-on-sf focus:text-on-sf-var',
       'transition-colors duration-200',
-      'focus:text-on-sf',
       'text-sm'
     ),
   },
@@ -150,20 +149,18 @@ export const FOOTER_STYLES = {
   social: {
     wrapper: 'flex gap-4',
     link: cn(
-      'text-on-sf-var hover:text-prcolor',
+      'hover:text-on-sf focus:text-on-sf-var transition-colors duration-200',
       'transition-colors duration-200',
-      'focus:outline-none focus:ring-2 focus:ring-prcolor focus:ring-offset-2 rounded'
     ),
     icon: 'w-6 h-6',
   },
   
   contact: {
-    logoWrapper: 'mb-4',
+    logoWrapper: 'mb-4 text-on-sf-dim hover:text-on-sf-fix transition-colors duration-200',
     button: cn(
-      'my-12 justify-self-center px-6 py-3 bg-pr-cont text-on-pr',
-      'hover:bg-pr-fix',
+      'my-12 justify-self-center px-6 py-3 bg-tr-cont text-sf-cont hover:text-sf',
+      'hover:bg-tr-fix focus:bg-tr-var transition-colors duration-200',
       'rounded-xl transition-colors duration-200',
-      'focus:bg-pr-dim',
       'font-medium'
     ),
   },
@@ -173,7 +170,7 @@ export const FOOTER_STYLES = {
       'mt-8 pt-6 border-t border-on-sf-dim',
       'text-center'
     ),
-    text: 'text-sm text-on-sf-var',
+    text: 'text-sm text-on-sf-dim',
   },
 } as const;
 

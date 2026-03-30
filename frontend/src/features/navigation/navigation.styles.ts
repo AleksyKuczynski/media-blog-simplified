@@ -20,11 +20,15 @@ export const DESKTOP_NAV_STYLES = {
   container: 'hidden xl:block py-2 backdrop-blur-lg transition-all duration-300',
   grid: 'grid grid-cols-3 items-center mx-auto px-4',
   
-  leftSection: 'flex items-center justify-start',
+  leftSection: 'flex justify-start',
   centerSection: 'flex items-center justify-center',
   rightSection: 'flex items-center justify-end space-x-4',
   
-  navList: 'flex items-center justify-start space-x-2 uppercase bg-sf rounded-full py-2',
+  navList: cn(
+    'flex items-stretch justify-start space-x-3 rounded-full',
+    'bg-sf-cont/80', 
+    'uppercase'
+  ),
 } as const;
 
 export const SKIP_LINKS_STYLES = {
@@ -40,9 +44,14 @@ export const SKIP_LINKS_STYLES = {
 } as const;
 
 export const NAV_LINK_STYLES = {
-  base: 'px-4 py-2 rounded-full font-medium text-on-sf-var hover:text-on-sf hover:bg-sf-hi transition-all duration-200',
-  active: 'pointer-events-none bg-pr-cont text-on-pr hover:bg-pr-cont hover:text-on-pr',
-  listItem: 'list-none',
+  base: cn(
+    'px-6 py-2 h-full rounded-full', 
+    'font-medium', 
+    'text-on-pr', 
+    'hover:text-on-pr-var hover:bg-ol transition-colors duration-200', 
+    'transition-all duration-200'),
+  active: 'pointer-events-none bg-sf-hi text-on-sf-dim hover:bg-sf-hi hover:text-on-sf-dim ',
+  listItem: 'list-none flex items-stretch',
   mobile: {
     link: cn(
       'flex flex-col items-center gap-3 w-full',
