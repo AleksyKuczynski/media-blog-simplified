@@ -127,9 +127,9 @@ export const ELEMENTS_STYLES = {
       'font-serif dark:font-light text-on-sf', 
       'first:mt-0 last:mb-0',
       'mb-3',
-      'max-w-2xl mx-auto',
+      'max-w-xl mx-auto',
       'text-lg leading-[1.5]',
-      'lg:text-xl lg:leading-[1.5] lg:max-w-4xl'
+      'lg:text-xl lg:leading-[1.5] lg:max-w-3xl'
     )
   },
 
@@ -145,7 +145,7 @@ export const ELEMENTS_STYLES = {
     base: cn(
       'font-serif dark:font-light text-on-sf',
       'my-6 pl-6 space-y-2',
-      'max-w-2xl mx-auto',
+      'max-w-xl mx-auto',
       'text-lg leading-[1.5]',
       'lg:text-xl lg:leading-[1.5] lg:max-w-3xl lg:mb-16'
     ),

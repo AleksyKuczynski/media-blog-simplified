@@ -146,7 +146,7 @@ const MobileNavigation = forwardRef<MobileNavRef, MobileNavProps>(({
               <div className={PANEL_CONTENT_STYLES.menu.wrapper}>
                 <Logo 
                   lang={lang}
-                  variant="mobile"
+                  variant="offcanvas"
                   role="img"
                   aria-label={dictionary.navigation.accessibility.logoAlt}
                   className="w-full lg:py-6 hover:bg-ol hover:shadow-lg focus:shadow-sm transition-all duration-200 py-4 rounded-2xl"

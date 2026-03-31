@@ -1,25 +1,27 @@
 // src/main/components/Logo.tsx - SEO-Enhanced Logo (Non-Destructive)
-import Link from 'next/link';
+import { off } from 'node:cluster';
 import { dictionary, Lang } from '../../config/i18n';
 import { NavigationLink } from '@/features/navigation/Header/NavigationLink';
 
 interface LogoProps {
   lang: Lang;
-  variant: 'desktop' | 'mobile' | 'footer';
+  variant: 'desktop' | 'mobile' | 'offcanvas' | 'footer';
   className?: string;
   role?: string;
   'aria-label'?: string;
 }
 
 const variantStyles = {
-  desktop: 'w-16 aspect-square',
-  mobile: 'w-16 lg:w-20 aspect-square',
+  desktop: 'w-16',
+  mobile: 'w-12 lg:w-16',
+  offcanvas: 'w-16 lg:w-20',
   footer: 'w-60 h-28'
 }
 
 const containerStyles = {
   desktop: 'group flex items-center justify-center py-2',
   mobile: 'z-40 flex justify-center sm:landscape:justify-start',
+  offcanvas: 'z-40 flex justify-center sm:landscape:justify-start',
   footer: 'flex items-center justify-center'
 }
 
@@ -48,7 +50,7 @@ export default function Logo({
     >
       {/* Keep existing logo structure intact, just add schema.org metadata */}
       <div 
-        className={`relative ${variantStyles[variant]}`}
+        className={`relative aspect-square ${variantStyles[variant]}`}
         role={role}
         itemProp="logo"
         itemScope

@@ -1,7 +1,6 @@
 'use client'
 
 import SearchDropdown from '../ui/SearchDropdown';
-import SearchBarInput from './SearchBarInput';
 import { useSearchLogic } from '../logic/useSearchLogic';
 import { useSearchBarState } from '../logic/useSearchBarState';
 import { useSearchBarInteractions } from '../logic/useSearchBarInteractions';
@@ -116,7 +115,11 @@ export default function SearchBarForm({
 
   return (
     <section             
-      className={resultsMode === null ? "min-h-[calc(100vh-4rem)] xl:min-h-[calc(100vh-8rem)]" : "min-h-72"}
+      className={
+        resultsMode === null 
+        ? "min-h-[calc(100vh-4rem)] xl:min-h-[calc(100vh-8rem)] pt-16 md:pt-24 xl:pt-32" 
+        : "min-h-72 pt-16 md:pt-24 xl:pt-32"
+      }
     >      
       <search 
         ref={searchLogic.refs.containerRef}
