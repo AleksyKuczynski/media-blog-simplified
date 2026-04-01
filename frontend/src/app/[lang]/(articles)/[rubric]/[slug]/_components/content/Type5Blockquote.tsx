@@ -16,9 +16,6 @@ export function Type5Blockquote({ content, lang }: Type5Props) {
 
   return (
     <blockquote className={styles.container}>
-      <h2 className={styles.label}>
-        {dictionary.content.labels.portalAdvice}
-      </h2>
       <div
         className={styles.content}
         dangerouslySetInnerHTML={{ __html: convertMarkdownToHtmlSync(content) }}

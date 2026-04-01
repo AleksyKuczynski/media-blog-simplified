@@ -254,22 +254,16 @@ export const BLOCKS_STYLES = {
   blockquote5: {
     container: cn(
       'relative flex flex-col',
-      'rounded-2xl border border-ol shadow-sm',
+      'border-t-2 border-ol',
       'max-w-xl mx-auto my-12',
       'max-sm:mx-6',
-      'lg:my-12 lg:max-w-2xl'
-    ),
-    label: cn(
-      'bg-sf text-sec-cont font-semibold tracking-wide',
-      '-mt-4 mx-auto px-3 py-1',
-      'md:text-lg md:px-4',
-      'lg:text-2xl'
+      'lg:mt-24 lg:max-w-2xl'
     ),
     content: cn(
-      'text-lg font-serif leading-relaxed text-on-sf-var dark:text-on-sf',
-      'p-6 pt-2',
-      'md:p-8 md:pt-4',
-      'lg:text-2xl lg:leading-[1.75] lg:p-12 lg:pt-6'
+      'font-serif italic leading-relaxed text-on-sf-fix dark:text-on-sf',
+      'pt-2',
+      'md:pt-4',
+      'lg:text-lg lg:leading-[1.75] lg:pt-6'
     ),
   },
 
