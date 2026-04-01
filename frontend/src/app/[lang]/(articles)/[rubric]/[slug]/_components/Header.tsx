@@ -84,18 +84,20 @@ export function Header({
           {/* Image source / Illustrator credit */}
           {imagePath && (imageSource || illustrator) && (
             <p className={styles.illustratorCredit}>
-              <span className={styles.illustratorLabel}>
-                {dictionary.sections.labels.illustratedBy}:{' '}
-              </span>
               {imageSource ? (
-                <span className={styles.illustratorLink}>{imageSource}</span>
+                <span>{imageSource}</span>
               ) : (
-                <Link 
-                  href={`/${lang}/authors/${illustrator!.slug}`}
-                  className={styles.illustratorLink}
-                >
-                  {illustrator!.name}
-                </Link>
+                <>
+                  <span className={styles.illustratorLabel}>
+                    {dictionary.sections.labels.illustratedBy}:{' '}
+                  </span>
+                  <Link 
+                    href={`/${lang}/authors/${illustrator!.slug}`}
+                    className={styles.illustratorLink}
+                  >
+                    {illustrator!.name}
+                  </Link>
+                </>
               )}
             </p>
           )}
