@@ -48,7 +48,7 @@ export default async function RandomArticlesSection({
 
       <ActionLink 
         href={`/${lang}/articles`}
-        variant='secondary'
+        variant={variant}
       >
         {dictionary.sections.home.viewAllArticles}
       </ActionLink>

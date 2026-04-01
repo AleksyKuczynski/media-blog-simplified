@@ -40,7 +40,7 @@ export const ENGAGEMENT_BAR_STYLES = {
     base: `fixed bottom-4 left-4 z-[60] 
             flex md:flex-col gap-2 
             py-3 px-4 
-            bg-sec-cont hover:bg-sec-var rounded-full 
+            bg-sec-cont hover:bg-sec-fix rounded-full 
             shadow-lg hover:shadow-xl transition-all duration-300`,
     visible: 'opacity-100 translate-y-0',
     hidden: 'opacity-0 translate-y-4 pointer-events-none',
@@ -63,16 +63,15 @@ export const ENGAGEMENT_METRIC_STYLES = {
   },
   states: {
     view: {
-      active: 'text-tr-cont',
-      inactive: 'text-tr-fix',
+      inactive: 'text-sf/70',
     },
     like: {
       active: 'text-error',
-      inactive: 'text-tr-fix hover:text-error',
+      inactive: 'text-sf/70 hover:text-error',
     },
     share: {
       active: 'text-on-pr',
-      inactive: 'text-tr-fix hover:text-tr-cont',
+      inactive: 'text-sf/70 hover:text-sf',
     },
   },
 } as const;

@@ -29,8 +29,8 @@ export const FloatingButton = forwardRef<HTMLButtonElement, FloatingButtonProps>
         ref={ref}
         type="button"
         className={`
-          fixed p-2 transition-all duration-200
-          text-on-pr bg-pr-cont hover:bg-pr-fix
+          fixed p-2 md:p-3 transition-all duration-200
+          text-sf bg-sec-cont hover:bg-sec-fix
           rounded-full shadow-lg hover:shadow-xl
           ${positionClasses[position]}
           ${zIndexClasses[zIndex]}

@@ -49,8 +49,8 @@
   --color-pr-sf-end: var(--color-primary-surface-end);
   /* Colors - Secondary hierarchy */
   --color-sec-cont: var(--color-secondary-container);
-  --color-sec-fix: color-mix(in oklch, var(--color-secondary-container) 60%, white);
-  --color-sec-dim:  color-mix(in oklch, var(--color-secondary-container) 60%, black);
+  --color-sec-fix: color-mix(in oklch, var(--color-secondary-container) 80%, white);
+  --color-sec-dim:  color-mix(in oklch, var(--color-secondary-container) 80%, black);
   --color-sec-sf: var(--color-secondary-surface);
   --color-sec-sf-end: var(--color-secondary-surface-end);
 

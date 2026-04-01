@@ -48,7 +48,7 @@ export default async function RubricsCarouselSection({
       
       <ActionLink 
         href={`/${lang}/rubrics`}
-        variant="primary"
+        variant={variant}
       >
         {dictionary.sections.home.viewAllRubrics}
       </ActionLink>

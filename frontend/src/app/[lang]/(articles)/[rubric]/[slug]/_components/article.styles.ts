@@ -437,7 +437,7 @@ export const WIDGETS_STYLES = {
   scrollToTop: {
     // FloatingButton default styling (for reference)
     button: 'fixed p-2 transition-all duration-200 text-on-pr bg-pr-cont hover:bg-pr-fix rounded-full shadow-lg hover:shadow-xl bottom-4 right-4 z-50',
-    icon: 'h-6 w-6',
+    icon: 'h-6 w-6 md:w-8 md:h-8',
   },
 } as const;
 
