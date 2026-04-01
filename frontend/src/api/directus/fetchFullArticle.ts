@@ -5,7 +5,6 @@ import { fetchArticleContributors } from './fetchArticleContributors'; // CHANGE
 import { Lang } from "@/config/i18n";
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
-const PREVIEW_SECRET = process.env.PREVIEW_SECRET;
 
 export async function fetchFullArticle(
   slug: string, 
@@ -33,6 +32,7 @@ export async function fetchFullArticle(
       'translations.title',
       'translations.description',
       'translations.lead',
+      'translaions.image_source', // CHANGED
       'translations.body.item.*',
       
       // SEO fields
@@ -135,6 +135,7 @@ export async function fetchFullArticle(
         title: translation.title,
         description: translation.description,
         lead: translation.lead,
+        image_source: translation.image_source, // CHANGED
         article_body: articleBody,
         
         // SEO fields
@@ -166,7 +167,7 @@ export async function fetchFullArticle(
       ],
       illustratorWithDetails: contributors.illustratorWithDetails,
     };
-
+console.log('Fetched image source for article:', translation.image_source); // Debug log for image source
     return fullArticle;
   } catch (error) {
     console.error('Error in fetchFullArticle:', error);

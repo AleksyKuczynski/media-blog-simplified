@@ -45,6 +45,7 @@ interface HeaderProps {
   imagePath?: string;
   lead?: string;
   illustrator?: ArticleAuthor;
+  imageSource?: string;
 }
 
 const styles = LAYOUT_STYLES.header;
@@ -58,6 +59,7 @@ export function Header({
   imagePath,
   lead,
   illustrator,
+  imageSource,
 }: HeaderProps) {
   return (
     <header className={styles.container}>
@@ -79,16 +81,22 @@ export function Header({
             />
           </div>
 
-          {/* Illustrator credit - simple text link below image */}
-          {illustrator && (
+          {/* Image source / Illustrator credit */}
+          {imagePath && (imageSource || illustrator) && (
             <p className={styles.illustratorCredit}>
-              <span className={styles.illustratorLabel}>{dictionary.sections.labels.illustratedBy}: </span>
-              <Link 
-                href={`/ru/authors/${illustrator.slug}`}
-                className={styles.illustratorLink}
-              >
-                {illustrator.name}
-              </Link>
+              <span className={styles.illustratorLabel}>
+                {dictionary.sections.labels.illustratedBy}:{' '}
+              </span>
+              {imageSource ? (
+                <span className={styles.illustratorLink}>{imageSource}</span>
+              ) : (
+                <Link 
+                  href={`/${lang}/authors/${illustrator!.slug}`}
+                  className={styles.illustratorLink}
+                >
+                  {illustrator!.name}
+                </Link>
+              )}
             </p>
           )}
         </div>

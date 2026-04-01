@@ -246,6 +246,7 @@ export default async function ArticlePage({
               imagePath={article.article_heading_img}
               authors={article.authorsWithDetails}
               illustrator={article.illustratorWithDetails}
+              imageSource={translation.image_source}
               publishedDate={formattedDate}
               lang={lang}
               dictionary={dictionary}

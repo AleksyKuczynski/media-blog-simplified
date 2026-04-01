@@ -66,6 +66,7 @@ export interface ArticleTranslation {
   title: string;
   description: string;
   lead: string;
+  image_source?: string;
   article_body: ArticleBlock[];
   
   // SEO fields
