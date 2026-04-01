@@ -32,7 +32,7 @@ export async function fetchFullArticle(
       'translations.title',
       'translations.description',
       'translations.lead',
-      'translaions.image_source', // CHANGED
+      'translations.image_source',
       'translations.body.item.*',
       
       // SEO fields
