@@ -436,7 +436,9 @@ export const WIDGETS_STYLES = {
   // See FloatingButton.tsx for actual styling implementation
   scrollToTop: {
     // FloatingButton default styling (for reference)
-    button: 'fixed p-2 transition-all duration-200 text-on-pr bg-pr-cont hover:bg-pr-fix rounded-full shadow-lg hover:shadow-xl bottom-4 right-4 z-50',
+    button: cn(
+      'text-sf bg-sec-cont hover:bg-sec-fix focus:bg-sec-cont'
+    ),
     icon: 'h-6 w-6 md:w-8 md:h-8',
   },
 } as const;

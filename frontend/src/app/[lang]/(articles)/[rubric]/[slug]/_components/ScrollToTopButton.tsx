@@ -40,7 +40,11 @@ export function ScrollToTopButton() {
   }
 
   return (
-    <FloatingButton onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+    <FloatingButton 
+      className={styles.button} 
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Scroll to top"
+    >
       <ChevronUpIcon className={styles.icon} />
     </FloatingButton>
   );

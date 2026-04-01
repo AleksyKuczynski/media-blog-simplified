@@ -1,4 +1,5 @@
 // src/primitives/FloatingButton.tsx
+import { cn } from '@/lib/utils';
 import { forwardRef } from 'react';
 
 interface FloatingButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -28,14 +29,13 @@ export const FloatingButton = forwardRef<HTMLButtonElement, FloatingButtonProps>
       <button
         ref={ref}
         type="button"
-        className={`
-          fixed p-2 md:p-3 transition-all duration-200
-          text-sf bg-sec-cont hover:bg-sec-fix
-          rounded-full shadow-lg hover:shadow-xl
-          ${positionClasses[position]}
-          ${zIndexClasses[zIndex]}
-          ${className || ''}
-        `.trim()}
+        className={cn(
+          'fixed p-2 md:p-3 transition-all duration-200',
+          'rounded-full shadow-lg hover:shadow-xl',
+          positionClasses[position],
+          zIndexClasses[zIndex],
+          className
+        )}
         {...props}
       >
         {children}
