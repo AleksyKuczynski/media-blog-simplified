@@ -22,7 +22,7 @@
  * @returns {ContentChunk[]} Chunks with separated blockquotes
  */
 
-import { BlockquoteProps, ContentChunk, EpigraphBlockquote, HighlightBlockquote, ProfileBlockquote, QuoteBlockquote } from './markdownTypes';
+import { BlockquoteProps, ContentChunk, EpigraphBlockquote, HighlightBlockquote, AdviceBlockquote, QuoteBlockquote, GratitudeBlockquote } from './markdownTypes';
 
 function parseHighlight(content: string): HighlightBlockquote | null {
   const paragraphs = content.trim().split('\n');
@@ -73,7 +73,7 @@ function parseEpigraph(content: string): EpigraphBlockquote | null {
   };
 }
 
-function parseProfile(content: string): ProfileBlockquote | null {
+function parseAdvice(content: string): AdviceBlockquote | null {
   const cleanContent = content.trim();
   if (!cleanContent) return null;
 
@@ -83,19 +83,25 @@ function parseProfile(content: string): ProfileBlockquote | null {
   };
 }
 
+function parseGratitude(content: string): GratitudeBlockquote | null {
+  const cleanContent = content.trim();
+  if (!cleanContent) return null;
+  return { type: '5', content: cleanContent };
+}
+
 export function parseBlockquotes(content: string): ContentChunk[] {
   const chunks: ContentChunk[] = [];
   let currentText = '';
   
-  const parts = content.split(/(:::[1-4]|:::)/);
+  const parts = content.split(/(:::[1-5]|:::)/);
   let isInBlockquote = false;
-  let blockquoteType: '1' | '2' | '3' | '4' | null = null;
+  let blockquoteType: '1' | '2' | '3' | '4' | '5' | null = null;
   let blockquoteContent = '';
 
   for (const part of parts) {
     const trimmedPart = part.trim();
     
-    if (trimmedPart.match(/^:::[1-4]$/)) {
+    if (trimmedPart.match(/^:::[1-5]$/)) {
       if (currentText) {
         chunks.push({
           type: 'markdown',
@@ -106,7 +112,7 @@ export function parseBlockquotes(content: string): ContentChunk[] {
         currentText = '';
       }
       isInBlockquote = true;
-      blockquoteType = trimmedPart[3] as '1' | '2' | '3' | '4';
+      blockquoteType = trimmedPart[3] as '1' | '2' | '3' | '4' | '5';
       blockquoteContent = '';
     } else if (trimmedPart === ':::') {
       if (isInBlockquote && blockquoteType && blockquoteContent) {
@@ -124,7 +130,10 @@ export function parseBlockquotes(content: string): ContentChunk[] {
             blockquoteProps = parseEpigraph(cleanContent);
             break;
           case '4':
-            blockquoteProps = parseProfile(cleanContent);
+            blockquoteProps = parseAdvice(cleanContent);
+            break;
+          case '5':
+            blockquoteProps = parseGratitude(cleanContent);
             break;
         }
         

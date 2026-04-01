@@ -250,6 +250,29 @@ export const BLOCKS_STYLES = {
     ),
   },
 
+  // Blockquote Type 5 (Gratitude)
+  blockquote5: {
+    container: cn(
+      'relative flex flex-col',
+      'rounded-2xl border border-ol shadow-sm',
+      'max-w-xl mx-auto my-12',
+      'max-sm:mx-6',
+      'lg:my-12 lg:max-w-2xl'
+    ),
+    label: cn(
+      'bg-sf text-sec-cont font-semibold tracking-wide',
+      '-mt-4 mx-auto px-3 py-1',
+      'md:text-lg md:px-4',
+      'lg:text-2xl'
+    ),
+    content: cn(
+      'text-lg font-serif leading-relaxed text-on-sf-var dark:text-on-sf',
+      'p-6 pt-2',
+      'md:p-8 md:pt-4',
+      'lg:text-2xl lg:leading-[1.75] lg:p-12 lg:pt-6'
+    ),
+  },
+
 // Table
   table: {
     wrapper: `max-w-svw -mx-2 my-8 md:my-12 lg:my-16 md:mx-auto`,

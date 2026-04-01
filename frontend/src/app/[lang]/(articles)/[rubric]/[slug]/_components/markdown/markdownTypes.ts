@@ -27,7 +27,7 @@
 export interface ContentChunk {
   type: 'markdown' | 'blockquote' | 'figure' | 'image' | 'image-frame' | 'image-group' | 'table' | 'article-card';
   content?: string;
-  blockquoteType?: '1' | '2' | '3' | '4';
+  blockquoteType?: '1' | '2' | '3' | '4' | '5';
   blockquoteProps?: BlockquoteProps;
   caption?: string;
   processedCaption?: string;
@@ -99,7 +99,7 @@ export interface TableData {
 
 // Blockquote interfaces (unchanged)
 export interface BlockquoteBase {
-  type: '1' | '2' | '3' | '4';
+  type: '1' | '2' | '3' | '4' | '5';
   content: string;
 }
 
@@ -118,13 +118,20 @@ export interface EpigraphBlockquote extends BlockquoteBase {
   author: string;
 }
 
-export interface ProfileBlockquote extends BlockquoteBase {
+export interface AdviceBlockquote extends BlockquoteBase {
   type: '4';
   content: string;
 }
+
+export interface GratitudeBlockquote extends BlockquoteBase {
+  type: '5';
+  content: string;
+}
+
 
 export type BlockquoteProps = 
   | HighlightBlockquote 
   | QuoteBlockquote 
   | EpigraphBlockquote 
-  | ProfileBlockquote;
+  | AdviceBlockquote 
+  | GratitudeBlockquote;

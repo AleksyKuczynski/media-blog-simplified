@@ -24,6 +24,7 @@ import { Type2Blockquote } from './Type2Blockquote';
 import { Type3Blockquote } from './Type3Blockquote';
 import { Type4Blockquote } from './Type4Blockquote';
 import { Lang } from '@/config/i18n';
+import { Type5Blockquote } from './Type5Blockquote';
 
 interface CustomBlockquoteProps {
   blockquoteProps: BlockquoteProps;
@@ -46,6 +47,11 @@ export function CustomBlockquote({ blockquoteProps: props, lang }: CustomBlockqu
       return <Type4Blockquote 
         content={props.content}
         lang={lang}
+      />;
+    case '5':
+      return <Type5Blockquote 
+        content={props.content} 
+        lang={lang} 
       />;
     default:
       console.error('Unknown blockquote type');
