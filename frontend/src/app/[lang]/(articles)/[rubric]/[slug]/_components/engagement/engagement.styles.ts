@@ -63,6 +63,7 @@ export const ENGAGEMENT_METRIC_STYLES = {
   },
   states: {
     view: {
+      active: 'text-sf/70',
       inactive: 'text-sf/70',
     },
     like: {
