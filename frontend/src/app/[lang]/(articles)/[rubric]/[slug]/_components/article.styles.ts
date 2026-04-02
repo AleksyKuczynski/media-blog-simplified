@@ -376,10 +376,22 @@ export const NAVIGATION_STYLES = {
       
       // Categories navigation - maintains original tag design
       categoriesNav: 'flex flex-wrap gap-2 lg:gap-3',
-      categoryTag: 'px-2 lg:px-3 py-0.5 lg:px-1 max-lg:text-sm rounded-full text-pr-cont border border-dotted border-pr-cont hover:border-solid transition-colors',
+      categoryTag: cn(
+        'px-2 lg:px-3 py-0.5', 
+        'max-lg:text-sm rounded-full', 
+        'text-pr-cont dark:hover:text-pr-fix',
+        'border border-dotted hover:border-solid dark:border-solid ',
+        'border-pr-cont dark:hover:border-pr-fix',
+        'transition-colors duration-200'
+      ),
       
       // Rubric link - similar to author section
-      rubricLink: 'max-md:hidden inline-flex items-center gap-3 p-3 pr-6 rounded-full text-pr-cont bg-sf-cont hover:bg-sf-hi transition-colors',
+      rubricLink: cn(
+        'max-md:hidden inline-flex items-center gap-3 p-3 pr-6 rounded-full',
+        'bg-sf-cont hover:bg-sf-hi',
+        'text-pr-cont dark:hover:text-pr-fix',
+        'transition-colors duration-200'
+      ),
       rubricIcon: 'relative w-8 h-8',
       rubricText: 'max-lg:text-sm font-medium whitespace-nowrap lowercase',
     },
