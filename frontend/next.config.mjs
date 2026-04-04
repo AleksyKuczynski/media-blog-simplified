@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  output: 'standalone', 
    
   images: {
     remotePatterns: [
@@ -19,6 +20,7 @@ const nextConfig = {
         pathname: '/assets/**',
       },
     ],
+    formats: ['image/webp'],
     qualities: [75, 90]
   },
   
