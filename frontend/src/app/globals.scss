@@ -137,6 +137,23 @@ html {
   overflow-y: scroll;
 }
 
+/* Dropdown scrollbar */
+.dropdown-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-ol) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-ol);
+    border-radius: 999px;
+  }
+}
+
 :root {
   /* Common variables */
   --transition-duration: 200ms;

@@ -18,7 +18,7 @@ export default function DropdownContent({ children }: DropdownContentProps) {
 
   return (
     <div 
-      className={className}
+      className={`${className} dropdown-scroll`}
       role="menu"
       aria-orientation="vertical"
       style={{ 

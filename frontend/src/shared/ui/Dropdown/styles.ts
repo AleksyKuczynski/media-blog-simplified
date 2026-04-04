@@ -7,10 +7,9 @@ export const DROPDOWN_STYLES = {
   
   content: {
     base: cn(
-      'absolute z-[70] shadow-md bg-sf border border-ol transition-all duration-200 ease-in-out origin-top w-full left-0',
-      'rounded-xl',
-      'md:rounded-2xl',
-      'xl:rounded-3xl',
+      'shadow-md bg-sf border border-ol transition-all duration-200 ease-in-out',
+      'absolute z-[70] origin-top w-full max-h-[75vh] left-0 overflow-y-auto',
+      'rounded-sm',
     ),
     open: 'opacity-100 scale-y-100 transform',
     closed: 'opacity-0 scale-y-0 pointer-events-none',
