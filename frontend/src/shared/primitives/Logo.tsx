@@ -1,5 +1,4 @@
 // src/main/components/Logo.tsx - SEO-Enhanced Logo (Non-Destructive)
-import { off } from 'node:cluster';
 import { dictionary, Lang } from '../../config/i18n';
 import { NavigationLink } from '@/features/navigation/Header/NavigationLink';
 
