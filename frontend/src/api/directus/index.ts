@@ -21,6 +21,7 @@ export { fetchRubricBasics } from './fetchRubricBasics';
 export { fetchRubricDetails } from './fetchRubricDetails';
 export { fetchRubricSlug } from './fetchRubricSlug';
 export { fetchSearchPropositions } from './fetchSearchPropositions';
+export { fetchStaticArticlePaths } from './fetchStaticArticlePaths';
 export { fetchEngagementData } from './fetchEngagementData'
 export { fetchRelatedArticles } from './fetchRelatedArticles';
 export { resolveArticleSlug } from './resolveArticleSlug';

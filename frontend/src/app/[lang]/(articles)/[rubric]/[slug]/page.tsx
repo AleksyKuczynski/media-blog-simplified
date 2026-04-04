@@ -25,10 +25,15 @@ import Section from '@/features/layout/Section';
 import RelatedArticles from '@/features/article-display/RelatedArticles';
 import { LAYOUT_STYLES, NAVIGATION_STYLES } from './_components/article.styles';
 import { ArticlePageSkeleton } from './_components/ArticlePageSkeleton';
-import { cookies } from 'next/headers';
+
+import { fetchStaticArticlePaths } from '@/api/directus';
 
 export const revalidate = 3600;
-export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const paths = await fetchStaticArticlePaths();
+  return paths.map(({ lang, rubric, slug }) => ({ lang, rubric, slug }));
+}
 
 export async function generateMetadata({ 
   params,
