@@ -9,10 +9,7 @@ const __dirname = path.dirname(__filename);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
-  
-  // Explicitly set the output file tracing root to silence workspace warning
-  outputFileTracingRoot: __dirname,
-  
+   
   images: {
     remotePatterns: [
       {
