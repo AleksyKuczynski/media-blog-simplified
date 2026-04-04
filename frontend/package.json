@@ -34,6 +34,7 @@
     "@types/node": "^25.1.0",
     "@types/react": "19.2.10",
     "@types/react-dom": "19.2.3",
+    "@vercel/next": "^4.16.5",
     "baseline-browser-mapping": "^2.9.19",
     "eslint": "^9.39.2",
     "eslint-config-next": "16.1.6",
