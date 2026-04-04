@@ -32,8 +32,7 @@ const nextConfig = {
   },
   
   experimental: {
-    deterministicDevMiddleware: false,
-    //scrollRestoration: false, // Disables Next.js scroll restoration
+    scrollRestoration: false, // Disables Next.js scroll restoration
     optimizePackageImports: ['@tailwindcss/typography'], // Enable optimizePackageImports for better tree shaking
   },
 
