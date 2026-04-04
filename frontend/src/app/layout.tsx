@@ -60,7 +60,6 @@ export default async function RootLayout({
         {yandexMetrikaId && <YandexMetrikaNoScript counterId={yandexMetrikaId} />}
         {googleAnalyticsId && <GoogleAnalyticsNoScript measurementId={googleAnalyticsId} />}
         <ConsentBanner dictionary={consentDictionary} />
-        <ScrollRestorationClient />
         {children}
       </body>
     </html>
