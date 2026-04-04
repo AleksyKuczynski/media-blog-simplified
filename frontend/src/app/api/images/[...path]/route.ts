@@ -30,13 +30,6 @@ export async function GET(
       ? `${DIRECTUS_URL}/${path}?${queryString}`
       : `${DIRECTUS_URL}/${path}`;
 
-    console.log('=== Image Proxy Request ===');
-    console.log('Path:', path);
-    console.log('Query:', queryString);
-    console.log('Directus URL:', directusUrl);
-    console.log('Has Token:', !!DIRECTUS_API_TOKEN);
-    console.log('Token (first 10 chars):', DIRECTUS_API_TOKEN?.substring(0, 10));
-
     // Build headers with authentication
     const headers: HeadersInit = {
       'User-Agent': 'Next.js Image Proxy',
@@ -45,12 +38,9 @@ export async function GET(
     // Add Directus API token
     if (DIRECTUS_API_TOKEN) {
       headers['Authorization'] = `Bearer ${DIRECTUS_API_TOKEN}`;
-      console.log('Added Authorization header');
     } else {
       console.warn('⚠️ No DIRECTUS_API_TOKEN found in environment');
     }
-
-    console.log('Request Headers:', JSON.stringify(headers, null, 2));
 
     // Fetch image from Directus
     const fetchStartTime = Date.now();
@@ -60,10 +50,6 @@ export async function GET(
       cache: 'no-store',
     });
     const fetchDuration = Date.now() - fetchStartTime;
-
-    console.log('Response Status:', response.status);
-    console.log('Response Headers:', JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2));
-    console.log('Fetch Duration:', fetchDuration, 'ms');
 
     if (!response.ok) {
       const errorBody = await response.text();
@@ -92,12 +78,6 @@ export async function GET(
     const imageBuffer = await response.arrayBuffer();
     const contentType = response.headers.get('content-type') || 'image/jpeg';
     const imageSize = imageBuffer.byteLength;
-
-    console.log('✅ Success!');
-    console.log('Content-Type:', contentType);
-    console.log('Image Size:', imageSize, 'bytes');
-    console.log('Total Duration:', Date.now() - startTime, 'ms');
-    console.log('========================\n');
 
     // Return image with proper caching headers
     return new NextResponse(imageBuffer, {
@@ -146,9 +126,6 @@ export async function HEAD(
       ? `${DIRECTUS_URL}/${path}?${queryString}`
       : `${DIRECTUS_URL}/${path}`;
 
-    console.log('=== Image Proxy HEAD Request ===');
-    console.log('URL:', directusUrl);
-
     // Build headers with authentication
     const headers: HeadersInit = {};
     if (DIRECTUS_API_TOKEN) {
@@ -159,9 +136,6 @@ export async function HEAD(
       method: 'HEAD',
       headers,
     });
-
-    console.log('HEAD Response Status:', response.status);
-    console.log('================================\n');
 
     return new NextResponse(null, {
       status: response.status,
