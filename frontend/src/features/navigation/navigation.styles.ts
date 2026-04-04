@@ -142,8 +142,8 @@ export const PANEL_CONTENT_STYLES = {
   menu: {
     container: 'flex flex-col mx-2 h-full bg-sf-cont/60 rounded-t-2xl overflow-hidden',
     scrollArea: 'flex-1 overflow-y-auto py-12 md:py-16',
-    nav: 'px-2',
-    wrapper: 'flex flex-col items-center gap-8',
+    nav: 'px-2 w-full',
+    wrapper: 'flex flex-col items-center gap-8 w-full',
     list: 'w-full',
   },
   
