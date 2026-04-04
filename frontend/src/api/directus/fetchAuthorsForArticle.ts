@@ -38,8 +38,8 @@ export async function fetchAuthorsForArticle(slug: string, lang: Lang): Promise<
 
     const url = `${DIRECTUS_URL}/items/articles_authors?fields=${fields}&filter=${filter}&deep=${deepFilter}`;
     const response = await fetch(url, { 
-      cache: 'no-store',
       next: {
+        revalidate: 3600,
         tags: ['authors', 'article-authors']
       }
     });

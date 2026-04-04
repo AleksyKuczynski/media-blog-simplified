@@ -63,8 +63,8 @@ export async function fetchArticleContributors(
     const url = `${DIRECTUS_URL}/items/articles?fields=${fields}&filter=${filter}&deep=${deepFilter}`;
     
     const response = await fetch(url, { 
-      cache: 'no-store',
       next: {
+        revalidate: 3600,
         tags: ['authors', 'illustrators', 'article-contributors']
       }
     });
