@@ -6,7 +6,7 @@ import { generateArticleLink, generateArticleLinkAsync } from '@/lib/utils';
 import { ArticleCardProps } from './interfaces';
 import { IMAGE_RATIO } from '../mainConstants';
 import { getArticleCardData } from './actions/getArticleCardData';
-import { DIRECTUS_URL } from '@/api/directus';
+import { DIRECTUS_ASSETS_URL } from '@/api/directus';
 
 export default async function ArticleCard({ 
   slug, 
@@ -41,7 +41,7 @@ export default async function ArticleCard({
   const cardLayout = layout || article.layout || 'regular';
 
   const imageProps = article.article_heading_img ? {
-    src: `${DIRECTUS_URL}/assets/${article.article_heading_img}`,
+    src: `${DIRECTUS_ASSETS_URL}/assets/${article.article_heading_img}`,
     alt: translation.title,
     aspectRatio: IMAGE_RATIO,
   } : null;

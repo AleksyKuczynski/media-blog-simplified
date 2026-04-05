@@ -24,7 +24,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Dictionary, Lang } from '@/config/i18n';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import { DIRECTUS_URL } from '@/api/directus';
+import { DIRECTUS_ASSETS_URL } from '@/api/directus';
 import { NAVIGATION_STYLES } from '../article.styles';
 
 interface AuthorSectionProps {
@@ -77,7 +77,7 @@ export default function AuthorSection({
         {author.avatar ? (
           <div className={styles.avatar}>
             <Image
-              src={`${DIRECTUS_URL}/assets/${author.avatar}?width=128&height=128&quality=90&format=webp`}
+              src={`${DIRECTUS_ASSETS_URL}/assets/${author.avatar}?width=128&height=128&quality=90&format=webp`}
               alt={author.name}
               fill
               className="object-cover"

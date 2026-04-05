@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import Image from 'next/image';
-import { fetchAuthorBySlug, DIRECTUS_URL, fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus/index';
+import { fetchAuthorBySlug, DIRECTUS_ASSETS_URL, fetchArticleSlugs, ITEMS_PER_PAGE } from '@/api/directus/index';
 import ArticleList from '@/features/article-display/ArticleList';
 import { ArticleListSkeleton } from '@/features/article-display/ArticleListSkeleton';
 import Pagination from '@/shared/ui/Pagination';
@@ -138,7 +138,7 @@ export default async function AuthorPage({
               {author.avatar ? (
                 <div className={AUTHOR_PAGE_STYLES.header.avatar.wrapper}>
                   <Image
-                    src={`${DIRECTUS_URL}/assets/${author.avatar}`}
+                    src={`${DIRECTUS_ASSETS_URL}/assets/${author.avatar}`}
                     alt={processTemplate(dictionary.sections.authors.authorPhoto, {
                       name: author.name
                     })}

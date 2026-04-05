@@ -29,7 +29,7 @@
  */
 
 import Image from 'next/image';
-import { DIRECTUS_URL, ArticleAuthor } from '@/api/directus';
+import { DIRECTUS_ASSETS_URL, ArticleAuthor } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
 import { LAYOUT_STYLES } from './article.styles';
 import { IMAGE_RATIO_STRING } from '@/features/mainConstants';
@@ -72,7 +72,7 @@ export function Header({
         <div className={styles.imageWrapper}>
           <div className={`${styles.imageContainer} ${IMAGE_RATIO_STRING}`}>
             <Image
-              src={`${DIRECTUS_URL}/assets/${imagePath}`}
+              src={`${DIRECTUS_ASSETS_URL}/assets/${imagePath}`}
               alt={title}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -135,7 +135,7 @@ export function Header({
       <meta itemProp="dateModified" content={publishedDate} />
       
       {imagePath && (
-        <meta itemProp="image" content={`${DIRECTUS_URL}/assets/${imagePath}`} />
+        <meta itemProp="image" content={`${DIRECTUS_ASSETS_URL}/assets/${imagePath}`} />
       )}
       
       <div className={styles.metadata}>

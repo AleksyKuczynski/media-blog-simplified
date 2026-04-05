@@ -1,7 +1,7 @@
 // src/features/article-display/RelatedArticles/RelatedArticles.tsx
 
 import { Dictionary, Lang } from '@/config/i18n';
-import { fetchArticleSlugs, fetchArticleCard, fetchRelatedArticles, DIRECTUS_URL } from '@/api/directus';
+import { fetchArticleSlugs, fetchArticleCard, fetchRelatedArticles, DIRECTUS_ASSETS_URL } from '@/api/directus';
 import CardCarousel from '../shared/CardCarousel/CardCarousel';
 import { ArticleCardData } from '../shared/CardCarousel/types';
 
@@ -102,7 +102,7 @@ export default async function RelatedArticles({
       });
 
       const imageSrc = article.article_heading_img 
-        ? `${DIRECTUS_URL}/assets/${article.article_heading_img}`
+        ? `${DIRECTUS_ASSETS_URL}/assets/${article.article_heading_img}`
         : undefined;
 
       return {

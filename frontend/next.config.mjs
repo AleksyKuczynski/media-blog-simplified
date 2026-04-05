@@ -19,6 +19,13 @@ const nextConfig = {
         port: '',
         pathname: '/assets/**',
       },
+      {
+        // Internal Docker network hostname — used when NEXT_PUBLIC_DIRECTUS_URL is not set at build time
+        protocol: 'http',
+        hostname: 'directus',
+        port: '8055',
+        pathname: '/assets/**',
+      },
     ],
     formats: ['image/webp'],
     qualities: [75, 90]

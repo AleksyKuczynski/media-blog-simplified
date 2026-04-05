@@ -18,7 +18,7 @@
  * @returns {ParsedImage | null} Structured image data or null
  */
 
-import { DIRECTUS_URL } from "@/api/directus";
+import { DIRECTUS_ASSETS_URL } from "@/api/directus";
 
 export function parseMarkdownImage(markdown: string): { alt: string; src: string; assetId: string } | null {
   // Guard against null/undefined markdown
@@ -47,11 +47,11 @@ export function parseMarkdownImage(markdown: string): { alt: string; src: string
     // Extract asset ID from full URL (handles old cached URLs)
     assetId = src.split('/assets/').pop()?.split('?')[0] || '';
     // Reconstruct URL using current DIRECTUS_URL
-    src = `${DIRECTUS_URL}/assets/${assetId}`;
+    src = `${DIRECTUS_ASSETS_URL}/assets/${assetId}`;
   } else {
     // Assume it's just an asset ID
     assetId = src;
-    src = `${DIRECTUS_URL}/assets/${assetId}`;
+    src = `${DIRECTUS_ASSETS_URL}/assets/${assetId}`;
   }
 
   return {

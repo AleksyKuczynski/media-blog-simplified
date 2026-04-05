@@ -1,7 +1,7 @@
 // src/api/directus/transformToCarouselCards.ts
 
 import { Lang } from '@/config/i18n';
-import { DIRECTUS_URL } from '../../config/constants/directusConstants';
+import { DIRECTUS_URL, DIRECTUS_ASSETS_URL } from '../../config/constants/directusConstants';
 import { Rubric, AuthorDetails, ArticleSlugInfo } from './directusInterfaces';
 import type { ArticleCardData, RubricCardData, AuthorCardData } from '@/features/shared/CardCarousel/types';
 import { fetchAllRubrics } from './fetchAllRubrics';
@@ -98,7 +98,7 @@ export async function transformArticlesToCarousel(
       });
 
       const imageSrc = article!.article_heading_img 
-        ? `${DIRECTUS_URL}/assets/${article!.article_heading_img}`
+        ? `${DIRECTUS_ASSETS_URL}/assets/${article!.article_heading_img}`
         : undefined;
 
       return {

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { DIRECTUS_URL, AuthorDetails } from '@/api/directus';
+import { DIRECTUS_ASSETS_URL, AuthorDetails } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
 import { AUTHOR_CARD_STYLES } from './author.styles';
 import { processTemplate } from '@/config/i18n/helpers/templates';
@@ -22,7 +22,7 @@ export default function AuthorCard({ author, linkToProfile = true, lang, diction
       <div className={AUTHOR_CARD_STYLES.avatarContainer}>
         {author.avatar ? (
           <Image
-            src={`${DIRECTUS_URL}/assets/${author.avatar}?width=400&height=400&quality=80&format=webp`}
+            src={`${DIRECTUS_ASSETS_URL}/assets/${author.avatar}?width=400&height=400&quality=80&format=webp`}
             alt={author.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

@@ -6,8 +6,7 @@ import CardCarousel from '../shared/CardCarousel/CardCarousel';
 import { ActionLink } from '@/shared/primitives/ActionLink';
 import { ArticleCardData } from '@/features/shared/CardCarousel/types';
 
-const DIRECTUS_URL = process.env.DIRECTUS_URL;
-const NEXT_PUBLIC_DIRECTUS_URL = process.env.NEXT_PUBLIC_DIRECTUS_URL;
+import { DIRECTUS_URL, DIRECTUS_ASSETS_URL } from '@/api/directus';
 
 interface RandomArticlesSectionProps {
   lang: Lang;
@@ -58,7 +57,7 @@ export default async function RandomArticlesSection({
         slug: a.slug,
         title: translation?.title ?? '',
         publishedAt: a.published_at,
-        imageSrc: a.article_heading_img ? `${NEXT_PUBLIC_DIRECTUS_URL}/assets/${a.article_heading_img}` : undefined,
+        imageSrc: a.article_heading_img ? `${DIRECTUS_ASSETS_URL}/assets/${a.article_heading_img}` : undefined,
         rubricSlug: a.rubric_slug ?? '',
         formattedDate: new Date(a.published_at).toLocaleDateString(lang, {
           year: 'numeric', month: 'long', day: 'numeric',

@@ -29,7 +29,7 @@
 
 import { validateArticleSlug } from '@/lib/utils';
 import { ContentChunk, ArticleCardData } from './markdownTypes';
-import { DIRECTUS_URL, fetchArticleCard } from '@/api/directus';
+import { DIRECTUS_ASSETS_URL, fetchArticleCard } from '@/api/directus';
 import { Lang } from '@/config/i18n';
 
 export async function processArticleCards(
@@ -111,7 +111,7 @@ export async function processArticleCards(
                 if (articleCard && articleCard.translations[0]) {
                   const translation = articleCard.translations[0];
                   const imageSrc = articleCard.article_heading_img
-                    ? `${DIRECTUS_URL}/assets/${articleCard.article_heading_img}`
+                    ? `${DIRECTUS_ASSETS_URL}/assets/${articleCard.article_heading_img}`
                     : undefined;
                   
                   const articleCardData: ArticleCardData = {
