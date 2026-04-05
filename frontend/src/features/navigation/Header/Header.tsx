@@ -43,8 +43,9 @@ export default function Navigation({
     <>
       <SkipLinks dictionary={dictionary} />
       
-      <CompleteNavigationSchema 
+      <CompleteNavigationSchema
         dictionary={dictionary}
+        lang={lang}
         currentPath={normalizedPath}
       />
       

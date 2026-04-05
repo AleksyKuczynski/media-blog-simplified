@@ -12,7 +12,9 @@ export function proxy(request: NextRequest) {
 
   // Skip preview routes — they don't need language prefix
   if (pathname.startsWith('/preview/')) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    response.headers.set('x-pathname', pathname);  // add this
+    return response;
   }
 
   // ========================================

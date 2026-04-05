@@ -22,13 +22,11 @@ export const metadata: Metadata = {
 
 async function detectLanguageFromPath(): Promise<Lang> {
   const headersList = await headers();
-  const pathname = headersList.get('x-pathname') || headersList.get('referer') || '';
-  
-  const langMatch = pathname.match(/\/([a-z]{2})(\/|$)/);
+  const pathname = headersList.get('x-pathname') || '';
+  const langMatch = pathname.match(/^\/([a-z]{2})(\/|$)/);
   if (langMatch && SUPPORTED_LANGUAGES.includes(langMatch[1] as Lang)) {
     return langMatch[1] as Lang;
   }
-  
   return DEFAULT_LANG;
 }
 

@@ -52,19 +52,12 @@ export const RubricPageSchema: React.FC<RubricPageSchemaProps> = ({
     const canonicalUrl = `${baseUrl}${currentPath}`;
 
     // Generate breadcrumbs for rubric page
+    const lang = currentPath.split('/')[1] || 'ru';
+
     const breadcrumbs = [
-      {
-        name: dictionary.navigation.labels.home,
-        href: '/ru',
-      },
-      {
-        name: dictionary.sections.labels.rubrics,
-        href: '/ru/rubrics',
-      },
-      {
-        name: name,
-        href: currentPath,
-      },
+      { name: dictionary.navigation.labels.home, href: `/${lang}` },
+      { name: dictionary.sections.labels.rubrics, href: `/${lang}/rubrics` },
+      { name: name, href: currentPath },
     ];
 
     // Use SchemaComposer for standardized schema generation
@@ -86,7 +79,10 @@ export const RubricPageSchema: React.FC<RubricPageSchemaProps> = ({
       items: articles.map(article => ({
         name: article.title,
         url: article.url,
-        description: `${article.title} в рубрике ${name}`,
+        description: processTemplate(dictionary.sections.templates.itemInCollection, {
+          item: article.title,
+          collection: name,
+        }),
       })),
     });
 
@@ -143,11 +139,17 @@ export const RubricPageSchema: React.FC<RubricPageSchemaProps> = ({
 /**
  * Minimal rubric schema for performance-critical pages
  */
-export const MinimalRubricPageSchema: React.FC<Pick<RubricPageSchemaProps, 'dictionary' | 'rubricData'>> = ({
-  dictionary,
-  rubricData,
-}) => {
-  return <RubricPageSchema dictionary={dictionary} rubricData={rubricData} currentPath="" />;
-};
+const getLang = (dictionary: Dictionary) => dictionary.locale.split('-')[0];
 
-export default RubricPageSchema;
+export const MinimalRubricPageSchema: React.FC<
+  Pick<RubricPageSchemaProps, 'dictionary' | 'rubricData'> & { lang?: string }
+> = ({ dictionary, rubricData, lang }) => {
+  const resolvedLang = lang ?? getLang(dictionary);
+  return (
+    <RubricPageSchema
+      dictionary={dictionary}
+      rubricData={rubricData}
+      currentPath={`/${resolvedLang}/${rubricData.slug}`}
+    />
+  );
+};

@@ -95,9 +95,8 @@ export const getFooterNavigationItems = (
 export const getNavigationItems = getHeaderNavigationItems;
 
 // Schema generation - complete set
-export const generateNavigationElements = (dictionary: Dictionary): NavigationItem[] => {
-  const { DEFAULT_LANG } = require('@/config/constants/constants');
-  return getAllNavigationItems(dictionary, DEFAULT_LANG);
+export const generateNavigationElements = (dictionary: Dictionary, lang: Lang): NavigationItem[] => {
+  return getAllNavigationItems(dictionary, lang);
 };
 
 /**

@@ -57,10 +57,10 @@ export const createStandardOrganizationSchema = (
       availableLanguage: [dictionary.locale, 'Russian'],
       areaServed: {
         '@type': 'Country',
-        name: 'Россия',
+        name: seo.site.geographicAreas[0],
       },
-    },
-    
+    },    
+
     // Convert readonly string[] to string[]
     ...(seo.site.socialProfiles.length > 0 && {
       sameAs: [...seo.site.socialProfiles], // Convert readonly to mutable
@@ -76,7 +76,7 @@ export const createStandardOrganizationSchema = (
     foundingDate: '2023',
     foundingLocation: {
       '@type': 'Country' as const,
-      name: 'Россия',
+      name: dictionary.seo.site.geographicAreas[0],
     },
   };
 };
@@ -127,7 +127,7 @@ export const createStandardWebsiteSchema = (
     },
     
     // Geographic targeting
-    audience: createRussianAudienceSchema(dictionary),
+    audience: createAudienceSchema(dictionary),
   };
 };
 
@@ -175,13 +175,13 @@ export const createStandardBreadcrumbSchema = (
  * Create Russian audience targeting schema
  * Literal type for '@type'
  */
-export const createRussianAudienceSchema = (dictionary: Dictionary) => ({
-  '@type': 'Audience' as const, // Use literal type
+export const createAudienceSchema = (dictionary: Dictionary) => ({
+  '@type': 'Audience' as const,
   geographicArea: dictionary.seo.regional.targetMarkets.map(market => ({
     '@type': 'Country' as const,
     name: market,
   })),
-  audienceType: 'Русскоязычная аудитория',
+  audienceType: dictionary.seo.regional.targetMarkets[0],
   suggestedMinAge: 16,
   suggestedMaxAge: 65,
 });
@@ -281,9 +281,9 @@ export class SchemaComposer {
   addCustomSchema(schema: Partial<ExtendedSchemaData>): this {
     const enhancedSchema: ExtendedSchemaData = {
       '@context': 'https://schema.org',
-      '@type': schema['@type'] || 'Thing', // Ensure @type is always present
+      '@type': schema['@type'] || 'Thing',
       inLanguage: getSchemaLanguage(this.dictionary),
-      audience: createRussianAudienceSchema(this.dictionary),
+      audience: createAudienceSchema(this.dictionary),  // renamed
       isPartOf: {
         '@type': 'WebSite',
         '@id': `${this.baseUrl}#website`,
@@ -293,7 +293,6 @@ export class SchemaComposer {
       },
       ...schema,
     };
-    
     this.schemas.push(enhancedSchema);
     return this;
   }
@@ -301,6 +300,10 @@ export class SchemaComposer {
   /**
    * Add Article schema with standard properties
    */
+  private get lang(): string {
+    return getSchemaLanguage(this.dictionary);
+  }
+
   addArticle(data: {
     title: string;
     description: string;
@@ -322,20 +325,27 @@ export class SchemaComposer {
       url: this.canonicalUrl,
       datePublished: data.publishedAt,
       dateModified: data.modifiedAt,
+
+      
       
       // Proper author schema with required @context
       author: {
         '@context': 'https://schema.org',
         '@type': 'Person',
-        '@id': data.author.slug 
-          ? `${this.baseUrl}/ru/authors/${data.author.slug}#person`
+        '@id': data.author.slug
+          ? `${this.baseUrl}/${this.lang}/authors/${data.author.slug}#person`
           : undefined,
         name: data.author.name,
         ...(data.author.slug && {
-          url: `${this.baseUrl}/ru/authors/${data.author.slug}`,
+          url: `${this.baseUrl}/${this.lang}/authors/${data.author.slug}`,
         }),
       },
-      
+      // ...
+      contentLocation: {
+        '@type': 'Country',
+        name: this.dictionary.seo.site.geographicAreas[0],
+      },      
+
       // Image information
       ...(data.imageUrl && {
         image: {
@@ -352,13 +362,7 @@ export class SchemaComposer {
       ...(data.tags && data.tags.length > 0 && { keywords: data.tags.join(', ') }),
       ...(data.wordCount && { wordCount: data.wordCount }),
       ...(data.readingTime && { timeRequired: `PT${data.readingTime}M` }),
-      
-      // Content location
-      contentLocation: {
-        '@type': 'Country',
-        name: 'Россия',
-      },
-      
+            
       // Main entity reference
       mainEntityOfPage: {
         '@type': 'WebPage',

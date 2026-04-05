@@ -53,19 +53,12 @@ export const AuthorSchema: React.FC<AuthorSchemaProps> = ({
     const canonicalUrl = `${baseUrl}${currentPath}`;
 
     // Generate breadcrumbs for author page
+    const lang = currentPath.split('/')[1] || 'ru';
+
     const breadcrumbs = [
-      {
-        name: dictionary.navigation.labels.home,
-        href: '/ru',
-      },
-      {
-        name: dictionary.sections.labels.authors,
-        href: '/ru/authors',
-      },
-      {
-        name: name,
-        href: currentPath,
-      },
+      { name: dictionary.navigation.labels.home, href: `/${lang}` },
+      { name: dictionary.sections.labels.authors, href: `/${lang}/authors` },
+      { name: name, href: currentPath },
     ];
 
     // Use SchemaComposer for standardized schema generation
@@ -101,10 +94,10 @@ export const AuthorSchema: React.FC<AuthorSchemaProps> = ({
           image: {
             '@type': 'ImageObject',
             url: `${baseUrl}/assets/${avatar}`,
-            caption: `Фото автора ${name}`,
+            caption: processTemplate(dictionary.sections.authors.articlesWrittenBy, { author: name }),
           },
-        }),
-        
+        }),        
+
         // Articles count using dictionary template
         knowsAbout: processTemplate(dictionary.sections.templates.totalCount, {
           count: articleCount.toString(),
@@ -170,11 +163,19 @@ export const AuthorSchema: React.FC<AuthorSchemaProps> = ({
 /**
  * Minimal author schema for performance-critical pages
  */
-export const MinimalAuthorSchema: React.FC<Pick<AuthorSchemaProps, 'dictionary' | 'authorData'>> = ({
-  dictionary,
-  authorData,
-}) => {
-  return <AuthorSchema dictionary={dictionary} authorData={authorData} currentPath="" />;
+const getLang = (dictionary: Dictionary) => dictionary.locale.split('-')[0];
+
+export const MinimalAuthorSchema: React.FC<
+  Pick<AuthorSchemaProps, 'dictionary' | 'authorData'> & { lang?: string }
+> = ({ dictionary, authorData, lang }) => {
+  const resolvedLang = lang ?? getLang(dictionary);
+  return (
+    <AuthorSchema
+      dictionary={dictionary}
+      authorData={authorData}
+      currentPath={`/${resolvedLang}/authors/${authorData.slug}`}
+    />
+  );
 };
 
 export default AuthorSchema;

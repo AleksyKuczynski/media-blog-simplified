@@ -53,7 +53,7 @@ export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
 
     // Get collection data from dictionary
     const collectionLabel = collectionType === 'illustrators' 
-      ? dictionary.sections.illustrators?.ourIllustrators || 'Иллюстраторы'
+      ? dictionary.sections.illustrators?.ourIllustrators
       : dictionary.sections.labels[collectionType as 'rubrics' | 'authors' | 'articles'];
 
     const collectionTitle = collectionType === 'illustrators'
@@ -64,23 +64,19 @@ export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
 
     // Get collection description using helper
     const getCollectionDescription = (): string => {
-      const sectionData = dictionary.sections[collectionType];
-      return sectionData?.collectionPageDescription || 
-             processTemplate(dictionary.sections.templates.collectionOf, {
-               items: collectionLabel,
-             }) + ` на ${seo.site.name}`;
+      const sectionData = dictionary.sections[collectionType as keyof typeof dictionary.sections];
+      return (sectionData as any)?.collectionPageDescription ||
+        processTemplate(dictionary.sections.templates.collectionOf, {
+          items: collectionLabel,
+        });
     };
 
     // Generate breadcrumbs
+    const lang = currentPath.split('/')[1] || getLang(dictionary);
+
     const breadcrumbs = [
-      {
-        name: dictionary.navigation.labels.home,
-        href: '/ru',
-      },
-      {
-        name: collectionTitle,
-        href: currentPath,
-      },
+      { name: dictionary.navigation.labels.home, href: `/${lang}` },
+      { name: collectionTitle, href: currentPath },
     ];
 
     // Use SchemaComposer for standardized schema generation
@@ -133,18 +129,23 @@ export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
 /**
  * Minimal collection schema for performance-critical pages
  */
-export const MinimalCollectionPageSchema: React.FC<Pick<CollectionPageSchemaProps, 'dictionary' | 'collectionType' | 'totalCount'>> = ({
+
+const getLang = (dictionary: Dictionary) => dictionary.locale.split('-')[0];
+
+export const MinimalCollectionPageSchema: React.FC<Pick<CollectionPageSchemaProps, 'dictionary' | 'collectionType' | 'totalCount'> & { lang?: string }> = ({
   dictionary,
   collectionType,
   totalCount,
+  lang
 }) => {
+  const resolvedLang = lang ?? getLang(dictionary);
   return (
     <CollectionPageSchema
       dictionary={dictionary}
       collectionType={collectionType}
       items={[]}
       totalCount={totalCount}
-      currentPath=""
+      currentPath={`/${resolvedLang}/${collectionType}`}
     />
   );
 };

@@ -1,5 +1,6 @@
 // frontend/src/shared/seo/index.tsx
 
+import { Lang } from '@/config/i18n';
 import { buildMetadata } from './core/MetadataBuilder';
 import { SchemaBuilder } from './core/SchemaBuilder';
 import { generateMainNavigationMetadata, generateNavigationMetadata, getNavigationLinkSEO, getNavigationOpenGraphData, validateNavigationMetadata } from './metadata/NavigationMetadata';
@@ -135,6 +136,7 @@ export const useSearchSEO = () => {
  */
 export interface NavigationSEOBundleProps {
   dictionary: any; // Will be properly typed as Dictionary
+  lang: Lang;
   currentPath?: string;
   breadcrumbs?: Array<{ name: string; href: string }>;
   minimal?: boolean;
@@ -142,15 +144,17 @@ export interface NavigationSEOBundleProps {
 
 export const NavigationSEOBundle: React.FC<NavigationSEOBundleProps> = ({
   dictionary,
+  lang,
   currentPath,
   breadcrumbs,
   minimal = false,
 }) => {
   const SchemaComponent = minimal ? MinimalNavigationSchema : CompleteNavigationSchema;
-  
+
   return (
     <SchemaComponent
       dictionary={dictionary}
+      lang={lang}
       currentPath={currentPath}
     />
   );

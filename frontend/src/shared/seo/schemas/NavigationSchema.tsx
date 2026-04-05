@@ -1,7 +1,7 @@
 // frontend/src/shared/seo/schemas/NavigationSchema.tsx
 
 import React from 'react';
-import { Dictionary } from '@/config/i18n';
+import { Dictionary, Lang } from '@/config/i18n';
 import { generateCanonicalUrl } from '@/config/i18n/helpers/seo';
 import { generateNavigationElements } from '@/config/i18n/helpers/navigation';
 import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';
@@ -12,7 +12,7 @@ import { SchemaComposer, SchemaBuilder } from '../core/SchemaBuilder';
 
 export interface NavigationSchemaProps {
   readonly dictionary: Dictionary;
-  readonly currentPath?: string;
+  readonly lang: Lang;
 }
 
 export interface BreadcrumbNavigationSchemaProps {
@@ -30,7 +30,7 @@ export interface BreadcrumbNavigationSchemaProps {
  */
 export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
   dictionary,
-  currentPath = '',
+  lang,
 }) => {
   try {
     const seoDict = dictionary.seo;
@@ -42,7 +42,7 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
     }
     
     const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
-    const navigationElements = generateNavigationElements(dictionary);
+    const navigationElements = generateNavigationElements(dictionary, lang);
 
     // Use SchemaComposer for standardized navigation schema
     const composer = new SchemaComposer(dictionary, baseUrl)
@@ -85,17 +85,18 @@ export const NavigationSchema: React.FC<NavigationSchemaProps> = ({
 /**
  * Main navigation schema - simplified with SchemaComposer
  */
-export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
+export const MainNavigationSchema: React.FC<{ dictionary: Dictionary; lang: Lang }> = ({ dictionary, lang }) => {
   try {
-    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
+    const baseUrl = dictionary.seo.site.url.replace(/\/$/, '');
+    const langUrl = `${baseUrl}/${lang}`;
 
-    const schema = new SchemaComposer(dictionary, baseUrl)
+    const schema = new SchemaComposer(dictionary, langUrl)
       .addCustomSchema({
         '@type': 'SiteNavigationElement',
-        '@id': `${baseUrl}#main-navigation`,
+        '@id': `${langUrl}#main-navigation`,
         name: dictionary.navigation.accessibility.mainNavigation,
         description: dictionary.navigation.accessibility.mainNavigation,
-        url: baseUrl,
+        url: langUrl,
         position: 1,
       })
       .build();
@@ -116,17 +117,18 @@ export const MainNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dic
 /**
  * Mobile navigation schema - simplified with SchemaComposer
  */
-export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
+export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary; lang: Lang }> = ({ dictionary, lang }) => {
   try {
-    const baseUrl = generateCanonicalUrl('/', dictionary.seo.site.url);
+    const baseUrl = dictionary.seo.site.url.replace(/\/$/, '');
+    const langUrl = `${baseUrl}/${lang}`;
 
-    const schema = new SchemaComposer(dictionary, baseUrl)
+    const schema = new SchemaComposer(dictionary, langUrl)
       .addCustomSchema({
         '@type': 'SiteNavigationElement',
-        '@id': `${baseUrl}#mobile-navigation`,
+        '@id': `${langUrl}#mobile-navigation`,
         name: dictionary.navigation.accessibility.mainNavigation,
         description: dictionary.navigation.accessibility.mainNavigation,
-        url: baseUrl,
+        url: langUrl,
         position: 1,
       })
       .build();
@@ -147,23 +149,24 @@ export const MobileNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ d
 /**
  * Search navigation schema - simplified with SchemaComposer
  */
-export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
+export const SearchNavigationSchema: React.FC<{ dictionary: Dictionary; lang: Lang }> = ({ dictionary, lang }) => {
   try {
     const seoDict = dictionary.seo;
-    const baseUrl = generateCanonicalUrl('/', seoDict.site.url);
-    const searchUrl = generateCanonicalUrl('/search', seoDict.site.url);
+    const baseUrl = seoDict.site.url.replace(/\/$/, '');
+    const langUrl = `${baseUrl}/${lang}`;
+    const searchUrl = `${langUrl}/search`;
 
-    const schema = new SchemaComposer(dictionary, baseUrl)
+    const schema = new SchemaComposer(dictionary, langUrl)
       .addCustomSchema({
         '@type': 'WebSite',
-        '@id': `${baseUrl}#search`,
+        '@id': `${langUrl}#search`,
         name: seoDict.site.name,
-        url: baseUrl,
-        
+        url: langUrl,
+
         potentialAction: {
           '@type': 'SearchAction',
           name: dictionary.search.templates.pageTitle,
-          description: `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`,
+          description: dictionary.search.templates.pageDescription,
           target: {
             '@type': 'EntryPoint',
             urlTemplate: `${searchUrl}?search={search_term_string}`,
@@ -241,7 +244,7 @@ export const CompleteNavigationSchema: React.FC<NavigationSchemaProps> = (props)
   return (
     <>
       <NavigationSchema {...props} />
-      <SearchNavigationSchema dictionary={props.dictionary} />
+      <SearchNavigationSchema dictionary={props.dictionary} lang={props.lang} />
     </>
   );
 };
@@ -250,8 +253,8 @@ export const CompleteNavigationSchema: React.FC<NavigationSchemaProps> = (props)
  * Minimal navigation schema for performance-critical pages
  * REFACTORED: Uses simplified MainNavigationSchema
  */
-export const MinimalNavigationSchema: React.FC<{ dictionary: Dictionary }> = ({ dictionary }) => {
-  return <MainNavigationSchema dictionary={dictionary} />;
+export const MinimalNavigationSchema: React.FC<{ dictionary: Dictionary; lang: Lang }> = ({ dictionary, lang }) => {
+  return <MainNavigationSchema dictionary={dictionary} lang={lang} />;
 };
 
 export default NavigationSchema;
