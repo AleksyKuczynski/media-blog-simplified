@@ -4,7 +4,8 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { fetchAssetMetadata, fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
-import SmartBreadcrumbs, { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
+import { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
+import BreadcrumbsWithContext from './_components/navigation/BreadcrumbsWithContext';
 import CategoriesAndRubricSection from './_components/navigation/CategoriesAndRubricSection';
 import ArticleEngagement from './_components/engagement/ArticleEngagement';
 import generateArticleMetadata from '@/shared/seo/metadata/ArticleMetadata';
@@ -93,15 +94,12 @@ export async function generateMetadata({
   });
 }
 
-export default async function ArticlePage({ 
+export default async function ArticlePage({
   params,
-  searchParams,
-}: { 
+}: {
   params: Promise<{ lang: Lang, rubric: string, slug: string }>,
-  searchParams: Promise<{ from?: string }>,
 }) {
   const { lang, rubric, slug } = await params;
-  const { from } = await searchParams;
 
   const dictionary = getDictionary(lang as Lang);
 
@@ -232,12 +230,13 @@ export default async function ArticlePage({
           itemType="https://schema.org/Article"
         >
           <Suspense fallback={<ArticlePageSkeleton dictionary={dictionary} />}>
-            <SmartBreadcrumbs
-              lang={lang}
-              articleData={articleBreadcrumbData}
-              dictionary={dictionary}
-              fromParam={from}
-            />
+            <Suspense fallback={null}>
+              <BreadcrumbsWithContext
+                lang={lang}
+                articleData={articleBreadcrumbData}
+                dictionary={dictionary}
+              />
+            </Suspense>
         
             <CategoriesAndRubricSection
               categories={categoriesData}
