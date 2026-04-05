@@ -295,7 +295,7 @@ export const dictionaryEN: Dictionary = {
     },
     descriptions: {
       home: 'Website homepage',
-      articles: 'All articles about culture and art',
+      articles: 'Tips on planning, stylish ideas and the latest trends in the world of weddings and more',
       rubrics: 'Thematic sections and categories',
       authors: 'Our authors and experts',
       search: 'Search all site materials',
@@ -414,7 +414,7 @@ export const dictionaryEN: Dictionary = {
       featuredRubrics: 'Featured Rubrics',
       featuredDescription: 'Recommended materials',
       rubricsDescription: 'Discover thematic sections',
-      rubricsSectionDescription: 'Our rubrics cover all aspects of cultural life',
+      rubricsSectionDescription: 'Our rubrics cover all aspects of wedding planning',
       viewAllRubricsDescription: 'Complete catalog of all available rubrics',
       quickNavigation: 'Quick Navigation',
     },
@@ -441,7 +441,7 @@ export const dictionaryEN: Dictionary = {
       rubricsCatalog: 'Rubric Catalog',
       browseAllRubrics: 'Browse All Rubrics',
       categoriesDescription: 'Over 400 articles organized by key topics — from planning the celebration to the mystique of wedding traditions. Choose the topic that interests you and find answers to all your questions about preparing for your big day',
-      collectionPageDescription: 'Explore our rubrics and find topics of interest about culture and art',
+      collectionPageDescription: 'Explore our rubrics and find tips on planning, stylish ideas and the latest trends in the world of weddings and more',
       noRubricsAvailable: 'No rubrics available yet',
       checkBackLater: 'Check back later',
       readMoreAbout: 'Don’t miss out',
@@ -458,7 +458,7 @@ export const dictionaryEN: Dictionary = {
       noFeaturedArticles: 'No featured articles',
       moreArticlesToLoad: 'More articles to load',
       loadMore: 'Load More',
-      collectionPageDescription: 'Read our articles about cultural events, art, and creative initiatives',
+      collectionPageDescription: 'Read our articles about planning, stylish ideas and the latest trends in the world of weddings and more',
       byAuthor: 'by author',
       inRubric: 'in rubric',
     },
@@ -470,9 +470,9 @@ export const dictionaryEN: Dictionary = {
   seo: {
     site: {
       name: 'EventForMe',
-      fullName: 'EventForMe — Media about Culture and Art',
-      description: 'Media platform about cultural events, contemporary art, and creative initiatives in Russia and worldwide',
-      organizationDescription: 'EventForMe is an independent media platform covering current cultural events, art projects, and creative initiatives',
+      fullName: 'EventForMe — A Blog about Weddings and More',
+      description: 'A media platform about planning, stylish ideas and trends in the world of weddings in Russia and globally',
+      organizationDescription: 'EventForMe is an independent media platform covering stylish ideas and trends in the world of weddings in Russia and globally. We provide expert articles, interviews with creative personalities, and event reviews to inspire and inform our audience about the latest trends in the world of weddings and more.',
       url: SITE_URL,
       contactEmail: CONTACT_EMAIL,
       socialProfiles: [
@@ -494,7 +494,7 @@ export const dictionaryEN: Dictionary = {
       notFoundDescription: 'The requested page was not found on {siteName}',
     },
     keywords: {
-      base: 'EventForMe, culture, art, events, Russia',
+      base: 'EventForMe, weddings, planning, tips, ideas, trends',
       articles: 'articles, materials, publications, content',
       rubrics: 'rubrics, categories, topics, sections',
       authors: 'authors, experts, journalists, editorial',
