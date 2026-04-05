@@ -12,6 +12,7 @@ import { BreadcrumbItem } from '../core/types';
 
 export interface ArticleSchemaProps {
   dictionary: Dictionary;
+  lang: string;
   articleData: {
     title: string;
     description?: string;
@@ -48,6 +49,7 @@ export interface ArticleSchemaProps {
 
 export const ArticleSchema: React.FC<ArticleSchemaProps> = ({
   dictionary,
+  lang,
   articleData,
   breadcrumbs = [],
 }) => {
@@ -71,7 +73,7 @@ export const ArticleSchema: React.FC<ArticleSchemaProps> = ({
 
     const { seo } = dictionary;
     const baseUrl = seo.site.url.replace(/\/$/, '');
-    const canonicalUrl = `${baseUrl}/ru/${rubricSlug}/${slug}`;
+    const canonicalUrl = `${baseUrl}/${lang}/${rubricSlug}/${slug}`;
     const finalImageUrl = imageUrl || `${baseUrl}/og-default.jpg`;
     const finalDescription = description || lead || '';
 

@@ -209,6 +209,7 @@ export default async function ArticlePage({
         <>
           <ArticleSchema
             dictionary={dictionary}
+            lang={lang}
             articleData={articleSchemaData}
           />
 

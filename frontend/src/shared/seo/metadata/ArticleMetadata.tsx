@@ -93,7 +93,7 @@ export const generateArticleMetadata = ({
   const finalOgTitle = ogTitle || finalTitle;
   const finalOgDescription = ogDescription || finalDescription;
 
-  const canonicalUrl = `${dictionary.seo.site.url}/$${lang}/${rubricSlug}/${slug}`;
+  const canonicalUrl = `${dictionary.seo.site.url}/${lang}/${rubricSlug}/${slug}`;
   const finalImageUrl = imageId 
     ? getOptimizedImageUrl(imageId, 'og')
     : `${dictionary.seo.site.url}/og-default.jpg`;
