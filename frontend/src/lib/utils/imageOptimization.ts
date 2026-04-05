@@ -7,7 +7,7 @@
  * - Proxied URLs for social sharing (HTTPS required)
  */
 
-import { DIRECTUS_URL } from '@/api/directus';
+import { DIRECTUS_ASSETS_URL } from '@/api/directus';
 
 const SITE_URL = process.env.SITE_URL;
 
@@ -105,8 +105,8 @@ export function getOptimizedImageUrl(
     // Use HTTPS proxy for social sharing
     return `${SITE_URL}/api/images/assets/${cleanAssetId}?${params}`;
   } else {
-    // Use direct Directus URL for internal use
-    return `${DIRECTUS_URL}/assets/${cleanAssetId}?${params}`;
+    // Use public Directus URL
+    return `${DIRECTUS_ASSETS_URL}/assets/${cleanAssetId}?${params}`;
   }
 }
 
@@ -133,7 +133,7 @@ export function getCustomOptimizedImageUrl(
   if (useProxy) {
     return `${SITE_URL}/api/images/assets/${cleanAssetId}?${params}`;
   } else {
-    return `${DIRECTUS_URL}/assets/${cleanAssetId}?${params}`;
+    return `${DIRECTUS_ASSETS_URL}/assets/${cleanAssetId}?${params}`;
   }
 }
 
