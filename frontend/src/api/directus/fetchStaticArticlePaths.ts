@@ -15,7 +15,7 @@ export async function fetchStaticArticlePaths(): Promise<StaticArticlePath[]> {
     const fields = 'slug,rubric_slug,translations.languages_code,translations.local_slug';
     const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=${fields}&limit=-1`;
 
-    const response = await fetch(url, { cache: 'no-store' });
+    const response = await fetch(url, { next: { revalidate: 3600, tags: ['articles'] } });
     if (!response.ok) return [];
 
     const data = await response.json();
