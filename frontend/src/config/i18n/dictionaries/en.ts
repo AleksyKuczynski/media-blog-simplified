@@ -357,6 +357,8 @@ export const dictionaryEN: Dictionary = {
       pageTitle: 'Search',
       pageDescription: 'Search articles, authors, and rubrics',
       relatedTo: 'Related to "{query}"',
+      resultsDescription: 'Found {count} {countLabel} for "{query}"',
+      noResultsFor: 'Nothing found for "{query}"',
     },
     accessibility: {
       searchLabel: 'Site search',
@@ -394,6 +396,9 @@ export const dictionaryEN: Dictionary = {
       collectionOf: 'Collection of {items}',
       itemsInCollectionDescription: '{items} in {collection} on {siteName}',
       authorWorksDescription: 'Works by {author} on {siteName}',
+      authorArticlesOn: 'Articles by {author} on {siteName}',
+      rubricArticlesOn: 'Read articles in {rubric} on {siteName}',
+      exploreRubricOn: 'Explore {rubric} on {siteName}',
       emptyCollection: 'No {items} in {collection} yet',
       totalCount: 'Total {countLabel}: {count}',
       itemDescription: 'Article {name}',

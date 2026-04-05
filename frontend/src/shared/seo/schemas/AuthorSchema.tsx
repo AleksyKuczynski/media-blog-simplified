@@ -115,9 +115,8 @@ export const AuthorSchema: React.FC<AuthorSchemaProps> = ({
           items: dictionary.sections.labels.articles,
           author: name,
         }),
-        description: processTemplate(dictionary.sections.templates.itemsInCollectionDescription, {
-          items: dictionary.sections.labels.articles,
-          collection: `автора ${name}`,
+        description: processTemplate(dictionary.sections.templates.authorWorksDescription, {
+          author: name,
           siteName: seo.site.name,
         }),
         numberOfItems: articleCount,

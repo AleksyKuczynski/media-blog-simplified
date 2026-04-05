@@ -402,6 +402,8 @@ export interface SearchTemplates {
   readonly pageTitle: string;
   readonly pageDescription: string;
   readonly relatedTo: string;
+  readonly resultsDescription: string;
+  readonly noResultsFor: string;
 }
 
 export interface SearchAccessibility {
@@ -445,6 +447,9 @@ export interface SectionTemplates {
   readonly collectionOf: string;
   readonly itemsInCollectionDescription: string;
   readonly authorWorksDescription: string;
+  readonly authorArticlesOn: string;
+  readonly rubricArticlesOn: string;
+  readonly exploreRubricOn: string;
   readonly emptyCollection: string;
   readonly totalCount: string;
   readonly itemDescription: string;

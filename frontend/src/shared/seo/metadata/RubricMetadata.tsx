@@ -35,9 +35,9 @@ export const generateRubricMetadata = async ({
 
   let metaDescription: string;
   if (description) {
-    metaDescription = `${description} Читайте статьи в рубрике ${name} на ${dictionary.seo.site.name}.`;
+    metaDescription = `${description} ${processTemplate(dictionary.sections.templates.rubricArticlesOn, { rubric: name, siteName: dictionary.seo.site.name })}.`;
   } else {
-    const rubricInfo = `Изучите рубрику ${name} на ${dictionary.seo.site.name}`;
+    const rubricInfo = processTemplate(dictionary.sections.templates.exploreRubricOn, { rubric: name, siteName: dictionary.seo.site.name });
     const countInfo = processTemplate(dictionary.sections.templates.totalCount, {
       count: articleCount.toString(),
       countLabel: dictionary.common.count.articles,

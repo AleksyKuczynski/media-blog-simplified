@@ -34,14 +34,18 @@ export const generateAuthorMetadata = async ({
   });
 
   let metaDescription: string;
+  const authorArticlesOn = processTemplate(dictionary.sections.templates.authorArticlesOn, {
+    author: name,
+    siteName: dictionary.seo.site.name,
+  });
   if (bio) {
-    metaDescription = `${bio} Статьи автора ${name} на ${dictionary.seo.site.name}.`;
+    metaDescription = `${bio} ${authorArticlesOn}.`;
   } else {
     const countInfo = processTemplate(dictionary.sections.templates.totalCount, {
       count: articleCount.toString(),
       countLabel: dictionary.common.count.articles,
     });
-    metaDescription = `Статьи автора ${name} на ${dictionary.seo.site.name}. ${countInfo}`;
+    metaDescription = `${authorArticlesOn}. ${countInfo}`;
   }
 
   const finalDescription = processTemplate(dictionary.seo.templates.metaDescription, {
@@ -49,7 +53,7 @@ export const generateAuthorMetadata = async ({
     siteName: dictionary.seo.site.name,
   });
 
-  const authorKeywords = `${name}, автор`;
+  const authorKeywords = `${name}, ${dictionary.sections.labels.author}`;
   const keywords = [
     authorKeywords,
     dictionary.seo.keywords.authors,

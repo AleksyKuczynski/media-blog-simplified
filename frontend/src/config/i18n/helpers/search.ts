@@ -17,9 +17,7 @@ export const getSearchPageTitle = (dictionary: Dictionary): string => {
  * ESSENTIAL: Used for search page SEO
  */
 export const getSearchPageDescription = (dictionary: Dictionary): string => {
-  const baseDescription = dictionary.search.templates.pageDescription;
-  const enhancedDescription = `${baseDescription} на ${dictionary.seo.site.name}`;
-  return getMetaDescription(dictionary, enhancedDescription);
+  return getMetaDescription(dictionary, dictionary.search.templates.pageDescription);
 };
 
 /**
@@ -75,6 +73,9 @@ export const generateSearchResultsDescription = (
   query: string,
   resultCount: number
 ): string => {
-  const countLabel = dictionary.common.count.results;
-  return `Найдено ${resultCount} ${countLabel.toLowerCase()} по запросу "${query}"`;
+  return processTemplate(dictionary.search.templates.resultsDescription, {
+    count: resultCount.toString(),
+    countLabel: dictionary.common.count.results.toLowerCase(),
+    query,
+  });
 };

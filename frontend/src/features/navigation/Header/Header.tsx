@@ -46,7 +46,6 @@ export default function Navigation({
       <CompleteNavigationSchema
         dictionary={dictionary}
         lang={lang}
-        currentPath={normalizedPath}
       />
       
       <header 

@@ -1,6 +1,7 @@
 // frontend/src/shared/seo/metadata/SearchMetadata.tsx
 import { Metadata } from 'next';
 import { Dictionary } from '@/config/i18n';
+import { processTemplate } from '@/config/i18n/helpers/templates';
 import { 
   buildMetadata, 
   createWebsiteSEOData,
@@ -31,7 +32,10 @@ export const generateSearchMetadataSimple = (dictionary: Dictionary): Metadata =
     
     return {
       title: `${dictionary.search.templates.pageTitle} — ${dictionary.seo.site.name}`,
-      description: `${dictionary.search.templates.pageDescription} на ${dictionary.seo.site.name}`,
+      description: processTemplate(dictionary.seo.templates.metaDescription, {
+        description: dictionary.search.templates.pageDescription,
+        siteName: dictionary.seo.site.name,
+      }),
     };
   }
 };

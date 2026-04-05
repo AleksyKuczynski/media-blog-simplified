@@ -94,7 +94,7 @@ export const CollectionPageSchema: React.FC<CollectionPageSchemaProps> = ({
       items: items.slice(0, 10).map(item => ({
         name: item.name,
         url: item.url,
-        description: item.description || `${item.name} на ${seo.site.name}`,
+        description: item.description || processTemplate(dictionary.seo.templates.metaDescription, { description: item.name, siteName: seo.site.name }),
       })),
     });
 

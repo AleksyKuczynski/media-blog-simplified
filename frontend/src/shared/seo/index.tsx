@@ -155,7 +155,6 @@ export const NavigationSEOBundle: React.FC<NavigationSEOBundleProps> = ({
     <SchemaComponent
       dictionary={dictionary}
       lang={lang}
-      currentPath={currentPath}
     />
   );
 };

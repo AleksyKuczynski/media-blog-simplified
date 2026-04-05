@@ -359,6 +359,8 @@ const dictionaryRU: Dictionary = {
       pageTitle: 'Поиск',
       pageDescription: 'Поиск статей, авторов и рубрик',
       relatedTo: 'Связанные с "{query}"',
+      resultsDescription: 'Найдено {count} {countLabel} по запросу "{query}"',
+      noResultsFor: 'По запросу "{query}" ничего не найдено',
     },
     accessibility: {
       searchLabel: 'Поиск по сайту',
@@ -396,6 +398,9 @@ const dictionaryRU: Dictionary = {
       collectionOf: 'Коллекция {items}',
       itemsInCollectionDescription: '{items} в коллекции {collection} на {siteName}',
       authorWorksDescription: 'Работы автора {author} на {siteName}',
+      authorArticlesOn: 'Статьи автора {author} на {siteName}',
+      rubricArticlesOn: 'Читайте статьи в рубрике {rubric} на {siteName}',
+      exploreRubricOn: 'Изучите рубрику {rubric} на {siteName}',
       emptyCollection: 'В {collection} пока нет {items}',
       totalCount: 'Всего {countLabel}: {count}',
       itemDescription: 'Статья {name}',

@@ -59,14 +59,21 @@ export const SearchSchema: React.FC<SearchSchemaProps> = ({
         page: resultsTitle,
         siteName: seoDict.site.name,
       });
-      pageDescription = `Найдено ${resultCount} ${dictionary.common.count.results.toLowerCase()} по запросу "${query}"`;
+      pageDescription = processTemplate(dictionary.search.templates.resultsDescription, {
+        count: resultCount.toString(),
+        countLabel: dictionary.common.count.results.toLowerCase(),
+        query,
+      });
     } else {
       // Default search page
       pageTitle = processTemplate(dictionary.navigation.templates.pageTitle, {
         page: dictionary.search.templates.pageTitle,
         siteName: seoDict.site.name,
       });
-      pageDescription = `${dictionary.search.templates.pageDescription} на ${seoDict.site.name}`;
+      pageDescription = processTemplate(dictionary.seo.templates.metaDescription, {
+        description: dictionary.search.templates.pageDescription,
+        siteName: seoDict.site.name,
+      });
     }
 
     // Use SchemaComposer for standardized search schema
@@ -145,7 +152,7 @@ export const NoResultsSchema: React.FC<{
         '@type': 'SearchResultsPage',
         '@id': `${currentUrl}#noresults`,
         name: pageTitle,
-        description: `По запросу "${query}" ${dictionary.search.labels.noResults.toLowerCase()}`,
+        description: processTemplate(dictionary.search.templates.noResultsFor, { query }),
         url: currentUrl,
         
         // Search functionality for trying again
@@ -211,7 +218,11 @@ export const SearchResultsWithItemsSchema: React.FC<{
         '@type': 'SearchResultsPage',
         '@id': `${currentUrl}#results`,
         name: pageTitle,
-        description: `Найдено ${results.length} ${dictionary.common.count.results.toLowerCase()} по запросу "${query}"`,
+        description: processTemplate(dictionary.search.templates.resultsDescription, {
+          count: results.length.toString(),
+          countLabel: dictionary.common.count.results.toLowerCase(),
+          query,
+        }),
         url: currentUrl,
         
         // Results list using standard ItemList pattern
