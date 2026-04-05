@@ -14,6 +14,7 @@ import { getOptimizedImageUrl } from '@/lib/utils/imageOptimization';
 
 export interface ArticleMetadataProps {
   dictionary: Dictionary;
+  lang: string;
   articleData: {
     // Basic fields
     title: string;
@@ -46,6 +47,7 @@ export interface ArticleMetadataProps {
 
 export const generateArticleMetadata = ({
   dictionary,
+  lang,
   articleData
 }: ArticleMetadataProps): Metadata => {
   const { 
@@ -91,7 +93,7 @@ export const generateArticleMetadata = ({
   const finalOgTitle = ogTitle || finalTitle;
   const finalOgDescription = ogDescription || finalDescription;
 
-  const canonicalUrl = `${dictionary.seo.site.url}/ru/${rubricSlug}/${slug}`;
+  const canonicalUrl = `${dictionary.seo.site.url}/$${lang}/${rubricSlug}/${slug}`;
   const finalImageUrl = imageId 
     ? getOptimizedImageUrl(imageId, 'og')
     : `${dictionary.seo.site.url}/og-default.jpg`;

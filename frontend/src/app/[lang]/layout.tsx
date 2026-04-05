@@ -24,6 +24,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params;
   const dictionary = getDictionary(lang as Lang);
+  const siteUrl = dictionary.seo.site.url;
   
   return {
     title: dictionary.seo.site.name,
@@ -41,10 +42,11 @@ export async function generateMetadata({
       card: 'summary_large_image',
     },
     alternates: {
-      canonical: `/${lang}`,
+      canonical: `${siteUrl}/${lang}`,
       languages: {
-        'en': '/en',
-        'ru': '/ru',
+        'en': `${siteUrl}/en`,
+        'ru': `${siteUrl}/ru`,
+        'x-default': `${siteUrl}/ru`,
       }
     },
   };

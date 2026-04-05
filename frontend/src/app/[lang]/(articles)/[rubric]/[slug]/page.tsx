@@ -89,7 +89,7 @@ export async function generateMetadata({
       wordCount: translation.word_count,
     };
 
-    return generateArticleMetadata({ dictionary, articleData });
+    return generateArticleMetadata({ dictionary, lang, articleData });
   });
 }
 

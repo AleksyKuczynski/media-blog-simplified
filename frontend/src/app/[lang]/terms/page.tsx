@@ -36,6 +36,12 @@ export async function generateMetadata({
       },
       alternates: {
         canonical: `${dictionary.seo.site.url}/${lang}/terms`,
+        languages: {
+          'ru': `${dictionary.seo.site.url}/ru/privacy-policy`,
+          'en': `${dictionary.seo.site.url}/en/privacy-policy`,
+          'x-default': `${dictionary.seo.site.url}/en/privacy-policy`,
+        },
+
       },
       robots: {
         index: true,

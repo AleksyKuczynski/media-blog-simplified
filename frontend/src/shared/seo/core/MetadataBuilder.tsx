@@ -16,9 +16,9 @@ export const buildMetadata = (seoData: SEOData): Metadata => {
     alternates: {
       canonical: seoData.canonicalUrl,
       languages: {
-        'ru-RU': seoData.canonicalUrl,
-        'en-US': seoData.canonicalUrl,
-        'x-default': seoData.canonicalUrl,
+        'ru': seoData.canonicalUrl.replace(/\/(en|ru)\//, '/ru/'),
+        'en': seoData.canonicalUrl.replace(/\/(en|ru)\//, '/en/'),
+        'x-default': seoData.canonicalUrl.replace(/\/(en|ru)\//, '/ru/'),
       },
     },
 
