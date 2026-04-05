@@ -105,7 +105,7 @@ export default async function ArticlePage({
 
   const articleSlug = await resolveArticleSlug(slug, lang);
   if (!articleSlug) {
-    throw new Error('Article not found');
+    notFound();
   }
 
   try {
