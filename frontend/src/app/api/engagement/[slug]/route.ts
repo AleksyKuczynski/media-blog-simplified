@@ -1,6 +1,6 @@
 import { fetchEngagementData } from '@/api/directus';
 import { checkRateLimit, hasRecentlyViewed, triggerEngagementFlow } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/engagement/lib';
-import { getClientIP, validateArticleSlug } from '@/lib/utils';
+import { getClientIP } from '@/lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
@@ -35,16 +35,6 @@ export async function GET(
           message: 'API token not configured',
         },
         { status: 500 }
-      );
-    }
-
-    // Validate article exists
-    const isValidArticle = await validateArticleSlug(slug);
-    if (!isValidArticle) {
-      console.warn(`⚠️ Article not found: ${slug}`);
-      return NextResponse.json(
-        { error: 'Article not found' },
-        { status: 404 }
       );
     }
 
@@ -152,15 +142,6 @@ export async function POST(
           message: 'API token not configured',
         },
         { status: 500 }
-      );
-    }
-
-    // Validate article exists
-    const isValidArticle = await validateArticleSlug(slug);
-    if (!isValidArticle) {
-      return NextResponse.json(
-        { error: 'Article not found' },
-        { status: 404 }
       );
     }
 
