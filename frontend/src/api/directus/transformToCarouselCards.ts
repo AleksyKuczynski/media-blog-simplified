@@ -1,7 +1,7 @@
 // src/api/directus/transformToCarouselCards.ts
 
 import { Lang } from '@/config/i18n';
-import { DIRECTUS_URL, DIRECTUS_ASSETS_URL } from '../../config/constants/directusConstants';
+import { DIRECTUS_ASSETS_URL } from '../../config/constants/directusConstants';
 import { Rubric, AuthorDetails, ArticleSlugInfo } from './directusInterfaces';
 import type { ArticleCardData, RubricCardData, AuthorCardData } from '@/features/shared/CardCarousel/types';
 import { fetchAllRubrics } from './fetchAllRubrics';
@@ -53,8 +53,8 @@ export async function transformAuthorsToCarousel(
   const authors = await fetchAllAuthors(lang);
   
   const transformed = authors.map((author: AuthorDetails) => {
-  const avatarSrc = author.avatar && DIRECTUS_URL
-  ? getAuthorCarouselAvatarUrl(DIRECTUS_URL, author.avatar)
+const avatarSrc = author.avatar && DIRECTUS_ASSETS_URL
+  ? getAuthorCarouselAvatarUrl(DIRECTUS_ASSETS_URL, author.avatar)
   : undefined;
 
     return {
