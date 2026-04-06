@@ -10,13 +10,14 @@ export async function validateArticleSlug(slug: string): Promise<boolean> {
       slug: { _eq: slug },
       status: { _eq: 'published' }
     }));
+    
     const url = `${DIRECTUS_URL}/items/articles?fields=slug&filter=${filter}&limit=1`;
 
     const response = await fetch(url, {
       headers: DIRECTUS_API_TOKEN
         ? { 'Authorization': `Bearer ${DIRECTUS_API_TOKEN}` }
         : {},
-      cache: 'no-store',
+      next: { revalidate: 3600, tags: ['article', 'slug-check'] },
     });
 
     if (!response.ok) return false;

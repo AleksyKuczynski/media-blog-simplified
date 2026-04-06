@@ -35,9 +35,9 @@ export async function fetchArticleCard(slug: string, lang: Lang): Promise<Articl
 
     const response = await fetch(url, {
       headers: API_TOKEN ? { 'Authorization': `Bearer ${API_TOKEN}` } : undefined,
-      cache: 'no-store'
+      next: { revalidate: 3600, tags: ['article', 'article-card'] },
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch article card. Status: ${response.status}`);
     }
