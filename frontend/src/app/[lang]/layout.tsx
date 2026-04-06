@@ -11,6 +11,7 @@ import { getDictionary, type Lang } from '@/config/i18n';
 import { SUPPORTED_LANGUAGES } from '@/config/constants/constants';
 import Navigation from '@/features/navigation/Header/Header';
 import { NavigationSkeleton } from '@/features/navigation/Header/NavigationSkeleton';
+import ConsentBanner from '@/features/analytics/ConsentBanner';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -65,48 +66,51 @@ export default async function LanguageLayout({
   const dictionary = getDictionary(lang as Lang);
 
   return (
-    <div lang={lang} className="container-fluid flex flex-col pt-16 xl:pt-32 min-h-screen">
-      <Suspense fallback={<NavigationSkeleton />}>
-        <Navigation 
-          dictionary={dictionary}
-          lang={lang as Lang}
-          currentPath=""
-          breadcrumbs={[]}
-        />
-      </Suspense>
-      
-      <div className="flex-grow min-h-screen flex flex-col">
-        <main 
-          id="main-content" 
-          className="flex-grow flex flex-col" 
-          role="main"
-          tabIndex={-1}
-          aria-label={dictionary.navigation.accessibility.skipToContent}
-        >
-          {children}
-        </main>
+    <>
+      <ConsentBanner dictionary={dictionary.consent} />
+      <div lang={lang} className="container-fluid flex flex-col pt-16 xl:pt-32 min-h-screen">
+        <Suspense fallback={<NavigationSkeleton />}>
+          <Navigation 
+            dictionary={dictionary}
+            lang={lang as Lang}
+            currentPath=""
+            breadcrumbs={[]}
+          />
+        </Suspense>
         
-        <Suspense fallback={
-          <QuickNavigationSkeleton ariaLabel={dictionary.common.status.loading} />
-        }>
-          <Section 
-            title={dictionary.sections.home.quickNavigation}
-            titleLevel="h2"
+        <div className="flex-grow min-h-screen flex flex-col">
+          <main 
+            id="main-content" 
+            className="flex-grow flex flex-col" 
+            role="main"
+            tabIndex={-1}
+            aria-label={dictionary.navigation.accessibility.skipToContent}
           >
-            <QuickNavigationSection lang={lang as Lang} dictionary={dictionary} />
-          </Section>
+            {children}
+          </main>
+          
+          <Suspense fallback={
+            <QuickNavigationSkeleton ariaLabel={dictionary.common.status.loading} />
+          }>
+            <Section 
+              title={dictionary.sections.home.quickNavigation}
+              titleLevel="h2"
+            >
+              <QuickNavigationSection lang={lang as Lang} dictionary={dictionary} />
+            </Section>
+          </Suspense>
+        </div>
+
+        <Suspense fallback={
+          <FooterSkeleton ariaLabel={dictionary.common.status.loading} />
+        }>
+          <Footer
+            lang={lang as Lang}
+            dictionary={dictionary}
+          />
         </Suspense>
       </div>
-
-      <Suspense fallback={
-        <FooterSkeleton ariaLabel={dictionary.common.status.loading} />
-      }>
-        <Footer
-          lang={lang as Lang}
-          dictionary={dictionary}
-        />
-      </Suspense>
-    </div>
+    </>
   );
 }
 
