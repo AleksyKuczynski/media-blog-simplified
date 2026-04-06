@@ -1,5 +1,5 @@
 // src/app/fonts/fonts.ts
-import { Dela_Gothic_One, Jost, Literata, Unbounded, Yeseva_One } from 'next/font/google'
+import { Jost, Literata, Unbounded } from 'next/font/google'
 
 export const fontSans = Jost({
   subsets: ['latin', 'cyrillic'],
@@ -20,11 +20,4 @@ export const fontDisplay = Unbounded({
   weight: 'variable',
   display: 'swap',
   variable: '--font-display',
-})
-
-export const fontCustom = Dela_Gothic_One({
-  subsets: ['latin', 'cyrillic'],
-  weight: '400',
-  display: 'swap',
-  variable: '--font-custom',
 })

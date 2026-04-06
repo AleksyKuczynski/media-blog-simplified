@@ -10,6 +10,8 @@ import { HeroArticlesSkeleton } from '@/features/article-display/HeroArticlesSke
 import { CardCarouselSkeleton } from '@/features/shared/CardCarousel/CardCarouselSkeleton';
 import Section from '@/features/layout/Section';
 
+export const revalidate = 3600;
+
 export default async function HomePage({
   params,
 }: {
