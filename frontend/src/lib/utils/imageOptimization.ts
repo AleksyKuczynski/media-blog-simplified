@@ -8,8 +8,7 @@
  */
 
 import { DIRECTUS_ASSETS_URL } from '@/api/directus';
-
-const SITE_URL = process.env.SITE_URL;
+import { SITE_URL } from '@/config/constants/constants';
 
 /**
  * Image transformation presets for different use cases

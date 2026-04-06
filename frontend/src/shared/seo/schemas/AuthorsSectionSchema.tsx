@@ -25,6 +25,8 @@ export default function AuthorsSectionSchema({
   dictionary,
   authors,
 }: AuthorsSectionSchemaProps): React.ReactElement {
+  if (!authors?.length) return <></>;
+
   // Filter out editorial/placeholder authors
   const realAuthors = authors.filter(
     author => author.slug && author.name !== '::EDITORIAL::'

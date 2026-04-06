@@ -139,8 +139,8 @@ export async function fetchFullArticle(
         article_body: articleBody,
         
         // SEO fields
-        seo_title: translation.seo_title,
-        seo_description: translation.seo_description,
+        seo_title: translation.meta_title,
+        seo_description: translation.meta_description,
         og_title: translation.og_title,
         og_description: translation.og_description,
         focus_keyword: translation.focus_keyword,

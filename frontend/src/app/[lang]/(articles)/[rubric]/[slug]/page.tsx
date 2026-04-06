@@ -108,12 +108,12 @@ export default async function ArticlePage({
     notFound();
   }
 
-  try {
-    const [article, rubricBasics] = await Promise.all([
-      fetchFullArticle(articleSlug, lang),
-      fetchRubricBasics(lang),
-    ]);
+  const [article, rubricBasics] = await Promise.all([
+    fetchFullArticle(articleSlug, lang),
+    fetchRubricBasics(lang),
+  ]);
 
+  try {
     if (!article) {
       notFound();
     }
