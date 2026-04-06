@@ -316,6 +316,9 @@ export default async function ArticlePage({
     );
 
   } catch (error) {
+    if ((error as any)?.digest?.startsWith('NEXT_HTTP_ERROR_FALLBACK')) {
+      throw error;
+    }
     return (
       <StandardError
         dictionary={dictionary}
