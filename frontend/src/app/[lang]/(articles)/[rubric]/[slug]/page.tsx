@@ -32,8 +32,7 @@ import { fetchStaticArticlePaths } from '@/api/directus';
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const paths = await fetchStaticArticlePaths();
-  return paths.map(({ lang, rubric, slug }) => ({ lang, rubric, slug }));
+  return [];
 }
 
 export async function generateMetadata({ 
