@@ -54,7 +54,7 @@ export const LAYOUT_STYLES = {
     rightColumn: 'order-2 mb-6 md:mb-0 md:flex md:flex-col md:justify-between',
     
     title: cn(
-      'mb-4 font-custom font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl leading-[1.2] flex-grow',
+      'mb-4 font-display font-bold tracking-wide dark:tracking-wider text-on-sf text-3xl leading-[1.2] flex-grow',
       'sm:text-4xl sm:leading-[1.2]',
       'md:text-3xl md:leading-[1.2] md:mb-0',
       'lg:text-4xl lg:leading-[1.2]',
