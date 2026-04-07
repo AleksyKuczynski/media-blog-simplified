@@ -27,8 +27,6 @@ import RelatedArticles from '@/features/article-display/RelatedArticles';
 import { LAYOUT_STYLES, NAVIGATION_STYLES } from './_components/article.styles';
 import { ArticlePageSkeleton } from './_components/ArticlePageSkeleton';
 
-import { fetchStaticArticlePaths } from '@/api/directus';
-
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
