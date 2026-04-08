@@ -80,7 +80,7 @@ export const ARTICLE_CAROUSEL_CARD_STYLES = {
   card: 'bg-sf-cont/80 hover:bg-sf/90 rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-200',
   
   // Image container
-  imageContainer: `relative w-full ${IMAGE_RATIO_STRING} overflow-hidden bg-sf-hi rounded-b-2xl`,
+  imageContainer: `relative w-full ${IMAGE_RATIO_STRING} overflow-hidden rounded-b-2xl`,
   
   // Image element
   image: 'object-cover',
