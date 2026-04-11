@@ -9,6 +9,7 @@ import HomePageSchema from '@/shared/seo/schemas/HomePageSchema';
 import { HeroArticlesSkeleton } from '@/features/article-display/HeroArticlesSkeleton';
 import { CardCarouselSkeleton } from '@/features/shared/CardCarousel/CardCarouselSkeleton';
 import Section from '@/features/layout/Section';
+import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
 
 export const revalidate = 3600;
 
@@ -82,9 +83,19 @@ export default async function HomePage({
           lang={lang}
           dictionary={dictionary}
           title={dictionary.sections.authors.ourAuthors}
+          variant="secondary"
+          limit={6}
+        />
+
+        <RandomArticlesSection
+          lang={lang}
+          dictionary={dictionary}
+          title={dictionary.sections.rubrics.readMoreAbout}
           variant="tertiary"
           limit={6}
         />
+
+
       </Suspense>
     </>
   );
