@@ -1,105 +1,158 @@
 // src/app/sitemap.ts
 
 import { MetadataRoute } from 'next';
+import { SITE_URL } from '@/config/constants/constants';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL;
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
-const SITE_URL = process.env.SITE_URL
+
+const LANGS = ['ru', 'en'] as const;
+
+const authHeaders: HeadersInit | undefined = DIRECTUS_API_TOKEN
+  ? { Authorization: `Bearer ${DIRECTUS_API_TOKEN}` }
+  : undefined;
+
+interface ArticleTranslation {
+  languages_code: string;
+  local_slug: string | null;
+}
 
 interface DirectusArticle {
   slug: string;
   published_at: string;
   date_updated: string;
-  rubric_slug?: {
-    slug: string;
-  };
+  rubric_slug?: { slug: string };
+  translations: ArticleTranslation[];
 }
 
-interface DirectusResponse {
-  data: DirectusArticle[];
+interface SlugItem {
+  slug: string;
 }
 
-async function fetchAllArticles(): Promise<DirectusArticle[]> {
+interface DirectusResponse<T> {
+  data: T[];
+}
+
+async function fetchCollection<T>(
+  collection: string,
+  fields: string,
+  filter?: object
+): Promise<T[]> {
   try {
-    const fields = [
-      'slug',
-      'published_at',
-      'date_updated',
-      'rubric_slug.slug',
-    ].join(',');
-
-    const filter = encodeURIComponent(
-      JSON.stringify({
-        status: { _eq: 'published' },
-      })
-    );
-
-    const url = `${DIRECTUS_URL}/items/articles?fields=${fields}&filter=${filter}&limit=-1`;
-
-    const response = await fetch(url, {
-      headers: DIRECTUS_API_TOKEN
-        ? { Authorization: `Bearer ${DIRECTUS_API_TOKEN}` }
-        : undefined,
-      next: { revalidate: 3600 }, // Revalidate every hour
+    const params = new URLSearchParams({ fields, limit: '-1' });
+    if (filter) params.set('filter', JSON.stringify(filter));
+    const res = await fetch(`${DIRECTUS_URL}/items/${collection}?${params}`, {
+      headers: authHeaders,
+      next: { revalidate: 3600 },
     });
-
-    if (!response.ok) {
-      console.error('Failed to fetch articles for sitemap');
-      return [];
-    }
-
-    const data: DirectusResponse = await response.json();
-    return data.data || [];
-  } catch (error) {
-    console.error('Error fetching articles for sitemap:', error);
+    if (!res.ok) return [];
+    const json: DirectusResponse<T> = await res.json();
+    return json.data ?? [];
+  } catch {
     return [];
   }
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const articles = await fetchAllArticles();
+  const [articles, rubrics, authors, categories] = await Promise.all([
+    fetchCollection<DirectusArticle>(
+      'articles',
+      'slug,published_at,date_updated,rubric_slug.slug,translations.languages_code,translations.local_slug',
+      { status: { _eq: 'published' } }
+    ),
+    fetchCollection<SlugItem>('rubrics', 'slug'),
+    fetchCollection<SlugItem>('authors', 'slug'),
+    fetchCollection<SlugItem>('categories', 'slug'),
+  ]);
 
-  // Static pages
-  const staticPages: MetadataRoute.Sitemap = [
+  const staticPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) => [
     {
-      url: `${SITE_URL}/ru`,
+      url: `${SITE_URL}/${lang}`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
     },
     {
-      url: `${SITE_URL}/ru/articles`,
+      url: `${SITE_URL}/${lang}/articles`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
-      url: `${SITE_URL}/ru/rubrics`,
+      url: `${SITE_URL}/${lang}/rubrics`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${SITE_URL}/ru/authors`,
+      url: `${SITE_URL}/${lang}/authors`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${SITE_URL}/ru/search`,
+      url: `${SITE_URL}/${lang}/search`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.5,
     },
+    {
+      url: `${SITE_URL}/${lang}/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+    {
+      url: `${SITE_URL}/${lang}/terms`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly',
+      priority: 0.3,
+    },
+  ]);
+
+  // Individual rubric listing pages: /{lang}/{rubricSlug}
+  const rubricPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
+    rubrics.map((r) => ({
+      url: `${SITE_URL}/${lang}/${r.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }))
+  );
+
+  // One URL per translation — uses local_slug when available, falls back to main slug
+  const articlePages: MetadataRoute.Sitemap = articles.flatMap((article) =>
+    article.translations.map((t) => ({
+      url: `${SITE_URL}/${t.languages_code}/${article.rubric_slug?.slug ?? 'articles'}/${t.local_slug ?? article.slug}`,
+      lastModified: new Date(article.date_updated || article.published_at),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }))
+  );
+
+  const authorPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
+    authors.map((a) => ({
+      url: `${SITE_URL}/${lang}/authors/${a.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    }))
+  );
+
+  const categoryPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
+    categories.map((c) => ({
+      url: `${SITE_URL}/${lang}/categories/${c.slug}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }))
+  );
+
+  return [
+    ...staticPages,
+    ...rubricPages,
+    ...articlePages,
+    ...authorPages,
+    ...categoryPages,
   ];
-
-  // Dynamic article pages
-  const articlePages: MetadataRoute.Sitemap = articles.map((article) => ({
-    url: `${SITE_URL}/ru/${article.rubric_slug?.slug || 'articles'}/${article.slug}`,
-    lastModified: new Date(article.date_updated || article.published_at),
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
-
-  return [...staticPages, ...articlePages];
 }
