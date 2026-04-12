@@ -1,9 +1,20 @@
 import { MetadataRoute } from 'next';
 import { SITE_URL } from '@/config/constants/constants';
 
+const PROD_URL = 'https://event4me.vip';
+const isProduction = SITE_URL === PROD_URL;
+
 const disallowed: string[] = ['/api/', '/_next/', '/admin/', '/preview/'];
 
 export default function robots(): MetadataRoute.Robots {
+  if (!isProduction) {
+    return {
+      rules: [{ userAgent: '*', disallow: '/' }],
+      sitemap: `${SITE_URL}/sitemap.xml`,
+      host: SITE_URL,
+    };
+  }
+
   return {
     rules: [
       {
