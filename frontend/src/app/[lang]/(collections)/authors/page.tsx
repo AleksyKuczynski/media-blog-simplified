@@ -11,6 +11,7 @@ import { generateCollectionMetadata } from '@/shared/seo/metadata/CollectionMeta
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import CollectionDescription from '@/features/layout/CollectionDescription';
+import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
 
 // ISR CONFIGURATION: 1 hour (authors list is structural)
 export const revalidate = 3600;
@@ -101,7 +102,7 @@ export default async function AllAuthorsPage({
       <Section
         title={dictionary.sections.illustrators.ourIllustrators}
         titleLevel="h2"
-        variant="tertiary"
+        variant="secondary"
         hasNextSectionTitle={true}
         id="illustrators"
       >
@@ -119,6 +120,16 @@ export default async function AllAuthorsPage({
           />
         </Suspense>
       </Section>
+
+      <RandomArticlesSection
+        lang={lang}
+        dictionary={dictionary}
+        title={dictionary.sections.rubrics.readMoreAbout}
+        variant="tertiary"
+        limit={6}
+      />
+
+
     </>
   );
 }
