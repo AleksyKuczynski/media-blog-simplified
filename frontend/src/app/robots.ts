@@ -1,8 +1,7 @@
-// src/app/robots.ts
-
 import { MetadataRoute } from 'next';
+import { SITE_URL } from '@/config/constants/constants';
 
-const SITE_URL = process.env.SITE_URL
+const disallowed: string[] = ['/api/', '/_next/', '/admin/', '/preview/'];
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -10,21 +9,18 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: [
-          '/api/*',
-          '/_next/*',
-          '/admin/*',
-          '/*.json$',
-        ],
+        disallow: disallowed,
       },
       {
         userAgent: 'Yandex',
         allow: '/',
-        crawlDelay: 0,
+        disallow: disallowed,
+        crawlDelay: 2,
       },
       {
         userAgent: 'Googlebot',
         allow: '/',
+        disallow: disallowed,
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
