@@ -1,8 +1,9 @@
 // frontend/src/app/api/preview/enter/route.ts
 
+import { SITE_URL } from '@/config/constants/constants';
 import { NextRequest, NextResponse } from 'next/server';
 
-const DIRECTUS_URL = process.env.DIRECTUS_URL || 'https://cms.event4me.blog';
+const DIRECTUS_URL = process.env.DIRECTUS_URL || 'https://cms.event4me.vip';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
 
   const previewPath = safePath + (safePath.includes('?') ? '&' : '?') + 'preview=true';
 
-  const response = NextResponse.redirect(new URL(previewPath, request.url), {
+  const response = NextResponse.redirect(new URL(previewPath, SITE_URL), {
     status: 302,
   });
 
