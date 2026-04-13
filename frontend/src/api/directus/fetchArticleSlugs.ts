@@ -1,6 +1,6 @@
 // /src/api/directus/fetchArticleSlugs.ts
 
-import { DIRECTUS_URL, ITEMS_PER_PAGE } from "../../config/constants/directusConstants";
+import { DEV_ARTICLE_LIMIT, DIRECTUS_URL, ITEMS_PER_PAGE } from "../../config/constants/directusConstants";
 import { ArticleSlugInfo } from "./directusInterfaces";
 
 const DIRECTUS_API_TOKEN = process.env.DIRECTUS_API_TOKEN;
@@ -187,10 +187,14 @@ export async function fetchArticleSlugs(
     }
 
     // Map to ArticleSlugInfo
-    const allFilteredSlugs: ArticleSlugInfo[] = articles.map((item: any) => ({
+    let allFilteredSlugs: ArticleSlugInfo[] = articles.map((item: any) => ({
       slug: item.slug,
       layout: item.layout
     }));
+
+    if (DEV_ARTICLE_LIMIT !== undefined) {
+      allFilteredSlugs = allFilteredSlugs.slice(0, DEV_ARTICLE_LIMIT);
+    }
 
     // Paginate
     const totalCount = allFilteredSlugs.length;

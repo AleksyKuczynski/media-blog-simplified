@@ -1,6 +1,6 @@
 // src/api/directus/fetchStaticArticlePaths.ts
 import { SUPPORTED_LANGUAGES } from '@/config/constants/constants';
-import { DIRECTUS_URL } from '@/config/constants/directusConstants';
+import { DEV_ARTICLE_LIMIT, DIRECTUS_URL } from '@/config/constants/directusConstants';
 import type { Lang } from '@/config/i18n';
 
 interface StaticArticlePath {
@@ -44,7 +44,8 @@ export async function fetchStaticArticlePaths(): Promise<StaticArticlePath[]> {
       }
     }
 
-    return paths;
+    return DEV_ARTICLE_LIMIT !== undefined ? paths.slice(0, DEV_ARTICLE_LIMIT) : paths;  
+    
   } catch {
     return [];
   }
