@@ -12,6 +12,7 @@ import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema'
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import CollectionDescription from '@/features/layout/CollectionDescription';
 import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
+import { CardCarouselSkeleton } from '@/features/shared/CardCarousel/CardCarouselSkeleton';
 
 // ISR CONFIGURATION: 1 hour (authors list is structural)
 export const revalidate = 3600;
@@ -121,15 +122,27 @@ export default async function AllAuthorsPage({
         </Suspense>
       </Section>
 
-      <RandomArticlesSection
-        lang={lang}
-        dictionary={dictionary}
-        title={dictionary.sections.rubrics.readMoreAbout}
-        variant="tertiary"
-        limit={6}
-      />
-
-
+      <Suspense fallback={
+        <Section 
+          title={dictionary.sections.authors.ourAuthors}
+          variant="secondary" 
+          hasNextSectionTitle={true}
+        >
+          <CardCarouselSkeleton 
+            cardCount={6}
+            cardType="author"
+            ariaLabel={dictionary.common.status.loading}
+          />
+        </Section>
+      }>
+        <RandomArticlesSection
+          lang={lang}
+          dictionary={dictionary}
+          title={dictionary.sections.rubrics.readMoreAbout}
+          variant="tertiary"
+          limit={6}
+        />
+      </Suspense>
     </>
   );
 }
