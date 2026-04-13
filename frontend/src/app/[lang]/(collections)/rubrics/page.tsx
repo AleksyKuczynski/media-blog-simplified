@@ -13,6 +13,8 @@ import CollectionDescription from '@/features/layout/CollectionDescription';
 import PageError from '@/shared/errors/PageError';
 import EmptyState from '@/shared/ui/EmptyState';
 import { RUBRICS_GRID_STYLES } from '@/features/rubric-display/rubric.styles';
+import { Suspense } from 'react';
+import { CardCarouselSkeleton } from '@/features/shared/CardCarousel/CardCarouselSkeleton';
 
 export const revalidate = 3600;
 
@@ -120,12 +122,27 @@ export default async function RubricsPage({
           )}
         </Section>
 
+      <Suspense fallback={
+        <Section 
+          title={dictionary.sections.authors.ourAuthors}
+          variant="secondary" 
+          hasNextSectionTitle={true}
+        >
+          <CardCarouselSkeleton 
+            cardCount={6}
+            cardType="author"
+            ariaLabel={dictionary.common.status.loading}
+          />
+        </Section>
+      }>
         <RandomArticlesSection
           lang={lang}
           dictionary={dictionary}
           title={dictionary.sections.rubrics.readMoreAbout}
           variant="tertiary"
+          limit={6}
         />
+      </Suspense>
       </>
     );
     

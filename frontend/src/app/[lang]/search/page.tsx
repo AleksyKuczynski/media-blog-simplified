@@ -11,6 +11,8 @@ import RandomArticlesSection from '@/features/article-display/RandomArticlesSect
 import RubricsCarouselSection from '@/features/rubric-display/RubricsCarouselSection';
 import AuthorsCarouselSection from '@/features/author-display/AuthorsCarouselSection';
 import SearchPageWrapper from '@/features/search/page/SearchPageWrapper';
+import { Suspense } from 'react';
+import { CardCarouselSkeleton } from '@/features/shared/CardCarousel/CardCarouselSkeleton';
 
 export const revalidate = 0;
 
@@ -127,27 +129,70 @@ export default async function SearchPage({
           </Section>
         )}
 
-        <RandomArticlesSection
-          lang={lang}
-          dictionary={dictionary}
-          title={dictionary.sections.rubrics.readMoreAbout}
-          variant="secondary"
-          limit={6}
-        />
+        <Suspense fallback={
+          <Section 
+            title={dictionary.sections.authors.ourAuthors}
+            variant="secondary" 
+            hasNextSectionTitle={true}
+          >
+            <CardCarouselSkeleton 
+              cardCount={6}
+              cardType="author"
+              ariaLabel={dictionary.common.status.loading}
+            />
+          </Section>
+        }>
+          <RandomArticlesSection
+            lang={lang}
+            dictionary={dictionary}
+            title={dictionary.sections.rubrics.readMoreAbout}
+            variant="secondary"
+            limit={6}
+          />
+        </Suspense>
 
-        <RubricsCarouselSection
-          lang={lang}
-          dictionary={dictionary}
-          title={dictionary.search.hub.browseCategories}
-          variant="primary"
-        />
+        <Suspense fallback={
+          <Section 
+            title={dictionary.sections.authors.ourAuthors}
+            variant="primary" 
+            hasNextSectionTitle={true}
+          >
+            <CardCarouselSkeleton 
+              cardCount={6}
+              cardType="author"
+              ariaLabel={dictionary.common.status.loading}
+            />
+          </Section>
+        }>
+          <RubricsCarouselSection
+            lang={lang}
+            dictionary={dictionary}
+            title={dictionary.search.hub.browseCategories}
+            variant="primary"
+          />
+        </Suspense>
 
-        <AuthorsCarouselSection
-          lang={lang}
-          dictionary={dictionary}
-          title={dictionary.sections.authors.ourAuthors}
-          variant="tertiary"
-        />
+        <Suspense fallback={
+          <Section 
+            title={dictionary.sections.authors.ourAuthors}
+            variant="tertiary" 
+            hasNextSectionTitle={true}
+          >
+            <CardCarouselSkeleton 
+              cardCount={6}
+              cardType="author"
+              ariaLabel={dictionary.common.status.loading}
+            />
+          </Section>
+        }>
+          <AuthorsCarouselSection
+            lang={lang}
+            dictionary={dictionary}
+            title={dictionary.sections.authors.ourAuthors}
+            variant="tertiary"
+          />
+        </Suspense>
+
       </SearchPageWrapper>
     </>
   );
