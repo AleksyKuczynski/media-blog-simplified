@@ -71,17 +71,20 @@ export function ContactModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
     setStatus({ type: 'idle' });
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) throw new Error('Submit failed');
+
       setStatus({
         type: 'success',
         message: dictionary.footer.contact.modal.successMessage,
@@ -94,7 +97,7 @@ export function ContactModal({
         onClose();
       }, 2000);
 
-    } catch (error) {
+    } catch {
       setStatus({
         type: 'error',
         message: `${dictionary.footer.contact.modal.errorMessage} ${fallbackEmail}`,
