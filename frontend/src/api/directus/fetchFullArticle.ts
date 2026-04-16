@@ -58,7 +58,7 @@ export async function fetchFullArticle(
       : { status: { _eq: 'published' } };
 
     const filter = {
-      slug: { _regex: `^\\s*${slug.trim()}\\s*$` },
+      slug: { _contains: slug },
       ...statusFilter,
     };
 
