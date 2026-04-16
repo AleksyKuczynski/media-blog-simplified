@@ -21,7 +21,7 @@ export async function fetchArticles(
 
     const filter = {
       _and: [
-        { _or: slugsAndLayouts.map(({ slug }) => ({ slug: { _eq: slug } })) },
+        { _or: slugsAndLayouts.map(({ slug }) => ({ slug: { _contains: slug } })) },
         statusFilter
       ]
     };
