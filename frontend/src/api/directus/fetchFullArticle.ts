@@ -58,7 +58,7 @@ export async function fetchFullArticle(
       : { status: { _eq: 'published' } };
 
     const filter = {
-      slug: { _eq: slug },
+      slug: { _regex: slug },
       ...statusFilter,
     };
 
