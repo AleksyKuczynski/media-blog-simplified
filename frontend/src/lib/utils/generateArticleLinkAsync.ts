@@ -18,7 +18,7 @@ export async function generateArticleLinkAsync(
   }
 
   // Use local_slug if available, otherwise main slug
-  const displaySlug = localSlug || articleSlug;
+  const displaySlug = (localSlug || articleSlug).trim();
   const basePath = `/${lang}/${rubricSlug}/${displaySlug}`;
   
   if (authorSlug) {
