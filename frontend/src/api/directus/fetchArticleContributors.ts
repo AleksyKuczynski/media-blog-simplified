@@ -38,7 +38,7 @@ export async function fetchArticleContributors(
     ].join(',');
 
     const filter = encodeURIComponent(JSON.stringify({
-      slug: { _eq: slug }
+      slug: { _contains: slug }
     }));
 
     const deepFilter = encodeURIComponent(JSON.stringify({

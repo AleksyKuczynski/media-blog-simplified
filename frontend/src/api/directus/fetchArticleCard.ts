@@ -22,7 +22,7 @@ export async function fetchArticleCard(slug: string, lang: Lang): Promise<Articl
       'translations.local_slug'
     ].join(',');
 
-    const filter = encodeURIComponent(JSON.stringify({ slug: { _eq: slug } }));
+    const filter = encodeURIComponent(JSON.stringify({ slug: { _contains: slug } }));
     const deepFilter = encodeURIComponent(JSON.stringify({
       translations: {
         _filter: {
