@@ -13,7 +13,7 @@ export async function fetchLocalSlug(
 ): Promise<string | null> {
   try {
     const filter = encodeURIComponent(JSON.stringify({
-      articles_slug: { _eq: articleSlug },
+      articles_slug: { _contains: articleSlug },
       languages_code: { _eq: lang }
     }));
 
