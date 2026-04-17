@@ -264,7 +264,7 @@ export const BLOCKS_STYLES = {
       'border-t-2 border-ol',
       'max-w-xl mx-auto my-12',
       'max-sm:mx-6',
-      'lg:mt-24 lg:max-w-2xl'
+      'lg:mt-24 lg:max-w-3xl',
     ),
     content: cn(
       'font-serif italic leading-relaxed text-on-sf-fix dark:text-on-sf',
