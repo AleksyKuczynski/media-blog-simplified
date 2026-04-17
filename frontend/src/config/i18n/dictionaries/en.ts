@@ -386,6 +386,7 @@ export const dictionaryEN: Dictionary = {
       illustratedBy: 'Illustrated by',
       categories: 'categories',
       collection: 'collection',
+      source: 'Source',
       //catalog: 'catalog',
     },
     templates: {

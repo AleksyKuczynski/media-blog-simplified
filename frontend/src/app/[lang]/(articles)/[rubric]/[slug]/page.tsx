@@ -21,6 +21,7 @@ import { ScrollToTopButton } from './_components/ScrollToTopButton';
 import StandardError from '@/shared/errors/StandardError';
 import { processContent } from './_components/markdown/processContent';
 import ArticleContentRenderer from './_components/content/ArticleContentRenderer';
+import { ArticleSource } from './_components/ArticleSource';
 import { parseImageMetadata } from '@/lib/utils/bilingualParser';
 import Section from '@/features/layout/Section';
 import RelatedArticles from '@/features/article-display/RelatedArticles';
@@ -272,6 +273,12 @@ export default async function ArticlePage({
             <ArticleContentRenderer
               chunks={contentChunks}
               lang={lang}
+            />
+
+            <ArticleSource
+              externalLink={article.external_link}
+              lang={lang}
+              dictionary={dictionary}
             />
 
             {article.authorsWithDetails.length > 0 && (

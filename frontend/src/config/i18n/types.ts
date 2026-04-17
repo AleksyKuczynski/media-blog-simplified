@@ -437,6 +437,7 @@ export interface SectionLabels {
   readonly illustratedBy: string;
   readonly categories: string;
   readonly collection: string;
+  readonly source: string;
 }
 
 export interface SectionTemplates {
