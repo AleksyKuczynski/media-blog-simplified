@@ -88,6 +88,13 @@ export const LAYOUT_STYLES = {
   content: {
     container: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px] not-prose',
   },
+
+  // Article source attribution
+  source: {
+    container: 'mt-4 max-w-2xl mx-auto text-sm text-on-sf-dim md:max-w-3xl lg:max-w-3xl',
+    label: 'font-medium',
+    link: 'underline underline-offset-2 decoration-1 text-sec-cont hover:text-sec-fix transition-colors break-all',
+  },
 } as const;
 
 // ================================================================

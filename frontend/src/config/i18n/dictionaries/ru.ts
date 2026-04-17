@@ -388,6 +388,7 @@ const dictionaryRU: Dictionary = {
       illustratedBy: 'Иллюстрации',
       categories: 'категории',
       collection: 'коллекция',
+      source: 'Источник',
       //catalog: 'каталог',
     },
     templates: {
