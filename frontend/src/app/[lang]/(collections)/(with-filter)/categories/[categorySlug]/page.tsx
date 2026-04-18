@@ -27,10 +27,16 @@ export async function generateMetadata({
 
   if (!category) return {};
 
+  const siteUrl = dictionary.seo.site.url;
   return {
     title: getPageTitle(dictionary, category.name),
     alternates: {
-      canonical: `${dictionary.seo.site.url}/${lang}/categories/${categorySlug}`,
+      canonical: `${siteUrl}/${lang}/categories/${categorySlug}`,
+      languages: {
+        en: `${siteUrl}/en/categories/${categorySlug}`,
+        ru: `${siteUrl}/ru/categories/${categorySlug}`,
+        'x-default': `${siteUrl}/ru/categories/${categorySlug}`,
+      },
     },
   };
 }

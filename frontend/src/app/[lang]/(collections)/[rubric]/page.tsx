@@ -32,11 +32,17 @@ export async function generateMetadata({
 
   const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === lang);
   const rubricName = rubricTranslation?.name || rubric;
-
+  const siteUrl = dictionary.seo.site.url;
+  
   return {
     title: getPageTitle(dictionary, rubricName),
     alternates: {
-      canonical: `${dictionary.seo.site.url}/${lang}/${rubric}`,
+      canonical: `${siteUrl}/${lang}/${rubric}`,
+      languages: {
+        en: `${siteUrl}/en/${rubric}`,
+        ru: `${siteUrl}/ru/${rubric}`,
+        'x-default': `${siteUrl}/ru/${rubric}`,
+      },
     },
   };
 }
