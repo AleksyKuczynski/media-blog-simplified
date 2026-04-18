@@ -47,24 +47,30 @@ export interface ArticleCardVariantProps extends BaseArticleCardProps {
   readonly formattedDate: string;
   readonly imageProps: ImageProps | null;
   readonly layout: ArticleCardType['layout'];
+  readonly fromContext?: string;
 }
 
 export interface NewsCardProps extends BaseArticleCardProps {
   readonly formattedDate: string;
+  readonly fromContext?: string;
 }
 
-export interface AdvertisingCardProps extends BaseArticleCardProps {}
+export interface AdvertisingCardProps extends BaseArticleCardProps {
+  readonly fromContext?: string;
+}
 
 export interface StandardCardProps extends BaseArticleCardProps {
   readonly formattedDate: string;
   readonly imageProps: ImageProps | null;
   readonly layout: 'regular' | 'latest' | 'promoted';
+  readonly fromContext?: string;
 }
 
 export interface StandardCardSkeletonProps {
   layout?: 'regular' | 'promoted' | 'latest';
   showImage?: boolean;
   className?: string;
+  readonly fromContext?: string;
 }
 
 export interface ArticleCardSkeletonVariantProps {
