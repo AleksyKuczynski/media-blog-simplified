@@ -38,7 +38,6 @@ const nextConfig = {
   },
   
   experimental: {
-    scrollRestoration: false, // Disables Next.js scroll restoration
     optimizePackageImports: ['@tailwindcss/typography'], // Enable optimizePackageImports for better tree shaking
   },
 

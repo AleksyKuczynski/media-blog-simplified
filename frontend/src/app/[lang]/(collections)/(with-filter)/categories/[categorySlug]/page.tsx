@@ -10,8 +10,36 @@ import { fetchArticleSlugs, fetchAllCategories, ITEMS_PER_PAGE } from '@/api/dir
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
 import CollectionCount from '@/features/layout/CollectionCount';
 import { SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
+import { Metadata } from 'next';
+import { getPageTitle } from '@/config/i18n/helpers/templates';
 
 export const revalidate = 300;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: Lang; categorySlug: string }>;
+}): Promise<Metadata> {
+  const { lang, categorySlug } = await params;
+  const dictionary = getDictionary(lang as Lang);
+  const categories = await fetchAllCategories(lang);
+  const category = categories.find(cat => cat.slug === categorySlug);
+
+  if (!category) return {};
+
+  const siteUrl = dictionary.seo.site.url;
+  return {
+    title: getPageTitle(dictionary, category.name),
+    alternates: {
+      canonical: `${siteUrl}/${lang}/categories/${categorySlug}`,
+      languages: {
+        en: `${siteUrl}/en/categories/${categorySlug}`,
+        ru: `${siteUrl}/ru/categories/${categorySlug}`,
+        'x-default': `${siteUrl}/ru/categories/${categorySlug}`,
+      },
+    },
+  };
+}
 
 export default async function CategoryPage({ 
   params,

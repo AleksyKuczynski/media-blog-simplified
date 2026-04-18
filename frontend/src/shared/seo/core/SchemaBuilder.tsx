@@ -38,7 +38,6 @@ export const createStandardOrganizationSchema = (
     name: seo.site.name,
     url: baseUrl,
     description: seo.site.organizationDescription,
-    inLanguage: getSchemaLanguage(dictionary),
     
     // Standard logo configuration
     logo: {
@@ -147,7 +146,6 @@ export const createStandardBreadcrumbSchema = (
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     '@id': `${canonicalUrl}#breadcrumb`,
-    inLanguage: getSchemaLanguage(dictionary),
     numberOfItems: breadcrumbs.length,
     
     itemListElement: breadcrumbs.map((crumb, index) => ({

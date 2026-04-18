@@ -2,7 +2,7 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { fetchAssetMetadata, fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
+import { fetchArticleAltSlug, fetchAssetMetadata, fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
 import { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
 import BreadcrumbsWithContext from './_components/navigation/BreadcrumbsWithContext';
@@ -88,7 +88,26 @@ export async function generateMetadata({
       wordCount: translation.word_count,
     };
 
-    return generateArticleMetadata({ dictionary, lang, articleData });
+    const metadata = generateArticleMetadata({ dictionary, lang, articleData });
+
+    const alternateLang = lang === 'en' ? 'ru' : 'en';
+    const altSlug = await fetchArticleAltSlug(articleSlug, alternateLang as Lang);
+    const siteUrl = dictionary.seo.site.url.replace(/\/$/, '');
+    const canonicalUrl = `${siteUrl}/${lang}/${rubric}/${slug}`;
+    const enUrl = lang === 'en' ? canonicalUrl : (altSlug ? `${siteUrl}/en/${rubric}/${altSlug}` : null);
+    const ruUrl = lang === 'ru' ? canonicalUrl : (altSlug ? `${siteUrl}/ru/${rubric}/${altSlug}` : null);
+
+    return {
+      ...metadata,
+      alternates: {
+        canonical: canonicalUrl,
+        languages: {
+          ...(enUrl ? { en: enUrl } : {}),
+          ...(ruUrl ? { ru: ruUrl } : {}),
+          'x-default': ruUrl ?? canonicalUrl,
+        },
+      },
+    };
   });
 }
 
