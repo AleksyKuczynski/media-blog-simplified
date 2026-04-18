@@ -3,17 +3,19 @@
 import Link from 'next/link';
 import { AdvertisingCardProps } from './interfaces';
 import { ADVERTISING_CARD_STYLES } from './articles.styles';
+import { ArticleLink } from './ArticleLink';
 
 export function AdvertisingCard({ 
   article, 
   articleLink, 
-  dictionary 
+  dictionary,
+  fromContext
 }: AdvertisingCardProps) {
   const translation = article.translations[0];
 
   return (
     <article className={ADVERTISING_CARD_STYLES.base}>
-      <Link href={articleLink} className={ADVERTISING_CARD_STYLES.link}>
+      <ArticleLink href={articleLink} fromContext={fromContext} className={ADVERTISING_CARD_STYLES.link}>
         <div className={ADVERTISING_CARD_STYLES.content}>
           <h2 className={ADVERTISING_CARD_STYLES.title}>
             {translation.title}
@@ -31,7 +33,7 @@ export function AdvertisingCard({
             </span>
           </div>
         </div>
-      </Link>
+      </ArticleLink>
     </article>
   );
 }
