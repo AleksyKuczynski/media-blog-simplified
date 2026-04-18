@@ -4,7 +4,7 @@ import { SITE_URL } from '@/config/constants/constants';
 const PROD_URL = 'https://event4me.vip';
 const isProduction = SITE_URL === PROD_URL;
 
-const disallowed: string[] = ['/api/', '/_next/', '/admin/', '/preview/'];
+const disallowed: string[] = ['/api/', '/admin/', '/preview/'];
 
 export default function robots(): MetadataRoute.Robots {
   if (!isProduction) {

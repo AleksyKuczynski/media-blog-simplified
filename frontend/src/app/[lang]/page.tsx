@@ -10,8 +10,32 @@ import { HeroArticlesSkeleton } from '@/features/article-display/HeroArticlesSke
 import { CardCarouselSkeleton } from '@/features/shared/CardCarousel/CardCarouselSkeleton';
 import Section from '@/features/layout/Section';
 import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
+import { Metadata } from 'next';
 
 export const revalidate = 3600;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: Lang }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
+  const siteUrl = dictionary.seo.site.url;
+
+  return {
+    title: dictionary.seo.site.fullName,
+    description: dictionary.seo.site.description,
+    alternates: {
+      canonical: `${siteUrl}/${lang}`,
+      languages: {
+        en: `${siteUrl}/en`,
+        ru: `${siteUrl}/ru`,
+        'x-default': `${siteUrl}/ru`,
+      },
+    },
+  };
+}
 
 export default async function HomePage({
   params,

@@ -13,10 +13,33 @@ import { RubricPageSkeleton } from '@/features/rubric-display/RubricPageSkeleton
 import { getDictionary, Lang } from '@/config/i18n';
 import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ITEMS_PER_PAGE } from '@/api/directus';
 import { RubricPageSchema } from '@/shared/seo/schemas/RubricPageSchema';
-import { processTemplate } from '@/config/i18n/helpers/templates';
+import { getPageTitle, processTemplate } from '@/config/i18n/helpers/templates';
 import { SECTION_COUNT_OVERLAP_STYLES } from '@/features/layout/layout.styles';
+import { Metadata } from 'next';
 
 export const revalidate = 300;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: Lang; rubric: string }>;
+}): Promise<Metadata> {
+  const { lang, rubric } = await params;
+  const dictionary = getDictionary(lang as Lang);
+  const rubricDetails = await fetchRubricDetails(rubric, lang);
+
+  if (!rubricDetails) return {};
+
+  const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === lang);
+  const rubricName = rubricTranslation?.name || rubric;
+
+  return {
+    title: getPageTitle(dictionary, rubricName),
+    alternates: {
+      canonical: `${dictionary.seo.site.url}/${lang}/${rubric}`,
+    },
+  };
+}
 
 export default async function RubricPage({
   params,
