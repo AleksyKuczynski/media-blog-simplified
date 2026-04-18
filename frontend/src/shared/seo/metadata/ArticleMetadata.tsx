@@ -79,9 +79,13 @@ export const generateArticleMetadata = ({
   } = articleData;
 
   const safeDates = getSafeArticleDates(publishedAt, updatedAt);
-  
+
   // Title hierarchy: seo_title > title
-  const finalTitle = seoTitle || title;
+  const MAX_TITLE_LENGTH = 60;
+  const rawTitle = seoTitle || title;
+  const finalTitle = rawTitle.length > MAX_TITLE_LENGTH
+    ? rawTitle.slice(0, MAX_TITLE_LENGTH - 1).trimEnd() + '…'
+    : rawTitle;
   
   // Description hierarchy: seo_description > description > lead
   const finalDescription = seoDescription || description || lead || 

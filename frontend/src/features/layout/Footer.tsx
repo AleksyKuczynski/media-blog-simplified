@@ -9,10 +9,9 @@ import { ContactModal } from './ContactModal';
 import { FOOTER_STYLES } from './layout.styles';
 import { getFooterNavigationItems } from '@/config/i18n/helpers/navigation';
 import { OrganizationSchema } from '@/shared/seo/schemas/OrganizationSchema';
-import { 
-  TelegramIcon, 
-  VKIcon, 
-  InstagramIcon 
+import {
+  TelegramIcon,
+  InstagramIcon
 } from '@/app/[lang]/(articles)/[rubric]/[slug]/_components/engagement/EngagementIcons';
 import Logo from '@/shared/primitives/Logo';
 
@@ -28,12 +27,6 @@ const SOCIAL_PLATFORMS = [
     label: 'Telegram',
     icon: TelegramIcon,
     ariaLabel: 'Telegram канал EventForMe',
-  },
-  {
-    key: 'vk',
-    label: 'VKontakte',
-    icon: VKIcon,
-    ariaLabel: 'Группа VKontakte EventForMe',
   },
   {
     key: 'instagram',

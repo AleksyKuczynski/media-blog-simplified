@@ -11,7 +11,7 @@ import PageError from '@/shared/errors/PageError';
 import EmptyState from '@/shared/ui/EmptyState';
 import { RubricPageSkeleton } from '@/features/rubric-display/RubricPageSkeleton';
 import { getDictionary, Lang } from '@/config/i18n';
-import { fetchArticleSlugs, fetchRubricDetails, fetchRubricBasics, ITEMS_PER_PAGE } from '@/api/directus';
+import { fetchArticleSlugs, fetchRubricDetails, ITEMS_PER_PAGE } from '@/api/directus';
 import { RubricPageSchema } from '@/shared/seo/schemas/RubricPageSchema';
 import { getPageTitle, processTemplate } from '@/config/i18n/helpers/templates';
 import { SECTION_COUNT_OVERLAP_STYLES } from '@/features/layout/layout.styles';
@@ -32,10 +32,18 @@ export async function generateMetadata({
 
   const rubricTranslation = rubricDetails.translations?.find(t => t.languages_code === lang);
   const rubricName = rubricTranslation?.name || rubric;
+  const rubricDescription = rubricTranslation?.description;
   const siteUrl = dictionary.seo.site.url;
-  
+
+  const description = rubricDescription ||
+    processTemplate(dictionary.sections.templates.exploreRubricOn, {
+      rubric: rubricName,
+      siteName: dictionary.seo.site.name,
+    });
+
   return {
     title: getPageTitle(dictionary, rubricName),
+    description,
     alternates: {
       canonical: `${siteUrl}/${lang}/${rubric}`,
       languages: {
@@ -60,9 +68,8 @@ export default async function RubricPage({
     const dictionary = getDictionary(lang as Lang);
     const currentPage = Number(resolvedSearchParams.page) || 1;
     
-    const [rubricDetails, rubricBasics] = await Promise.all([
+    const [rubricDetails] = await Promise.all([
       fetchRubricDetails(rubric, lang),
-      fetchRubricBasics(lang),
     ]);
 
     if (!rubricDetails) {

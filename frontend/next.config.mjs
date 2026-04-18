@@ -41,6 +41,18 @@ const nextConfig = {
     optimizePackageImports: ['@tailwindcss/typography'], // Enable optimizePackageImports for better tree shaking
   },
 
+  async redirects() {
+    return [
+      {
+        // Redirect www to non-www — prevents duplicate crawl and fixes www uncrawlable page
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.event4me.vip' }],
+        destination: 'https://event4me.vip/:path*',
+        permanent: true,
+      },
+    ];
+  },
+
   async headers() {
     const DIRECTUS_URL = process.env.DIRECTUS_URL || 'cms.event4me.vip';
     
