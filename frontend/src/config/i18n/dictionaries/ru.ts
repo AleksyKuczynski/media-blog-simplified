@@ -485,7 +485,6 @@ const dictionaryRU: Dictionary = {
       contactEmail: CONTACT_EMAIL,
       socialProfiles: [
         'https://t.me/eventforme',
-        'https://vk.com/eventforme',
         'https://instagram.com/eventforme'
       ],
       geographicAreas: ['Россия', 'Европа'],

@@ -11,7 +11,7 @@ import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema'
 import CollectionCount from '@/features/layout/CollectionCount';
 import { SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
 import { Metadata } from 'next';
-import { getPageTitle } from '@/config/i18n/helpers/templates';
+import { getPageTitle, processTemplate } from '@/config/i18n/helpers/templates';
 
 export const revalidate = 300;
 
@@ -28,8 +28,14 @@ export async function generateMetadata({
   if (!category) return {};
 
   const siteUrl = dictionary.seo.site.url;
+  const description = processTemplate(dictionary.sections.templates.exploreRubricOn, {
+    rubric: category.name,
+    siteName: dictionary.seo.site.name,
+  });
+
   return {
     title: getPageTitle(dictionary, category.name),
+    description,
     alternates: {
       canonical: `${siteUrl}/${lang}/categories/${categorySlug}`,
       languages: {
@@ -75,7 +81,7 @@ export default async function CategoryPage({
     name: slug.slug,
     slug: slug.slug,
     url: `${dictionary.seo.site.url}/articles/${slug.slug}`,
-    description: `Статья ${slug.slug}`,
+    description: processTemplate(dictionary.sections.templates.itemDescription, { name: slug.slug }),
   }));
 
   return (
@@ -85,7 +91,7 @@ export default async function CategoryPage({
         collectionType="articles"
         items={articleItems}
         totalCount={totalCount}
-        currentPath={`/${lang}/category/${categorySlug}`}
+        currentPath={`/${lang}/categories/${categorySlug}`}
         featured={false}
       />
 
@@ -129,7 +135,7 @@ export default async function CategoryPage({
                 lang={lang}
                 dictionary={dictionary}
                 categorySlug={categorySlug}
-                ariaLabel={`${dictionary.sections.templates.categoryDescription} ${category.name}`}
+                ariaLabel={processTemplate(dictionary.sections.templates.categoryDescription, { categoryName: category.name })}
                 fromContext={`category:${categorySlug}`}
               />
               
