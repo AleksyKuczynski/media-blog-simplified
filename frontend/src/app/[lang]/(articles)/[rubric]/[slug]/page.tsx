@@ -1,8 +1,8 @@
 // frontend/src/app/[lang]/(articles)/[rubric]/[slug]/page.tsx
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { fetchAssetMetadata, fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
+import { fetchArticleAltSlug, fetchAssetMetadata, fetchFullArticle, fetchLocalSlug, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
 import { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
 import BreadcrumbsWithContext from './_components/navigation/BreadcrumbsWithContext';
@@ -88,7 +88,28 @@ export async function generateMetadata({
       wordCount: translation.word_count,
     };
 
-    return generateArticleMetadata({ dictionary, lang, articleData });
+    const metadata = generateArticleMetadata({ dictionary, lang, articleData });
+
+    const alternateLang = lang === 'en' ? 'ru' : 'en';
+    const altSlug = await fetchArticleAltSlug(articleSlug, alternateLang as Lang);
+    const localSlugForLang = await fetchLocalSlug(articleSlug, lang as Lang);
+    const canonicalSlug = localSlugForLang ?? slug;
+
+    const siteUrl = dictionary.seo.site.url.replace(/\/$/, '');
+    const canonicalUrl = `${siteUrl}/${lang}/${rubric}/${canonicalSlug}`;
+    const enUrl = lang === 'en' ? canonicalUrl : (altSlug ? `${siteUrl}/en/${rubric}/${altSlug}` : null);
+    const ruUrl = lang === 'ru' ? canonicalUrl : (altSlug ? `${siteUrl}/ru/${rubric}/${altSlug}` : null);
+    return {
+      ...metadata,
+      alternates: {
+        canonical: canonicalUrl,
+        languages: {
+          ...(enUrl ? { en: enUrl } : {}),
+          ...(ruUrl ? { ru: ruUrl } : {}),
+          'x-default': ruUrl ?? canonicalUrl,
+        },
+      },
+    };
   });
 }
 
@@ -104,6 +125,14 @@ export default async function ArticlePage({
   const articleSlug = await resolveArticleSlug(slug, lang);
   if (!articleSlug) {
     notFound();
+  }
+
+  // Redirect main slug → language-specific local slug (prevents duplicate content)
+  if (slug === articleSlug) {
+    const localSlug = await fetchLocalSlug(articleSlug, lang);
+    if (localSlug && localSlug !== slug) {
+      permanentRedirect(`/${lang}/${rubric}/${localSlug}`);
+    }
   }
 
   const [article, rubricBasics] = await Promise.all([

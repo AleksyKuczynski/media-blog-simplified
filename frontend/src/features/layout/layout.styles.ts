@@ -180,23 +180,23 @@ export const CONTACT_MODAL_STYLES = {
   },
   
   status: {
-    base: 'px-4 py-3 rounded-lg text-sm font-medium',
+    base: 'px-6 py-4 rounded-xl text-sm font-medium',
     success: 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800',
     error: 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800',
   },
   
   field: {
     wrapper: '',
-    label: 'block text-sm font-medium text-on-sf mb-2',
+    label: 'block text-sm font-medium text-on-sf-fix mb-2',
     required: 'text-red-500 ml-1',
     input: {
-      base: 'w-full px-4 py-3 bg-sf-cont border rounded-lg text-on-sf placeholder:text-on-sf-var transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-fix focus:border-transparent',
+      base: 'w-full px-6 py-4 bg-sf-hi border rounded-full text-on-sf placeholder:text-on-sf-dim transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-fix focus:border-transparent',
       default: 'border-ol-var hover:border-ol-var/60',
       error: 'border-red-500 dark:border-red-500',
       disabled: '',
     },
     textarea: {
-      base: 'w-full px-4 py-3 bg-sf-cont border rounded-lg text-on-sf placeholder:text-on-sf-var transition-colors duration-200 resize-none focus:outline-none focus:ring-2 focus:ring-pr-fix focus:border-transparent',
+      base: 'w-full px-6 py-4 bg-sf-hi border rounded-xl text-on-sf placeholder:text-on-sf-dim transition-colors duration-200 resize-none focus:outline-none focus:ring-2 focus:ring-pr-fix focus:border-transparent',
       default: 'border-ol-var hover:border-ol-var/60',
       error: 'border-red-500 dark:border-red-500',
       disabled: '',
@@ -207,8 +207,8 @@ export const CONTACT_MODAL_STYLES = {
   
   buttons: {
     wrapper: 'flex gap-3 pt-2',
-    primary: 'flex-1 px-6 py-3 bg-pr-cont hover:bg-pr-fix text-on-pr font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-fix focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
-    secondary: 'px-6 py-3 bg-transparent border-2 border-ol-var text-on-sf-var hover:text-on-sf hover:border-ol-var/60 font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-fix focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
+    primary: 'flex-1 px-6 py-3 bg-pr-cont hover:bg-pr-fix text-sf-cont hover:text-sf font-medium rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-fix focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
+    secondary: 'px-6 py-3 bg-pr-cont/30 hover:bg-pr-cont/50 text-on-sf-fix hover:text-on-sf font-medium rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-pr-fix focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
   },
 } as const;
 

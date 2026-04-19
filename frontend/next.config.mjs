@@ -38,8 +38,19 @@ const nextConfig = {
   },
   
   experimental: {
-    scrollRestoration: false, // Disables Next.js scroll restoration
     optimizePackageImports: ['@tailwindcss/typography'], // Enable optimizePackageImports for better tree shaking
+  },
+
+  async redirects() {
+    return [
+      {
+        // Redirect www to non-www — prevents duplicate crawl and fixes www uncrawlable page
+        source: '/:path*',
+        has: [{ type: 'host', value: 'www.event4me.vip' }],
+        destination: 'https://event4me.vip/:path*',
+        permanent: true,
+      },
+    ];
   },
 
   async headers() {

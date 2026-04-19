@@ -37,11 +37,13 @@ export function ArticleCardVariant({
   imageProps,
   layout = 'regular',
   lang,
-  dictionary
+  dictionary,
+  fromContext
 }: ArticleCardVariantProps) {
   const commonProps = {
     article,
     articleLink,
+    fromContext,
     dictionary,
     lang
   };

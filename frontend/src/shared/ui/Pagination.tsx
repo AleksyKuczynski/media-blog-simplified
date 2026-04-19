@@ -57,7 +57,7 @@ export default function Pagination({
       ? `${pathname}?${params.toString()}` 
       : pathname;
     
-    router.push(newUrl, { scroll: false });
+    router.push(newUrl);
   };
 
   const getPageNumbers = (): (number | 'ellipsis')[] => {

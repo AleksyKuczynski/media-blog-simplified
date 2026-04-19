@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils/cn';
 import { StandardCardProps, getImageDimensions } from './interfaces';
 import { STANDARD_CARD_STYLES } from './articles.styles';
 import { ActionLink } from '@/shared/primitives/ActionLink';
+import { ArticleLink } from './ArticleLink';
 
 export function StandardCard({ 
   article, 
@@ -13,14 +14,16 @@ export function StandardCard({
   articleLink, 
   imageProps, 
   layout = 'regular',
-  dictionary 
+  dictionary, 
+  fromContext
 }: StandardCardProps) {
   const translation = article.translations[0];
   const imageDimensions = imageProps ? getImageDimensions(imageProps) : null;
 
   return (
-    <Link 
-      href={articleLink} 
+    <ArticleLink
+      href={articleLink}
+      fromContext={fromContext}
       className={cn(
         STANDARD_CARD_STYLES.link,
         layout === 'promoted' && STANDARD_CARD_STYLES.linkPromoted
@@ -88,6 +91,6 @@ export function StandardCard({
           </div>
         </div>
       </article>
-    </Link>
+    </ArticleLink>
   );
 }

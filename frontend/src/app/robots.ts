@@ -4,7 +4,20 @@ import { SITE_URL } from '@/config/constants/constants';
 const PROD_URL = 'https://event4me.vip';
 const isProduction = SITE_URL === PROD_URL;
 
-const disallowed: string[] = ['/api/', '/_next/', '/admin/', '/preview/'];
+// Disallow internal API endpoints and admin areas, but NOT /api/images/ (Directus assets)
+const disallowed: string[] = [
+  '/api/auth/',
+  '/api/admin/',
+  '/api/server/',
+  '/admin/',
+  '/preview/',
+  '/*?from=', // Prevent crawling of ?from= tracking parameter variants (creates phantom pages)
+];
+
+const allowed: string[] = [
+  '/',
+  '/api/images/', // Directus image asset proxy — must be explicitly allowed
+];
 
 export default function robots(): MetadataRoute.Robots {
   if (!isProduction) {
@@ -19,18 +32,18 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: allowed,
         disallow: disallowed,
       },
       {
         userAgent: 'Yandex',
-        allow: '/',
+        allow: allowed,
         disallow: disallowed,
         crawlDelay: 2,
       },
       {
         userAgent: 'Googlebot',
-        allow: '/',
+        allow: allowed,
         disallow: disallowed,
       },
     ],
