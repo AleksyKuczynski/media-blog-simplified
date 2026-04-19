@@ -91,10 +91,13 @@ export interface Author {
   avatar: string;
   // Social profiles
   telegram_url?: string;
-  // Add these if/when you add them to Directus:
-  // twitter_url?: string;
-  // linkedin_url?: string;
-  // vk_url?: string;
+  behance_url?: string;
+  personal_website_url?: string;
+  facebook_url?: string;
+  instagram_url?: string;
+  youtube_url?: string;
+  twitter_url?: string;
+  linkedin_url?: string;
 }
 
 export interface AuthorDetails extends Author {

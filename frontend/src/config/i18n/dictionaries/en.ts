@@ -424,6 +424,16 @@ export const dictionaryEN: Dictionary = {
       viewAllRubricsDescription: 'Complete catalog of all available rubrics',
       quickNavigation: 'Quick Navigation',
     },
+    socialLinks: {
+      telegram: 'Telegram',
+      behance: 'Behance',
+      personalWebsite: 'Personal Website',
+      facebook: 'Facebook',
+      instagram: 'Instagram',
+      twitter: 'Twitter',
+      linkedin: 'LinkedIn',
+      youtube: 'YouTube'
+    },
     authors: {
       allAuthors: 'All Authors',
       ourAuthors: 'Our Authors',
