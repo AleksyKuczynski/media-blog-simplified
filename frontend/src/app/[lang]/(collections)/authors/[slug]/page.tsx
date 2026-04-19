@@ -16,6 +16,7 @@ import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import CollectionCount from '@/features/layout/CollectionCount';
 import { SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
 import { AuthorSocialLinks } from '@/features/author-display/AuthorSocialLinks';
+import { cn } from '@/lib/utils';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -27,6 +28,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   return safeGenerateMetadata(params, 'author', async (lang, dictionary, resolvedParams) => {
     const { slug } = resolvedParams;
+
+    // Skip metadata generation for non-author requests (e.g. .map, .js files)
+    if (slug.includes('.')) {
+      return {};
+    }
     
     const author = await fetchAuthorBySlug(slug, lang);
     
@@ -112,6 +118,17 @@ export default async function AuthorPage({
       
       bioCard: 'p-8 bg-sf-cont rounded-2xl shadow-md font-serif leading-relaxed lg:text-lg',
       bio: 'text-on-sf-var',
+
+      social: 'flex flex-wrap gap-2 mt-8 sm:mt-10 md:mt-12 lg:mt-16 justify-center md:justify-end',
+      socialLink: cn(
+        'font-medium text-on-sec hover:text-on-sec-var',
+        'underline underline-offset-2 transition-colors',
+        'bg-sf-hi hover:bg-sf-hi-fix',
+        'shadow-sm hover:shadow-lg focus:shadow-sm',
+        'rounded-lg sm:rounded-xl',
+        'px-4 py-2 sm:px-6 sm:py-4 lg:px-8 lg:py-5',
+        'disabled:pointer-events-none disabled:opacity-50'
+      ),
     },
   } as const;
 
@@ -183,8 +200,8 @@ export default async function AuthorPage({
               <AuthorSocialLinks
                 author={author}
                 labels={dictionary.sections.socialLinks}
-                className="flex flex-wrap gap-3 mt-4"
-                linkClassName="text-sm font-medium text-pr hover:text-pr-fix underline underline-offset-2 transition-colors"
+                className={AUTHOR_PAGE_STYLES.header.social}
+                linkClassName={AUTHOR_PAGE_STYLES.header.socialLink}
               />
             </div>
           </div>
