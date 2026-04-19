@@ -43,7 +43,8 @@ export async function fetchAllCategories(lang: Lang): Promise<Category[]> {
       const translation = translations.find(t => t.categories_slug === category.slug);
       return {
         slug: category.slug,
-        name: translation ? translation.name : category.slug // Fallback to slug if no translation found
+        name: translation ? translation.name : category.slug, // Fallback to slug if no translation found
+        description: translation?.description // Add description if available
       };
     });
 
