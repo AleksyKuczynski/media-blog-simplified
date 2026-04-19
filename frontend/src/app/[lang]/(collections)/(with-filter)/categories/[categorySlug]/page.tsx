@@ -77,11 +77,16 @@ export default async function CategoryPage({
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
+  const description = category.description || processTemplate(dictionary.sections.templates.exploreRubricOn, {
+    rubric: category.name,
+    siteName: dictionary.seo.site.name,
+  });
+
   const articleItems = currentPageSlugs.slice(0, 10).map(slug => ({
     name: slug.slug,
     slug: slug.slug,
     url: `${dictionary.seo.site.url}/articles/${slug.slug}`,
-    description: processTemplate(dictionary.sections.templates.itemDescription, { name: slug.slug }),
+    description: description,
   }));
 
   return (
