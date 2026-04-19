@@ -164,7 +164,7 @@ export function useScrollRestoration() {
     };
   }, [pathname]);
 
-  // Handle navigation (programmatic only)
+// Handle navigation (programmatic only)
   useEffect(() => {
     if (previousPathname.current === null) {
       previousPathname.current = pathname;
@@ -199,8 +199,13 @@ export function useScrollRestoration() {
       
       previousPathname.current = pathname;
       scrollBeforeJumpRef.current = null;
-      
+
+      // Scroll to top on forward navigation — browser doesn't do this reliably
+      // when scrollRestoration is 'manual'
+      isRestoringRef.current = true;
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
       setTimeout(() => {
+        isRestoringRef.current = false;
         currentScrollPositionRef.current = getCurrentPosition();
       }, 100);
     }

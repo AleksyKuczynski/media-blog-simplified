@@ -10,8 +10,32 @@ import { HeroArticlesSkeleton } from '@/features/article-display/HeroArticlesSke
 import { CardCarouselSkeleton } from '@/features/shared/CardCarousel/CardCarouselSkeleton';
 import Section from '@/features/layout/Section';
 import RandomArticlesSection from '@/features/article-display/RandomArticlesSection';
+import { Metadata } from 'next';
 
 export const revalidate = 3600;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: Lang }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  const dictionary = getDictionary(lang as Lang);
+  const siteUrl = dictionary.seo.site.url;
+
+  return {
+    title: dictionary.seo.site.fullName,
+    description: dictionary.seo.site.description,
+    alternates: {
+      canonical: `${siteUrl}/${lang}`,
+      languages: {
+        en: `${siteUrl}/en`,
+        ru: `${siteUrl}/ru`,
+        'x-default': `${siteUrl}/ru`,
+      },
+    },
+  };
+}
 
 export default async function HomePage({
   params,
@@ -47,7 +71,7 @@ export default async function HomePage({
       <Suspense fallback={
         <Section 
           title={dictionary.sections.home.featuredRubrics}
-          variant="primary" 
+          variant="secondary" 
           hasNextSectionTitle={true}
         >
           <CardCarouselSkeleton 
@@ -61,6 +85,28 @@ export default async function HomePage({
           lang={lang}
           dictionary={dictionary}
           title={dictionary.sections.home.featuredRubrics}
+          variant="secondary"
+          limit={6}
+        />
+      </Suspense>
+
+      <Suspense fallback={
+        <Section 
+          title={dictionary.sections.authors.ourAuthors}
+          variant="primary" 
+          hasNextSectionTitle={true}
+        >
+          <CardCarouselSkeleton 
+            cardCount={6}
+            cardType="author"
+            ariaLabel={dictionary.common.status.loading}
+          />
+        </Section>
+      }>
+        <AuthorsCarouselSection
+          lang={lang}
+          dictionary={dictionary}
+          title={dictionary.sections.authors.ourAuthors}
           variant="primary"
           limit={6}
         />
@@ -79,14 +125,6 @@ export default async function HomePage({
           />
         </Section>
       }>
-        <AuthorsCarouselSection
-          lang={lang}
-          dictionary={dictionary}
-          title={dictionary.sections.authors.ourAuthors}
-          variant="secondary"
-          limit={6}
-        />
-
         <RandomArticlesSection
           lang={lang}
           dictionary={dictionary}
@@ -94,8 +132,6 @@ export default async function HomePage({
           variant="tertiary"
           limit={6}
         />
-
-
       </Suspense>
     </>
   );

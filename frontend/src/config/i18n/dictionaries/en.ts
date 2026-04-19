@@ -386,6 +386,7 @@ export const dictionaryEN: Dictionary = {
       illustratedBy: 'Illustrated by',
       categories: 'categories',
       collection: 'collection',
+      source: 'Source',
       //catalog: 'catalog',
     },
     templates: {
@@ -482,7 +483,6 @@ export const dictionaryEN: Dictionary = {
       contactEmail: CONTACT_EMAIL,
       socialProfiles: [
         'https://t.me/eventforme',
-        'https://vk.com/eventforme',
         'https://instagram.com/eventforme'
       ],
       geographicAreas: ['Russia', 'Europe'],

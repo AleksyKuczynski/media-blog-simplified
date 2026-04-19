@@ -7,7 +7,7 @@ import { useSearchBarInteractions } from '../logic/useSearchBarInteractions';
 import { useSearchBarHandlers } from '../logic/useSearchBarHandlers';
 import { Dictionary, Lang } from '@/config/i18n';
 import { SearchIcon } from '@/shared/primitives/Icons';
-import { SEARCH_BAR_FORM_STYLES, SEARCH_WITH_SORTING_STYLES } from '../search.styles';
+import { SEARCH_BAR_FORM_STYLES, SEARCH_PAGE_STYLES, SEARCH_WITH_SORTING_STYLES } from '../search.styles';
 import SortingControl from '@/features/navigation/Filter/SortingControl';
 import { cn } from '@/lib/utils';
 import { useSearchBarFocusHandlers } from '../logic/useSearchBarFocusHandlers';
@@ -209,10 +209,17 @@ export default function SearchBarForm({
               ariaLabel={dictionary.search.accessibility.searchResultsLabel}
             />
 
-            {showTips && (
-              <div className={cn(SEARCH_BAR_FORM_STYLES.tips.base, SEARCH_BAR_FORM_STYLES.tips.visible)}>
-                {dictionary.search.hub.tips}
-              </div>
+            {showTips && (                                                                                                                          
+              <div className={cn(SEARCH_BAR_FORM_STYLES.tips.base, SEARCH_BAR_FORM_STYLES.tips.visible)}>                                           
+                <ul className={SEARCH_PAGE_STYLES.tips.list}>                                            
+                  {dictionary.search.hub.tips.map((tip, index) => (                                                                                 
+                    <li key={index} className={SEARCH_PAGE_STYLES.tips.item}>
+                      <span className={SEARCH_PAGE_STYLES.tips.span}>•</span>                                                                       
+                      <span>{tip}</span>                                     
+                    </li>                                                                                                                           
+                  ))}                                                                                                                               
+                </ul>
+              </div>                                                                                                                                
             )}
           </div>
         )}

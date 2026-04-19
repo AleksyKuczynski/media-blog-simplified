@@ -34,10 +34,6 @@ export default async function ArticleCard({
     ? generateArticleLink(rubricSlug, slug, lang, translation.local_slug)
     : await generateArticleLinkAsync(slug, lang, authorSlug);
 
-  const finalLink = fromContext
-  ? `${articleLink}?from=${encodeURIComponent(fromContext)}`
-  : articleLink;
-
   const cardLayout = layout || article.layout || 'regular';
 
   const imageProps = article.article_heading_img ? {
@@ -56,7 +52,8 @@ export default async function ArticleCard({
       <ArticleCardVariant
         article={article}
         formattedDate={formattedDate}
-        articleLink={finalLink}
+        articleLink={articleLink}
+        fromContext={fromContext}
         dictionary={dictionary}
         imageProps={imageProps}
         layout={cardLayout}

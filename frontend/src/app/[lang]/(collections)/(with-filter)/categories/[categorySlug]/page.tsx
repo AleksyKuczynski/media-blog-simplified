@@ -10,8 +10,42 @@ import { fetchArticleSlugs, fetchAllCategories, ITEMS_PER_PAGE } from '@/api/dir
 import { CollectionPageSchema } from '@/shared/seo/schemas/CollectionPageSchema';
 import CollectionCount from '@/features/layout/CollectionCount';
 import { SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
+import { Metadata } from 'next';
+import { getPageTitle, processTemplate } from '@/config/i18n/helpers/templates';
 
 export const revalidate = 300;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: Lang; categorySlug: string }>;
+}): Promise<Metadata> {
+  const { lang, categorySlug } = await params;
+  const dictionary = getDictionary(lang as Lang);
+  const categories = await fetchAllCategories(lang);
+  const category = categories.find(cat => cat.slug === categorySlug);
+
+  if (!category) return {};
+
+  const siteUrl = dictionary.seo.site.url;
+  const description = processTemplate(dictionary.sections.templates.exploreRubricOn, {
+    rubric: category.name,
+    siteName: dictionary.seo.site.name,
+  });
+
+  return {
+    title: getPageTitle(dictionary, category.name),
+    description,
+    alternates: {
+      canonical: `${siteUrl}/${lang}/categories/${categorySlug}`,
+      languages: {
+        en: `${siteUrl}/en/categories/${categorySlug}`,
+        ru: `${siteUrl}/ru/categories/${categorySlug}`,
+        'x-default': `${siteUrl}/ru/categories/${categorySlug}`,
+      },
+    },
+  };
+}
 
 export default async function CategoryPage({ 
   params,
@@ -43,11 +77,16 @@ export default async function CategoryPage({
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
+  const description = category.description || processTemplate(dictionary.sections.templates.exploreRubricOn, {
+    rubric: category.name,
+    siteName: dictionary.seo.site.name,
+  });
+
   const articleItems = currentPageSlugs.slice(0, 10).map(slug => ({
     name: slug.slug,
     slug: slug.slug,
     url: `${dictionary.seo.site.url}/articles/${slug.slug}`,
-    description: `Статья ${slug.slug}`,
+    description: description,
   }));
 
   return (
@@ -57,7 +96,7 @@ export default async function CategoryPage({
         collectionType="articles"
         items={articleItems}
         totalCount={totalCount}
-        currentPath={`/${lang}/category/${categorySlug}`}
+        currentPath={`/${lang}/categories/${categorySlug}`}
         featured={false}
       />
 
@@ -101,7 +140,7 @@ export default async function CategoryPage({
                 lang={lang}
                 dictionary={dictionary}
                 categorySlug={categorySlug}
-                ariaLabel={`${dictionary.sections.templates.categoryDescription} ${category.name}`}
+                ariaLabel={processTemplate(dictionary.sections.templates.categoryDescription, { categoryName: category.name })}
                 fromContext={`category:${categorySlug}`}
               />
               

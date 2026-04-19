@@ -1,0 +1,34 @@
+# EventForMe
+
+> EventForMe is an independent media platform covering stylish ideas, planning advice, and trends in the world of weddings in Russia and globally. We publish expert articles, interviews with creative personalities, and event reviews to inspire couples, wedding professionals, and enthusiasts.
+
+The site is bilingual (Russian and English). All content URLs follow the pattern `/{lang}/...` where `{lang}` is `ru` or `en`. The canonical language is Russian (`ru`). The site is published at https://event4me.vip.
+
+## Key sections
+
+- [Home — Russian](https://event4me.vip/ru): Main landing page with featured and latest articles, rubric highlights, and author showcase.
+- [Home — English](https://event4me.vip/en): English-language version of the homepage.
+- [All Articles](https://event4me.vip/ru/articles): Full paginated list of all published articles, sortable by date.
+- [All Rubrics](https://event4me.vip/ru/rubrics): Index of all editorial rubrics (content sections) on the site.
+- [All Authors](https://event4me.vip/ru/authors): Directory of authors and illustrators who contribute to EventForMe.
+- [Search](https://event4me.vip/ru/search): Full-text search across all articles.
+
+## Content structure
+
+Articles are organised into **rubrics** (broad editorial sections, e.g. Traditions, Dress, Floristry) and tagged with **categories** (cross-cutting topics). Each article has a dedicated page at `/{lang}/{rubricSlug}/{articleSlug}`.
+
+Author pages are at `/{lang}/authors/{authorSlug}` and list all articles written or illustrated by that author.
+
+Category pages are at `/{lang}/categories/{categorySlug}` and aggregate articles across rubrics by topic.
+
+## Policies
+
+- [Privacy Policy](https://event4me.vip/ru/privacy-policy)
+- [Terms of Use](https://event4me.vip/ru/terms)
+
+## Technical notes
+
+- Sitemap: https://event4me.vip/sitemap.xml
+- RSS / feeds: not available
+- API: not publicly available
+- Content language: primarily Russian; English translations available for most articles

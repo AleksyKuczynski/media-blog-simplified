@@ -23,7 +23,7 @@ async function resolvePreviewArticle(slug: string): Promise<{
 
   try {
     const filter = encodeURIComponent(
-      JSON.stringify({ slug: { _eq: slug }, status: { _in: ['published', 'draft'] } })
+      JSON.stringify({ slug: { _contains: slug }, status: { _in: ['published', 'draft'] } })
     );
     const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=slug,translations.languages_code&limit=1`;
     const res = await fetch(url, { cache: 'no-store' });
@@ -37,7 +37,7 @@ async function resolvePreviewArticle(slug: string): Promise<{
       .filter(Boolean);
     if (langs.length === 0) return null;
 
-    return { langs, articleSlug: slug };
+    return { langs, articleSlug: slug.trim() };
   } catch {
     return null;
   }

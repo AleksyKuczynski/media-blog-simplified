@@ -88,6 +88,13 @@ export const LAYOUT_STYLES = {
   content: {
     container: 'pb-16 md:pb-20 lg:pb-[88px] xl:pb-[96px] not-prose',
   },
+
+  // Article source attribution
+  source: {
+    container: 'mt-4 max-w-2xl mx-auto text-sm text-on-sf-dim md:max-w-3xl lg:max-w-3xl',
+    label: 'font-medium',
+    link: 'underline underline-offset-2 decoration-1 text-sec-cont hover:text-sec-fix transition-colors break-all',
+  },
 } as const;
 
 // ================================================================
@@ -257,7 +264,7 @@ export const BLOCKS_STYLES = {
       'border-t-2 border-ol',
       'max-w-xl mx-auto my-12',
       'max-sm:mx-6',
-      'lg:mt-24 lg:max-w-2xl'
+      'lg:mt-24 lg:max-w-3xl',
     ),
     content: cn(
       'font-serif italic leading-relaxed text-on-sf-fix dark:text-on-sf',

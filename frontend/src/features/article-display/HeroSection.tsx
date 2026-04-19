@@ -1,6 +1,5 @@
 // src/features/article-display/HeroSection.tsx
 
-import Image from 'next/image';
 import { Dictionary, Lang } from '@/config/i18n';
 import { EFMHeroImage, EFMTitle } from './HeroSvgs';
 import { cn } from '@/lib/utils';
@@ -67,9 +66,9 @@ export default function HeroSection({
               {dictionary.sections.home.welcomeTitle.sub}
             </p>
           </div>
-          <p className={styles.description}>
+          <h1 className={styles.description}>
             {dictionary.sections.home.welcomeDescription}
-          </p>
+          </h1>
           <div className={styles.image}>
             <EFMHeroImage lang={lang} />
           </div>

@@ -388,6 +388,7 @@ const dictionaryRU: Dictionary = {
       illustratedBy: 'Иллюстрации',
       categories: 'категории',
       collection: 'коллекция',
+      source: 'Источник',
       //catalog: 'каталог',
     },
     templates: {
@@ -484,7 +485,6 @@ const dictionaryRU: Dictionary = {
       contactEmail: CONTACT_EMAIL,
       socialProfiles: [
         'https://t.me/eventforme',
-        'https://vk.com/eventforme',
         'https://instagram.com/eventforme'
       ],
       geographicAreas: ['Россия', 'Европа'],

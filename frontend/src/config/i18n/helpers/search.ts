@@ -42,7 +42,7 @@ export const generateSearchSEOData = (dictionary: Dictionary) => {
   const title = getSearchPageTitle(dictionary);
   const description = getSearchPageDescription(dictionary);
   const keywords = getSearchKeywords(dictionary);
-  const canonicalUrl = generateCanonicalUrl('/search', dictionary.seo.site.url);
+  const canonicalUrl = generateCanonicalUrl(`/${dictionary.seo.regional.language}/search`, dictionary.seo.site.url);
   
   return {
     title,

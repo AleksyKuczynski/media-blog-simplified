@@ -43,8 +43,8 @@ export async function resolveArticleSlug(
 async function checkMainSlugExists(slug: string, includesDrafts: boolean): Promise<boolean> {
   try {
     const filter = includesDrafts
-      ? encodeURIComponent(JSON.stringify({ slug: { _eq: slug } }))
-      : encodeURIComponent(JSON.stringify({ slug: { _eq: slug }, status: { _eq: 'published' } }));
+      ? encodeURIComponent(JSON.stringify({ slug: { _contains: slug } }))
+      : encodeURIComponent(JSON.stringify({ slug: { _contains: slug }, status: { _eq: 'published' } }));
 
     const url = `${DIRECTUS_URL}/items/articles?filter=${filter}&fields=slug&limit=1`;
 

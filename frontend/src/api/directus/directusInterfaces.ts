@@ -153,11 +153,13 @@ export interface CategoryTranslation {
   categories_slug: string;
   languages_code: string;
   name: string;
+  description?: string;
 }
 
 export interface Category {
   slug: string;
   name: string; // Holds the translated name
+  description?: string;
 }
 
 export interface PromotedArticle {

@@ -1,20 +1,21 @@
 // src/main/components/ArticleCards/NewsCard.tsx
 
-import Link from 'next/link';
 import { NewsCardProps } from './interfaces';
 import { NEWS_CARD_STYLES } from './articles.styles';
+import { ArticleLink } from './ArticleLink';
 
 export function NewsCard({ 
   article, 
   formattedDate, 
   articleLink, 
-  dictionary 
+  dictionary,
+  fromContext 
 }: NewsCardProps) {
   const translation = article.translations[0];
 
   return (
     <article className={NEWS_CARD_STYLES.base}>
-      <Link href={articleLink} className={NEWS_CARD_STYLES.link}>
+      <ArticleLink href={articleLink} fromContext={fromContext} className={NEWS_CARD_STYLES.link}>
         <h2 className={NEWS_CARD_STYLES.title}>
           {translation.title}
         </h2>
@@ -32,7 +33,7 @@ export function NewsCard({
             {dictionary.common.actions.readMore}
           </span>
         </div>
-      </Link>
+      </ArticleLink>
     </article>
   );
 }

@@ -29,11 +29,8 @@ export function useDropdown({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [initialSelectedId] = useState(() => {
-    console.log('useDropdown init - defaultItemId:', defaultItemId, 'selected item:', items.find(item => item.selected)?.id);
     return defaultItemId ?? items.find(item => item.selected)?.id;
   });
-  
-  console.log('useDropdown - initialSelectedId:', initialSelectedId, 'current items:', items.map(i => ({ id: i.id, selected: i.selected })));
   
   const triggerRef = useRef<HTMLButtonElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
