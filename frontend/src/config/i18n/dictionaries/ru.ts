@@ -426,6 +426,16 @@ const dictionaryRU: Dictionary = {
       viewAllRubricsDescription: 'Полный каталог всех доступных рубрик',
       quickNavigation: 'Быстрая навигация',
     },
+    socialLinks: {
+      telegram: 'Telegram',
+      behance: 'Behance',
+      personalWebsite: 'Личный сайт',
+      facebook: 'Facebook',
+      instagram: 'Instagram',
+      twitter: 'Twitter',
+      linkedin: 'LinkedIn',
+      youtube: 'YouTube'
+    },
     authors: {
       allAuthors: 'Все авторы',
       ourAuthors: 'Наши авторы',
