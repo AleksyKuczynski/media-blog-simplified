@@ -15,6 +15,7 @@ import { getDictionary, Lang } from '@/config/i18n';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import CollectionCount from '@/features/layout/CollectionCount';
 import { SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
+import { AuthorSocialLinks } from '@/features/author-display/AuthorSocialLinks';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -167,11 +168,11 @@ export default async function AuthorPage({
               </div>
             </div>
 
-            {/* Right Column: Bio (2/3) */}
+            {/* Right Column: Bio + Social links (2/3) */}
             <div className={AUTHOR_PAGE_STYLES.header.rightColumn}>
               {author.bio && (
                 <div className={AUTHOR_PAGE_STYLES.header.bioCard}>
-                  <p 
+                  <p
                     className={AUTHOR_PAGE_STYLES.header.bio}
                     itemProp="description"
                   >
@@ -179,6 +180,12 @@ export default async function AuthorPage({
                   </p>
                 </div>
               )}
+              <AuthorSocialLinks
+                author={author}
+                labels={dictionary.sections.socialLinks}
+                className="flex flex-wrap gap-3 mt-4"
+                linkClassName="text-sm font-medium text-pr hover:text-pr-fix underline underline-offset-2 transition-colors"
+              />
             </div>
           </div>
         </div>

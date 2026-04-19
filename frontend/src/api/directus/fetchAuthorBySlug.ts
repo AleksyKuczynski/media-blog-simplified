@@ -48,7 +48,15 @@ export async function fetchAuthorBySlug(slug: string, lang: Lang): Promise<Autho
       is_author: author.is_author,
       is_illustrator: author.is_illustrator,
       name: translation ? translation.name : author.slug,
-      bio: translation ? translation.bio : ''
+      bio: translation ? translation.bio : '',
+      telegram_url: author.telegram_url || undefined,
+      behance_url: author.behance_url || undefined,
+      personal_website_url: author.personal_website_url || undefined,
+      facebook_url: author.facebook_url || undefined,
+      instagram_url: author.instagram_url || undefined,
+      youtube_url: author.youtube_url || undefined,
+      twitter_url: author.twitter_url || undefined,
+      linkedin_url: author.linkedin_url || undefined
     };
   } catch (error) {
     return null;
