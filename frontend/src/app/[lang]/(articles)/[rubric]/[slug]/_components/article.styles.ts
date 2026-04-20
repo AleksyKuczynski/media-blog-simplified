@@ -142,7 +142,7 @@ export const ELEMENTS_STYLES = {
 
   // Links
   link: {
-    base: 'text-pr-cont hover:text-pr-fix underline transition-colors duration-200',
+    base: 'text-sec-cont hover:text-sec-fix underline transition-colors duration-200',
     external: 'inline-flex items-center gap-1',
     externalIcon: 'w-3 h-3',
   },
@@ -270,7 +270,8 @@ export const BLOCKS_STYLES = {
       'font-serif italic leading-relaxed text-on-sf-fix dark:text-on-sf',
       'pt-2',
       'md:pt-4',
-      'lg:text-lg lg:leading-[1.75] lg:pt-6'
+      'lg:text-lg lg:leading-[1.75] lg:pt-6',
+      '[&_a]:text-sec-cont [&_a]:underline [&_a]:underline-offset-2 [&_a]:decoration-1 [&_a]:transition-colors [&_a]:hover:text-sec-fix'
     ),
   },
 
