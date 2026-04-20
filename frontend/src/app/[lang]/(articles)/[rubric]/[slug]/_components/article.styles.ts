@@ -131,7 +131,7 @@ export const ELEMENTS_STYLES = {
   // Paragraph
   paragraph: {
     base: cn(
-      'font-serif dark:font-light text-on-sf', 
+      'font-serif text-on-sf',
       'first:mt-0 last:mb-0',
       'mb-3',
       'max-w-xl mx-auto',
@@ -150,7 +150,7 @@ export const ELEMENTS_STYLES = {
   // Lists
   list: {
     base: cn(
-      'font-serif dark:font-light text-on-sf',
+      'font-serif text-on-sf',
       'my-6 pl-6 space-y-2',
       'max-w-xl mx-auto',
       'text-lg leading-[1.5]',
