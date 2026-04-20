@@ -9,6 +9,7 @@ interface SectionProps {
   className?: string;
   variant?: SectionVariant;
   title?: string;
+  shortTitle?: string;
   titleLevel?: 'h1' | 'h2';
   ariaLabel?: string;
   id?: string;
@@ -20,11 +21,12 @@ interface SectionProps {
   flexGrow?: boolean;
 }
 
-export default function Section({ 
-  children, 
-  className = '', 
+export default function Section({
+  children,
+  className = '',
   variant = 'default',
   title,
+  shortTitle,
   titleLevel = 'h2',
   ariaLabel,
   id,
@@ -72,7 +74,12 @@ export default function Section({
       <div className={containerClasses}>
         {title && (
           <header className={SECTION_STYLES.header.wrapper}>
-            <TitleTag className={titleClasses}>
+            {shortTitle && (
+              <TitleTag className={cn(titleClasses, 'sm:hidden')}>
+                {shortTitle}
+              </TitleTag>
+            )}
+            <TitleTag className={cn(titleClasses, shortTitle && 'hidden sm:block')}>
               {title}
             </TitleTag>
           </header>

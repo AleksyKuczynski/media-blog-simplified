@@ -435,6 +435,7 @@ export interface SectionLabels {
   readonly authors: string;
   readonly illustrator: string;
   readonly illustratedBy: string;
+  readonly illustratedByShort: string;
   readonly categories: string;
   readonly collection: string;
   readonly source: string;
@@ -496,6 +497,7 @@ export interface SectionAuthors {
   readonly collectionPageDescription: string;
   readonly profileDescription: string;
   readonly articlesWrittenBy: string;
+  readonly articlesShort: string;
   readonly authorPhoto: string;
 }
 

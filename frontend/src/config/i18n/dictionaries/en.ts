@@ -384,6 +384,7 @@ export const dictionaryEN: Dictionary = {
       authors: 'authors',
       illustrator: 'illustrator',
       illustratedBy: 'Illustrated by',
+      illustratedByShort: 'Illustrations',
       categories: 'categories',
       collection: 'collection',
       source: 'Source',
@@ -442,6 +443,7 @@ export const dictionaryEN: Dictionary = {
       collectionPageDescription: 'Our editorial team is made up of passionate professionals: wedding experts who turn dreams into detailed plans, an astropsychologist with an amazing intuition, talented stylists, tireless travelers, and photographers. We explore trends, gather insights, simplify the complex, seek out creative solutions, and share practical tools to help you create your perfect wedding.',
       profileDescription: 'Author profile and publications',
       articlesWrittenBy: 'Articles by {author}',
+      articlesShort: 'Articles',
       authorPhoto: 'Author avatar'
     },
     illustrators: {
