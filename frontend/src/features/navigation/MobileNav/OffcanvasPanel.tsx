@@ -54,7 +54,7 @@ export default function OffcanvasPanel({
         role="dialog"
         aria-modal="true"
         aria-label={ariaLabel}
-        aria-hidden={!isOpen}
+        inert={!isOpen || undefined}
       >
         <div className={OFFCANVAS_PANEL_STYLES.header.container}>
           <h2 className={OFFCANVAS_PANEL_STYLES.header.title}>
