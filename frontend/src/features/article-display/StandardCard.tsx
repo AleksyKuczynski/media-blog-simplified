@@ -45,6 +45,7 @@ export function StandardCard({
               alt={imageProps.alt}
               fill
               className={STANDARD_CARD_STYLES.imageElement}
+              priority={layout === 'promoted'}
               sizes={`
                 ${layout === 'regular' && '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'}
                 ${layout === 'promoted' && '(max-width: 1024px) 100vw, (max-width: 1280px) 50vw, 50vw'}
