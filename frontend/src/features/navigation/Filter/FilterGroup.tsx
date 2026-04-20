@@ -69,8 +69,6 @@ export default function FilterGroup({
   const isHoveringInactive = hoveredButton !== null && hoveredButton !== openDropdown;
   const showDivider = !isAnyDropdownOpen && (hoveredButton === null || !isHoveringContainer);
 
-  console.log('Divider state:', { openDropdown, hoveredButton, isHoveringContainer, showDivider });
-
   const containerClassName = cn(
     FILTER_STYLES.container.base,
     isAnyDropdownOpen && isHoveringInactive 

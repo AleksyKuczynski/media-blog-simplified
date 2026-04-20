@@ -5,7 +5,7 @@ import { Lang } from "@/config/i18n";
 
 export async function fetchAuthorBySlug(slug: string, lang: Lang): Promise<AuthorDetails | null> {
   try {
-    const authorUrl = `${DIRECTUS_URL}/items/authors?filter[slug][_eq]=${slug}&fields=slug,avatar,is_author,is_illustrator`;
+    const authorUrl = `${DIRECTUS_URL}/items/authors?filter[slug][_eq]=${slug}&fields=slug,avatar,is_author,is_illustrator,telegram_url,behance_url,personal_website_url,facebook_url,instagram_url,youtube_url,twitter_url,linkedin_url`;
     
     const authorResponse = await fetch(authorUrl, { 
       next: { 
@@ -48,9 +48,18 @@ export async function fetchAuthorBySlug(slug: string, lang: Lang): Promise<Autho
       is_author: author.is_author,
       is_illustrator: author.is_illustrator,
       name: translation ? translation.name : author.slug,
-      bio: translation ? translation.bio : ''
+      bio: translation ? translation.bio : '',
+      telegram_url: author.telegram_url || undefined,
+      behance_url: author.behance_url || undefined,
+      personal_website_url: author.personal_website_url || undefined,
+      facebook_url: author.facebook_url || undefined,
+      instagram_url: author.instagram_url || undefined,
+      youtube_url: author.youtube_url || undefined,
+      twitter_url: author.twitter_url || undefined,
+      linkedin_url: author.linkedin_url || undefined
     };
   } catch (error) {
+    console.error('[fetchAuthorBySlug] error for slug:', slug, error);
     return null;
   }
 }

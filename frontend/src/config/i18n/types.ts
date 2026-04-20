@@ -435,6 +435,7 @@ export interface SectionLabels {
   readonly authors: string;
   readonly illustrator: string;
   readonly illustratedBy: string;
+  readonly illustratedByShort: string;
   readonly categories: string;
   readonly collection: string;
   readonly source: string;
@@ -477,6 +478,17 @@ export interface SectionHome {
   readonly quickNavigation: string;
 }
 
+export interface AuthorSocialLinkLabels {
+  readonly telegram: string;
+  readonly behance: string;
+  readonly personalWebsite: string;
+  readonly facebook: string;
+  readonly instagram: string;
+  readonly twitter: string;
+  readonly linkedin: string;
+  readonly youtube: string;
+}
+
 export interface SectionAuthors {
   readonly allAuthors: string;
   readonly ourAuthors: string;
@@ -485,6 +497,7 @@ export interface SectionAuthors {
   readonly collectionPageDescription: string;
   readonly profileDescription: string;
   readonly articlesWrittenBy: string;
+  readonly articlesShort: string;
   readonly authorPhoto: string;
 }
 
@@ -529,6 +542,7 @@ export interface SectionsDictionary {
   readonly labels: SectionLabels;
   readonly templates: SectionTemplates;
   readonly home: SectionHome;
+  readonly socialLinks: AuthorSocialLinkLabels;
   readonly authors: SectionAuthors;
   readonly illustrators: SectionIlustrators;
   readonly rubrics: SectionRubrics;
