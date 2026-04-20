@@ -210,10 +210,11 @@ export default async function AuthorPage({
 
       {/* Articles by Author Section */}
       {authoredCount > 0 && (
-        <Section 
+        <Section
           title={processTemplate(dictionary.sections.authors.articlesWrittenBy, {
             author: author.name
           })}
+          shortTitle={dictionary.sections.authors.articlesShort}
           variant="secondary"
           hasNextSectionTitle={true}
         >
@@ -248,6 +249,7 @@ export default async function AuthorPage({
       {illustratedCount > 0 && (
         <Section 
           title={`${dictionary.sections.labels.illustratedBy} ${author.name}`}
+          shortTitle={dictionary.sections.labels.illustratedByShort}
           hasNextSectionTitle={true}
           variant="tertiary"
         >
