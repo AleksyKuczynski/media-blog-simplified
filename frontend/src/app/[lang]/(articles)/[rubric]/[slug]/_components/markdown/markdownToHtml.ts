@@ -44,8 +44,8 @@ export function convertSimpleMarkdownToHtml(markdown: string): string {
 
 export function convertMarkdownToHtmlSync(markdown: string): string {
   return remark()
-    .use(html, { sanitize: false })
     .use(remarkGfm)
+    .use(html, { sanitize: false })
     .processSync(markdown)
     .toString();
 }
