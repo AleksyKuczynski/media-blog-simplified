@@ -1,4 +1,4 @@
-// src/api/directus/constants.ts
+// src/config/constants/directusConstants.ts
 
 // For server-to-server API calls: prefer internal Docker hostname (avoids public internet roundtrip)
 export const DIRECTUS_URL = process.env.DIRECTUS_URL || process.env.NEXT_PUBLIC_DIRECTUS_URL;
