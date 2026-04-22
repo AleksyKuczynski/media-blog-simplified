@@ -21,7 +21,7 @@ interface DirectusArticle {
   slug: string;
   published_at: string;
   date_updated: string;
-  rubric_slug?: { slug: string };
+  rubric_slug?: string;
   translations: ArticleTranslation[];
 }
 
@@ -57,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, rubrics, authors, categories] = await Promise.all([
     fetchCollection<DirectusArticle>(
       'articles',
-      'slug,published_at,date_updated,rubric_slug.slug,translations.languages_code,translations.local_slug',
+      'slug,published_at,date_updated,rubric_slug,translations.languages_code,translations.local_slug',
       { status: { _eq: 'published' } }
     ),
     fetchCollection<SlugItem>('rubrics', 'slug'),
@@ -120,14 +120,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
   );
 
-  // One URL per translation — uses local_slug when available, falls back to main slug
+  // One URL per translation — only include translations that have a local_slug (the public URL slug)
   const articlePages: MetadataRoute.Sitemap = articles.flatMap((article) =>
-    article.translations.map((t) => ({
-      url: `${SITE_URL}/${t.languages_code}/${article.rubric_slug?.slug ?? 'articles'}/${t.local_slug ?? article.slug}`,
-      lastModified: new Date(article.date_updated || article.published_at),
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
-    }))
+    article.translations
+      .filter((t) => t.local_slug)
+      .map((t) => ({
+        url: `${SITE_URL}/${t.languages_code}/${article.rubric_slug ?? 'articles'}/${t.local_slug}`,
+        lastModified: new Date(article.date_updated || article.published_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
+      }))
   );
 
   const authorPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
