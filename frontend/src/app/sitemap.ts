@@ -39,16 +39,22 @@ async function fetchCollection<T>(
   filter?: object
 ): Promise<T[]> {
   try {
-    const params = new URLSearchParams({ fields, limit: '-1' });
-    if (filter) params.set('filter', JSON.stringify(filter));
-    const res = await fetch(`${DIRECTUS_URL}/items/${collection}?${params}`, {
+    let url = `${DIRECTUS_URL}/items/${collection}?fields=${fields}&limit=-1`;
+    if (filter) url += `&filter=${encodeURIComponent(JSON.stringify(filter))}`;
+    console.log(`[sitemap] fetching ${url}`);
+    const res = await fetch(url, {
       headers: authHeaders,
       next: { revalidate: 3600 },
     });
-    if (!res.ok) return [];
+    if (!res.ok) {
+      console.error(`[sitemap] ${collection} fetch failed: ${res.status} ${res.statusText}`);
+      return [];
+    }
     const json: DirectusResponse<T> = await res.json();
+    console.log(`[sitemap] ${collection} returned ${json.data?.length ?? 0} items`);
     return json.data ?? [];
-  } catch {
+  } catch (e) {
+    console.error(`[sitemap] ${collection} exception:`, e);
     return [];
   }
 }
