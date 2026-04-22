@@ -20,7 +20,7 @@ interface ArticleTranslation {
 interface DirectusArticle {
   slug: string;
   published_at: string;
-  date_updated: string;
+  updated_at: string | null;
   rubric_slug?: string;
   translations: ArticleTranslation[];
 }
@@ -41,20 +41,14 @@ async function fetchCollection<T>(
   try {
     let url = `${DIRECTUS_URL}/items/${collection}?fields=${fields}&limit=-1`;
     if (filter) url += `&filter=${encodeURIComponent(JSON.stringify(filter))}`;
-    console.log(`[sitemap] fetching ${url}`);
     const res = await fetch(url, {
       headers: authHeaders,
       next: { revalidate: 3600 },
     });
-    if (!res.ok) {
-      console.error(`[sitemap] ${collection} fetch failed: ${res.status} ${res.statusText}`);
-      return [];
-    }
+    if (!res.ok) return [];
     const json: DirectusResponse<T> = await res.json();
-    console.log(`[sitemap] ${collection} returned ${json.data?.length ?? 0} items`);
     return json.data ?? [];
-  } catch (e) {
-    console.error(`[sitemap] ${collection} exception:`, e);
+  } catch {
     return [];
   }
 }
@@ -63,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, rubrics, authors, categories] = await Promise.all([
     fetchCollection<DirectusArticle>(
       'articles',
-      'slug,published_at,date_updated,rubric_slug,translations.languages_code,translations.local_slug',
+      'slug,published_at,updated_at,rubric_slug,translations.languages_code,translations.local_slug',
       { status: { _eq: 'published' } }
     ),
     fetchCollection<SlugItem>('rubrics', 'slug'),
@@ -132,7 +126,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter((t) => t.local_slug)
       .map((t) => ({
         url: `${SITE_URL}/${t.languages_code}/${article.rubric_slug ?? 'articles'}/${t.local_slug}`,
-        lastModified: new Date(article.date_updated || article.published_at),
+        lastModified: new Date(article.updated_at || article.published_at),
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       }))
