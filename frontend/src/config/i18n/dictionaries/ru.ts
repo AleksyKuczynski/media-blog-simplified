@@ -386,6 +386,7 @@ const dictionaryRU: Dictionary = {
       authors: 'авторы',
       illustrator: 'иллюстратор',
       illustratedBy: 'Иллюстрации',
+      illustratedByShort: 'Иллюстрации',
       categories: 'категории',
       collection: 'коллекция',
       source: 'Источник',
@@ -426,6 +427,16 @@ const dictionaryRU: Dictionary = {
       viewAllRubricsDescription: 'Полный каталог всех доступных рубрик',
       quickNavigation: 'Быстрая навигация',
     },
+    socialLinks: {
+      telegram: 'Telegram',
+      behance: 'Behance',
+      personalWebsite: 'Личный сайт',
+      facebook: 'Facebook',
+      instagram: 'Instagram',
+      twitter: 'Twitter',
+      linkedin: 'LinkedIn',
+      youtube: 'YouTube'
+    },
     authors: {
       allAuthors: 'Все авторы',
       ourAuthors: 'Наши авторы',
@@ -434,6 +445,7 @@ const dictionaryRU: Dictionary = {
       collectionPageDescription: 'Наша редакция — это команда увлеченных профессионалов: свадебные эксперты, которые превращают мечты в детальные планы, астропсихолог с удивительным чутьем, талантливые стилисты, неутомимые путешественники и фотографы. Мы исследуем тренды, собираем мнения, превращаем сложное в понятное, ищем нестандартные решения и делимся практическими инструментами для создания вашей идеальной свадьбы.',
       profileDescription: 'Профиль автора и его публикации',
       articlesWrittenBy: '{author} / статьи',
+      articlesShort: 'Статьи',
       authorPhoto: 'Аватар автора'
     },
     illustrators: {

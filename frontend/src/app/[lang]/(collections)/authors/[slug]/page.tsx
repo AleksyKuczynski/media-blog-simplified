@@ -15,6 +15,8 @@ import { getDictionary, Lang } from '@/config/i18n';
 import { safeGenerateMetadata } from '@/shared/errors/lib/metadataErrorHandler';
 import CollectionCount from '@/features/layout/CollectionCount';
 import { SECTION_COUNT_STYLES } from '@/features/layout/layout.styles';
+import { AuthorSocialLinks } from '@/features/author-display/AuthorSocialLinks';
+import { cn } from '@/lib/utils';
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -26,6 +28,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   return safeGenerateMetadata(params, 'author', async (lang, dictionary, resolvedParams) => {
     const { slug } = resolvedParams;
+
+    // Skip metadata generation for non-author requests (e.g. .map, .js files)
+    if (slug.includes('.')) {
+      return {};
+    }
     
     const author = await fetchAuthorBySlug(slug, lang);
     
@@ -111,6 +118,17 @@ export default async function AuthorPage({
       
       bioCard: 'p-8 bg-sf-cont rounded-2xl shadow-md font-serif leading-relaxed lg:text-lg',
       bio: 'text-on-sf-var',
+
+      social: 'flex flex-wrap gap-2 mt-8 sm:mt-10 md:mt-12 lg:mt-16 justify-center md:justify-end',
+      socialLink: cn(
+        'font-medium text-on-sec hover:text-on-sec-var',
+        'underline underline-offset-2 transition-colors',
+        'bg-sf-hi hover:bg-sf-hi-fix',
+        'shadow-sm hover:shadow-lg focus:shadow-sm',
+        'rounded-lg sm:rounded-xl',
+        'px-4 py-2 sm:px-6 sm:py-4 lg:px-8 lg:py-5',
+        'disabled:pointer-events-none disabled:opacity-50'
+      ),
     },
   } as const;
 
@@ -167,11 +185,11 @@ export default async function AuthorPage({
               </div>
             </div>
 
-            {/* Right Column: Bio (2/3) */}
+            {/* Right Column: Bio + Social links (2/3) */}
             <div className={AUTHOR_PAGE_STYLES.header.rightColumn}>
               {author.bio && (
                 <div className={AUTHOR_PAGE_STYLES.header.bioCard}>
-                  <p 
+                  <p
                     className={AUTHOR_PAGE_STYLES.header.bio}
                     itemProp="description"
                   >
@@ -179,6 +197,12 @@ export default async function AuthorPage({
                   </p>
                 </div>
               )}
+              <AuthorSocialLinks
+                author={author}
+                labels={dictionary.sections.socialLinks}
+                className={AUTHOR_PAGE_STYLES.header.social}
+                linkClassName={AUTHOR_PAGE_STYLES.header.socialLink}
+              />
             </div>
           </div>
         </div>
@@ -186,10 +210,11 @@ export default async function AuthorPage({
 
       {/* Articles by Author Section */}
       {authoredCount > 0 && (
-        <Section 
+        <Section
           title={processTemplate(dictionary.sections.authors.articlesWrittenBy, {
             author: author.name
           })}
+          shortTitle={dictionary.sections.authors.articlesShort}
           variant="secondary"
           hasNextSectionTitle={true}
         >
@@ -224,6 +249,7 @@ export default async function AuthorPage({
       {illustratedCount > 0 && (
         <Section 
           title={`${dictionary.sections.labels.illustratedBy} ${author.name}`}
+          shortTitle={dictionary.sections.labels.illustratedByShort}
           hasNextSectionTitle={true}
           variant="tertiary"
         >
