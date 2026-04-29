@@ -229,6 +229,12 @@ export default async function ArticlePage({
       name: cat.name,
     })) || [];
 
+    const schemaBreadcrumbs = [
+      { name: dictionary.navigation.labels.home, href: `/${lang}` },
+      { name: rubricName, href: `/${lang}/${rubric}` },
+      { name: translation.title },
+    ];
+
     return (
       <>
         <>
@@ -236,6 +242,7 @@ export default async function ArticlePage({
             dictionary={dictionary}
             lang={lang}
             articleData={articleSchemaData}
+            breadcrumbs={schemaBreadcrumbs}
           />
 
           <QuickNavigationSchema
