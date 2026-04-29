@@ -39,12 +39,28 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: 'Yandex',
         allow: allowed,
         disallow: disallowed,
-        crawlDelay: 2,
+        crawlDelay: 1,
       },
       {
         userAgent: 'Googlebot',
         allow: allowed,
         disallow: disallowed,
+      },
+      {
+        userAgent: 'GPTBot',
+        allow: ['/'],
+      },
+      {
+        userAgent: 'ClaudeBot',
+        allow: ['/'],
+      },
+      {
+        userAgent: 'PerplexityBot',
+        allow: ['/'],
+      },
+      {
+        userAgent: 'Applebot',
+        allow: ['/'],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,
