@@ -315,7 +315,7 @@ export class SchemaComposer {
     readingTime?: number;
   }): this {
     this.addCustomSchema({
-      '@type': 'Article',
+      '@type': 'BlogPosting',
       '@id': `${this.canonicalUrl}#article`,
       headline: data.title,
       name: data.title,
