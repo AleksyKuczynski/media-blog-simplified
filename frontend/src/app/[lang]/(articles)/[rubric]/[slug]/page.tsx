@@ -2,7 +2,7 @@
 import { notFound, permanentRedirect } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { fetchArticleAltSlug, fetchAssetMetadata, fetchFullArticle, fetchLocalSlug, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
+import { DIRECTUS_ASSETS_URL, fetchArticleAltSlug, fetchAssetMetadata, fetchFullArticle, fetchLocalSlug, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
 import { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
 import BreadcrumbsWithContext from './_components/navigation/BreadcrumbsWithContext';
@@ -208,7 +208,7 @@ export default async function ArticlePage({
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageUrl: article.article_heading_img 
-        ? `${dictionary.seo.site.url}/assets/${article.article_heading_img}`
+        ? `${DIRECTUS_ASSETS_URL}/assets/${article.article_heading_img}`
         : undefined,
       imageAlt: imageMetadata?.altText,
       tags: article.categories?.map(cat => cat.name) || [],
