@@ -58,7 +58,7 @@ export const generateRubricMetadata = async ({
   ].filter(Boolean).join(', ');
 
   const canonicalUrl = `${dictionary.seo.site.url}${path}`;
-  const finalImageUrl = `${dictionary.seo.site.url}/og-rubric-${slug}.jpg`;
+  const finalImageUrl = `${dictionary.seo.site.url}/og-default.jpg`;
 
   const seoData = createWebsiteSEOData(
     finalTitle,
