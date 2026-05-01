@@ -59,7 +59,7 @@ export const generateCollectionMetadata = async (
   ].filter(Boolean).join(', ');
 
   const canonicalUrl = `${dictionary.seo.site.url}${currentPath}`;
-  const finalImageUrl = `${dictionary.seo.site.url}/og-${collectionType}-collection.jpg`;
+  const finalImageUrl = `${dictionary.seo.site.url}/og-default.jpg`;
 
   const seoData = createCollectionSEOData(
     finalTitle,

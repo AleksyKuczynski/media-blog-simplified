@@ -36,6 +36,7 @@ export async function generateMetadata({
       siteName: dictionary.seo.site.name,
       locale: dictionary.locale,
       type: 'website',
+      images: [{ url: `${siteUrl}/og-default.jpg`, width: 1200, height: 630 }],
     },
     twitter: {
       title: dictionary.seo.site.name,

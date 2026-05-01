@@ -20,12 +20,15 @@ export const generateSearchMetadataSimple = (dictionary: Dictionary): Metadata =
       searchSEOData.keywords,
       searchSEOData.canonicalUrl,
       dictionary.locale,
-      `${dictionary.seo.site.url}/og-search.jpg`
+      `${dictionary.seo.site.url}/og-default.jpg`
     );
 
     const metadata = buildMetadata(seoData);
 
-    return metadata;
+    return {
+      ...metadata,
+      robots: { index: false, follow: false },
+    };
     
   } catch (error) {
     console.error('SearchMetadata: Error generating metadata', error);
@@ -36,6 +39,7 @@ export const generateSearchMetadataSimple = (dictionary: Dictionary): Metadata =
         description: dictionary.search.templates.pageDescription,
         siteName: dictionary.seo.site.name,
       }),
+      robots: { index: false, follow: false },
     };
   }
 };

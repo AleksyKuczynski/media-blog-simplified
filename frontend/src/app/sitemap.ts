@@ -68,43 +68,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) => [
     {
       url: `${SITE_URL}/${lang}`,
-      lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
     },
     {
       url: `${SITE_URL}/${lang}/articles`,
-      lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/${lang}/rubrics`,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/${lang}/authors`,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${SITE_URL}/${lang}/search`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.5,
-    },
-    {
       url: `${SITE_URL}/${lang}/privacy-policy`,
-      lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
       url: `${SITE_URL}/${lang}/terms`,
-      lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
@@ -114,7 +102,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const rubricPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
     rubrics.map((r) => ({
       url: `${SITE_URL}/${lang}/${r.slug}`,
-      lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }))
@@ -135,7 +122,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const authorPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
     authors.map((a) => ({
       url: `${SITE_URL}/${lang}/authors/${a.slug}`,
-      lastModified: new Date(),
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     }))
@@ -144,7 +130,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categoryPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
     categories.map((c) => ({
       url: `${SITE_URL}/${lang}/categories/${c.slug}`,
-      lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }))
