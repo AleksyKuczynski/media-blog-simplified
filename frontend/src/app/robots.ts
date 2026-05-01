@@ -11,7 +11,6 @@ const disallowed: string[] = [
   '/api/server/',
   '/admin/',
   '/preview/',
-  '/*?from=', // Prevent crawling of ?from= tracking parameter variants (creates phantom pages)
 ];
 
 const allowed: string[] = [
