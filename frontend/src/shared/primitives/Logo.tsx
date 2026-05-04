@@ -82,11 +82,11 @@ export default function Logo({
         </svg>
         
         {/* Schema.org metadata - invisible but SEO-helpful */}
-        <meta itemProp="url" content={`https://${dictionary.seo.site.url}/${lang}`} />
+        <link itemProp="url" href={`${dictionary.seo.site.url.replace(/\/$/, '')}/${lang}`} />
         <meta itemProp="name" content="EventForMe" />
         {variant !== 'mobile' && (
           <>
-            <meta itemProp="sameAs" content={`https://${dictionary.seo.site.url}/${lang}`} />
+            <link itemProp="sameAs" href={`${dictionary.seo.site.url.replace(/\/$/, '')}/${lang}`} />
             <meta itemProp="alternateName" content={dictionary.seo.site.name} />
             <meta itemProp="description" content={dictionary.seo.site.description} />
             <meta itemProp="foundingDate" content="2020" />

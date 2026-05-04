@@ -155,7 +155,7 @@ export function Header({
             itemType="https://schema.org/Person"
           >
             <meta itemProp="name" content={author.name} />
-            <meta itemProp="url" content={`/ru/authors/${author.slug}`} />
+            <link itemProp="url" href={`${baseUrl}/${lang}/authors/${author.slug}`} />
           </span>
         ))}
 
@@ -167,7 +167,7 @@ export function Header({
             itemType="https://schema.org/Person"
           >
             <meta itemProp="name" content={illustrator.name} />
-            <meta itemProp="url" content={`/ru/authors/${illustrator.slug}`} />
+            <meta itemProp="url" content={`${baseUrl}/${lang}/authors/${illustrator.slug}`} />
             <meta itemProp="jobTitle" content="Illustrator" />
           </span>
         )}

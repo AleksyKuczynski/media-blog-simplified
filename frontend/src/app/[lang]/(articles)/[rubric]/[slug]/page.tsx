@@ -190,7 +190,7 @@ export default async function ArticlePage({
     const articleSchemaData = {
       title: translation.og_title || translation.seo_title || translation.title,
       description: translation.og_description || translation.seo_description || translation.description || translation.lead,
-      slug: articleSlug,
+      slug: slug,
       rubricSlug: rubric,
       rubricName: rubricName,
       author: {
