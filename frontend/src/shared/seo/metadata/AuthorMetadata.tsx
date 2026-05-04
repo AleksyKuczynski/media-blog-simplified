@@ -8,6 +8,7 @@ import {
   createWebsiteSEOData,
   validateSEOData 
 } from '../core/MetadataBuilder';
+import { DIRECTUS_ASSETS_URL } from '@/api/directus';
 
 export interface AuthorMetadataProps {
   dictionary: Dictionary;
@@ -63,8 +64,8 @@ export const generateAuthorMetadata = async ({
   const canonicalUrl = `${dictionary.seo.site.url}${path}`;
 
   const finalImageUrl = avatar 
-    ? `${dictionary.seo.site.url}${avatar}` 
-    : `${dictionary.seo.site.url}/og-author-default.jpg`;
+    ? `${DIRECTUS_ASSETS_URL}/assets/${avatar}` 
+    : `${DIRECTUS_ASSETS_URL}/assets/og-author-default.jpg`;
 
   const seoData = createWebsiteSEOData(
     finalTitle,
