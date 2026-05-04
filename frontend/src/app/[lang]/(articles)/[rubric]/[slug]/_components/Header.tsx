@@ -133,6 +133,7 @@ export function Header({
 
       <meta itemProp="datePublished" content={publishedDate} />
       <meta itemProp="dateModified" content={publishedDate} />
+      <meta itemProp="description" content={lead || title} />
       
       {imagePath && (
         <meta itemProp="image" content={`${DIRECTUS_ASSETS_URL}/assets/${imagePath}`} />

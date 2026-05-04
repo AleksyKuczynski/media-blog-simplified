@@ -1,31 +1,37 @@
-https://event4me.vip/en/planning/mc-vs-toastmaster-who-wins-the-battle
+Валидатор микроразметки
+Валидатор микроразметки позволяет проверить семантическую разметку, внедренную на вашем сайте, и убедиться в том, что роботы поисковых систем смогут извлечь структурированные данные.В данный момент в валидаторе можно проверить все популярные форматы микроразметки: микроданные (microdata), schema.org, микроформаты, OpenGraph, RDFa. Однако специальные сниппеты и использование размеченных данных в сервисах предусмотрено не для всех форматов. Подробнее о том, какие структурированные данные использует Яндекс, вы можете прочитать в разделах Справки.Подробнее о валидаторе читайте в специальном разделе Справки.
+Примеры:
+Адрес организации,
+TVSeries
+Результат проверки
 
+Так парсер микроразметки обработает вашу страницу
 http://www.w3.org/1999/xhtml/vocab#alternate
 
     @id
-        @value = https://event4me.vip/ru/planning/vedushij-vs-tamada-kto-kogo-sboret
+        @value = https://dev.event4me.vip/ru/people/aleksandra-fomina-ty-vedesh-poluchatelya-torta-v-samyj-potaennyj-ugolok-serdca-s-lyubovyu
 
 og
 
     http://ogp.me/ns#title
-        @value = MC vs Toastmaster: The Battle for Your Wedding
+        @value = Cakes with Character: Interview with Alexandra Fomina
     http://ogp.me/ns#description
-        @value = Is a toastmaster a sitcom rerun while an MC is Netflix? We break down the differences so you don't end up drinking wine from a shoe at your own wedding.
+        @value = Cute cream animals, memes on cakes, and personal stories in every dessert. Meet the creator of cozy cakes!
     http://ogp.me/ns#url
-        @value = https://event4me.vip/en/planning/mc-vs-toastmaster-who-wins-the-battle
+        @value = https://dev.event4me.vip/en/people/alexandra-fomina-you-lead-the-cake-recipient-to-the-most-hidden-corner-of-the-heart-with-love
     http://ogp.me/ns#site_name
         @value = EventForMe
     http://ogp.me/ns#locale
         @value = en-US
     http://ogp.me/ns#image
         _:content
-            @value = https://event4me.vip/api/images/assets/87cb5156-d3c8-459a-8af5-f648ac878240?width=1200&height=630&fit=cover&quality=85
+            @value = https://dev.event4me.vip/api/images/assets/f4ae1b57-d83f-4215-a810-9625fb9ba2bb?width=1200&height=630&fit=cover&quality=85
         http://ogp.me/ns#image:width
             @value = 1200
         http://ogp.me/ns#image:height
             @value = 630
         http://ogp.me/ns#image:alt
-            @value = Ведущий На Свадьбу Тамада Или Ведущий Что Выбрать
+            @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты
     http://ogp.me/ns#type
         @value = article
 
@@ -34,11 +40,11 @@ twitter
     http://dev.twitter.com/cards/markup#card
         @value = summary_large_image
     http://dev.twitter.com/cards/markup#title
-        @value = MC vs Toastmaster: The Battle for Your Wedding
+        @value = Cakes with Character: Interview with Alexandra Fomina
     http://dev.twitter.com/cards/markup#description
-        @value = Is a toastmaster a sitcom rerun while an MC is Netflix? We break down the differences so you don't end up drinking wine from a shoe at your own wedding.
+        @value = Cute cream animals, memes on cakes, and personal stories in every dessert. Meet the creator of cozy cakes!
     http://dev.twitter.com/cards/markup#image
-        @value = https://event4me.vip/api/images/assets/87cb5156-d3c8-459a-8af5-f648ac878240?width=1200&height=630&fit=cover&quality=85
+        @value = https://dev.event4me.vip/api/images/assets/f4ae1b57-d83f-4215-a810-9625fb9ba2bb?width=1200&height=630&fit=cover&quality=85
 
 microdata
 
@@ -49,19 +55,19 @@ https://schema.org/Organization
     @graph
         https://schema.org/Organization
             @id
-                @value = https://event4me.vip#organization
+                @value = https://dev.event4me.vip#organization
             https://schema.org/name
                 @value = EventForMe
             https://schema.org/url
                 @id
-                    @value = https://event4me.vip
+                    @value = https://dev.event4me.vip
             https://schema.org/description
                 @value = EventForMe is an independent media platform covering stylish ideas and trends in the world of weddings in Russia and globally. We provide expert articles, interviews with creative personalities, and event reviews to inspire and inform our audience about the latest trends in the world of weddings and more.
             https://schema.org/logo
                 https://schema.org/ImageObject
                     https://schema.org/url
                         @id
-                            @value = https://event4me.vip/logo.png
+                            @value = https://dev.event4me.vip/logo.png
                     https://schema.org/width
                         @value = 200
                     https://schema.org/height
@@ -102,25 +108,25 @@ https://schema.org/Organization
                         @value = Russia
         https://schema.org/WebSite
             @id
-                @value = https://event4me.vip/#website
+                @value = https://dev.event4me.vip/#website
             https://schema.org/name
                 @value = EventForMe
             https://schema.org/url
                 @id
-                    @value = https://event4me.vip/
+                    @value = https://dev.event4me.vip/
             https://schema.org/description
                 @value = A media platform about planning, stylish ideas and trends in the world of weddings in Russia and globally
             https://schema.org/inLanguage
                 @value = en
             https://schema.org/publisher
                 @id
-                    @value = https://event4me.vip/#organization
+                    @value = https://dev.event4me.vip/#organization
             https://schema.org/potentialAction
                 https://schema.org/SearchAction
                     https://schema.org/target
                         https://schema.org/EntryPoint
                             https://schema.org/urlTemplate
-                                @value = https://event4me.vip/search?q={search_term_string}
+                                @value = https://dev.event4me.vip/search?q={search_term_string}
                             https://schema.org/actionPlatform
                                 @value = https://schema.org/DesktopWebPlatform
                             https://schema.org/actionPlatform
@@ -157,7 +163,7 @@ https://schema.org/Organization
                         @value = 65
         https://schema.org/BreadcrumbList
             @id
-                @value = https://event4me.vip/en/planning/vedushij-vs-tamada-kto-kogo-sboret#breadcrumb
+                @value = https://dev.event4me.vip/en/people/alexandra-fomina-you-lead-the-cake-recipient-to-the-most-hidden-corner-of-the-heart-with-love#breadcrumb
             https://schema.org/numberOfItems
                 @value = 3
             https://schema.org/itemListElement
@@ -169,37 +175,37 @@ https://schema.org/Organization
                     https://schema.org/item
                         https://schema.org/WebPage
                             @id
-                                @value = https://event4me.vip/en
+                                @value = https://dev.event4me.vip/en
                             https://schema.org/url
                                 @id
-                                    @value = https://event4me.vip/en
+                                    @value = https://dev.event4me.vip/en
                 https://schema.org/ListItem
                     https://schema.org/position
                         @value = 2
                     https://schema.org/name
-                        @value = Wedding Planning
+                        @value = People & Events
                     https://schema.org/item
                         https://schema.org/WebPage
                             @id
-                                @value = https://event4me.vip/en/planning
+                                @value = https://dev.event4me.vip/en/people
                             https://schema.org/url
                                 @id
-                                    @value = https://event4me.vip/en/planning
+                                    @value = https://dev.event4me.vip/en/people
                 https://schema.org/ListItem
                     https://schema.org/position
                         @value = 3
                     https://schema.org/name
-                        @value = MC vs Toastmaster: Who Wins the Battle?
+                        @value = Alexandra Fomina: "You Lead the Cake Recipient to the Most Hidden Corner of the Heart with Love!"
                     https://schema.org/item
                         https://schema.org/WebPage
                             @id
-                                @value = https://event4me.vip/en/planning/vedushij-vs-tamada-kto-kogo-sboret
+                                @value = https://dev.event4me.vip/en/people/alexandra-fomina-you-lead-the-cake-recipient-to-the-most-hidden-corner-of-the-heart-with-love
                             https://schema.org/url
                                 @id
-                                    @value = https://event4me.vip/en/planning/vedushij-vs-tamada-kto-kogo-sboret
+                                    @value = https://dev.event4me.vip/en/people/alexandra-fomina-you-lead-the-cake-recipient-to-the-most-hidden-corner-of-the-heart-with-love
         https://schema.org/BlogPosting
             @id
-                @value = https://event4me.vip/en/planning/vedushij-vs-tamada-kto-kogo-sboret#article
+                @value = https://dev.event4me.vip/en/people/alexandra-fomina-you-lead-the-cake-recipient-to-the-most-hidden-corner-of-the-heart-with-love#article
             https://schema.org/inLanguage
                 @value = en
             https://schema.org/audience
@@ -223,32 +229,32 @@ https://schema.org/Organization
             https://schema.org/isPartOf
                 https://schema.org/WebSite
                     @id
-                        @value = https://event4me.vip#website
+                        @value = https://dev.event4me.vip#website
             https://schema.org/publisher
                 @id
-                    @value = https://event4me.vip#organization
+                    @value = https://dev.event4me.vip#organization
             https://schema.org/headline
-                @value = MC vs Toastmaster: The Battle for Your Wedding
+                @value = Cakes with Character: Interview with Alexandra Fomina
             https://schema.org/name
-                @value = MC vs Toastmaster: The Battle for Your Wedding
+                @value = Cakes with Character: Interview with Alexandra Fomina
             https://schema.org/description
-                @value = Is a toastmaster a sitcom rerun while an MC is Netflix? We break down the differences so you don't end up drinking wine from a shoe at your own wedding.
+                @value = Cute cream animals, memes on cakes, and personal stories in every dessert. Meet the creator of cozy cakes!
             https://schema.org/url
                 @id
-                    @value = https://event4me.vip/en/planning/vedushij-vs-tamada-kto-kogo-sboret
+                    @value = https://dev.event4me.vip/en/people/alexandra-fomina-you-lead-the-cake-recipient-to-the-most-hidden-corner-of-the-heart-with-love
             https://schema.org/datePublished
-                @value = 2026-03-25T11:29:00.000Z
+                @value = 2026-04-27T15:13:00.000Z
             https://schema.org/dateModified
-                @value = 2026-03-25T11:29:00.000Z
+                @value = 2026-04-27T15:13:00.000Z
             https://schema.org/author
                 https://schema.org/Person
                     @id
-                        @value = https://event4me.vip/en/authors/ksenia-chemodanova#person
+                        @value = https://dev.event4me.vip/en/authors/ksenia-chemodanova#person
                     https://schema.org/name
                         @value = Ksenia Chemodanova
                     https://schema.org/url
                         @id
-                            @value = https://event4me.vip/en/authors/ksenia-chemodanova
+                            @value = https://dev.event4me.vip/en/authors/ksenia-chemodanova
             https://schema.org/contentLocation
                 https://schema.org/Country
                     https://schema.org/name
@@ -257,53 +263,55 @@ https://schema.org/Organization
                 https://schema.org/ImageObject
                     https://schema.org/url
                         @id
-                            @value = https://cms.event4me.vip/assets/87cb5156-d3c8-459a-8af5-f648ac878240
+                            @value = https://cms.event4me.vip/assets/f4ae1b57-d83f-4215-a810-9625fb9ba2bb
                     https://schema.org/width
                         @value = 1200
                     https://schema.org/height
                         @value = 630
                     https://schema.org/caption
-                        @value = MC vs Toastmaster: The Battle for Your Wedding
+                        @value = Cakes with Character: Interview with Alexandra Fomina
             https://schema.org/articleSection
-                @value = Wedding Planning
+                @value = People & Events
+            https://schema.org/keywords
+                @value = Wedding reception, Interviews
             https://schema.org/timeRequired
-                @value = PT3M
+                @value = PT7M
             https://schema.org/mainEntityOfPage
                 https://schema.org/WebPage
                     @id
-                        @value = https://event4me.vip/en/planning/vedushij-vs-tamada-kto-kogo-sboret#webpage
+                        @value = https://dev.event4me.vip/en/people/alexandra-fomina-you-lead-the-cake-recipient-to-the-most-hidden-corner-of-the-heart-with-love#webpage
 
 https://schema.org/Person
 
     @id
-        @value = https://event4me.vip/en/authors/ksenia-chemodanova#person
+        @value = https://dev.event4me.vip/en/authors/ksenia-chemodanova#person
     https://schema.org/name
         @value = Ksenia Chemodanova
     https://schema.org/url
         @id
-            @value = https://event4me.vip/en/authors/ksenia-chemodanova
+            @value = https://dev.event4me.vip/en/authors/ksenia-chemodanova
     https://schema.org/sameAs
         @id
-            @value = https://event4me.vip/en/authors/ksenia-chemodanova
+            @value = https://dev.event4me.vip/en/authors/ksenia-chemodanova
     https://schema.org/mainEntityOfPage
         https://schema.org/ProfilePage
             @id
-                @value = https://event4me.vip/en/authors/ksenia-chemodanova#profile
+                @value = https://dev.event4me.vip/en/authors/ksenia-chemodanova#profile
             https://schema.org/url
                 @id
-                    @value = https://event4me.vip/en/authors/ksenia-chemodanova
+                    @value = https://dev.event4me.vip/en/authors/ksenia-chemodanova
     https://schema.org/image
         https://schema.org/ImageObject
             https://schema.org/url
                 @id
-                    @value = https://event4me.vip/assets/fb999dc2-5a0c-4107-9152-e1d599cd8f1e
+                    @value = https://dev.event4me.vip/assets/fb999dc2-5a0c-4107-9152-e1d599cd8f1e
             https://schema.org/caption
                 @value = Ksenia Chemodanova
 
 https://schema.org/SiteNavigationElement
 
     @id
-        @value = https://event4me.vip/en/planning/mc-vs-toastmaster-who-wins-the-battle#quick-navigation
+        @value = https://dev.event4me.vip/en/people/alexandra-fomina-you-lead-the-cake-recipient-to-the-most-hidden-corner-of-the-heart-with-love#quick-navigation
     https://schema.org/name
         @value = Quick Navigation
     https://schema.org/hasPart
@@ -312,7 +320,7 @@ https://schema.org/SiteNavigationElement
                 @value = articles
             https://schema.org/url
                 @id
-                    @value = https://event4me.vip/en/articles
+                    @value = https://dev.event4me.vip/en/articles
             https://schema.org/description
                 @value = Tips on planning, stylish ideas and the latest trends in the world of weddings and more
         https://schema.org/SiteNavigationElement
@@ -320,7 +328,7 @@ https://schema.org/SiteNavigationElement
                 @value = rubrics
             https://schema.org/url
                 @id
-                    @value = https://event4me.vip/en/rubrics
+                    @value = https://dev.event4me.vip/en/rubrics
             https://schema.org/description
                 @value = Thematic sections and categories
         https://schema.org/SiteNavigationElement
@@ -328,7 +336,7 @@ https://schema.org/SiteNavigationElement
                 @value = authors
             https://schema.org/url
                 @id
-                    @value = https://event4me.vip/en/authors
+                    @value = https://dev.event4me.vip/en/authors
             https://schema.org/description
                 @value = Our authors and experts
 
@@ -389,6 +397,21 @@ http://www.w3.org/1999/xhtml/vocab#role
 http://www.w3.org/1999/xhtml/vocab#role
 
     @id
+        @value = http://www.w3.org/1999/xhtml/vocab#listitem
+
+http://www.w3.org/1999/xhtml/vocab#role
+
+    @id
+        @value = http://www.w3.org/1999/xhtml/vocab#listitem
+
+http://www.w3.org/1999/xhtml/vocab#role
+
+    @id
+        @value = http://www.w3.org/1999/xhtml/vocab#listitem
+
+http://www.w3.org/1999/xhtml/vocab#role
+
+    @id
         @value = http://www.w3.org/1999/xhtml/vocab#status
 
 http://www.w3.org/1999/xhtml/vocab#role
@@ -398,23 +421,23 @@ http://www.w3.org/1999/xhtml/vocab#role
 
 /headline
 
-    @value = MC vs Toastmaster: Who Wins the Battle?
+    @value = Alexandra Fomina: "You Lead the Cake Recipient to the Most Hidden Corner of the Heart with Love!"
 
 /datePublished
 
-    @value = March 25, 2026
+    @value = April 27, 2026
 
 /dateModified
 
-    @value = March 25, 2026
+    @value = April 27, 2026
 
 /image
 
-    @value = https://cms.event4me.vip/assets/87cb5156-d3c8-459a-8af5-f648ac878240
+    @value = https://cms.event4me.vip/assets/f4ae1b57-d83f-4215-a810-9625fb9ba2bb
 
 /datePublished
 
-    @value = March 25, 2026
+    @value = April 27, 2026
 
 https://schema.org/author
 
@@ -422,8 +445,7 @@ https://schema.org/author
         https://schema.org/name
             @value = Ksenia Chemodanova
         https://schema.org/url
-            ОШИБКА: В свойстве content тега meta не может содержаться ссылка
-            @value = /ru/authors/ksenia-chemodanova
+            @value = https://dev.event4me.vip/en/authors/ksenia-chemodanova
 
 http://www.w3.org/1999/xhtml/vocab#role
 
@@ -433,68 +455,145 @@ http://www.w3.org/1999/xhtml/vocab#role
 https://schema.org/ImageObject
 
     https://schema.org/image
-        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fa58ee08f-5bcf-4cba-bef9-c56060c8cd5c&w=3840&q=90
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fa586e352-679c-4dde-8696-5ad055acd5ab&w=3840&q=90
     https://schema.org/description
-        @value = Ведущий На Свадьбу Алексей Лебединский Тамада Или Ведущий Что Выбрать
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты11
 
 https://schema.org/ImageObject
 
     https://schema.org/image
-        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fe0b717a2-0309-4ae9-857f-64eec0d42929&w=3840&q=90
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F27e1a21e-4c07-446c-8c60-6ff751bcfa83&w=3840&q=90
     https://schema.org/description
-        @value = Ведущий На Свадьбу Алексей Котов Тамада Или Ведущий Что Выбрать
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты0
 
 https://schema.org/ImageObject
 
     https://schema.org/image
-        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F6685afef-4c31-4c06-bca3-b6e5f577ee38&w=3840&q=90
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fc580da66-45b4-4f8e-a8c8-9d83ce692df9&w=3840&q=90
     https://schema.org/description
-        @value = Ведущий На Свадьбу Алексей Лебединский Тамада Или Ведущий Что Выбрать
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты3
 
 https://schema.org/ImageObject
 
     https://schema.org/image
-        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F097a3e8f-4aa4-41a3-9bdd-b8571e0e4bed&w=3840&q=90
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fcd85bea3-5666-4715-aa06-215d372a8e82&w=3840&q=90
     https://schema.org/description
-        @value = Ведущий На Свадьбу Марк Гапников Тамада Или Ведущий Что Выбрать
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты16
 
 https://schema.org/ImageObject
 
     https://schema.org/image
-        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fae6f5abc-4998-462a-ae7d-0758257885a4&w=3840&q=90
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F7089e41c-9a5f-4a59-9006-9a29266df96d&w=3840&q=90
     https://schema.org/description
-        @value = Ведущий На Свадьбу Вячеслав Еремин Тамада Или Ведущий Что Выбрать
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты8
 
 https://schema.org/ImageObject
 
     https://schema.org/image
-        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fd00969ed-62d5-4f41-b98c-9a3485637d09&w=3840&q=90
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fa6ed49e4-f944-4306-b646-0b6285778f91&w=3840&q=90
     https://schema.org/description
-        @value = Ведущий На Свадьбу Игорь Осипов Тамада Или Ведущий Что Выбрать
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты5
 
 https://schema.org/ImageObject
 
     https://schema.org/image
-        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fd475c6e5-a83a-4563-b044-094ced3c27ba&w=3840&q=90
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F26867981-a532-41b5-9fb5-49e7e134aaae&w=3840&q=90
     https://schema.org/description
-        @value = Ведущий На Свадьбу Вячеслав Еремин Тамада Или Ведущий Что Выбрать
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты15
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F33bf4fdc-9d1d-4ab6-9730-0e7131336677&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты14
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F753eefbd-f14a-47c8-b6f0-87c75933124c&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты4
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F75cabce8-b88f-4101-a311-2ca03185b95e&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты2
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F64fc45e7-a540-4a8e-9820-e04a1fff7cb2&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты12
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F1442cf23-3a80-4f59-89fd-b6c4b1406508&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты6
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F95ad7ebf-82d6-43a2-b7c3-30e0abfea1cb&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты9
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Fe99c32aa-2db5-4524-86b2-ee27675fb286&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты1
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2Ff2df7892-f497-41c4-9cba-b2f3ffd2de9f&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты13
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F4bc06c27-6a14-48cf-a523-c1d6f038a76a&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты7
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F2215570f-0e6e-4727-a7a3-dd87fa141074&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты17
+
+https://schema.org/ImageObject
+
+    https://schema.org/image
+        @value = /_next/image?url=https%3A%2F%2Fcms.event4me.vip%2Fassets%2F63cdd3e0-664e-423b-bef1-5fdd1db20559&w=3840&q=90
+    https://schema.org/description
+        @value = Торты На Свадьбу Кондитерская Cozy Cakes Смешные Торты
 
 https://schema.org/Organization
 
     @id
-        @value = https://event4me.vip#organization
+        @value = https://dev.event4me.vip#organization
     https://schema.org/name
         @value = EventForMe
     https://schema.org/url
         @id
-            @value = https://event4me.vip
+            @value = https://dev.event4me.vip
     https://schema.org/description
         @value = EventForMe is an independent media platform covering stylish ideas and trends in the world of weddings in Russia and globally. We provide expert articles, interviews with creative personalities, and event reviews to inspire and inform our audience about the latest trends in the world of weddings and more.
     https://schema.org/logo
         https://schema.org/ImageObject
             https://schema.org/url
                 @id
-                    @value = https://event4me.vip/logo.png
+                    @value = https://dev.event4me.vip/logo.png
             https://schema.org/width
                 @value = 200
             https://schema.org/height
@@ -547,13 +646,11 @@ https://schema.org/Organization
         https://schema.org/ImageObject
             ПРЕДУПРЕЖДЕНИЕ: Не выполнено обязательное условие для передачи данных в Яндекс.Картинки: поле contentUrl или image или thumbnail отсутствует или пусто
             https://schema.org/url
-                ОШИБКА: В свойстве content тега meta не может содержаться ссылка
-                @value = https://https://event4me.vip/en
+                @value = https://dev.event4me.vip/en
             https://schema.org/name
                 @value = EventForMe
             https://schema.org/sameAs
-                ОШИБКА: В свойстве content тега meta не может содержаться ссылка
-                @value = https://https://event4me.vip/en
+                @value = https://dev.event4me.vip/en
             https://schema.org/alternateName
                 @value = EventForMe
             https://schema.org/description
@@ -573,17 +670,14 @@ http://www.w3.org/1999/xhtml/vocab#role
     @id
         @value = http://www.w3.org/1999/xhtml/vocab#img
 
-resource = https://event4me.vip/en/planning/mc-vs-toastmaster-who-wins-the-battle
+resource = https://dev.event4me.vip/en/people/alexandra-fomina-you-lead-the-cake-recipient-to-the-most-hidden-corner-of-the-heart-with-love
 Ошибка
 
     ОШИБКА: невозможно определить принадлежность данных полей. Возможны две причины: эти поля некорректно размещены, либо указан лишний атрибут itemprop
     ПРЕДУПРЕЖДЕНИЕ: Не выполнено обязательное условие для структурированных сниппетов творческих работ: поле <b>description или articleBody</b> отсутствует или пусто
-    ОШИБКА: В свойстве content тега meta не может содержаться ссылка
     ПРЕДУПРЕЖДЕНИЕ: Не выполнено обязательное условие для структурированных сниппетов Яндекс.Справочника: поле <b>name</b> отсутствует или пусто
     ПРЕДУПРЕЖДЕНИЕ: Не выполнено обязательное условие для структурированных сниппетов Яндекс.Справочника: поле <b>address</b> отсутствует или пусто
     ПРЕДУПРЕЖДЕНИЕ: Не выполнено обязательное условие для передачи данных в Яндекс.Картинки: поле <b>contentUrl или image или thumbnail</b> отсутствует или пусто
-    ОШИБКА: В свойстве content тега meta не может содержаться ссылка
-    ОШИБКА: В свойстве content тега meta не может содержаться ссылка
     ПРЕДУПРЕЖДЕНИЕ: поле <b>foundingDate</b> не определено в спецификации <b>https://schema.org/ImageObject</b>
     ПРЕДУПРЕЖДЕНИЕ: поле <b>areaServed</b> не определено в спецификации <b>https://schema.org/ImageObject</b>
     ПРЕДУПРЕЖДЕНИЕ: поле <b>knowsAbout</b> не определено в спецификации <b>https://schema.org/ImageObject</b>
