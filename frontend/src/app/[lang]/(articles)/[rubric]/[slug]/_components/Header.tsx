@@ -133,6 +133,7 @@ export function Header({
 
       <meta itemProp="datePublished" content={publishedDate} />
       <meta itemProp="dateModified" content={publishedDate} />
+      <meta itemProp="description" content={lead || title} />
       
       {imagePath && (
         <meta itemProp="image" content={`${DIRECTUS_ASSETS_URL}/assets/${imagePath}`} />
@@ -155,7 +156,7 @@ export function Header({
             itemType="https://schema.org/Person"
           >
             <meta itemProp="name" content={author.name} />
-            <meta itemProp="url" content={`/ru/authors/${author.slug}`} />
+            <link itemProp="url" href={`${dictionary.seo.site.url}/${lang}/authors/${author.slug}`} />
           </span>
         ))}
 
@@ -167,7 +168,7 @@ export function Header({
             itemType="https://schema.org/Person"
           >
             <meta itemProp="name" content={illustrator.name} />
-            <meta itemProp="url" content={`/ru/authors/${illustrator.slug}`} />
+            <link itemProp="url" href={`${dictionary.seo.site.url}/${lang}/authors/${illustrator.slug}`} />
             <meta itemProp="jobTitle" content="Illustrator" />
           </span>
         )}
