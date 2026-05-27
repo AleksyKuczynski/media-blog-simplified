@@ -1,5 +1,5 @@
-// src/main/components/Logo.tsx - SEO-Enhanced Logo (Non-Destructive)
-import { dictionary, Lang } from '../../config/i18n';
+// src/main/components/Logo.tsx
+import { Lang } from '../../config/i18n';
 import { NavigationLink } from '@/features/navigation/Header/NavigationLink';
 
 interface LogoProps {
@@ -39,26 +39,19 @@ export default function Logo({
   `;
 
   return (
-    <NavigationLink 
-      href={`/${lang}`} 
+    <NavigationLink
+      href={`/${lang}`}
       aria-label={ariaLabel || "EventForMe - Home"}
       title="EventForMe - Главная страница"
       className={linkClasses}
-      itemScope
-      itemType="https://schema.org/Organization"
     >
-      {/* Keep existing logo structure intact, just add schema.org metadata */}
-      <div 
+      <div
         className={`relative aspect-square ${variantStyles[variant]}`}
         role={role}
-        itemProp="logo"
-        itemScope
-        itemType="https://schema.org/ImageObject"
       >
-        {/* Keep the existing SVG exactly as it is */}
-        <svg 
-          xmlns="http://www.w3.org/2000/svg" 
-          viewBox="0 0 10400 10400" 
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 10400 10400"
           className='w-full h-full'
         >
           <g>
@@ -80,20 +73,6 @@ export default function Logo({
             />         
           </g>
         </svg>
-        
-        {/* Schema.org metadata - invisible but SEO-helpful */}
-        <meta itemProp="url" content={`https://${dictionary.seo.site.url}/${lang}`} />
-        <meta itemProp="name" content="EventForMe" />
-        {variant !== 'mobile' && (
-          <>
-            <meta itemProp="sameAs" content={`https://${dictionary.seo.site.url}/${lang}`} />
-            <meta itemProp="alternateName" content={dictionary.seo.site.name} />
-            <meta itemProp="description" content={dictionary.seo.site.description} />
-            <meta itemProp="foundingDate" content="2020" />
-            <meta itemProp="areaServed" content="Russia" />
-            <meta itemProp="knowsAbout" content={dictionary.seo.site.organizationDescription} />
-          </>
-        )}
       </div>
       
       {/* Hidden text for screen readers only */}
