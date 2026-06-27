@@ -81,6 +81,7 @@ export const dictionaryEN: Dictionary = {
       showMore: 'Show More',
       showLess: 'Show Less',
       readMore: 'Read More',
+      readAlso: 'Read Also',
       explore: 'Explore',
       viewAll: 'View All',
       backTo: 'Back to',

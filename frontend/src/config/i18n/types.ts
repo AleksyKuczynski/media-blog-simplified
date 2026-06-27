@@ -86,6 +86,7 @@ export interface CommonActions {
   readonly showMore: string;
   readonly showLess: string;
   readonly readMore: string;
+  readonly readAlso: string;
   readonly explore: string;
   readonly viewAll: string;
   readonly backTo: string;
