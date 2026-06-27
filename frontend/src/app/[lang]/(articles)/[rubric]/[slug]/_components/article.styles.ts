@@ -337,7 +337,7 @@ export const BLOCKS_STYLES = {
     label: 'text-xs font-medium uppercase tracking-wide mb-1 text-pr-cont hidden sm:block',
     title: cn(
       'font-semibold font-serif text-on-sf-var group-hover:text-on-sf transition-colors duration-200',
-      'line-clamp-1 sm:line-clamp-2', 
+      'line-clamp-3 md:line-clamp-2', 
       'text-sm sm:text-base md:text-lg'
     ),
     description: cn(
