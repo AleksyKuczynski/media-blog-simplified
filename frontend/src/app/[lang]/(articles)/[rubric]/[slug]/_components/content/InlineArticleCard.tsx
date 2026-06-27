@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BLOCKS_STYLES } from '../article.styles';
 import { ArticleCardData } from '../markdown/markdownTypes';
+import { dictionary } from '@/config/i18n';
 
 interface InlineArticleCardProps {
   articleCardData: ArticleCardData;
@@ -14,7 +15,7 @@ const styles = BLOCKS_STYLES.inlineArticleCard;
 
 export default function InlineArticleCard({
   articleCardData,
-  lang = 'ru'
+  lang,
 }: InlineArticleCardProps) {
   const {
     slug,
@@ -51,7 +52,7 @@ export default function InlineArticleCard({
           <div className={styles.content}>
             {/* Label */}
             <span className={styles.label}>
-              Читайте также
+              {dictionary.common.actions.readAlso}
             </span>
 
             {/* Title */}
