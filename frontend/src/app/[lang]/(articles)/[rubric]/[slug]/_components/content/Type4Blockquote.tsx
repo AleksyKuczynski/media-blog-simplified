@@ -2,6 +2,7 @@
 
 import { BLOCKS_STYLES } from '../article.styles';
 import { getDictionary, Lang } from '@/config/i18n';
+import { convertMarkdownToHtmlSync } from '../markdown/markdownToHtml';
 
 interface Type4Props {
   content: string;
@@ -18,11 +19,10 @@ export function Type4Blockquote({ content, lang }: Type4Props) {
       <h2 className={styles.label}>
         {dictionary.content.labels.portalAdvice}
       </h2>
-      <div className={styles.content}>
-        {content.split('\n\n').map((paragraph, index) => (
-          <p key={index}>{paragraph}</p>
-        ))}
-      </div>
+      <div
+        className={styles.content}
+        dangerouslySetInnerHTML={{ __html: convertMarkdownToHtmlSync(content) }}
+      />
     </blockquote>
   );
 }

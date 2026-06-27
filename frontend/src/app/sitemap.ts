@@ -20,8 +20,8 @@ interface ArticleTranslation {
 interface DirectusArticle {
   slug: string;
   published_at: string;
-  date_updated: string;
-  rubric_slug?: { slug: string };
+  updated_at: string | null;
+  rubric_slug?: string;
   translations: ArticleTranslation[];
 }
 
@@ -39,9 +39,9 @@ async function fetchCollection<T>(
   filter?: object
 ): Promise<T[]> {
   try {
-    const params = new URLSearchParams({ fields, limit: '-1' });
-    if (filter) params.set('filter', JSON.stringify(filter));
-    const res = await fetch(`${DIRECTUS_URL}/items/${collection}?${params}`, {
+    let url = `${DIRECTUS_URL}/items/${collection}?fields=${fields}&limit=-1`;
+    if (filter) url += `&filter=${encodeURIComponent(JSON.stringify(filter))}`;
+    const res = await fetch(url, {
       headers: authHeaders,
       next: { revalidate: 3600 },
     });
@@ -57,7 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, rubrics, authors, categories] = await Promise.all([
     fetchCollection<DirectusArticle>(
       'articles',
-      'slug,published_at,date_updated,rubric_slug.slug,translations.languages_code,translations.local_slug',
+      'slug,published_at,updated_at,rubric_slug,translations.languages_code,translations.local_slug',
       { status: { _eq: 'published' } }
     ),
     fetchCollection<SlugItem>('rubrics', 'slug'),
@@ -68,43 +68,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) => [
     {
       url: `${SITE_URL}/${lang}`,
-      lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
     },
     {
       url: `${SITE_URL}/${lang}/articles`,
-      lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/${lang}/rubrics`,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${SITE_URL}/${lang}/authors`,
-      lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${SITE_URL}/${lang}/search`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.5,
-    },
-    {
       url: `${SITE_URL}/${lang}/privacy-policy`,
-      lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
     {
       url: `${SITE_URL}/${lang}/terms`,
-      lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
@@ -114,26 +102,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const rubricPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
     rubrics.map((r) => ({
       url: `${SITE_URL}/${lang}/${r.slug}`,
-      lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }))
   );
 
-  // One URL per translation — uses local_slug when available, falls back to main slug
+  // One URL per translation — only include translations that have a local_slug (the public URL slug)
   const articlePages: MetadataRoute.Sitemap = articles.flatMap((article) =>
-    article.translations.map((t) => ({
-      url: `${SITE_URL}/${t.languages_code}/${article.rubric_slug?.slug ?? 'articles'}/${t.local_slug ?? article.slug}`,
-      lastModified: new Date(article.date_updated || article.published_at),
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
-    }))
+    article.translations
+      .filter((t) => t.local_slug)
+      .map((t) => ({
+        url: `${SITE_URL}/${t.languages_code}/${article.rubric_slug ?? 'articles'}/${t.local_slug}`,
+        lastModified: new Date(article.updated_at || article.published_at),
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
+      }))
   );
 
   const authorPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
     authors.map((a) => ({
       url: `${SITE_URL}/${lang}/authors/${a.slug}`,
-      lastModified: new Date(),
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     }))
@@ -142,7 +130,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categoryPages: MetadataRoute.Sitemap = LANGS.flatMap((lang) =>
     categories.map((c) => ({
       url: `${SITE_URL}/${lang}/categories/${c.slug}`,
-      lastModified: new Date(),
       changeFrequency: 'weekly' as const,
       priority: 0.6,
     }))

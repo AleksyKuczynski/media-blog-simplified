@@ -253,7 +253,10 @@ export const BLOCKS_STYLES = {
       'text-lg font-serif leading-relaxed text-on-sf-var dark:text-on-sf',
       'p-6 pt-2',
       'md:p-8 md:pt-4',
-      'lg:text-2xl lg:leading-[1.75] lg:p-12 lg:pt-6'
+      'lg:text-2xl lg:leading-[1.75] lg:p-12 lg:pt-6',
+      '[&_ul]:list-disc [&_ul]:list-outside [&_ul]:pl-6 [&_ul]:space-y-1',
+      '[&_ol]:list-decimal [&_ol]:list-outside [&_ol]:pl-6 [&_ol]:space-y-1',
+      '[&_li]:marker:text-sec-cont'
     ),
   },
 
@@ -334,7 +337,7 @@ export const BLOCKS_STYLES = {
     label: 'text-xs font-medium uppercase tracking-wide mb-1 text-pr-cont hidden sm:block',
     title: cn(
       'font-semibold font-serif text-on-sf-var group-hover:text-on-sf transition-colors duration-200',
-      'line-clamp-1 sm:line-clamp-2', 
+      'line-clamp-3 md:line-clamp-2', 
       'text-sm sm:text-base md:text-lg'
     ),
     description: cn(

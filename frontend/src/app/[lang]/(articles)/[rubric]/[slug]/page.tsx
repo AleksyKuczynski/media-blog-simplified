@@ -1,8 +1,8 @@
 // frontend/src/app/[lang]/(articles)/[rubric]/[slug]/page.tsx
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
-import { fetchArticleAltSlug, fetchAssetMetadata, fetchFullArticle, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
+import { DIRECTUS_ASSETS_URL, fetchArticleAltSlug, fetchAssetMetadata, fetchFullArticle, fetchLocalSlug, fetchRubricBasics, resolveArticleSlug } from '@/api/directus';
 import { getDictionary, Lang } from '@/config/i18n';
 import { enhanceArticleForBreadcrumbs } from '@/features/navigation/Breadcrumbs/SmartBreadcrumbs';
 import BreadcrumbsWithContext from './_components/navigation/BreadcrumbsWithContext';
@@ -92,11 +92,13 @@ export async function generateMetadata({
 
     const alternateLang = lang === 'en' ? 'ru' : 'en';
     const altSlug = await fetchArticleAltSlug(articleSlug, alternateLang as Lang);
+    const localSlugForLang = await fetchLocalSlug(articleSlug, lang as Lang);
+    const canonicalSlug = localSlugForLang ?? slug;
+
     const siteUrl = dictionary.seo.site.url.replace(/\/$/, '');
-    const canonicalUrl = `${siteUrl}/${lang}/${rubric}/${slug}`;
+    const canonicalUrl = `${siteUrl}/${lang}/${rubric}/${canonicalSlug}`;
     const enUrl = lang === 'en' ? canonicalUrl : (altSlug ? `${siteUrl}/en/${rubric}/${altSlug}` : null);
     const ruUrl = lang === 'ru' ? canonicalUrl : (altSlug ? `${siteUrl}/ru/${rubric}/${altSlug}` : null);
-
     return {
       ...metadata,
       alternates: {
@@ -123,6 +125,14 @@ export default async function ArticlePage({
   const articleSlug = await resolveArticleSlug(slug, lang);
   if (!articleSlug) {
     notFound();
+  }
+
+  // Redirect main slug → language-specific local slug (prevents duplicate content)
+  if (slug === articleSlug) {
+    const localSlug = await fetchLocalSlug(articleSlug, lang);
+    if (localSlug && localSlug !== slug) {
+      permanentRedirect(`/${lang}/${rubric}/${localSlug}`);
+    }
   }
 
   const [article, rubricBasics] = await Promise.all([
@@ -180,7 +190,7 @@ export default async function ArticlePage({
     const articleSchemaData = {
       title: translation.og_title || translation.seo_title || translation.title,
       description: translation.og_description || translation.seo_description || translation.description || translation.lead,
-      slug: articleSlug,
+      slug: slug,
       rubricSlug: rubric,
       rubricName: rubricName,
       author: {
@@ -198,7 +208,7 @@ export default async function ArticlePage({
       publishedAt: article.published_at,
       updatedAt: article.updated_at,
       imageUrl: article.article_heading_img 
-        ? `${dictionary.seo.site.url}/assets/${article.article_heading_img}`
+        ? `${DIRECTUS_ASSETS_URL}/assets/${article.article_heading_img}`
         : undefined,
       imageAlt: imageMetadata?.altText,
       tags: article.categories?.map(cat => cat.name) || [],
@@ -219,6 +229,12 @@ export default async function ArticlePage({
       name: cat.name,
     })) || [];
 
+    const schemaBreadcrumbs = [
+      { name: dictionary.navigation.labels.home, href: `/${lang}` },
+      { name: rubricName, href: `/${lang}/${rubric}` },
+      { name: translation.title },
+    ];
+
     return (
       <>
         <>
@@ -226,6 +242,7 @@ export default async function ArticlePage({
             dictionary={dictionary}
             lang={lang}
             articleData={articleSchemaData}
+            breadcrumbs={schemaBreadcrumbs}
           />
 
           <QuickNavigationSchema

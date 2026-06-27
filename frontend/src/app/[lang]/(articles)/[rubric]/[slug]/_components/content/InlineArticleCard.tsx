@@ -4,17 +4,18 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { BLOCKS_STYLES } from '../article.styles';
 import { ArticleCardData } from '../markdown/markdownTypes';
+import { getDictionary, Lang } from '@/config/i18n';
 
 interface InlineArticleCardProps {
   articleCardData: ArticleCardData;
-  lang?: string;
+  lang: Lang;
 }
 
 const styles = BLOCKS_STYLES.inlineArticleCard;
 
 export default function InlineArticleCard({
   articleCardData,
-  lang = 'ru'
+  lang,
 }: InlineArticleCardProps) {
   const {
     slug,
@@ -25,6 +26,7 @@ export default function InlineArticleCard({
   } = articleCardData;
   
   const articleLink = `/${lang}/${rubricSlug}/${slug}`;
+  const dictionary = getDictionary(lang);
   
   return (
     <div className={styles.container}>
@@ -51,7 +53,7 @@ export default function InlineArticleCard({
           <div className={styles.content}>
             {/* Label */}
             <span className={styles.label}>
-              Читайте также
+              {dictionary.common.actions.readAlso}
             </span>
 
             {/* Title */}

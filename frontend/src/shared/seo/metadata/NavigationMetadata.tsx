@@ -34,7 +34,7 @@ export const generateNavigationMetadata = async ({
     keywords,
     canonicalUrl,
     dictionary.locale,
-    `${dictionary.seo.site.url}/og-navigation.jpg`
+    `${dictionary.seo.site.url}/og-default.jpg`
   );
 
   return buildMetadata(websiteSEOData);
@@ -66,7 +66,7 @@ export const getNavigationOpenGraphData = (
     
     images: [
       {
-        url: `${dictionary.seo.site.url}/og-navigation.jpg`,
+        url: `${dictionary.seo.site.url}/og-default.jpg`,
         width: 1200,
         height: 630,
         alt: dictionary.seo.site.name,

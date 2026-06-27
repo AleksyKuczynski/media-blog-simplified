@@ -83,6 +83,7 @@ const dictionaryRU: Dictionary = {
       showMore: 'Показать больше',
       showLess: 'Показать меньше',
       readMore: 'Читать далее',
+      readAlso: 'Читайте также',
       explore: 'Изучить',
       viewAll: 'Посмотреть все',
       backTo: 'Вернуться к',

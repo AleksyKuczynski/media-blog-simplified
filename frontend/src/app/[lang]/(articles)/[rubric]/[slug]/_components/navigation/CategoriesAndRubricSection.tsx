@@ -19,9 +19,7 @@
  */
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { processTemplate } from '@/config/i18n/helpers/templates';
-import { DIRECTUS_URL } from '@/api/directus';
 import { Dictionary, Lang } from '@/config/i18n';
 import { NAVIGATION_STYLES } from '../article.styles';
 
