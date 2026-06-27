@@ -72,6 +72,7 @@ export default function ArticleContentRenderer({
           <InlineArticleCard
             key={index}
             articleCardData={chunk.articleCardData}
+            lang={lang}
           />
         ) : null;
 
